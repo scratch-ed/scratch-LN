@@ -1,26 +1,19 @@
 # scratch LN
-Provide an textual representation of the blocks from scratch 3.0. This text can be used within an html document and using some javascript magic this wil be converted to scratch blocks. Also some function to indicate certain blocks are provided.
+
+
+Transform text to scratch 3.0 blocks and indicate certain blocks. See the [live preview](https://scratch4d.github.io/scratch-LN/example/).
 
 This is work in progress :)
 
-## Getting Started
-0. open a terminal and clone this project.
-1. run `npm install`
-2. run `npm start` 
-3. in the webbrowser go to:
-	
-	- `localhost:8008` : live preview: debug
-	- `localhost:8008\view.html` : live preview: clean
-	- `localhost:8008\test.html` : list of text and the result
-	- `localhost:8008\example.html`  : example exercise (teken het cdj logo)
-	- `localhost:8008\simple.html` : simple html
+## Examples
 
-
+- [live preview](https://scratch4d.github.io/scratch-LN/example/)
+- [example of different blocks](https://scratch4d.github.io/scratch-LN/example/test.html)
+- [simple example in Dutch](https://scratch4d.github.io/scratch-LN/example/simple.html)
+- [more complicated example in Dutch](https://scratch4d.github.io/scratch-LN/example/simple.html) use the buttons to indicate/change the blocks.
 
 ## Authors
 
-* **Ellen Vanhove**
+* **Ellen Vanhove** <ellen.vanhove@ugent.be>
 
-## License
 
-This project is licensed under the Apache License 2.0 - see the [LICENSE.md](LICENSE.md) file for details
