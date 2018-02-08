@@ -39,35 +39,35 @@ module.exports = [
             'nice_live_view':'./examples/nice_live_view.js',
         },
         output: {
-            filename: 'output/[name].js'
+            filename: 'example/[name].js'
         },
         plugins: base.plugins.concat([
-            new CopyWebpackPlugin([{
+            /*new CopyWebpackPlugin([{
                 from: './live_view/live_view.html',
-                to: 'output/index.html'
-            }]),
+                to: 'example/index.html'
+            }]),*/
             new CopyWebpackPlugin([{
                 from: './test/test.html',
-                to: 'output/test.html'
+                to: 'example/test.html'
             }]),new CopyWebpackPlugin([{
                 from: './examples/nice_live_view.html',
-                to: 'output/view.html'
+                to: 'example/index.html'
             }]),
             new CopyWebpackPlugin([{
                 from: 'examples/example.html',
-                to: 'output/example.html'
+                to: 'example/example.html'
             }]),
             new CopyWebpackPlugin([{
                 from: 'examples/cdjlogo.jpeg',
-                to: 'output/cdjlogo.jpeg'
+                to: 'example/cdjlogo.jpeg'
             }]),
             new CopyWebpackPlugin([{
                 from: 'examples/simple.html',
-                to: 'output/simple.html'
+                to: 'example/simple.html'
             }]),
             new CopyWebpackPlugin([{
                 from: 'node_modules/scratch-blocks/media',
-                to: 'output/static/blocks-media'
+                to: 'example/static/blocks-media'
             }])
         ]),
     })
