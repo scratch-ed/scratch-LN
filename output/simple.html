@@ -1,0 +1,75 @@
+<html>
+   <head>
+      <meta charset="utf-8">
+      <style>
+         .scratch {
+         display: none;
+         }
+         .container {
+         display: inline-block;
+         margin-left: 40px;
+         margin-right: 40px;
+         }
+      </style>
+        <script type="text/javascript" src="run.js" charset="utf-8"></script>
+   </head>
+   <body>
+      <h1>Teken figuren</h1>
+      <p>
+         In onderstaande voorbeelden gebruiken we de variabele <code class='scratch'> (teller) </code> om veelhoeken met een variabel aantal zijden te tekenen. 
+      </p>
+      <div class='container'>
+         <h2>Teken veelhoek </h2>
+         <code class='scratch' id='x'>
+            when greenflag clicked
+            go to x: {0} y: {0}
+            pen down
+            repeat (teller)
+            move {100} steps
+            turn cw {({360}/{(teller)})} degrees
+            end
+            pen up
+         </code>
+      </div>
+      <div class='container'>
+         <h2>Teken driehoek </h2>
+         <code class='scratch'>
+            when greenflag clicked
+            go to x: {0} y: {0}
+            pen down
+            repeat 3
+            move {100} steps
+            turn cw {({360}/{3})} degrees
+            end
+            pen up
+         </code>
+      </div>
+      <div class='container'>
+         <h2>Teken vierhoek </h2>
+         <code class='scratch'>
+            when greenflag clicked
+            go to x: {0} y: {0}
+            pen down
+            repeat 4
+            move {100} steps
+            turn cw {({360}/{4})} degrees
+            end
+            pen up
+         </code>
+      </div>
+      <div class='container'>
+         <h2>Teken vijfhoek </h2>
+         <code class='scratch'>
+            when greenflag clicked
+            go to x: {0} y: {0}
+            pen down
+            repeat 5
+            move {100} steps
+            turn cw {({360}/{5})} degrees
+            end
+            pen up
+         </code>
+      </div>
+   </body>
+</html>
+
