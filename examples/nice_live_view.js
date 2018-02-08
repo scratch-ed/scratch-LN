@@ -15,7 +15,7 @@ window.onload = function() {
         'scrollbars': true,
         'trashcan': false,
         'readOnly': false,
-        media: 'scratch-LN/output/static/blocks-media/', //flag
+        media: 'static/blocks-media/', //flag
         colours: {
             workspace: '#E0FFFF', //'#e0ffe9',
         },
