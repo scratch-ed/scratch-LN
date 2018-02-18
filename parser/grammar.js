@@ -554,9 +554,9 @@ export default function myGrammar() {
 
         getOffsetArgument(arg) {
             if (!arg) {
-                return 999999999999999 //todo integer max int ofzo
+                return Number.MAX_SAFE_INTEGER; //avoid infinite loop
             }
-            let child = this.visit(arg)
+            let child = this.visit(arg);
             return child.offset
         }
 
@@ -1130,7 +1130,7 @@ export default function myGrammar() {
         getOffsetArgument(arg) {
             if (!arg) {
                 console.log('This should not happen');
-                return 999999999999999999999 //todo maxint ofzo om te vermijden dat het ine en oneindige lus raakt?
+                return Number.MAX_SAFE_INTEGER; //avoid infinite loop
             }
             /*if (arg.children.choice.length > 0) {
                 return arg.children.choice[0].children.LSquareBracket[0].startOffset
