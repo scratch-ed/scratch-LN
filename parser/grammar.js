@@ -9,7 +9,7 @@ export default function myGrammar() {
     const Lexer = chevrotain.Lexer;
     const Parser = chevrotain.Parser;
 
-    var Label = createToken({
+    let Label = createToken({
         name: "Label",
         pattern:
         //not [] {} () " :: ; \n # unless escaped
@@ -36,23 +36,23 @@ export default function myGrammar() {
         pattern: /\)/
     });
 
-    var GreaterThan = createToken({
+    let GreaterThan = createToken({
         name: "GreaterThan",
         pattern: />/
     });
-    var LessThan = createToken({
+    let LessThan = createToken({
         name: "LessThan",
         pattern: /</
     });
-    var LSquareBracket = createToken({
+    let LSquareBracket = createToken({
         name: "LSquareBracket",
         pattern: /\[/
     });
-    var RSquareBracket = createToken({
+    let RSquareBracket = createToken({
         name: "RSquareBracket",
         pattern: /\]/
     });
-    var DoubleColon = createToken({
+    let DoubleColon = createToken({
         name: "DoubleColon",
         pattern: /::/
     });
@@ -380,7 +380,7 @@ export default function myGrammar() {
             $.CONSUME(LSquareBracket);
             $.OPTION(() => {
                 $.CONSUME1(Label);
-            })
+            });
             $.CONSUME(RSquareBracket);
         });
 
@@ -388,7 +388,7 @@ export default function myGrammar() {
             $.CONSUME(LessThan);
             $.OPTION(() => {
                 $.SUBRULE($.block);
-            })
+            });
             $.CONSUME(GreaterThan);
 
         });
@@ -417,14 +417,14 @@ export default function myGrammar() {
     class InformationVisitor extends BaseCstVisitor {
 
         constructor() {
-            super()
+            super();
                 // This helper will detect any missing or redundant methods on this visitor
             this.validateVisitor()
         }
 
         multipleStacks(ctx) {
-            var s = []
-            for (var i = 0; i < ctx.stack.length; i++) {
+            let s = [];
+            for (let i = 0; i < ctx.stack.length; i++) {
                 s.push(this.visit(ctx.stack[i]))
             }
             return {
@@ -434,14 +434,14 @@ export default function myGrammar() {
         }
 
         scripts(ctx) {
-            var s = []
-            for (var i = 0; i < ctx.multipleStacks.length; i++) {
+            let s = [];
+            for (let i = 0; i < ctx.multipleStacks.length; i++) {
                 s.push(this.visit(ctx.multipleStacks[i]))
             }
-            for (var i = 0; i < ctx.reporterblock.length; i++) {
+            for (let i = 0; i < ctx.reporterblock.length; i++) {
                 s.push(this.visit(ctx.reporterblock[i]))
             }
-            for (var i = 0; i < ctx.booleanblock.length; i++) {
+            for (let i = 0; i < ctx.booleanblock.length; i++) {
                 s.push(this.visit(ctx.booleanblock[i]))
             }
             return s
@@ -494,15 +494,15 @@ export default function myGrammar() {
             return ctx.stack.length > 0 ? this.visit(ctx.stack[0]) : ''
         }
         stack(ctx) {
-            var blocks = []
-            for (var i = 0; i < ctx.stackline.length; i++) {
+            let blocks = [];
+            for (let i = 0; i < ctx.stackline.length; i++) {
                 blocks.push(this.visit(ctx.stackline[i]))
             }
             return blocks
         }
 
         stackline(ctx) {
-            var v = ctx
+            let v = ctx;
             if (ctx.forever.length > 0) {
                 v = this.visit(ctx.forever)
             } else if (ctx.repeatuntil.length > 0) {
@@ -521,12 +521,12 @@ export default function myGrammar() {
         }
 
         block(ctx) {
-            var text = ''
-            var a = 0;
-            for (var i = 0; i < ctx.Label.length; i++) {
+            let text = '';
+            let a = 0;
+            for (let i = 0; i < ctx.Label.length; i++) {
                 if (a < ctx.argument.length) {
                     while (a < ctx.argument.length && this.getOffsetArgument(ctx.argument[a]) < ctx.Label[i].startOffset) {
-                        text += '{}' //this.getOffsetArgument(ctx.argument[a]) 
+                        text += '{}';//this.getOffsetArgument(ctx.argument[a])
                         a++;
                     }
                 }
@@ -538,11 +538,11 @@ export default function myGrammar() {
             }
 
 
-            var args = []
-            for (var i = 0; i < ctx.argument.length; i++) {
+            let args = [];
+            for (let i = 0; i < ctx.argument.length; i++) {
                 args.push(this.visit(ctx.argument[i]))
             }
-            var ofs = 0;
+            let ofs = 0;
             if(ctx.argument[0]){
                 ofs = this.getOffsetArgument(ctx.argument[0]) < ctx.Label[0].startOffset ? this.getOffsetArgument(ctx.argument[0]) : ctx.Label[0].startOffset
             }else{
@@ -560,7 +560,7 @@ export default function myGrammar() {
             if (!arg) {
                 return 999999999999999 //todo integer max int ofzo
             }
-            var child = this.visit(arg)
+            let child = this.visit(arg)
             return child.offset
         }
 
@@ -631,7 +631,7 @@ export default function myGrammar() {
         }
 
         reporterblock(ctx) {
-            var b = this.visit(ctx.block);
+            let b = this.visit(ctx.block);
             return {
                 'type': 'reporterblock',
                 'value': b,
@@ -641,7 +641,7 @@ export default function myGrammar() {
         }
 
         booleanblock(ctx) {
-            var b = this.visit(ctx.block);
+            let b = this.visit(ctx.block);
             return {
                 'type': 'booleanblock',
                 'value': b,
@@ -666,9 +666,9 @@ export default function myGrammar() {
                 x: 75,
                 y: 100
             }) {
-            super()
+            super();
                 // This helper will detect any missing or redundant methods on this visitor
-            this.validateVisitor()
+            this.validateVisitor();
 
             //the visitor stores an xml, this is reinit every visit call.
             //the builder keeps where we are adding the next block
@@ -685,21 +685,21 @@ export default function myGrammar() {
             //what kind of blocks should we build now? top, reporter, stack or boolean?
             //top = the first block in a stack, can be a stack or hat block
             //todo: cap block
-            this.modus = 'root'
+            this.modus = 'root';
             this.scriptCounter = 0;
             this.blockCounter = 0;
             this.prevBlockCounter = 0;
             this.isTop = true;
 
             //id generation
-            this.counter = 0
+            this.counter = 0;
 
             //variables
             this.varMap = new Object();
-            this.varCounter = 0
+            this.varCounter = 0;
 
             //warnings
-            this.warnings = []
+            this.warnings = [];
 
             //informationvistor
             this.infoVisitor = new InformationVisitor();
@@ -724,7 +724,7 @@ export default function myGrammar() {
 
         addLocationBelow(xmlElement) {
             xmlElement.att('x', this.location.x);
-            if (this.prevBlockCounter == 0) {
+            if (this.prevBlockCounter === 0) {
                 xmlElement.att('y', this.location.y);
                 this.prevBlockCounter = this.blockCounter;
             } else {
@@ -735,7 +735,7 @@ export default function myGrammar() {
 
         getXML(cst) {
             //reset
-            this.modus = 'stackblock'
+            this.modus = 'stackblock';
             this.xml = builder.begin().ele('xml').att('xmlns', 'http://www.w3.org/1999/xhtml');
             this.xmlRoot = this.xml;
             this.visit(cst);
@@ -745,7 +745,7 @@ export default function myGrammar() {
             } else {
                 this.xml = this.xmlRoot.ele('variables');
             }
-            for (var key in this.varMap) {
+            for (let key in this.varMap) {
                 if (this.varMap.hasOwnProperty(key)) {
                     this.xml.ele('variable', {
                         'type': this.varMap[key].variableType,
@@ -760,35 +760,35 @@ export default function myGrammar() {
         }
 
         visitSubStack(stack) {
-            var head = this.xml;
-            this.visit(stack)
+            let head = this.xml;
+            this.visit(stack);
             this.xml = head;
         }
 
         scripts(ctx) {
-            for (var i = 0; i < ctx.multipleStacks.length; i++) {
+            for (let i = 0; i < ctx.multipleStacks.length; i++) {
                 this.visit(ctx.multipleStacks[i])
             }
-            for (var i = 0; i < ctx.reporterblock.length; i++) {
-                this.isTop = true
-                this.visit(ctx.reporterblock[i])
-                this.addLocationBelow(this.xml)
+            for (let i = 0; i < ctx.reporterblock.length; i++) {
+                this.isTop = true;
+                this.visit(ctx.reporterblock[i]);
+                this.addLocationBelow(this.xml);
                 this.scriptCounter++;
             }
-            for (var i = 0; i < ctx.booleanblock.length; i++) {
-                this.isTop = true
-                this.visit(ctx.booleanblock[i])
-                this.addLocationBelow(this.xml)
+            for (let i = 0; i < ctx.booleanblock.length; i++) {
+                this.isTop = true;
+                this.visit(ctx.booleanblock[i]);
+                this.addLocationBelow(this.xml);
                 this.scriptCounter++;
             }
         }
 
         multipleStacks(ctx) {
-            for (var i = 0; i < ctx.stack.length; i++) {
-                this.isTop = true
-                this.visit(ctx.stack[i])
-                this.addLocationBelow(this.xml)
-                this.xml = this.xml.up()
+            for (let i = 0; i < ctx.stack.length; i++) {
+                this.isTop = true;
+                this.visit(ctx.stack[i]);
+                this.addLocationBelow(this.xml);
+                this.xml = this.xml.up();
                 this.scriptCounter++;
             }
         }
@@ -866,7 +866,7 @@ export default function myGrammar() {
             });
             this.visitSubStack(ctx.stack); //when no index is given it is always 0
             this.xml = this.xml.up();
-            if (ctx.else.length != 0) {
+            if (ctx.else.length !== 0) {
                 this.visit(ctx.else);
             }
         }
@@ -880,11 +880,11 @@ export default function myGrammar() {
         }
 
         stack(ctx) {
-            for (var i = 0; i < ctx.stackline.length; i++) {
-                this.visit(ctx.stackline[i])
+            for (let i = 0; i < ctx.stackline.length; i++) {
+                this.visit(ctx.stackline[i]);
                 this.xml = this.xml.ele('next');
             }
-            for (var i = 0; i < ctx.stackline.length - 1; i++) {
+            for (let i = 0; i < ctx.stackline.length - 1; i++) {
                 this.xml = this.xml.up().up();
             }
             this.xml = this.xml.up(); //End with blocks open so that insertbefore works #hacky
@@ -909,9 +909,9 @@ export default function myGrammar() {
         }
 
         makeMatchString(ctx) {
-            var matchString = ''
-            var a = 0;
-            for (var i = 0; i < ctx.Label.length; i++) {
+            let matchString = '';
+            let a = 0;
+            for (let i = 0; i < ctx.Label.length; i++) {
                 if (a < ctx.argument.length) {
                     while (a < ctx.argument.length && this.getOffsetArgument(ctx.argument[a]) < ctx.Label[i].startOffset) {
                         matchString += ' %' + (a + 1) + ' ';
@@ -928,46 +928,46 @@ export default function myGrammar() {
 
         generateStackBlock(ctx, matchString) {
 
-            var blockid = this.getNextId();
+            let blockid = this.getNextId();
             this.xml = this.xml.ele('block', {
                 'id': blockid,
             });
-            this.xml.att('type', 'procedures_call')
+            this.xml.att('type', 'procedures_call');
 
             this.addMutation(ctx, matchString, blockid, true);
 
         }
 
         addMutation(ctx, matchString, blockid, visitArgs) {
-            var args = []
-            var argumentnames = []
-            var argumentdefaults = []
-            var argumentids = []
+            let args = [];
+            let argumentnames = [];
+            let argumentdefaults = [];
+            let argumentids = [];
 
             //this is a very weird construction but it works...
             //assign this to a variable so that it can be accesed by the function
-            var thisVisitor = this;
-            var proccode = matchString.replace(/%[1-9]/g, function(m) {
-                var index = m[1] - 1;
+            let thisVisitor = this;
+            let proccode = matchString.replace(/%[1-9]/g, function(m) {
+                let index = m[1] - 1;
                 return thisVisitor.getPlaceholder(ctx.argument[index])
             });
-            for (var i = 0; i < ctx.argument.length; i++) {
+            for (let i = 0; i < ctx.argument.length; i++) {
                 //make names
                 args.push(arg);
-                var name = this.getString(ctx.argument[i])
+                let name = this.getString(ctx.argument[i])
                 if(!name){
                     name = 'argumentname_' + blockid + '_' + i
                 }
-                argumentnames.push(name)//('argumentname_' + blockid + '_' + i)
-                argumentdefaults.push('')
-                argumentids.push(this.getVariableID(argumentnames[argumentnames.length - 1],'arg'))//(blockid + '_arg_' + this.getNextId())
+                argumentnames.push(name); //('argumentname_' + blockid + '_' + i)
+                argumentdefaults.push('');
+                argumentids.push(this.getVariableID(argumentnames[argumentnames.length - 1],'arg')); //(blockid + '_arg_' + this.getNextId())
                 
                 if (visitArgs) {
                         //make xml
                     this.xml = this.xml.ele('value', {
                         'name': argumentnames[argumentnames.length - 1]
                     });
-                    var arg = this.visit(ctx.argument[i])
+                    let arg = this.visit(ctx.argument[i]);
                     this.xml = this.xml.up();
                 }
 
@@ -999,15 +999,15 @@ export default function myGrammar() {
         }
 
         generateReporterBlock(ctx, matchString) {
-            var varID = this.getVariableID(matchString);
-            if (this.getString(ctx.option[0]) == 'list') {
+            let varID = this.getVariableID(matchString);
+            if (this.getString(ctx.option[0]) === 'list') {
                 this.xml = this.xml.ele('block', {
                     'type': 'data_listcontents',
                     'id': this.getNextId(),
                 }).ele('field', {
                     'name': 'LIST',
                     'id': varID,
-                }, matchString)
+                }, matchString);
                 this.xml = this.xml.up(); //up field
             } else {
                 this.xml = this.xml.ele('block', {
@@ -1016,7 +1016,7 @@ export default function myGrammar() {
                 }).ele('field', {
                     'name': 'VARIABLE',
                     'id': varID,
-                }, matchString)
+                }, matchString);
                 this.xml = this.xml.up(); //up field
             }
         }
@@ -1029,11 +1029,11 @@ export default function myGrammar() {
         }
 
         block(ctx) {
-            var matchString = this.makeMatchString(ctx)
+            let matchString = this.makeMatchString(ctx);
             //console.log(matchString)
             if (matchString.startsWith("define")) {
                 matchString = matchString.replace(/define/, '');
-                var blockid = this.getNextId()
+                let blockid = this.getNextId();
                 this.xml = this.xml.ele('block', {
                     'type': 'procedures_definition',
                     'id': blockid,
@@ -1050,7 +1050,7 @@ export default function myGrammar() {
                 this.xml = this.xml.up().up()
             } else if (matchString in blocks) {
                 blocks[matchString](ctx, this);
-                if (this.modus == 'reporterblock' || this.modus == 'booleanblock') {
+                if (this.modus === 'reporterblock' || this.modus === 'booleanblock') {
                     if (this.isTop) {
                         this.addLocationBelow(this.xml)
                     }
@@ -1068,7 +1068,7 @@ export default function myGrammar() {
                         this.generateBooleanBlock(ctx, matchString);
                         break;
                 }
-                if (this.modus == 'reporterblock' || this.modus == 'booleanblock') {
+                if (this.modus === 'reporterblock' || this.modus === 'booleanblock') {
                     if (!this.firstBlock) {
                         this.firstBlock = this.xml
                     }
@@ -1100,7 +1100,7 @@ export default function myGrammar() {
         }
         getString(ctx) {
             if (ctx) {
-                var o = this.infoVisitor.visit(ctx)
+                let o = this.infoVisitor.visit(ctx)
                 return o.text
             } else {
                 return ''
@@ -1111,10 +1111,10 @@ export default function myGrammar() {
             if (!ctx || !ctx.children) {
                 return '%s'
             }
-            var type = this.getType(ctx)
-            if (type == 'number') {
+            let type = this.getType(ctx)
+            if (type === 'number') {
                 return '%n'
-            } else if (type == 'booleanblock') {
+            } else if (type === 'booleanblock') {
                 return '%b'
             } else {
                 return '%s'
@@ -1123,7 +1123,7 @@ export default function myGrammar() {
 
         getType(ctx) {
             if (ctx) {
-                var o = this.infoVisitor.visit(ctx)
+                let o = this.infoVisitor.visit(ctx);
                 return o.type
             } else {
                 return 'empty'
@@ -1131,7 +1131,7 @@ export default function myGrammar() {
         }
         getOffsetArgument(arg) {
             if (!arg) {
-                console.log('This should not happen')
+                console.log('This should not happen');
                 return 999999999999999999999 //todo maxint ofzo om te vermijden dat het ine en oneindige lus raakt?
             }
             /*if (arg.children.menu.length > 0) {
@@ -1139,7 +1139,7 @@ export default function myGrammar() {
             } else {
                 return arg.children.LCurly[0].startOffset
             }*/
-            var child = this.infoVisitor.visit(arg)
+            let child = this.infoVisitor.visit(arg)
             return child.offset
         }
 
@@ -1183,14 +1183,14 @@ export default function myGrammar() {
         }
 
         reporterblock(ctx) {
-            var prevModus = this.modus;
+            let prevModus = this.modus;
             this.modus = 'reporterblock';
             this.visit(ctx.block);
             this.modus = prevModus;
         }
 
         booleanblock(ctx) {
-            var prevModus = this.modus;
+            let prevModus = this.modus;
             this.modus = 'booleanblock';
             this.visit(ctx.block);
             this.modus = prevModus;

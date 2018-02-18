@@ -1,16 +1,16 @@
 import myGrammar from './grammar.js'
 
-var {
+let {
     lexer,
     parser,
     visitor,
-} = myGrammar()
+} = myGrammar();
 
 
 export default function parseTextToXML(text) {
-    var cst = getCst(text);
+    let cst = getCst(text);
     if (cst) {
-        var xml = execXmlVisitor(cst);
+        let xml = execXmlVisitor(cst);
         return xml;
     }
 }
@@ -32,10 +32,10 @@ function getCst(text) {
 }
 
 function execXmlVisitor(cst) {
-    var v = new visitor({
+    let v = new visitor({
         x: 10,
         y: 10
     });
-    var xml = v.getXML(cst);
+    let xml = v.getXML(cst);
     return xml;
 }

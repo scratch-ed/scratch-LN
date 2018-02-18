@@ -3,7 +3,7 @@
 Used library:
 https://github.com/SAP/chevrotain/tree/master/examples/grammars
 
-playground (copy past the content of `parser.js` or `temp.js`):
+playground (copy past the content of `temp.js`):
 http://sap.github.io/chevrotain/playground/
 
 
