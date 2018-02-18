@@ -9,7 +9,7 @@ export default function myGrammar() {
     const Lexer = chevrotain.Lexer;
     const Parser = chevrotain.Parser;
 
-    let Label = createToken({
+    const Label = createToken({
         name: "Label",
         pattern:
         //not [] {} () " :: ; \n # unless escaped
@@ -18,62 +18,62 @@ export default function myGrammar() {
             /(:?[^\{\(\)\}\<\>\[\]:;\\"\n#]|\\[\{\(\)\}\<\>\[\]:;\\"\n#])+/,
         line_breaks: true
     });
-    const LCurly = createToken({
-        name: "LCurly",
+    const LCurlyBracket = createToken({
+        name: "LCurlyBracket",
         pattern: /{/
     });
-    const RCurly = createToken({
-        name: "RCurly",
+    const RCurlyBracket = createToken({
+        name: "RCurlyBracket",
         pattern: /}/
     });
 
-    const LPar = createToken({
-        name: "LPar",
+    const LRoundBracket = createToken({
+        name: "LRoundBracket",
         pattern: /\(/
     });
-    const RPar = createToken({
-        name: "RPar",
+    const RRoundBracket = createToken({
+        name: "RRoundBracket",
         pattern: /\)/
     });
 
-    let GreaterThan = createToken({
-        name: "GreaterThan",
+    const RAngleBracket = createToken({
+        name: "RAngleBracket",
         pattern: />/
     });
-    let LessThan = createToken({
-        name: "LessThan",
+    const LAngleBracket = createToken({
+        name: "LAngleBracket",
         pattern: /</
     });
-    let LSquareBracket = createToken({
+    const LSquareBracket = createToken({
         name: "LSquareBracket",
         pattern: /\[/
     });
-    let RSquareBracket = createToken({
+    const RSquareBracket = createToken({
         name: "RSquareBracket",
         pattern: /\]/
     });
-    let DoubleColon = createToken({
+    const DoubleColon = createToken({
         name: "DoubleColon",
         pattern: /::/
     });
-    const Arg = createToken({
-        name: "Arg",
+    const Literal = createToken({
+        name: "Literal",
         pattern: Lexer.NA
     });
-    const TextArg = createToken({
-        name: "TextArg",
+    const StringLiteral = createToken({
+        name: "StringLiteral",
         pattern: /"[^"]*"/,
-        categories: Arg
+        categories: Literal
     });
-    const NumberArg = createToken({
-        name: "NumberArg",
+    const NumberLiteral = createToken({
+        name: "NumberLiteral",
         pattern: /-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?/,
-        categories: [Arg, Label]
+        categories: [Literal, Label]
     });
-    const ColorArg = createToken({
-        name: "ColorArg",
+    const ColorLiteral = createToken({
+        name: "ColorLiteral",
         pattern: /#[0-9a-z]{6}/,
-        categories: [Arg]
+        categories: [Literal]
     });
     const Forever = createToken({
         name: "Forever",
@@ -110,26 +110,26 @@ export default function myGrammar() {
     // marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
     const WhiteSpace = createToken({
         name: "WhiteSpace",
-        pattern: / +/,
+        pattern: /[ \t]+/,
         group: Lexer.SKIPPED,
-        line_breaks: false
+        line_breaks: false 
     });
 
-    let LineEnd = createToken({
-        name: "LineEnd",
+    const StatementTerminato = createToken({
+        name: "StatementTerminato",
         pattern: /;\n|;|\n/,
         line_breaks: true
-    })
+    });
 
     const allTokens = [
         WhiteSpace,
-        Arg, TextArg, NumberArg, ColorArg,
+        Literal, StringLiteral, NumberLiteral, ColorLiteral,
         Forever, End, Until, Repeat, If, Else, Then,
-        LineEnd,
+        StatementTerminato,
         Label,
-        LCurly, RCurly,
-        LPar, RPar,
-        GreaterThan, LessThan,
+        LCurlyBracket, RCurlyBracket,
+        LRoundBracket, RRoundBracket,
+        RAngleBracket, LAngleBracket,
         LSquareBracket, RSquareBracket,
         DoubleColon,
     ];
@@ -148,7 +148,7 @@ export default function myGrammar() {
 
         $.RULE("multipleStacks", () => {
             $.AT_LEAST_ONE_SEP({
-                SEP: LineEnd,
+                SEP: StatementTerminato,
                 DEF: () => {
                     $.SUBRULE($.stack);
                 }
@@ -158,8 +158,8 @@ export default function myGrammar() {
 
         $.RULE("scripts", () => {
             $.MANY1(function() {
-                $.CONSUME1(LineEnd);
-            })
+                $.CONSUME1(StatementTerminato);
+            });
             $.AT_LEAST_ONE2(function() {
 
                 $.OR([{
@@ -176,10 +176,10 @@ export default function myGrammar() {
                     }
                 }]);
 
-            })
+            });
 
             $.MANY2(function() {
-                $.CONSUME2(LineEnd);
+                $.CONSUME2(StatementTerminato);
             })
 
         });
@@ -187,18 +187,18 @@ export default function myGrammar() {
         $.RULE("end", () => {
             $.CONSUME(End);
             $.OPTION1(() => {
-                $.CONSUME1(LineEnd);
+                $.CONSUME1(StatementTerminato);
             })
         });
 
         $.RULE("forever", () => {
             $.CONSUME(Forever);
             $.OPTION1(() => {
-                $.CONSUME1(LineEnd);
-            })
+                $.CONSUME1(StatementTerminato);
+            });
             $.OPTION2(() => {
                 $.SUBRULE1($.stack);
-            })
+            });
             $.OPTION3(() => {
                 $.SUBRULE1($.end);
             })
@@ -208,11 +208,11 @@ export default function myGrammar() {
             $.CONSUME(Repeat);
             $.SUBRULE($.countableinput);
             $.OPTION1(() => {
-                $.CONSUME1(LineEnd);
-            })
+                $.CONSUME1(StatementTerminato);
+            });
             $.OPTION2(() => {
                 $.SUBRULE1($.stack);
-            })
+            });
             $.OPTION3(() => {
                 $.SUBRULE1($.end);
             })
@@ -224,11 +224,11 @@ export default function myGrammar() {
             $.CONSUME(Until);
             $.SUBRULE($.booleanblock);
             $.OPTION1(() => {
-                $.CONSUME1(LineEnd);
-            })
+                $.CONSUME1(StatementTerminato);
+            });
             $.OPTION2(() => {
                 $.SUBRULE1($.stack);
-            })
+            });
             $.OPTION3(() => {
                 $.SUBRULE1($.end);
             })
@@ -239,16 +239,16 @@ export default function myGrammar() {
             $.SUBRULE($.booleanblock);
             $.OPTION1(() => {
                 $.CONSUME(Then);
-            })
+            });
             $.OPTION2(() => {
-                $.CONSUME1(LineEnd);
-            })
+                $.CONSUME1(StatementTerminato);
+            });
             $.OPTION3(() => {
                 $.SUBRULE1($.stack);
-            })
+            });
             $.OPTION4(() => {
                 $.SUBRULE1($.else);
-            })
+            });
             $.OPTION5(() => {
                 $.SUBRULE1($.end);
             })
@@ -256,8 +256,8 @@ export default function myGrammar() {
         $.RULE("else", () => {
             $.CONSUME(Else);
             $.OPTION1(() => {
-                $.CONSUME2(LineEnd);
-            })
+                $.CONSUME2(StatementTerminato);
+            });
             $.OPTION2(() => {
                 $.SUBRULE2($.stack);
             })
@@ -307,9 +307,9 @@ export default function myGrammar() {
             });
             $.OPTION(() => {
                 $.SUBRULE($.option)
-            })
+            });
             $.OPTION2(() => {
-                $.CONSUME1(LineEnd);
+                $.CONSUME1(StatementTerminato);
             })
 
         });
@@ -322,7 +322,7 @@ export default function myGrammar() {
         $.RULE("argument", function() {
             $.OR1([{
                 ALT: function() {
-                    $.CONSUME(LCurly);
+                    $.CONSUME(LCurlyBracket);
                     $.OPTION(() => {
                         $.OR2([{
                             ALT: function() {
@@ -338,7 +338,7 @@ export default function myGrammar() {
                             }
                         }]);
                     })
-                    $.CONSUME(RCurly);
+                    $.CONSUME(RCurlyBracket);
                 }
             }, {
                 ALT: function() {
@@ -364,15 +364,15 @@ export default function myGrammar() {
         });
 
         $.RULE("primitive", function() {
-            $.CONSUME(Arg);
+            $.CONSUME(Literal);
         });
 
         $.RULE("reporterblock", function() {
-            $.CONSUME(LPar);
+            $.CONSUME(LRoundBracket);
             $.OPTION(() => {
                 $.SUBRULE($.block);
-            })
-            $.CONSUME(RPar);
+            });
+            $.CONSUME(RRoundBracket);
 
         });
 
@@ -385,11 +385,11 @@ export default function myGrammar() {
         });
 
         $.RULE("booleanblock", function() {
-            $.CONSUME(LessThan);
+            $.CONSUME(LAngleBracket);
             $.OPTION(() => {
                 $.SUBRULE($.block);
             });
-            $.CONSUME(GreaterThan);
+            $.CONSUME(RAngleBracket);
 
         });
 
@@ -586,29 +586,29 @@ export default function myGrammar() {
                 return {
                     'value': '',
                     'type': 'empty',
-                    'offset': ctx.LCurly[0].startOffset,
+                    'offset': ctx.LCurlyBracket[0].startOffset,
                 }
             }
         }
 
         primitive(ctx) {
-            if (tokenMatcher(ctx.Arg[0], NumberArg)) {
+            if (tokenMatcher(ctx.Literal[0], NumberLiteral)) {
                 return {
-                    'value': ctx.Arg[0].image,
+                    'value': ctx.Literal[0].image,
                     'type': 'number',
-                    'offset': ctx.Arg[0].startOffset,
+                    'offset': ctx.Literal[0].startOffset,
                 }
-            } else if (tokenMatcher(ctx.Arg[0], ColorArg)) {
+            } else if (tokenMatcher(ctx.Literal[0], ColorLiteral)) {
                 return {
-                    'value': ctx.Arg[0].image,
+                    'value': ctx.Literal[0].image,
                     'type': 'color',
-                    'offset': ctx.Arg[0].startOffset,
+                    'offset': ctx.Literal[0].startOffset,
                 }
             } else {
                 return {
-                    'value': ctx.Arg[0].image,
+                    'value': ctx.Literal[0].image,
                     'type': 'text',
-                    'offset': ctx.Arg[0].startOffset,
+                    'offset': ctx.Literal[0].startOffset,
                 }
             }
 
@@ -627,6 +627,7 @@ export default function myGrammar() {
                 'type': 'menu',
                 'value': ctx.Label[0].image,
                 'offset': ctx.LSquareBracket[0].startOffset,
+                'text': ctx.Label[0].image,
             };
         }
 
@@ -953,7 +954,7 @@ export default function myGrammar() {
             });
             for (let i = 0; i < ctx.argument.length; i++) {
                 //make names
-                args.push(arg);
+                //hier was iets raar...
                 let name = this.getString(ctx.argument[i])
                 if(!name){
                     name = 'argumentname_' + blockid + '_' + i
@@ -969,6 +970,7 @@ export default function myGrammar() {
                     });
                     let arg = this.visit(ctx.argument[i]);
                     this.xml = this.xml.up();
+                    args.push(arg);
                 }
 
             }
@@ -1137,7 +1139,7 @@ export default function myGrammar() {
             /*if (arg.children.menu.length > 0) {
                 return arg.children.menu[0].children.LSquareBracket[0].startOffset
             } else {
-                return arg.children.LCurly[0].startOffset
+                return arg.children.LCurlyBracket[0].startOffset
             }*/
             let child = this.infoVisitor.visit(arg)
             return child.offset
@@ -1156,30 +1158,30 @@ export default function myGrammar() {
         }
 
         primitive(ctx) {
-            if (tokenMatcher(ctx.Arg[0], NumberArg)) {
+            if (tokenMatcher(ctx.Literal[0], NumberLiteral)) {
                 this.xml.ele('shadow', {
                     'type': 'math_number',
                     'id': this.getNextId(),
                 }).ele('field', {
                     'name': 'NUM',
-                }, ctx.Arg[0].image)
-            } else if (tokenMatcher(ctx.Arg[0], ColorArg)) {
+                }, ctx.Literal[0].image)
+            } else if (tokenMatcher(ctx.Literal[0], ColorLiteral)) {
                 this.xml.ele('shadow', {
                     'type': 'colour_picker',
                     'id': this.getNextId(),
                 }).ele('field', {
                     'name': 'COLOUR',
-                }, ctx.Arg[0].image)
+                }, ctx.Literal[0].image)
             } else {
                 this.xml.ele('shadow', {
                     'type': 'text',
                     'id': this.getNextId(),
                 }).ele('field', {
                     'name': 'TEXT',
-                }, ctx.Arg[0].image)
+                }, ctx.Literal[0].image)
 
             }
-            return ctx.Arg[0].image;
+            return ctx.Literal[0].image;
         }
 
         reporterblock(ctx) {

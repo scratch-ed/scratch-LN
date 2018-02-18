@@ -70,7 +70,7 @@ blocks["turn left %1 degrees"]=blocks["turn cww %1 degrees"]
 blocks["point in direction %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_pointindirection", "args":[{"type":"input_value","name":"DIRECTION"}],"shape":"statement"} ); }
 blocks["point towards %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_pointtowards", "args":[{"type":"input_value","name":"TOWARDS","menu":"motion_pointtowards_menu"}],"shape":"statement"} ); }
 blocks["go to x: %1 y: %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_gotoxy", "args":[{"type":"input_value","name":"X"},{"type":"input_value","name":"Y"}],"shape":"statement"} ); }
-blocks["go to %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_goto", "args":[{"type":"input_value","name":"TO","menu":"motion_goto_menu"}],"shape":"statement"} ); }
+
 blocks["glide %1 secs to x: %2 y: %3"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_glidesecstoxy", "args":[{"type":"input_value","name":"SECS"},{"type":"input_value","name":"X"},{"type":"input_value","name":"Y"}],"shape":"statement"} ); }
 blocks["glide %1 secs to %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_glideto", "args":[{"type":"input_value","name":"SECS"},{"type":"input_value","name":"TO","menu":"motion_glideto_menu"}],"shape":"statement"} ); }
 blocks["change x by %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_changexby", "args":[{"type":"input_value","name":"DX"}],"shape":"statement"} ); }
@@ -97,7 +97,6 @@ blocks["size"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor
 blocks["switch costume to %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_switchcostumeto", "args":[{"type":"input_value","name":"COSTUME","menu":"looks_costume"}],"shape":"statement"} ); }
 blocks["next costume"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_nextcostume","shape":"statement"} ); }
 blocks["switch backdrop to %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_switchbackdropto", "args":[{"type":"input_value","name":"BACKDROP","menu":"looks_backdrops"}],"shape":"statement"} ); }
-blocks["go to %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_gotofrontback", "args":[{"type":"field_dropdown","name":"FRONT_BACK","options":[["front","front"],["back","back"]]}],"shape":"statement"} ); }
 blocks["go %1 %2 layers"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_goforwardbackwardlayers", "args":[{"type":"field_dropdown","name":"FORWARD_BACKWARD","options":[["forward","forward"],["backward","backward"]]},{"type":"input_value","name":"NUM"}],"shape":"statement"} ); }
 blocks["backdrop %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_backdropnumbername", "args":[{"type":"field_dropdown","name":"NUMBER_NAME","options":[["number","number"],["name","name"]]}],"shape":"reporterblock"} ); }
 blocks["costume %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_costumenumbername", "args":[{"type":"field_dropdown","name":"NUMBER_NAME","options":[["number","number"],["name","name"]]}],"shape":"reporterblock"} ); }
@@ -211,7 +210,7 @@ function variableBlockConverter(ctx, visitor, structure) {
     });
     visitor.xml.att('type', structure.type);
     let varble = visitor.visit(ctx.argument[0]);
-    visitor.getvariableID(varble)
+    visitor.getVariableID(varble)
     visitor.xml = visitor.xml.ele('field', {
         'name': 'variable'
     }, varble);
@@ -232,7 +231,7 @@ function listBlockConverter(ctx, visitor, structure) {
         let arg = structure.args[i];
         if (arg.name === 'LIST') {
             let varble = visitor.visit(ctx.argument[i]);
-            visitor.getvariableID(varble, 'list');
+            visitor.getVariableID(varble, 'list');
             visitor.xml = visitor.xml.ele('field', {
                 'name': 'LIST',
                 'variabletype': 'list',
@@ -265,11 +264,11 @@ function messageShadowBlockconverter(ctx, visitor,structure) {
 
     let varble = visitor.visit(ctx.argument[0]);
     let arg = structure.args[0];
-    let id = visitor.getvariableID(varble, 'broadcast_msg');
+    let id = visitor.getVariableID(varble, 'broadcast_msg');
 
     visitor.xml = visitor.xml.ele('value', {
         'name': arg.name
-    })
+    });
     visitor.xml.ele('shadow', {
         'type': "event_broadcast_menu"
     }).ele('field', {
@@ -288,7 +287,7 @@ function messageBlockconverter(ctx, visitor,structure) {
 
     let varble = visitor.visit(ctx.argument[0]);
     let arg = structure.args[0];
-    let id = visitor.getvariableID(varble, 'broadcast_msg');
+    let id = visitor.getVariableID(varble, 'broadcast_msg');
 
     visitor.xml.ele('field', {
         'name': "BROADCAST_OPTION",
@@ -388,3 +387,15 @@ blocks["length of %1"] = function(ctx, visitor) {
 
 };
 
+let motionGoTo=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_goto", "args":[{"type":"input_value","name":"TO","menu":"motion_goto_menu"}],"shape":"statement"} ); }
+let looksGoTo =function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_gotofrontback", "args":[{"type":"field_dropdown","name":"FRONT_BACK","options":[["front","front"],["back","back"]]}],"shape":"statement"} ); }
+
+blocks["go to %1"] = function(ctx, visitor) {
+    let argType = visitor.getString(ctx.argument[0]);
+    console.log('-'+argType);
+    if (argType === 'front' || argType === 'back') {
+        return looksGoTo(ctx, visitor);
+    }
+    return motionGoTo(ctx, visitor);
+
+};
