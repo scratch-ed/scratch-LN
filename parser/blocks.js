@@ -357,7 +357,7 @@ let sensingOf = function (ctx, visitor) {
 
 blocks["%1 of %2"] = function(ctx, visitor) {
     let argType = visitor.getType(ctx.argument[1]);
-    if (argType === 'menu') {
+    if (argType === 'choice') {
         return sensingOf(ctx, visitor);
     }
     return operatorOf(ctx, visitor);
@@ -367,7 +367,7 @@ let operatorContains=function(ctx,visitor){return universalBlockConverter(ctx, v
 let listContains=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_listcontainsitem", "args":[{"type":"field_variable","name":"LIST","variabletypes":["list"]},{"type":"input_value","name":"ITEM"}],"shape":"booleanblock"} ); }
 blocks["%1 contains %2?"] = function (ctx, visitor) {
     let argType = visitor.getType(ctx.argument[0]);
-    if (argType === 'menu') {
+    if (argType === 'choice') {
         return listContains(ctx, visitor);
     }
     return operatorContains(ctx, visitor);
@@ -380,7 +380,7 @@ let listLengthOf=function(ctx,visitor){return listBlockConverter(ctx, visitor, {
 
 blocks["length of %1"] = function(ctx, visitor) {
     let argType = visitor.getType(ctx.argument[0]);
-    if (argType === 'menu') {
+    if (argType === 'choice') {
         return listLengthOf(ctx, visitor);
     }
     return operatorLengthOf(ctx, visitor);

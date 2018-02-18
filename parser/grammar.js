@@ -115,8 +115,8 @@ export default function myGrammar() {
         line_breaks: false 
     });
 
-    const StatementTerminato = createToken({
-        name: "StatementTerminato",
+    const StatementTerminator = createToken({
+        name: "StatementTerminator",
         pattern: /;\n|;|\n/,
         line_breaks: true
     });
@@ -125,7 +125,7 @@ export default function myGrammar() {
         WhiteSpace,
         Literal, StringLiteral, NumberLiteral, ColorLiteral,
         Forever, End, Until, Repeat, If, Else, Then,
-        StatementTerminato,
+        StatementTerminator,
         Label,
         LCurlyBracket, RCurlyBracket,
         LRoundBracket, RRoundBracket,
@@ -133,7 +133,7 @@ export default function myGrammar() {
         LSquareBracket, RSquareBracket,
         DoubleColon,
     ];
-    const MyLexer = new Lexer(allTokens);
+    const LNLexer = new Lexer(allTokens);
 
 
     // ----------------- parser -----------------
@@ -148,73 +148,69 @@ export default function myGrammar() {
 
         $.RULE("multipleStacks", () => {
             $.AT_LEAST_ONE_SEP({
-                SEP: StatementTerminato,
+                SEP: StatementTerminator,
                 DEF: () => {
                     $.SUBRULE($.stack);
                 }
             });
-
         });
 
         $.RULE("scripts", () => {
-            $.MANY1(function() {
-                $.CONSUME1(StatementTerminato);
+            $.MANY(function() {
+                $.CONSUME(StatementTerminator);
             });
-            $.AT_LEAST_ONE2(function() {
-
+            $.AT_LEAST_ONE(function() {
                 $.OR([{
                     ALT: function() {
                         $.SUBRULE($.multipleStacks);
                     }
                 }, {
                     ALT: function() {
-                        return $.SUBRULE($.reporterblock);
+                         $.SUBRULE($.reporterblock);
                     }
                 }, {
                     ALT: function() {
-                        return $.SUBRULE($.booleanblock);
+                        $.SUBRULE($.booleanblock);
                     }
                 }]);
-
             });
-
             $.MANY2(function() {
-                $.CONSUME2(StatementTerminato);
+                $.CONSUME2(StatementTerminator);
             })
 
         });
 
         $.RULE("end", () => {
             $.CONSUME(End);
-            $.OPTION1(() => {
-                $.CONSUME1(StatementTerminato);
+            $.OPTION(() => {
+                $.CONSUME(StatementTerminator);
             })
         });
 
         $.RULE("forever", () => {
             $.CONSUME(Forever);
-            $.OPTION1(() => {
-                $.CONSUME1(StatementTerminato);
+            $.OPTION(() => {
+                $.CONSUME(StatementTerminator);
             });
             $.OPTION2(() => {
-                $.SUBRULE1($.stack);
+                $.SUBRULE($.stack);
             });
             $.OPTION3(() => {
-                $.SUBRULE1($.end);
+                $.SUBRULE($.end);
             })
         });
 
         $.RULE("repeat", () => {
             $.CONSUME(Repeat);
             $.SUBRULE($.countableinput);
-            $.OPTION1(() => {
-                $.CONSUME1(StatementTerminato);
+            $.OPTION(() => {
+                $.CONSUME(StatementTerminator);
             });
             $.OPTION2(() => {
-                $.SUBRULE1($.stack);
+                $.SUBRULE($.stack);
             });
             $.OPTION3(() => {
-                $.SUBRULE1($.end);
+                $.SUBRULE($.end);
             })
 
         });
@@ -223,43 +219,43 @@ export default function myGrammar() {
             $.CONSUME(Repeat);
             $.CONSUME(Until);
             $.SUBRULE($.booleanblock);
-            $.OPTION1(() => {
-                $.CONSUME1(StatementTerminato);
+            $.OPTION(() => {
+                $.CONSUME(StatementTerminator);
             });
             $.OPTION2(() => {
-                $.SUBRULE1($.stack);
+                $.SUBRULE($.stack);
             });
             $.OPTION3(() => {
-                $.SUBRULE1($.end);
+                $.SUBRULE($.end);
             })
         });
 
         $.RULE("ifelse", () => {
             $.CONSUME(If);
             $.SUBRULE($.booleanblock);
-            $.OPTION1(() => {
+            $.OPTION(() => {
                 $.CONSUME(Then);
             });
             $.OPTION2(() => {
-                $.CONSUME1(StatementTerminato);
+                $.CONSUME(StatementTerminator);
             });
             $.OPTION3(() => {
-                $.SUBRULE1($.stack);
+                $.SUBRULE($.stack);
             });
             $.OPTION4(() => {
-                $.SUBRULE1($.else);
+                $.SUBRULE($.else);
             });
             $.OPTION5(() => {
-                $.SUBRULE1($.end);
+                $.SUBRULE($.end);
             })
         });
         $.RULE("else", () => {
             $.CONSUME(Else);
-            $.OPTION1(() => {
-                $.CONSUME2(StatementTerminato);
+            $.OPTION(() => {
+                $.CONSUME(StatementTerminator);
             });
             $.OPTION2(() => {
-                $.SUBRULE2($.stack);
+                $.SUBRULE($.stack);
             })
         });
         $.RULE("stack", () => {
@@ -271,36 +267,36 @@ export default function myGrammar() {
         $.RULE("stackline", () => {
             $.OR([{
                 ALT: function() {
-                    return $.SUBRULE($.block);
+                     $.SUBRULE($.block);
                 }
             }, {
                 ALT: function() {
-                    return $.SUBRULE($.forever);
+                     $.SUBRULE($.forever);
                 }
             }, {
                 ALT: function() {
-                    return $.SUBRULE($.repeat);
+                     $.SUBRULE($.repeat);
                 }
             }, {
                 ALT: function() {
-                    return $.SUBRULE($.repeatuntil);
+                     $.SUBRULE($.repeatuntil);
                 }
             }, {
                 ALT: function() {
-                    return $.SUBRULE($.ifelse);
+                     $.SUBRULE($.ifelse);
                 }
             }]);
         });
 
         $.RULE("block", () => {
             $.AT_LEAST_ONE(function() {
-                $.OR2([{
+                $.OR([{
                     ALT: function() {
-                        return $.CONSUME1(Label);
+                         $.CONSUME1(Label);
                     }
                 }, {
                     ALT: function() {
-                        return $.SUBRULE($.argument);
+                         $.SUBRULE($.argument);
                     }
                 }]);
 
@@ -309,7 +305,7 @@ export default function myGrammar() {
                 $.SUBRULE($.option)
             });
             $.OPTION2(() => {
-                $.CONSUME1(StatementTerminato);
+                $.CONSUME(StatementTerminator);
             })
 
         });
@@ -320,29 +316,29 @@ export default function myGrammar() {
         });
 
         $.RULE("argument", function() {
-            $.OR1([{
+            $.OR([{
                 ALT: function() {
                     $.CONSUME(LCurlyBracket);
                     $.OPTION(() => {
                         $.OR2([{
                             ALT: function() {
-                                return $.SUBRULE($.primitive);
+                                 $.SUBRULE($.primitive);
                             }
                         }, {
                             ALT: function() {
-                                return $.SUBRULE($.reporterblock);
+                                 $.SUBRULE($.reporterblock);
                             }
                         }, {
                             ALT: function() {
-                                return $.SUBRULE($.booleanblock);
+                                 $.SUBRULE($.booleanblock);
                             }
                         }]);
-                    })
+                    });
                     $.CONSUME(RCurlyBracket);
                 }
             }, {
                 ALT: function() {
-                    return $.SUBRULE($.menu);
+                    $.SUBRULE($.choice);
                 }
             }])
 
@@ -352,11 +348,11 @@ export default function myGrammar() {
 
             $.OR([{
                 ALT: function() {
-                    return $.SUBRULE($.primitive);
+                     $.SUBRULE($.primitive);
                 }
             }, {
                 ALT: function() {
-                    return $.SUBRULE($.reporterblock);
+                     $.SUBRULE($.reporterblock);
                 }
             }]);
 
@@ -376,12 +372,12 @@ export default function myGrammar() {
 
         });
 
-        $.RULE("menu", function() {
+        $.RULE("choice", function() {
             $.CONSUME(LSquareBracket);
             $.OPTION(() => {
                 $.CONSUME1(Label);
             });
-            $.CONSUME(RSquareBracket);
+            $.CONSUME(RSquareBracket) ;
         });
 
         $.RULE("booleanblock", function() {
@@ -579,8 +575,8 @@ export default function myGrammar() {
                 return this.visit(ctx.reporterblock)
             } else if (ctx.booleanblock.length > 0) {
                 return this.visit(ctx.booleanblock)
-            } else if (ctx.menu.length > 0) {
-                return this.visit(ctx.menu)
+            } else if (ctx.choice.length > 0) {
+                return this.visit(ctx.choice)
             } else {
                 //empty 
                 return {
@@ -622,9 +618,9 @@ export default function myGrammar() {
                 return this.visit(ctx.reporterblock)
             }
         }
-        menu(ctx) {
+        choice(ctx) {
             return {
-                'type': 'menu',
+                'type': 'choice',
                 'value': ctx.Label[0].image,
                 'offset': ctx.LSquareBracket[0].startOffset,
                 'text': ctx.Label[0].image,
@@ -1094,8 +1090,8 @@ export default function myGrammar() {
                 return this.visit(ctx.reporterblock)
             } else if (ctx.booleanblock.length > 0) {
                 return this.visit(ctx.booleanblock)
-            } else if (ctx.menu.length > 0) {
-                return this.visit(ctx.menu)
+            } else if (ctx.choice.length > 0) {
+                return this.visit(ctx.choice)
             } else {
                 //empty 
             }
@@ -1136,8 +1132,8 @@ export default function myGrammar() {
                 console.log('This should not happen');
                 return 999999999999999999999 //todo maxint ofzo om te vermijden dat het ine en oneindige lus raakt?
             }
-            /*if (arg.children.menu.length > 0) {
-                return arg.children.menu[0].children.LSquareBracket[0].startOffset
+            /*if (arg.children.choice.length > 0) {
+                return arg.children.choice[0].children.LSquareBracket[0].startOffset
             } else {
                 return arg.children.LCurlyBracket[0].startOffset
             }*/
@@ -1145,7 +1141,7 @@ export default function myGrammar() {
             return child.offset
         }
 
-        menu(ctx) {
+        choice(ctx) {
             if (ctx.Label[0]) {
                 return ctx.Label[0].image;
             } else {
@@ -1212,7 +1208,7 @@ export default function myGrammar() {
 
     // for the playground to work the returned object must contain these fields
     return {
-        lexer: MyLexer,
+        lexer: LNLexer,
         parser: parser,
         visitor: XMLVisitor
     };
