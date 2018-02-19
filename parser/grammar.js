@@ -112,7 +112,7 @@ export default function myGrammar() {
         name: "WhiteSpace",
         pattern: /[ \t]+/,
         group: Lexer.SKIPPED,
-        line_breaks: false 
+        line_breaks: false
     });
 
     const StatementTerminator = createToken({
@@ -139,13 +139,37 @@ export default function myGrammar() {
     // ----------------- parser -----------------
     // Note that this is a Pure grammar, it only describes the grammar
     // Not any actions (semantics) to perform during parsing.
-    function MyParser(input) {
+    function LNParser(input) {
         Parser.call(this, input, allTokens, {
             outputCst: true
         });
 
         const $ = this;
 
+        $.RULE("scripts", () => {
+            $.MANY(() => {
+                $.CONSUME(StatementTerminator);
+            });
+            $.AT_LEAST_ONE(() => {
+                $.OR([{
+                    ALT: () => {
+                        $.SUBRULE($.multipleStacks);
+                    }
+                }, {
+                    ALT: () => {
+                        $.SUBRULE($.reporterblock);
+                    }
+                }, {
+                    ALT: () => {
+                        $.SUBRULE($.booleanblock);
+                    }
+                }]);
+            });
+            $.MANY2(() => {
+                $.CONSUME2(StatementTerminator);
+            })
+
+        });
         $.RULE("multipleStacks", () => {
             $.AT_LEAST_ONE_SEP({
                 SEP: StatementTerminator,
@@ -155,37 +179,42 @@ export default function myGrammar() {
             });
         });
 
-        $.RULE("scripts", () => {
-            $.MANY(function() {
-                $.CONSUME(StatementTerminator);
-            });
-            $.AT_LEAST_ONE(function() {
-                $.OR([{
-                    ALT: function() {
-                        $.SUBRULE($.multipleStacks);
-                    }
-                }, {
-                    ALT: function() {
-                         $.SUBRULE($.reporterblock);
-                    }
-                }, {
-                    ALT: function() {
-                        $.SUBRULE($.booleanblock);
-                    }
-                }]);
-            });
-            $.MANY2(function() {
-                $.CONSUME2(StatementTerminator);
-            })
 
+        $.RULE("stack", () => {
+            $.AT_LEAST_ONE(() => {
+                $.SUBRULE($.stackline);
+            });
         });
 
-        $.RULE("end", () => {
-            $.CONSUME(End);
-            $.OPTION(() => {
-                $.CONSUME(StatementTerminator);
-            })
+        $.RULE("stackline", () => {
+            $.OR([{
+                NAME: "$block",
+                ALT: () => {
+                    $.SUBRULE($.block);
+                }
+            }, {
+                NAME: "$forever",
+                ALT: () => {
+                    $.SUBRULE($.forever);
+                }
+            }, {
+                NAME: "$repeat",
+                ALT: () => {
+                    $.SUBRULE($.repeat);
+                }
+            }, {
+                NAME: "$repeatuntil",
+                ALT: () => {
+                    $.SUBRULE($.repeatuntil);
+                }
+            }, {
+                NAME: "$ifelse",
+                ALT: () => {
+                    $.SUBRULE($.ifelse);
+                }
+            }]);
         });
+
 
         $.RULE("forever", () => {
             $.CONSUME(Forever);
@@ -258,45 +287,23 @@ export default function myGrammar() {
                 $.SUBRULE($.stack);
             })
         });
-        $.RULE("stack", () => {
-            $.AT_LEAST_ONE(function() {
-                $.SUBRULE($.stackline);
-            });
-        });
 
-        $.RULE("stackline", () => {
-            $.OR([{
-                ALT: function() {
-                     $.SUBRULE($.block);
-                }
-            }, {
-                ALT: function() {
-                     $.SUBRULE($.forever);
-                }
-            }, {
-                ALT: function() {
-                     $.SUBRULE($.repeat);
-                }
-            }, {
-                ALT: function() {
-                     $.SUBRULE($.repeatuntil);
-                }
-            }, {
-                ALT: function() {
-                     $.SUBRULE($.ifelse);
-                }
-            }]);
+        $.RULE("end", () => {
+            $.CONSUME(End);
+            $.OPTION(() => {
+                $.CONSUME(StatementTerminator);
+            })
         });
 
         $.RULE("block", () => {
-            $.AT_LEAST_ONE(function() {
+            $.AT_LEAST_ONE(() => {
                 $.OR([{
-                    ALT: function() {
-                         $.CONSUME1(Label);
+                    ALT: () => {
+                        $.CONSUME1(Label);
                     }
                 }, {
-                    ALT: function() {
-                         $.SUBRULE($.argument);
+                    ALT: () => {
+                        $.SUBRULE($.argument);
                     }
                 }]);
 
@@ -315,55 +322,56 @@ export default function myGrammar() {
             $.CONSUME(Label);
         });
 
-        $.RULE("argument", function() {
+        $.RULE("argument", () => {
             $.OR([{
-                ALT: function() {
+                ALT: () => {
                     $.CONSUME(LCurlyBracket);
                     $.OPTION(() => {
                         $.OR2([{
-                            ALT: function() {
-                                 $.SUBRULE($.primitive);
+                            ALT: () => {
+                                $.SUBRULE($.primitive);
                             }
                         }, {
-                            ALT: function() {
-                                 $.SUBRULE($.reporterblock);
+                            ALT: () => {
+                                $.SUBRULE($.reporterblock);
                             }
                         }, {
-                            ALT: function() {
-                                 $.SUBRULE($.booleanblock);
+                            ALT: () => {
+                                $.SUBRULE($.booleanblock);
                             }
                         }]);
                     });
                     $.CONSUME(RCurlyBracket);
                 }
             }, {
-                ALT: function() {
+                ALT: () => {
                     $.SUBRULE($.choice);
                 }
             }])
 
         });
 
-        $.RULE("countableinput", function() {
+
+        $.RULE("countableinput", () => {
 
             $.OR([{
-                ALT: function() {
-                     $.SUBRULE($.primitive);
+                ALT: () => {
+                    $.SUBRULE($.primitive);
                 }
             }, {
-                ALT: function() {
-                     $.SUBRULE($.reporterblock);
+                ALT: () => {
+                    $.SUBRULE($.reporterblock);
                 }
             }]);
 
 
         });
 
-        $.RULE("primitive", function() {
+        $.RULE("primitive", () => {
             $.CONSUME(Literal);
         });
 
-        $.RULE("reporterblock", function() {
+        $.RULE("reporterblock", () => {
             $.CONSUME(LRoundBracket);
             $.OPTION(() => {
                 $.SUBRULE($.block);
@@ -372,15 +380,15 @@ export default function myGrammar() {
 
         });
 
-        $.RULE("choice", function() {
+        $.RULE("choice", () => {
             $.CONSUME(LSquareBracket);
             $.OPTION(() => {
-                $.CONSUME1(Label);
+                $.CONSUME(Label);
             });
-            $.CONSUME(RSquareBracket) ;
+            $.CONSUME(RSquareBracket);
         });
 
-        $.RULE("booleanblock", function() {
+        $.RULE("booleanblock", () => {
             $.CONSUME(LAngleBracket);
             $.OPTION(() => {
                 $.SUBRULE($.block);
@@ -396,13 +404,13 @@ export default function myGrammar() {
         Parser.performSelfAnalysis(this);
     }
 
-    MyParser.prototype = Object.create(Parser.prototype);
-    MyParser.prototype.constructor = MyParser;
+    LNParser.prototype = Object.create(Parser.prototype);
+    LNParser.prototype.constructor = LNParser;
 
 
     // wrapping it all together
     // reuse the same parser instance.
-    const parser = new MyParser([]);
+    const parser = new LNParser([]);
 
 
     // ----------------- Interpreter -----------------
@@ -414,19 +422,8 @@ export default function myGrammar() {
 
         constructor() {
             super();
-                // This helper will detect any missing or redundant methods on this visitor
+            // This helper will detect any missing or redundant methods on this visitor
             this.validateVisitor()
-        }
-
-        multipleStacks(ctx) {
-            let s = [];
-            for (let i = 0; i < ctx.stack.length; i++) {
-                s.push(this.visit(ctx.stack[i]))
-            }
-            return {
-                'type': 'multiple stacks',
-                'stacks': s
-            }
         }
 
         scripts(ctx) {
@@ -443,7 +440,79 @@ export default function myGrammar() {
             return s
         }
 
-        end(ctx) {}
+        multipleStacks(ctx) {
+            let s = [];
+            for (let i = 0; i < ctx.stack.length; i++) {
+                s.push(this.visit(ctx.stack[i]))
+            }
+            return {
+                'type': 'multiple stacks',
+                'stacks': s
+            }
+        }
+
+
+        stack(ctx) {
+            let blocks = [];
+            for (let i = 0; i < ctx.stackline.length; i++) {
+                blocks.push(this.visit(ctx.stackline[i]))
+            }
+            return blocks
+        }
+
+        stackline(ctx) {
+            let v = ctx;
+            if (ctx.forever.length > 0) {
+                v = this.visit(ctx.forever)
+            } else if (ctx.repeatuntil.length > 0) {
+                v = this.visit(ctx.repeatuntil)
+            } else if (ctx.repeat.length > 0) {
+                v = this.visit(ctx.repeat)
+            } else if (ctx.block.length > 0) {
+                v = this.visit(ctx.block)
+            } else if (ctx.ifelse.length > 0) {
+                v = this.visit(ctx.ifelse)
+            }
+            return {
+                'type': 'stackblock',
+                'value': v
+            }
+        }
+
+        stackline$forever(ctx) {
+            return {
+                'type': 'stackblock',
+                'value': this.visit(ctx.forever)
+            }
+        }
+
+        stackline$repeat(ctx) {
+            return {
+                'type': 'stackblock',
+                'value': this.visit(ctx.repeat)
+            }
+        }
+
+        stackline$repeatuntil(ctx) {
+            return {
+                'type': 'stackblock',
+                'value': this.visit(ctx.repeatuntil)
+            }
+        }
+
+        stackline$ifelse(ctx) {
+            return {
+                'type': 'stackblock',
+                'value': this.visit(ctx.ifelse)
+            }
+        }
+
+        stackline$block(ctx) {
+            return {
+                'type': 'stackblock',
+                'value': this.visit(ctx.block)
+            }
+        }
 
         forever(ctx) {
             return {
@@ -489,31 +558,8 @@ export default function myGrammar() {
         else(ctx) {
             return ctx.stack.length > 0 ? this.visit(ctx.stack[0]) : ''
         }
-        stack(ctx) {
-            let blocks = [];
-            for (let i = 0; i < ctx.stackline.length; i++) {
-                blocks.push(this.visit(ctx.stackline[i]))
-            }
-            return blocks
-        }
 
-        stackline(ctx) {
-            let v = ctx;
-            if (ctx.forever.length > 0) {
-                v = this.visit(ctx.forever)
-            } else if (ctx.repeatuntil.length > 0) {
-                v = this.visit(ctx.repeatuntil)
-            } else if (ctx.repeat.length > 0) {
-                v = this.visit(ctx.repeat)
-            } else if (ctx.block.length > 0) {
-                v = this.visit(ctx.block)
-            } else if (ctx.ifelse.length > 0) {
-                v = this.visit(ctx.ifelse)
-            }
-            return {
-                'type': 'stackblock',
-                'value': v
-            }
+        end(ctx) {
         }
 
         block(ctx) {
@@ -539,9 +585,9 @@ export default function myGrammar() {
                 args.push(this.visit(ctx.argument[i]))
             }
             let ofs = 0;
-            if(ctx.argument[0]){
+            if (ctx.argument[0]) {
                 ofs = this.getOffsetArgument(ctx.argument[0]) < ctx.Label[0].startOffset ? this.getOffsetArgument(ctx.argument[0]) : ctx.Label[0].startOffset
-            }else{
+            } else {
                 ofs = ctx.Label[0].startOffset
             }
             return {
@@ -618,6 +664,7 @@ export default function myGrammar() {
                 return this.visit(ctx.reporterblock)
             }
         }
+
         choice(ctx) {
             return {
                 'type': 'choice',
@@ -633,7 +680,7 @@ export default function myGrammar() {
                 'type': 'reporterblock',
                 'value': b,
                 'offset': b.offset,
-                'text':b.text
+                'text': b.text
             };
         }
 
@@ -643,7 +690,7 @@ export default function myGrammar() {
                 'type': 'booleanblock',
                 'value': b,
                 'offset': b.offset,
-                'text':b.text
+                'text': b.text
             };
         }
 
@@ -653,18 +700,20 @@ export default function myGrammar() {
 
     //======================================================================================
     // ----------------- XML -----------------
-    class XMLVisitor extends BaseCstVisitor {
+    const BaseCstVisitorWithDefaults = parser.getBaseCstVisitorConstructorWithDefaults();
+
+    class XMLVisitor extends BaseCstVisitorWithDefaults {
 
         constructor(coordinate = {
-                x: 0,
-                y: 0
-            },
-            increase = {
-                x: 75,
-                y: 100
-            }) {
+                        x: 0,
+                        y: 1
+                    },
+                    increase = {
+                        x: 75,
+                        y: 100
+                    }) {
             super();
-                // This helper will detect any missing or redundant methods on this visitor
+            // This helper will detect any missing or redundant methods on this visitor
             this.validateVisitor();
 
             //the visitor stores an xml, this is reinit every visit call.
@@ -791,15 +840,14 @@ export default function myGrammar() {
         }
 
 
-
-        end(ctx) { /*will never be used*/ }
+        end(ctx) { /*will never be used*/
+        }
 
         forever(ctx) {
             this.xml = this.xml.ele('block', {
                 'type': 'control_forever',
                 'id': this.getNextId(),
-            }, ' ');
-            this.xml = this.xml.ele('statement ', {
+            }, ' ').ele('statement ', {
                 'name': 'SUBSTACK'
             }, ' ');
             this.visitSubStack(ctx.stack);
@@ -815,8 +863,7 @@ export default function myGrammar() {
                 'name': 'TIMES'
             });
             this.visit(ctx.countableinput);
-            this.xml = this.xml.up();
-            this.xml = this.xml.ele('statement ', {
+            this.xml = this.xml.up().ele('statement ', {
                 'name': 'SUBSTACK'
             });
             this.visitSubStack(ctx.stack);
@@ -827,13 +874,11 @@ export default function myGrammar() {
             this.xml = this.xml.ele('block', {
                 'type': 'control_repeat_until',
                 'id': this.getNextId(),
-            });
-            this.xml = this.xml.ele('value', {
+            }).ele('value', {
                 'name': 'CONDITION'
             });
             this.visit(ctx.booleanblock);
-            this.xml = this.xml.up();
-            this.xml = this.xml.ele('statement ', {
+            this.xml = this.xml.up().ele('statement ', {
                 'name': 'SUBSTACK'
             });
             this.visitSubStack(ctx.stack);
@@ -857,8 +902,8 @@ export default function myGrammar() {
             });
             this.visit(ctx.booleanblock);
             //Stack
-            this.xml = this.xml.up(); //go up from condition
-            this.xml = this.xml.ele('statement ', {
+            //go up from condition
+            this.xml = this.xml.up().ele('statement ', {
                 'name': 'SUBSTACK'
             });
             this.visitSubStack(ctx.stack); //when no index is given it is always 0
@@ -887,23 +932,67 @@ export default function myGrammar() {
             this.xml = this.xml.up(); //End with blocks open so that insertbefore works #hacky
         }
 
-        stackline(ctx) {
-            if (ctx.forever.length > 0) {
-                this.visit(ctx.forever)
-            } else if (ctx.repeatuntil.length > 0) {
-                this.visit(ctx.repeatuntil)
-            } else if (ctx.repeat.length > 0) {
-                this.visit(ctx.repeat)
-            } else if (ctx.block.length > 0) {
-                this.visit(ctx.block)
-            } else if (ctx.ifelse.length > 0) {
-                this.visit(ctx.ifelse)
+        //if using visitor with defaults, this can be removed
+        //defaults do not work for return values...
+        /*stackline(ctx,inArg) {
+            if (ctx.$forever.length > 0) {
+                this.visit(ctx.$forever)
+            } else if (ctx.$repeatuntil.length > 0) {
+                this.visit(ctx.$repeatuntil)
+            } else if (ctx.$repeat.length > 0) {
+                this.visit(ctx.$repeat)
+            } else if (ctx.$block.length > 0) {
+                this.visit(ctx.$block)
+            } else if (ctx.$ifelse.length > 0) {
+                this.visit(ctx.$ifelse)
             }
-            if (!this.firstBlock) {
+            /*if (!this.firstBlock) {
                 this.firstBlock = this.xml
             }
             this.blockCounter++;
+        }*/
+
+        stackline$forever(ctx) {
+            console.log('here');
+            this.visit(ctx.forever);
+            if (!this.firstBlock) {
+                this.firstBlock = this.xml;
+            }
+            this.blockCounter++;
         }
+
+        stackline$repeat(ctx) {
+            this.visit(ctx.repeat);
+            if (!this.firstBlock) {
+                this.firstBlock = this.xml;
+            }
+            this.blockCounter++;
+        }
+
+        stackline$repeatuntil(ctx) {
+            this.visit(ctx.repeatuntil);
+            if (!this.firstBlock) {
+                this.firstBlock = this.xml;
+            }
+            this.blockCounter++;
+        }
+
+        stackline$ifelse(ctx) {
+            this.visit(ctx.ifelse);
+            if (!this.firstBlock) {
+                this.firstBlock = this.xml;
+            }
+            this.blockCounter++;
+        }
+
+        stackline$block(ctx) {
+            this.visit(ctx.block);
+            if (!this.firstBlock) {
+                this.firstBlock = this.xml;
+            }
+            this.blockCounter++;
+        }
+
 
         makeMatchString(ctx) {
             let matchString = '';
@@ -924,15 +1013,12 @@ export default function myGrammar() {
         }
 
         generateStackBlock(ctx, matchString) {
-
             let blockid = this.getNextId();
             this.xml = this.xml.ele('block', {
                 'id': blockid,
             });
             this.xml.att('type', 'procedures_call');
-
             this.addMutation(ctx, matchString, blockid, true);
-
         }
 
         addMutation(ctx, matchString, blockid, visitArgs) {
@@ -944,7 +1030,7 @@ export default function myGrammar() {
             //this is a very weird construction but it works...
             //assign this to a variable so that it can be accesed by the function
             let thisVisitor = this;
-            let proccode = matchString.replace(/%[1-9]/g, function(m) {
+            let proccode = matchString.replace(/%[1-9]/g, function (m) {
                 let index = m[1] - 1;
                 return thisVisitor.getPlaceholder(ctx.argument[index])
             });
@@ -952,15 +1038,15 @@ export default function myGrammar() {
                 //make names
                 //hier was iets raar...
                 let name = this.getString(ctx.argument[i])
-                if(!name){
+                if (!name) {
                     name = 'argumentname_' + blockid + '_' + i
                 }
                 argumentnames.push(name); //('argumentname_' + blockid + '_' + i)
                 argumentdefaults.push('');
-                argumentids.push(this.getVariableID(argumentnames[argumentnames.length - 1],'arg')); //(blockid + '_arg_' + this.getNextId())
-                
+                argumentids.push(this.getVariableID(argumentnames[argumentnames.length - 1], 'arg')); //(blockid + '_arg_' + this.getNextId())
+
                 if (visitArgs) {
-                        //make xml
+                    //make xml
                     this.xml = this.xml.ele('value', {
                         'name': argumentnames[argumentnames.length - 1]
                     });
@@ -1005,8 +1091,7 @@ export default function myGrammar() {
                 }).ele('field', {
                     'name': 'LIST',
                     'id': varID,
-                }, matchString);
-                this.xml = this.xml.up(); //up field
+                }, matchString).up(); //up field
             } else {
                 this.xml = this.xml.ele('block', {
                     'type': 'data_variable',
@@ -1014,8 +1099,7 @@ export default function myGrammar() {
                 }).ele('field', {
                     'name': 'VARIABLE',
                     'id': varID,
-                }, matchString);
-                this.xml = this.xml.up(); //up field
+                }, matchString).up(); //up field
             }
         }
 
@@ -1035,15 +1119,11 @@ export default function myGrammar() {
                 this.xml = this.xml.ele('block', {
                     'type': 'procedures_definition',
                     'id': blockid,
-                })
-                this.xml = this.xml.ele('statement', {
-                        'name': 'custom_block'
-                    }).ele('shadow', {
-                        'type': 'procedures_prototype'
-                    })
-                    /*.ele('mutation',{
-                                    'proccode':'helo'
-                                })*/
+                }).ele('statement', {
+                    'name': 'custom_block'
+                }).ele('shadow', {
+                    'type': 'procedures_prototype'
+                });
                 this.addMutation(ctx, matchString, blockid, false);
                 this.xml = this.xml.up().up()
             } else if (matchString in blocks) {
@@ -1083,7 +1163,7 @@ export default function myGrammar() {
             this.isTop = false
         }
 
-        argument(ctx) {
+        argument(ctx) { //return is necessary for menu..
             if (ctx.primitive.length > 0) {
                 return this.visit(ctx.primitive)
             } else if (ctx.reporterblock.length > 0) {
@@ -1096,6 +1176,7 @@ export default function myGrammar() {
                 //empty 
             }
         }
+
         getString(ctx) {
             if (ctx) {
                 let o = this.infoVisitor.visit(ctx)
@@ -1127,21 +1208,19 @@ export default function myGrammar() {
                 return 'empty'
             }
         }
+
         getOffsetArgument(arg) {
             if (!arg) {
                 console.log('This should not happen');
                 return Number.MAX_SAFE_INTEGER; //avoid infinite loop
             }
-            /*if (arg.children.choice.length > 0) {
-                return arg.children.choice[0].children.LSquareBracket[0].startOffset
-            } else {
-                return arg.children.LCurlyBracket[0].startOffset
-            }*/
             let child = this.infoVisitor.visit(arg)
             return child.offset
         }
 
         choice(ctx) {
+            //todo: try to remove this because it is inconsistent that here is the only return...
+            //console.log('nah')
             if (ctx.Label[0]) {
                 return ctx.Label[0].image;
             } else {
@@ -1154,6 +1233,7 @@ export default function myGrammar() {
         }
 
         primitive(ctx) {
+            //todo: try to remove this because it is inconsistent that here is the only return...
             if (tokenMatcher(ctx.Literal[0], NumberLiteral)) {
                 this.xml.ele('shadow', {
                     'type': 'math_number',
@@ -1194,14 +1274,13 @@ export default function myGrammar() {
             this.modus = prevModus;
         }
 
-        countableinput(ctx) {
+        /*countableinput(ctx) {
             if (ctx.primitive.length > 0) {
                 this.visit(ctx.primitive)
             } else if (ctx.reporterblock.length > 0) {
                 this.visit(ctx.reporterblock)
             }
-        }
-
+        }*/
 
 
     }
