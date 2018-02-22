@@ -639,19 +639,19 @@ export default function myGrammar() {
                     'value': ctx.Literal[0].image,
                     'type': 'number',
                     'offset': ctx.Literal[0].startOffset,
-                }
+                };
             } else if (tokenMatcher(ctx.Literal[0], ColorLiteral)) {
                 return {
                     'value': ctx.Literal[0].image,
                     'type': 'color',
                     'offset': ctx.Literal[0].startOffset,
-                }
+                };
             } else {
                 return {
                     'value': ctx.Literal[0].image,
                     'type': 'text',
                     'offset': ctx.Literal[0].startOffset,
-                }
+                };
             }
 
         }
