@@ -21,7 +21,7 @@ export default function parseTextToXML(text) {
     let cst = getCst(text);
     if (cst) {
         let xml = execXmlVisitor(cst);
-        console.log(xml);
+        //console.log(xml);
         return xml;
     }
 }

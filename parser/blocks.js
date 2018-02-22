@@ -212,7 +212,7 @@ function variableBlockConverter(ctx, visitor, structure) {
     let varble = visitor.visit(ctx.argument[0]);
     visitor.getVariableID(varble)
     visitor.xml = visitor.xml.ele('field', {
-        'name': 'variable'
+        'name': 'VARIABLE'
     }, varble);
     visitor.xml = visitor.xml.up();
     visitor.xml = visitor.xml.ele('value', {
