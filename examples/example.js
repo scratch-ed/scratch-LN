@@ -8,7 +8,7 @@ $(document).ready(function() {
 
 $(document).ready(function() {
     
-    var navListItems = $('ul.setup-panel li a'),
+    let navListItems = $('ul.setup-panel li a'),
         allWells = $('.setup-content');
 
     //allWells.hide();
@@ -16,7 +16,7 @@ $(document).ready(function() {
     navListItems.click(function(e)
     {
         e.preventDefault();
-        var $target = $($(this).attr('href')),
+        let $target = $($(this).attr('href')),
             $item = $(this).closest('li');
         
         if (!$item.hasClass('disabled')) {
@@ -91,7 +91,7 @@ $(document).ready(function() {
     //     e.preventDefault();
     // })
 
-    // var div0glow = true;
+    // let div0glow = true;
     // $('#glow-Div1').on('click', function(e) {
     //     console.log('hello world');
     //     stackGlow('Div0',1,div0glow);
@@ -104,7 +104,7 @@ $(document).ready(function() {
     {
         e.preventDefault();
     })
-    var div1glow = true;
+    let div1glow = true;
     $("#glow-repeat-div1").on('click', function(e) {
         stackGlow('nul',8,div1glow); //WHY verdwijnt het hier?????? -> dut is niet als het het eerste is
         glowBlock('nul',6,div1glow);
@@ -115,8 +115,8 @@ $(document).ready(function() {
     {
         e.preventDefault();
     })
-    var div2glow = true;
-    var div2value = 4;
+    let div2glow = true;
+    let div2value = 4;
 
     function changeGlowDiv2(){
         stackGlow('vierkant',7,div2glow); 
@@ -178,7 +178,7 @@ $(document).ready(function() {
     {
         e.preventDefault();
     })
-    var div3glow = true;
+    let div3glow = true;
     $("#glow-Div3-half").on('click', function(e) {
         stackGlow('cwcirkel',5,div3glow); 
         stackGlow('cwcirkel',7,div3glow); 
@@ -191,7 +191,7 @@ $(document).ready(function() {
     {
         e.preventDefault();
     })
-    var div3glow2 = true;
+    let div3glow2 = true;
     $("#glow-Div3-richting").on('click', function(e) {
         //stackGlow('Div3',5,div3glow); 
         //stackGlow('Div3',7,div3glow); 
@@ -209,6 +209,6 @@ $(document).ready(function() {
 
 function scrollTo(target){
     //target: jquery element
-    var position = target.position();
+    let position = target.position();
     scroll(0,position.top);
 }

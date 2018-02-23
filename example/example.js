@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 61);
+/******/ 	return __webpack_require__(__webpack_require__.s = 64);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -497,14 +497,14 @@ exports.IDENTITY = IDENTITY;
       }
       this.children = [];
       if (!XMLElement) {
-        XMLElement = __webpack_require__(16);
-        XMLCData = __webpack_require__(8);
-        XMLComment = __webpack_require__(9);
-        XMLDeclaration = __webpack_require__(14);
-        XMLDocType = __webpack_require__(15);
-        XMLRaw = __webpack_require__(18);
-        XMLText = __webpack_require__(19);
-        XMLProcessingInstruction = __webpack_require__(17);
+        XMLElement = __webpack_require__(17);
+        XMLCData = __webpack_require__(9);
+        XMLComment = __webpack_require__(10);
+        XMLDeclaration = __webpack_require__(15);
+        XMLDocType = __webpack_require__(16);
+        XMLRaw = __webpack_require__(19);
+        XMLText = __webpack_require__(20);
+        XMLProcessingInstruction = __webpack_require__(18);
       }
     }
 
@@ -1241,8 +1241,8 @@ var gast;
 Object.defineProperty(exports, "__esModule", { value: true });
 var utils_1 = __webpack_require__(0);
 var lang_extensions_1 = __webpack_require__(5);
-var lexer_public_1 = __webpack_require__(24);
-var tokens_1 = __webpack_require__(7);
+var lexer_public_1 = __webpack_require__(26);
+var tokens_1 = __webpack_require__(8);
 /**
  *  This can be used to improve the quality/readability of error messages or syntax diagrams.
  *
@@ -1559,6 +1559,75 @@ exports.HashTable = HashTable;
 
 "use strict";
 
+Object.defineProperty(exports, "__esModule", { value: true });
+var parser_public_1 = __webpack_require__(25);
+var lexer_public_1 = __webpack_require__(26);
+var tokens_public_1 = __webpack_require__(3);
+var exceptions_public_1 = __webpack_require__(32);
+var gast_public_1 = __webpack_require__(2);
+var cache_public_1 = __webpack_require__(47);
+var interpreter_1 = __webpack_require__(7);
+var version_1 = __webpack_require__(27);
+var errors_public_1 = __webpack_require__(31);
+var render_public_1 = __webpack_require__(46);
+/**
+ * defines the public API of
+ * changes here may require major version change. (semVer)
+ */
+var API = {};
+// semantic version
+API.VERSION = version_1.VERSION;
+// runtime API
+API.Parser = parser_public_1.Parser;
+API.ParserDefinitionErrorType = parser_public_1.ParserDefinitionErrorType;
+API.Lexer = lexer_public_1.Lexer;
+API.LexerDefinitionErrorType = lexer_public_1.LexerDefinitionErrorType;
+API.EOF = tokens_public_1.EOF;
+// Tokens utilities
+API.tokenName = tokens_public_1.tokenName;
+API.tokenLabel = tokens_public_1.tokenLabel;
+API.tokenMatcher = tokens_public_1.tokenMatcher;
+API.createToken = tokens_public_1.createToken;
+API.createTokenInstance = tokens_public_1.createTokenInstance;
+// Other Utilities
+API.EMPTY_ALT = parser_public_1.EMPTY_ALT;
+API.defaultErrorProvider = errors_public_1.defaultErrorProvider;
+API.exceptions = {};
+API.exceptions.isRecognitionException = exceptions_public_1.exceptions.isRecognitionException;
+API.exceptions.EarlyExitException = exceptions_public_1.exceptions.EarlyExitException;
+API.exceptions.MismatchedTokenException = exceptions_public_1.exceptions.MismatchedTokenException;
+API.exceptions.NotAllInputParsedException =
+    exceptions_public_1.exceptions.NotAllInputParsedException;
+API.exceptions.NoViableAltException = exceptions_public_1.exceptions.NoViableAltException;
+// grammar reflection API
+API.gast = {};
+API.gast.GAstVisitor = gast_public_1.gast.GAstVisitor;
+API.gast.Flat = gast_public_1.gast.Flat;
+API.gast.Repetition = gast_public_1.gast.Repetition;
+API.gast.RepetitionWithSeparator = gast_public_1.gast.RepetitionWithSeparator;
+API.gast.RepetitionMandatory = gast_public_1.gast.RepetitionMandatory;
+API.gast.RepetitionMandatoryWithSeparator =
+    gast_public_1.gast.RepetitionMandatoryWithSeparator;
+API.gast.Option = gast_public_1.gast.Option;
+API.gast.Alternation = gast_public_1.gast.Alternation;
+API.gast.NonTerminal = gast_public_1.gast.NonTerminal;
+API.gast.Terminal = gast_public_1.gast.Terminal;
+API.gast.Rule = gast_public_1.gast.Rule;
+API.gast.serializeGrammar = gast_public_1.gast.serializeGrammar;
+API.gast.serializeProduction = gast_public_1.gast.serializeProduction;
+API.interperter = {};
+API.interperter.NextAfterTokenWalker = interpreter_1.NextAfterTokenWalker;
+API.clearCache = cache_public_1.clearCache;
+API.createSyntaxDiagramsCode = render_public_1.createSyntaxDiagramsCode;
+module.exports = API;
+//# sourceMappingURL=api.js.map
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -1571,11 +1640,11 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 /* tslint:disable:no-use-before-declare */
-var rest_1 = __webpack_require__(22);
+var rest_1 = __webpack_require__(24);
 var gast_public_1 = __webpack_require__(2);
 var utils_1 = __webpack_require__(0);
 var tokens_public_1 = __webpack_require__(3);
-var first_1 = __webpack_require__(33);
+var first_1 = __webpack_require__(34);
 /* tslint:enable:no-use-before-declare */
 var AbstractNextPossibleTokensWalker = /** @class */ (function (_super) {
     __extends(AbstractNextPossibleTokensWalker, _super);
@@ -2073,7 +2142,7 @@ function expandTopLevelRule(topRule, currIdx, currRuleStack, currOccurrenceStack
 //# sourceMappingURL=interpreter.js.map
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2213,7 +2282,7 @@ exports.isTokenType = isTokenType;
 //# sourceMappingURL=tokens.js.map
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.6
@@ -2251,7 +2320,7 @@ exports.isTokenType = isTokenType;
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.6
@@ -2289,7 +2358,7 @@ exports.isTokenType = isTokenType;
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.6
@@ -2345,7 +2414,7 @@ exports.isTokenType = isTokenType;
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.6
@@ -2386,7 +2455,7 @@ exports.isTokenType = isTokenType;
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.6
@@ -2448,7 +2517,7 @@ exports.isTokenType = isTokenType;
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.6
@@ -2491,7 +2560,7 @@ exports.isTokenType = isTokenType;
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.6
@@ -2537,7 +2606,7 @@ exports.isTokenType = isTokenType;
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.6
@@ -2550,13 +2619,13 @@ exports.isTokenType = isTokenType;
 
   XMLNode = __webpack_require__(1);
 
-  XMLDTDAttList = __webpack_require__(10);
+  XMLDTDAttList = __webpack_require__(11);
 
-  XMLDTDEntity = __webpack_require__(12);
+  XMLDTDEntity = __webpack_require__(13);
 
-  XMLDTDElement = __webpack_require__(11);
+  XMLDTDElement = __webpack_require__(12);
 
-  XMLDTDNotation = __webpack_require__(13);
+  XMLDTDNotation = __webpack_require__(14);
 
   module.exports = XMLDocType = (function(superClass) {
     extend(XMLDocType, superClass);
@@ -2650,7 +2719,7 @@ exports.isTokenType = isTokenType;
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.6
@@ -2663,7 +2732,7 @@ exports.isTokenType = isTokenType;
 
   XMLNode = __webpack_require__(1);
 
-  XMLAttribute = __webpack_require__(36);
+  XMLAttribute = __webpack_require__(37);
 
   module.exports = XMLElement = (function(superClass) {
     extend(XMLElement, superClass);
@@ -2767,7 +2836,7 @@ exports.isTokenType = isTokenType;
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.6
@@ -2808,7 +2877,7 @@ exports.isTokenType = isTokenType;
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.6
@@ -2846,7 +2915,7 @@ exports.isTokenType = isTokenType;
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.6
@@ -2884,7 +2953,219 @@ exports.isTokenType = isTokenType;
 
 
 /***/ }),
-/* 20 */
+/* 21 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_chevrotain__);
+/**
+ * LNLexer + tokens.
+ *
+ *
+ *
+ * @file   This files defines the lexer and tokens for  scratch-LN.
+ * @author Ellen Vanhove.
+ */
+
+
+const Label = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "Label",
+    pattern:
+    //not [] {} () " :: ; \n # unless escaped
+    // : followed by not : or in the end
+    //    /(:?[^\{\(\)\}\<\>\[\]:;\\"\n#]|\\[\{\(\)\}\<\>\[\]:;\\"\n#])+:?/,
+        /(:?[^\{\(\)\}\<\>\[\]:;\\"\n#]|\\[\{\(\)\}\<\>\[\]:;\\"\n#])+/,
+    line_breaks: true
+});
+/* harmony export (immutable) */ __webpack_exports__["Label"] = Label;
+
+
+const LCurlyBracket = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "LCurlyBracket",
+    pattern: /{/
+});
+/* harmony export (immutable) */ __webpack_exports__["LCurlyBracket"] = LCurlyBracket;
+
+
+const RCurlyBracket = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "RCurlyBracket",
+    pattern: /}/
+});
+/* harmony export (immutable) */ __webpack_exports__["RCurlyBracket"] = RCurlyBracket;
+
+
+const LRoundBracket = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "LRoundBracket",
+    pattern: /\(/
+});
+/* harmony export (immutable) */ __webpack_exports__["LRoundBracket"] = LRoundBracket;
+
+
+const RRoundBracket = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "RRoundBracket",
+    pattern: /\)/
+});
+/* harmony export (immutable) */ __webpack_exports__["RRoundBracket"] = RRoundBracket;
+
+
+const RAngleBracket = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "RAngleBracket",
+    pattern: />/
+});
+/* harmony export (immutable) */ __webpack_exports__["RAngleBracket"] = RAngleBracket;
+
+
+const LAngleBracket = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "LAngleBracket",
+    pattern: /</
+});
+/* harmony export (immutable) */ __webpack_exports__["LAngleBracket"] = LAngleBracket;
+
+
+const LSquareBracket = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "LSquareBracket",
+    pattern: /\[/
+});
+/* harmony export (immutable) */ __webpack_exports__["LSquareBracket"] = LSquareBracket;
+
+
+const RSquareBracket = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "RSquareBracket",
+    pattern: /\]/
+});
+/* harmony export (immutable) */ __webpack_exports__["RSquareBracket"] = RSquareBracket;
+
+
+const DoubleColon = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "DoubleColon",
+    pattern: /::/
+});
+/* harmony export (immutable) */ __webpack_exports__["DoubleColon"] = DoubleColon;
+
+
+const Literal = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "Literal",
+    pattern: __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Lexer"].NA
+});
+/* harmony export (immutable) */ __webpack_exports__["Literal"] = Literal;
+
+
+const StringLiteral = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "StringLiteral",
+    pattern: /"[^"]*"/,
+    categories: Literal
+});
+/* harmony export (immutable) */ __webpack_exports__["StringLiteral"] = StringLiteral;
+
+
+const NumberLiteral = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "NumberLiteral",
+    pattern: /-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?/,
+    categories: [Literal, Label]
+});
+/* harmony export (immutable) */ __webpack_exports__["NumberLiteral"] = NumberLiteral;
+
+
+const ColorLiteral = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "ColorLiteral",
+    pattern: /#[0-9a-z]{6}/,
+    categories: [Literal]
+});
+/* harmony export (immutable) */ __webpack_exports__["ColorLiteral"] = ColorLiteral;
+
+
+const Forever = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "Forever",
+    pattern: /forever/,
+});
+/* harmony export (immutable) */ __webpack_exports__["Forever"] = Forever;
+
+
+const End = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "End",
+    pattern: /end/,
+});
+/* harmony export (immutable) */ __webpack_exports__["End"] = End;
+
+
+const Then = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "Then",
+    pattern: /then/,
+});
+/* harmony export (immutable) */ __webpack_exports__["Then"] = Then;
+
+
+const Repeat = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "Repeat",
+    pattern: /repeat/,
+});
+/* harmony export (immutable) */ __webpack_exports__["Repeat"] = Repeat;
+
+
+const If = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "If",
+    pattern: /if/
+});
+/* harmony export (immutable) */ __webpack_exports__["If"] = If;
+
+
+const Else = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "Else",
+    pattern: /else/,
+});
+/* harmony export (immutable) */ __webpack_exports__["Else"] = Else;
+
+
+const Until = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "Until",
+    pattern: /until/,
+    categories: Label //because this word occurs in 'until done', should not be a problem as it is never first
+});
+/* harmony export (immutable) */ __webpack_exports__["Until"] = Until;
+
+
+// marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
+const WhiteSpace = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "WhiteSpace",
+    pattern: /[ \t]+/,
+    group: __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Lexer"].SKIPPED,
+    line_breaks: false
+});
+/* harmony export (immutable) */ __webpack_exports__["WhiteSpace"] = WhiteSpace;
+
+
+const StatementTerminator = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "StatementTerminator",
+    pattern: /;\n|;|\n/,
+    line_breaks: true
+});
+/* harmony export (immutable) */ __webpack_exports__["StatementTerminator"] = StatementTerminator;
+
+
+const allTokens = [
+    WhiteSpace,
+    Literal, StringLiteral, NumberLiteral, ColorLiteral,
+    Forever, End, Until, Repeat, If, Else, Then,
+    StatementTerminator,
+    Label,
+    LCurlyBracket, RCurlyBracket,
+    LRoundBracket, RRoundBracket,
+    RAngleBracket, LAngleBracket,
+    LSquareBracket, RSquareBracket,
+    DoubleColon,
+];
+/* harmony export (immutable) */ __webpack_exports__["allTokens"] = allTokens;
+
+
+const LNLexer = new __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Lexer"](allTokens);
+/* harmony export (immutable) */ __webpack_exports__["LNLexer"] = LNLexer;
+
+
+
+/***/ }),
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2952,7 +3233,7 @@ exports.clearCache = clearCache;
 //# sourceMappingURL=cache.js.map
 
 /***/ }),
-/* 21 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3128,7 +3409,7 @@ exports.cloneProduction = cloneProduction;
 //# sourceMappingURL=gast.js.map
 
 /***/ }),
-/* 22 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3242,32 +3523,32 @@ function restForRepetitionWithSeparator(repSepProd, currRest, prevRest) {
 //# sourceMappingURL=rest.js.map
 
 /***/ }),
-/* 23 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var cache = __webpack_require__(20);
-var cache_1 = __webpack_require__(20);
-var exceptions_public_1 = __webpack_require__(31);
+var cache = __webpack_require__(22);
+var cache_1 = __webpack_require__(22);
+var exceptions_public_1 = __webpack_require__(32);
 var lang_extensions_1 = __webpack_require__(5);
-var resolver_1 = __webpack_require__(49);
-var checks_1 = __webpack_require__(32);
+var resolver_1 = __webpack_require__(51);
+var checks_1 = __webpack_require__(33);
 var utils_1 = __webpack_require__(0);
-var follow_1 = __webpack_require__(48);
+var follow_1 = __webpack_require__(50);
 var tokens_public_1 = __webpack_require__(3);
-var lookahead_1 = __webpack_require__(35);
-var gast_builder_1 = __webpack_require__(47);
-var interpreter_1 = __webpack_require__(6);
-var constants_1 = __webpack_require__(28);
+var lookahead_1 = __webpack_require__(36);
+var gast_builder_1 = __webpack_require__(49);
+var interpreter_1 = __webpack_require__(7);
+var constants_1 = __webpack_require__(29);
 var gast_public_1 = __webpack_require__(2);
-var gast_1 = __webpack_require__(21);
-var tokens_1 = __webpack_require__(7);
-var cst_1 = __webpack_require__(29);
-var keys_1 = __webpack_require__(34);
-var cst_visitor_1 = __webpack_require__(46);
-var errors_public_1 = __webpack_require__(30);
+var gast_1 = __webpack_require__(23);
+var tokens_1 = __webpack_require__(8);
+var cst_1 = __webpack_require__(30);
+var keys_1 = __webpack_require__(35);
+var cst_visitor_1 = __webpack_require__(48);
+var errors_public_1 = __webpack_require__(31);
 var serializeGrammar = gast_public_1.gast.serializeGrammar;
 var ParserDefinitionErrorType;
 (function (ParserDefinitionErrorType) {
@@ -5279,15 +5560,15 @@ InRuleRecoveryException.prototype = Error.prototype;
 //# sourceMappingURL=parser_public.js.map
 
 /***/ }),
-/* 24 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var lexer_1 = __webpack_require__(50);
+var lexer_1 = __webpack_require__(52);
 var utils_1 = __webpack_require__(0);
-var tokens_1 = __webpack_require__(7);
+var tokens_1 = __webpack_require__(8);
 var LexerDefinitionErrorType;
 (function (LexerDefinitionErrorType) {
     LexerDefinitionErrorType[LexerDefinitionErrorType["MISSING_PATTERN"] = 0] = "MISSING_PATTERN";
@@ -5872,7 +6153,7 @@ exports.Lexer = Lexer;
 //# sourceMappingURL=lexer_public.js.map
 
 /***/ }),
-/* 25 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5885,7 +6166,7 @@ exports.VERSION = "1.0.1";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
-/* 26 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.6
@@ -5894,31 +6175,31 @@ exports.VERSION = "1.0.1";
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  XMLDeclaration = __webpack_require__(14);
+  XMLDeclaration = __webpack_require__(15);
 
-  XMLDocType = __webpack_require__(15);
+  XMLDocType = __webpack_require__(16);
 
-  XMLCData = __webpack_require__(8);
+  XMLCData = __webpack_require__(9);
 
-  XMLComment = __webpack_require__(9);
+  XMLComment = __webpack_require__(10);
 
-  XMLElement = __webpack_require__(16);
+  XMLElement = __webpack_require__(17);
 
-  XMLRaw = __webpack_require__(18);
+  XMLRaw = __webpack_require__(19);
 
-  XMLText = __webpack_require__(19);
+  XMLText = __webpack_require__(20);
 
-  XMLProcessingInstruction = __webpack_require__(17);
+  XMLProcessingInstruction = __webpack_require__(18);
 
-  XMLDTDAttList = __webpack_require__(10);
+  XMLDTDAttList = __webpack_require__(11);
 
-  XMLDTDElement = __webpack_require__(11);
+  XMLDTDElement = __webpack_require__(12);
 
-  XMLDTDEntity = __webpack_require__(12);
+  XMLDTDEntity = __webpack_require__(13);
 
-  XMLDTDNotation = __webpack_require__(13);
+  XMLDTDNotation = __webpack_require__(14);
 
-  XMLWriterBase = __webpack_require__(38);
+  XMLWriterBase = __webpack_require__(39);
 
   module.exports = XMLStringWriter = (function(superClass) {
     extend(XMLStringWriter, superClass);
@@ -6225,7 +6506,2184 @@ exports.VERSION = "1.0.1";
 
 
 /***/ }),
-/* 27 */
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+// TODO: can this be removed? where is it used?
+exports.IN = "_~IN~_";
+//# sourceMappingURL=constants.js.map
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var tokens_public_1 = __webpack_require__(3);
+var gast_public_1 = __webpack_require__(2);
+var utils_1 = __webpack_require__(0);
+var lang_extensions_1 = __webpack_require__(5);
+var keys_1 = __webpack_require__(35);
+var GAstVisitor = gast_public_1.gast.GAstVisitor;
+function addTerminalToCst(node, token, tokenTypeName) {
+    ;
+    node.children[tokenTypeName].push(token);
+}
+exports.addTerminalToCst = addTerminalToCst;
+function addNoneTerminalToCst(node, ruleName, ruleResult) {
+    ;
+    node.children[ruleName].push(ruleResult);
+}
+exports.addNoneTerminalToCst = addNoneTerminalToCst;
+var NamedDSLMethodsCollectorVisitor = /** @class */ (function (_super) {
+    __extends(NamedDSLMethodsCollectorVisitor, _super);
+    function NamedDSLMethodsCollectorVisitor(ruleIdx) {
+        var _this = _super.call(this) || this;
+        _this.result = [];
+        _this.ruleIdx = ruleIdx;
+        return _this;
+    }
+    NamedDSLMethodsCollectorVisitor.prototype.collectNamedDSLMethod = function (node, newNodeConstructor, methodIdx) {
+        if (!utils_1.isUndefined(node.name)) {
+            // copy without name so this will indeed be processed later.
+            var nameLessNode = void 0;
+            if (utils_1.has(node, "separator")) {
+                // hack to avoid code duplication and refactoring the Gast type declaration / constructors arguments order.
+                nameLessNode = new newNodeConstructor(node.definition, node.separator, node.occurrenceInParent);
+            }
+            else {
+                nameLessNode = new newNodeConstructor(node.definition, node.occurrenceInParent);
+            }
+            var def = [nameLessNode];
+            var key = keys_1.getKeyForAutomaticLookahead(this.ruleIdx, methodIdx, node.occurrenceInParent);
+            this.result.push({ def: def, key: key, name: node.name });
+        }
+    };
+    NamedDSLMethodsCollectorVisitor.prototype.visitOption = function (node) {
+        this.collectNamedDSLMethod(node, gast_public_1.gast.Option, keys_1.OPTION_IDX);
+    };
+    NamedDSLMethodsCollectorVisitor.prototype.visitRepetition = function (node) {
+        this.collectNamedDSLMethod(node, gast_public_1.gast.Repetition, keys_1.MANY_IDX);
+    };
+    NamedDSLMethodsCollectorVisitor.prototype.visitRepetitionMandatory = function (node) {
+        this.collectNamedDSLMethod(node, gast_public_1.gast.RepetitionMandatory, keys_1.AT_LEAST_ONE_IDX);
+    };
+    NamedDSLMethodsCollectorVisitor.prototype.visitRepetitionMandatoryWithSeparator = function (node) {
+        this.collectNamedDSLMethod(node, gast_public_1.gast.RepetitionMandatoryWithSeparator, keys_1.AT_LEAST_ONE_SEP_IDX);
+    };
+    NamedDSLMethodsCollectorVisitor.prototype.visitRepetitionWithSeparator = function (node) {
+        this.collectNamedDSLMethod(node, gast_public_1.gast.RepetitionWithSeparator, keys_1.MANY_SEP_IDX);
+    };
+    NamedDSLMethodsCollectorVisitor.prototype.visitAlternation = function (node) {
+        var _this = this;
+        this.collectNamedDSLMethod(node, gast_public_1.gast.Alternation, keys_1.OR_IDX);
+        var hasMoreThanOneAlternative = node.definition.length > 1;
+        utils_1.forEach(node.definition, function (currFlatAlt, altIdx) {
+            if (!utils_1.isUndefined(currFlatAlt.name)) {
+                var def = currFlatAlt.definition;
+                if (hasMoreThanOneAlternative) {
+                    def = [new gast_public_1.gast.Option(currFlatAlt.definition)];
+                }
+                else {
+                    // mandatory
+                    def = currFlatAlt.definition;
+                }
+                var key = keys_1.getKeyForAltIndex(_this.ruleIdx, keys_1.OR_IDX, node.occurrenceInParent, altIdx);
+                _this.result.push({
+                    def: def,
+                    key: key,
+                    name: currFlatAlt.name
+                });
+            }
+        });
+    };
+    return NamedDSLMethodsCollectorVisitor;
+}(GAstVisitor));
+exports.NamedDSLMethodsCollectorVisitor = NamedDSLMethodsCollectorVisitor;
+function analyzeCst(topRules, fullToShortName) {
+    var result = { dictDef: new lang_extensions_1.HashTable(), allRuleNames: [] };
+    utils_1.forEach(topRules, function (currTopRule) {
+        var currChildrenNames = buildChildDictionaryDef(currTopRule.definition);
+        var currTopRuleShortName = fullToShortName.get(currTopRule.name);
+        result.dictDef.put(currTopRuleShortName, buildInitDefFunc(currChildrenNames));
+        result.allRuleNames.push(currTopRule.name);
+        var namedCollectorVisitor = new NamedDSLMethodsCollectorVisitor(currTopRuleShortName);
+        currTopRule.accept(namedCollectorVisitor);
+        utils_1.forEach(namedCollectorVisitor.result, function (_a) {
+            var def = _a.def, key = _a.key, name = _a.name;
+            var currNestedChildrenNames = buildChildDictionaryDef(def);
+            result.dictDef.put(key, buildInitDefFunc(currNestedChildrenNames));
+            result.allRuleNames.push(currTopRule.name + name);
+        });
+    });
+    return result;
+}
+exports.analyzeCst = analyzeCst;
+function buildInitDefFunc(childrenNames) {
+    var funcString = "return {\n";
+    funcString += utils_1.map(childrenNames, function (currName) { return "\"" + currName + "\" : []"; }).join(",\n");
+    funcString += "}";
+    // major performance optimization, faster to create the children dictionary this way
+    // versus iterating over the childrenNames each time.
+    return Function(funcString);
+}
+function buildChildDictionaryDef(initialDef) {
+    var result = [];
+    var possiblePaths = [];
+    possiblePaths.push({ def: initialDef });
+    var currDef;
+    var currInIteration;
+    var currInOption;
+    var currResult;
+    function addSingleItemToResult(itemName) {
+        result.push(itemName);
+        var nextPath = {
+            def: utils_1.drop(currDef),
+            inIteration: currInIteration,
+            inOption: currInOption,
+            currResult: utils_1.cloneObj(currResult)
+        };
+        possiblePaths.push(nextPath);
+    }
+    while (!utils_1.isEmpty(possiblePaths)) {
+        var currPath = possiblePaths.pop();
+        currDef = currPath.def;
+        currInIteration = currPath.inIteration;
+        currInOption = currPath.inOption;
+        currResult = currPath.currResult;
+        // For Example: an empty path could exist in a valid grammar in the case of an EMPTY_ALT
+        if (utils_1.isEmpty(currDef)) {
+            continue;
+        }
+        var prod = currDef[0];
+        if (prod instanceof gast_public_1.gast.Terminal) {
+            var terminalName = tokens_public_1.tokenName(prod.terminalType);
+            addSingleItemToResult(terminalName);
+        }
+        else if (prod instanceof gast_public_1.gast.NonTerminal) {
+            var nonTerminalName = prod.nonTerminalName;
+            addSingleItemToResult(nonTerminalName);
+        }
+        else if (prod instanceof gast_public_1.gast.Option) {
+            if (!utils_1.isUndefined(prod.name)) {
+                addSingleItemToResult(prod.name);
+            }
+            else {
+                var nextPathWith = {
+                    def: prod.definition.concat(utils_1.drop(currDef))
+                };
+                possiblePaths.push(nextPathWith);
+            }
+        }
+        else if (prod instanceof gast_public_1.gast.RepetitionMandatory ||
+            prod instanceof gast_public_1.gast.Repetition) {
+            if (!utils_1.isUndefined(prod.name)) {
+                addSingleItemToResult(prod.name);
+            }
+            else {
+                var nextDef = prod.definition.concat(utils_1.drop(currDef));
+                var nextPath = {
+                    def: nextDef
+                };
+                possiblePaths.push(nextPath);
+            }
+        }
+        else if (prod instanceof gast_public_1.gast.RepetitionMandatoryWithSeparator ||
+            prod instanceof gast_public_1.gast.RepetitionWithSeparator) {
+            if (!utils_1.isUndefined(prod.name)) {
+                addSingleItemToResult(prod.name);
+            }
+            else {
+                var separatorGast = new gast_public_1.gast.Terminal(prod.separator);
+                var secondIteration = new gast_public_1.gast.Repetition([separatorGast].concat(prod.definition), prod.occurrenceInParent);
+                // Hack: X (, X)* --> (, X) because it is identical in terms of identifying "isCollection?"
+                var nextDef = [secondIteration].concat(utils_1.drop(currDef));
+                var nextPath = {
+                    def: nextDef
+                };
+                possiblePaths.push(nextPath);
+            }
+        }
+        else if (prod instanceof gast_public_1.gast.Alternation) {
+            /* istanbul ignore else */
+            // IGNORE ABOVE ELSE
+            if (!utils_1.isUndefined(prod.name)) {
+                addSingleItemToResult(prod.name);
+            }
+            else {
+                // the order of alternatives is meaningful, FILO (Last path will be traversed first).
+                for (var i = prod.definition.length - 1; i >= 0; i--) {
+                    var currAlt = prod.definition[i];
+                    // named alternatives
+                    if (!utils_1.isUndefined(currAlt.name)) {
+                        addSingleItemToResult(currAlt.name);
+                    }
+                    else {
+                        var newDef = currAlt.definition.concat(utils_1.drop(currDef));
+                        var currAltPath = {
+                            def: newDef
+                        };
+                        possiblePaths.push(currAltPath);
+                    }
+                }
+            }
+        }
+        else {
+            /* istanbul ignore next */ throw Error("non exhaustive match");
+        }
+    }
+    return result;
+}
+exports.buildChildDictionaryDef = buildChildDictionaryDef;
+//# sourceMappingURL=cst.js.map
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var tokens_public_1 = __webpack_require__(3);
+var utils_1 = __webpack_require__(0);
+/**
+ * This is the default logic Chevrotain uses to construct error messages.
+ * When constructing a custom error message provider it may be used as a reference
+ * or reused.
+ */
+exports.defaultErrorProvider = {
+    buildMismatchTokenMessage: function (_a) {
+        var expected = _a.expected, actual = _a.actual, ruleName = _a.ruleName;
+        var hasLabel = tokens_public_1.hasTokenLabel(expected);
+        var expectedMsg = hasLabel
+            ? "--> " + tokens_public_1.tokenLabel(expected) + " <--"
+            : "token of type --> " + tokens_public_1.tokenName(expected) + " <--";
+        var msg = "Expecting " + expectedMsg + " but found --> '" + actual.image + "' <--";
+        return msg;
+    },
+    buildNotAllInputParsedMessage: function (_a) {
+        var firstRedundant = _a.firstRedundant, ruleName = _a.ruleName;
+        return ("Redundant input, expecting EOF but found: " + firstRedundant.image);
+    },
+    buildNoViableAltMessage: function (_a) {
+        var expectedPathsPerAlt = _a.expectedPathsPerAlt, actual = _a.actual, customUserDescription = _a.customUserDescription, ruleName = _a.ruleName;
+        var errPrefix = "Expecting: ";
+        // TODO: issue: No Viable Alternative Error may have incomplete details. #502
+        var actualText = utils_1.first(actual).image;
+        var errSuffix = "\nbut found: '" + actualText + "'";
+        if (customUserDescription) {
+            return errPrefix + customUserDescription + errSuffix;
+        }
+        else {
+            var allLookAheadPaths = utils_1.reduce(expectedPathsPerAlt, function (result, currAltPaths) { return result.concat(currAltPaths); }, []);
+            var nextValidTokenSequences = utils_1.map(allLookAheadPaths, function (currPath) {
+                return "[" + utils_1.map(currPath, function (currTokenType) {
+                    return tokens_public_1.tokenLabel(currTokenType);
+                }).join(", ") + "]";
+            });
+            var nextValidSequenceItems = utils_1.map(nextValidTokenSequences, function (itemMsg, idx) { return "  " + (idx + 1) + ". " + itemMsg; });
+            var calculatedDescription = "one of these possible Token sequences:\n" + nextValidSequenceItems.join("\n");
+            return errPrefix + calculatedDescription + errSuffix;
+        }
+    },
+    buildEarlyExitMessage: function (_a) {
+        var expectedIterationPaths = _a.expectedIterationPaths, actual = _a.actual, customUserDescription = _a.customUserDescription, ruleName = _a.ruleName;
+        var errPrefix = "Expecting: ";
+        // TODO: issue: No Viable Alternative Error may have incomplete details. #502
+        var actualText = utils_1.first(actual).image;
+        var errSuffix = "\nbut found: '" + actualText + "'";
+        if (customUserDescription) {
+            return errPrefix + customUserDescription + errSuffix;
+        }
+        else {
+            var nextValidTokenSequences = utils_1.map(expectedIterationPaths, function (currPath) {
+                return "[" + utils_1.map(currPath, function (currTokenType) {
+                    return tokens_public_1.tokenLabel(currTokenType);
+                }).join(",") + "]";
+            });
+            var calculatedDescription = "expecting at least one iteration which starts with one of these possible Token sequences::\n  " +
+                ("<" + nextValidTokenSequences.join(" ,") + ">");
+            return errPrefix + calculatedDescription + errSuffix;
+        }
+    }
+};
+Object.freeze(exports.defaultErrorProvider);
+//# sourceMappingURL=errors_public.js.map
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var utils_1 = __webpack_require__(0);
+var exceptions;
+(function (exceptions) {
+    var MISMATCHED_TOKEN_EXCEPTION = "MismatchedTokenException";
+    var NO_VIABLE_ALT_EXCEPTION = "NoViableAltException";
+    var EARLY_EXIT_EXCEPTION = "EarlyExitException";
+    var NOT_ALL_INPUT_PARSED_EXCEPTION = "NotAllInputParsedException";
+    var RECOGNITION_EXCEPTION_NAMES = [
+        MISMATCHED_TOKEN_EXCEPTION,
+        NO_VIABLE_ALT_EXCEPTION,
+        EARLY_EXIT_EXCEPTION,
+        NOT_ALL_INPUT_PARSED_EXCEPTION
+    ];
+    Object.freeze(RECOGNITION_EXCEPTION_NAMES);
+    // hacks to bypass no support for custom Errors in javascript/typescript
+    function isRecognitionException(error) {
+        // can't do instanceof on hacked custom js exceptions
+        return utils_1.contains(RECOGNITION_EXCEPTION_NAMES, error.name);
+    }
+    exceptions.isRecognitionException = isRecognitionException;
+    function MismatchedTokenException(message, token) {
+        this.name = MISMATCHED_TOKEN_EXCEPTION;
+        this.message = message;
+        this.token = token;
+        this.resyncedTokens = [];
+    }
+    exceptions.MismatchedTokenException = MismatchedTokenException;
+    // must use the "Error.prototype" instead of "new Error"
+    // because the stack trace points to where "new Error" was invoked"
+    MismatchedTokenException.prototype = Error.prototype;
+    function NoViableAltException(message, token) {
+        this.name = NO_VIABLE_ALT_EXCEPTION;
+        this.message = message;
+        this.token = token;
+        this.resyncedTokens = [];
+    }
+    exceptions.NoViableAltException = NoViableAltException;
+    NoViableAltException.prototype = Error.prototype;
+    function NotAllInputParsedException(message, token) {
+        this.name = NOT_ALL_INPUT_PARSED_EXCEPTION;
+        this.message = message;
+        this.token = token;
+        this.resyncedTokens = [];
+    }
+    exceptions.NotAllInputParsedException = NotAllInputParsedException;
+    NotAllInputParsedException.prototype = Error.prototype;
+    function EarlyExitException(message, token, previousToken) {
+        this.name = EARLY_EXIT_EXCEPTION;
+        this.message = message;
+        this.token = token;
+        this.previousToken = previousToken;
+        this.resyncedTokens = [];
+    }
+    exceptions.EarlyExitException = EarlyExitException;
+    EarlyExitException.prototype = Error.prototype;
+})(exceptions = exports.exceptions || (exports.exceptions = {}));
+//# sourceMappingURL=exceptions_public.js.map
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var utils = __webpack_require__(0);
+var utils_1 = __webpack_require__(0);
+var parser_public_1 = __webpack_require__(25);
+var gast_public_1 = __webpack_require__(2);
+var gast_1 = __webpack_require__(23);
+var tokens_public_1 = __webpack_require__(3);
+var lookahead_1 = __webpack_require__(36);
+var version_1 = __webpack_require__(27);
+var cst_1 = __webpack_require__(30);
+var interpreter_1 = __webpack_require__(7);
+function validateGrammar(topLevels, maxLookahead, tokens, ignoredIssues) {
+    var duplicateErrors = utils.map(topLevels, validateDuplicateProductions);
+    var leftRecursionErrors = utils.map(topLevels, function (currTopRule) {
+        return validateNoLeftRecursion(currTopRule, currTopRule);
+    });
+    var emptyAltErrors = [];
+    var ambiguousAltsErrors = [];
+    // left recursion could cause infinite loops in the following validations.
+    // It is safest to first have the user fix the left recursion errors first and only then examine farther issues.
+    if (utils_1.every(leftRecursionErrors, utils_1.isEmpty)) {
+        emptyAltErrors = utils_1.map(topLevels, validateEmptyOrAlternative);
+        ambiguousAltsErrors = utils_1.map(topLevels, function (currTopRule) {
+            return validateAmbiguousAlternationAlternatives(currTopRule, maxLookahead, ignoredIssues);
+        });
+    }
+    var ruleNames = utils_1.map(topLevels, function (currTopLevel) { return currTopLevel.name; });
+    var tokenNames = utils_1.map(tokens, function (currToken) { return tokens_public_1.tokenName(currToken); });
+    var termsNamespaceConflictErrors = checkTerminalAndNoneTerminalsNameSpace(ruleNames, tokenNames);
+    var tokenNameErrors = utils.map(tokenNames, validateTokenName);
+    var nestedRulesNameErrors = validateNestedRulesNames(topLevels);
+    var nestedRulesDuplicateErrors = validateDuplicateNestedRules(topLevels);
+    var emptyRepetitionErrors = validateSomeNonEmptyLookaheadPath(topLevels, maxLookahead);
+    var tooManyAltsErrors = utils.map(topLevels, validateTooManyAlts);
+    return utils.flatten(duplicateErrors.concat(tokenNameErrors, nestedRulesNameErrors, nestedRulesDuplicateErrors, emptyRepetitionErrors, leftRecursionErrors, emptyAltErrors, ambiguousAltsErrors, termsNamespaceConflictErrors, tooManyAltsErrors));
+}
+exports.validateGrammar = validateGrammar;
+function validateNestedRulesNames(topLevels) {
+    var result = [];
+    utils_1.forEach(topLevels, function (curTopLevel) {
+        var namedCollectorVisitor = new cst_1.NamedDSLMethodsCollectorVisitor("");
+        curTopLevel.accept(namedCollectorVisitor);
+        var nestedNamesPerRule = utils_1.map(namedCollectorVisitor.result, function (currItem) { return currItem.name; });
+        var currTopRuleName = curTopLevel.name;
+        result.push(utils_1.map(nestedNamesPerRule, function (currNestedName) {
+            return validateNestedRuleName(currNestedName, currTopRuleName);
+        }));
+    });
+    return utils_1.flatten(result);
+}
+function validateDuplicateProductions(topLevelRule) {
+    var collectorVisitor = new OccurrenceValidationCollector();
+    topLevelRule.accept(collectorVisitor);
+    var allRuleProductions = collectorVisitor.allProductions;
+    var productionGroups = utils.groupBy(allRuleProductions, identifyProductionForDuplicates);
+    var duplicates = utils.pick(productionGroups, function (currGroup) {
+        return currGroup.length > 1;
+    });
+    var errors = utils.map(utils.values(duplicates), function (currDuplicates) {
+        var firstProd = utils.first(currDuplicates);
+        var msg = createDuplicatesErrorMessage(currDuplicates, topLevelRule.name);
+        var dslName = gast_1.getProductionDslName(firstProd);
+        var defError = {
+            message: msg,
+            type: parser_public_1.ParserDefinitionErrorType.DUPLICATE_PRODUCTIONS,
+            ruleName: topLevelRule.name,
+            dslName: dslName,
+            occurrence: firstProd.occurrenceInParent
+        };
+        var param = getExtraProductionArgument(firstProd);
+        if (param) {
+            defError.parameter = param;
+        }
+        return defError;
+    });
+    return errors;
+}
+function createDuplicatesErrorMessage(duplicateProds, topLevelName) {
+    var firstProd = utils.first(duplicateProds);
+    var index = firstProd.occurrenceInParent;
+    var dslName = gast_1.getProductionDslName(firstProd);
+    var extraArgument = getExtraProductionArgument(firstProd);
+    var msg = "->" + dslName + "<- with occurrence index: ->" + index + "<-\n                  " + (extraArgument ? "and argument: " + extraArgument : "") + "\n                  appears more than once (" + duplicateProds.length + " times) in the top level rule: " + topLevelName + ".\n                  " + (index === 1
+        ? "note that " + dslName + " and " + dslName + "1 both have the same occurrence index 1}"
+        : "") + "}\n                  to fix this make sure each usage of " + dslName + " " + (extraArgument ? "with the argument: " + extraArgument : "") + "\n                  in the rule " + topLevelName + " has a different occurrence index (1-5), as that combination acts as a unique\n                  position key in the grammar, which is needed by the parsing engine.";
+    // white space trimming time! better to trim afterwards as it allows to use WELL formatted multi line template strings...
+    msg = msg.replace(/[ \t]+/g, " ");
+    msg = msg.replace(/\s\s+/g, "\n");
+    return msg;
+}
+function identifyProductionForDuplicates(prod) {
+    return gast_1.getProductionDslName(prod) + "_#_" + prod.occurrenceInParent + "_#_" + getExtraProductionArgument(prod);
+}
+exports.identifyProductionForDuplicates = identifyProductionForDuplicates;
+function getExtraProductionArgument(prod) {
+    if (prod instanceof gast_public_1.gast.Terminal) {
+        return tokens_public_1.tokenName(prod.terminalType);
+    }
+    else if (prod instanceof gast_public_1.gast.NonTerminal) {
+        return prod.nonTerminalName;
+    }
+    else {
+        return "";
+    }
+}
+var OccurrenceValidationCollector = /** @class */ (function (_super) {
+    __extends(OccurrenceValidationCollector, _super);
+    function OccurrenceValidationCollector() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.allProductions = [];
+        return _this;
+    }
+    OccurrenceValidationCollector.prototype.visitNonTerminal = function (subrule) {
+        this.allProductions.push(subrule);
+    };
+    OccurrenceValidationCollector.prototype.visitOption = function (option) {
+        this.allProductions.push(option);
+    };
+    OccurrenceValidationCollector.prototype.visitRepetitionWithSeparator = function (manySep) {
+        this.allProductions.push(manySep);
+    };
+    OccurrenceValidationCollector.prototype.visitRepetitionMandatory = function (atLeastOne) {
+        this.allProductions.push(atLeastOne);
+    };
+    OccurrenceValidationCollector.prototype.visitRepetitionMandatoryWithSeparator = function (atLeastOneSep) {
+        this.allProductions.push(atLeastOneSep);
+    };
+    OccurrenceValidationCollector.prototype.visitRepetition = function (many) {
+        this.allProductions.push(many);
+    };
+    OccurrenceValidationCollector.prototype.visitAlternation = function (or) {
+        this.allProductions.push(or);
+    };
+    OccurrenceValidationCollector.prototype.visitTerminal = function (terminal) {
+        this.allProductions.push(terminal);
+    };
+    return OccurrenceValidationCollector;
+}(gast_public_1.gast.GAstVisitor));
+exports.OccurrenceValidationCollector = OccurrenceValidationCollector;
+exports.validTermsPattern = /^[a-zA-Z_]\w*$/;
+exports.validNestedRuleName = new RegExp(exports.validTermsPattern.source.replace("^", "^\\$"));
+function validateRuleName(ruleName) {
+    var errors = [];
+    var errMsg;
+    if (!ruleName.match(exports.validTermsPattern)) {
+        errMsg = "Invalid Grammar rule name: ->" + ruleName + "<- it must match the pattern: ->" + exports.validTermsPattern.toString() + "<-";
+        errors.push({
+            message: errMsg,
+            type: parser_public_1.ParserDefinitionErrorType.INVALID_RULE_NAME,
+            ruleName: ruleName
+        });
+    }
+    return errors;
+}
+exports.validateRuleName = validateRuleName;
+function validateNestedRuleName(nestedRuleName, containingRuleName) {
+    var errors = [];
+    var errMsg;
+    if (!nestedRuleName.match(exports.validNestedRuleName)) {
+        errMsg =
+            "Invalid nested rule name: ->" + nestedRuleName + "<- inside rule: ->" + containingRuleName + "<-\n" +
+                ("it must match the pattern: ->" + exports.validNestedRuleName.toString() + "<-.\n") +
+                "Note that this means a nested rule name must start with the '$'(dollar) sign.";
+        errors.push({
+            message: errMsg,
+            type: parser_public_1.ParserDefinitionErrorType.INVALID_NESTED_RULE_NAME,
+            ruleName: nestedRuleName
+        });
+    }
+    return errors;
+}
+exports.validateNestedRuleName = validateNestedRuleName;
+function validateTokenName(tokenNAme) {
+    var errors = [];
+    var errMsg;
+    if (!tokenNAme.match(exports.validTermsPattern)) {
+        errMsg = "Invalid Grammar Token name: ->" + tokenNAme + "<- it must match the pattern: ->" + exports.validTermsPattern.toString() + "<-";
+        errors.push({
+            message: errMsg,
+            type: parser_public_1.ParserDefinitionErrorType.INVALID_TOKEN_NAME
+        });
+    }
+    return errors;
+}
+exports.validateTokenName = validateTokenName;
+function validateRuleDoesNotAlreadyExist(ruleName, definedRulesNames, className) {
+    var errors = [];
+    var errMsg;
+    if (utils.contains(definedRulesNames, ruleName)) {
+        errMsg = "Duplicate definition, rule: ->" + ruleName + "<- is already defined in the grammar: ->" + className + "<-";
+        errors.push({
+            message: errMsg,
+            type: parser_public_1.ParserDefinitionErrorType.DUPLICATE_RULE_NAME,
+            ruleName: ruleName
+        });
+    }
+    return errors;
+}
+exports.validateRuleDoesNotAlreadyExist = validateRuleDoesNotAlreadyExist;
+// TODO: is there anyway to get only the rule names of rules inherited from the super grammars?
+function validateRuleIsOverridden(ruleName, definedRulesNames, className) {
+    var errors = [];
+    var errMsg;
+    if (!utils.contains(definedRulesNames, ruleName)) {
+        errMsg =
+            "Invalid rule override, rule: ->" + ruleName + "<- cannot be overridden in the grammar: ->" + className + "<-" +
+                "as it is not defined in any of the super grammars ";
+        errors.push({
+            message: errMsg,
+            type: parser_public_1.ParserDefinitionErrorType.INVALID_RULE_OVERRIDE,
+            ruleName: ruleName
+        });
+    }
+    return errors;
+}
+exports.validateRuleIsOverridden = validateRuleIsOverridden;
+function validateNoLeftRecursion(topRule, currRule, path) {
+    if (path === void 0) { path = []; }
+    var errors = [];
+    var nextNonTerminals = getFirstNoneTerminal(currRule.definition);
+    if (utils.isEmpty(nextNonTerminals)) {
+        return [];
+    }
+    else {
+        var ruleName = topRule.name;
+        var foundLeftRecursion = utils.contains(nextNonTerminals, topRule);
+        var pathNames = utils.map(path, function (currRule) { return currRule.name; });
+        var leftRecursivePath = ruleName + " --> " + pathNames
+            .concat([ruleName])
+            .join(" --> ");
+        if (foundLeftRecursion) {
+            var errMsg = "Left Recursion found in grammar.\n" +
+                ("rule: <" + ruleName + "> can be invoked from itself (directly or indirectly)\n") +
+                ("without consuming any Tokens. The grammar path that causes this is: \n " + leftRecursivePath + "\n") +
+                " To fix this refactor your grammar to remove the left recursion.\n" +
+                "see: https://en.wikipedia.org/wiki/LL_parser#Left_Factoring.";
+            errors.push({
+                message: errMsg,
+                type: parser_public_1.ParserDefinitionErrorType.LEFT_RECURSION,
+                ruleName: ruleName
+            });
+        }
+        // we are only looking for cyclic paths leading back to the specific topRule
+        // other cyclic paths are ignored, we still need this difference to avoid infinite loops...
+        var validNextSteps = utils.difference(nextNonTerminals, path.concat([topRule]));
+        var errorsFromNextSteps = utils.map(validNextSteps, function (currRefRule) {
+            var newPath = utils.cloneArr(path);
+            newPath.push(currRefRule);
+            return validateNoLeftRecursion(topRule, currRefRule, newPath);
+        });
+        return errors.concat(utils.flatten(errorsFromNextSteps));
+    }
+}
+exports.validateNoLeftRecursion = validateNoLeftRecursion;
+function getFirstNoneTerminal(definition) {
+    var result = [];
+    if (utils.isEmpty(definition)) {
+        return result;
+    }
+    var firstProd = utils.first(definition);
+    if (firstProd instanceof gast_public_1.gast.NonTerminal) {
+        result.push(firstProd.referencedRule);
+    }
+    else if (firstProd instanceof gast_public_1.gast.Flat ||
+        firstProd instanceof gast_public_1.gast.Option ||
+        firstProd instanceof gast_public_1.gast.RepetitionMandatory ||
+        firstProd instanceof gast_public_1.gast.RepetitionMandatoryWithSeparator ||
+        firstProd instanceof gast_public_1.gast.RepetitionWithSeparator ||
+        firstProd instanceof gast_public_1.gast.Repetition) {
+        result = result.concat(getFirstNoneTerminal(firstProd.definition));
+    }
+    else if (firstProd instanceof gast_public_1.gast.Alternation) {
+        // each sub definition in alternation is a FLAT
+        result = utils.flatten(utils.map(firstProd.definition, function (currSubDef) {
+            return getFirstNoneTerminal(currSubDef.definition);
+        }));
+    }
+    else if (firstProd instanceof gast_public_1.gast.Terminal) {
+        // nothing to see, move along
+    }
+    else {
+        /* istanbul ignore next */
+        throw Error("non exhaustive match");
+    }
+    var isFirstOptional = gast_1.isOptionalProd(firstProd);
+    var hasMore = definition.length > 1;
+    if (isFirstOptional && hasMore) {
+        var rest = utils.drop(definition);
+        return result.concat(getFirstNoneTerminal(rest));
+    }
+    else {
+        return result;
+    }
+}
+exports.getFirstNoneTerminal = getFirstNoneTerminal;
+var OrCollector = /** @class */ (function (_super) {
+    __extends(OrCollector, _super);
+    function OrCollector() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.alternations = [];
+        return _this;
+    }
+    OrCollector.prototype.visitAlternation = function (node) {
+        this.alternations.push(node);
+    };
+    return OrCollector;
+}(gast_public_1.gast.GAstVisitor));
+function validateEmptyOrAlternative(topLevelRule) {
+    var orCollector = new OrCollector();
+    topLevelRule.accept(orCollector);
+    var ors = orCollector.alternations;
+    var errors = utils.reduce(ors, function (errors, currOr) {
+        var exceptLast = utils.dropRight(currOr.definition);
+        var currErrors = utils.map(exceptLast, function (currAlternative, currAltIdx) {
+            var possibleFirstInAlt = interpreter_1.nextPossibleTokensAfter([currAlternative], [], null, 1);
+            if (utils.isEmpty(possibleFirstInAlt)) {
+                return {
+                    message: "Ambiguous empty alternative: <" + (currAltIdx +
+                        1) + ">" +
+                        (" in <OR" + currOr.occurrenceInParent + "> inside <" + topLevelRule.name + "> Rule.\n") +
+                        "Only the last alternative may be an empty alternative.",
+                    type: parser_public_1.ParserDefinitionErrorType.NONE_LAST_EMPTY_ALT,
+                    ruleName: topLevelRule.name,
+                    occurrence: currOr.occurrenceInParent,
+                    alternative: currAltIdx + 1
+                };
+            }
+            else {
+                return null;
+            }
+        });
+        return errors.concat(utils.compact(currErrors));
+    }, []);
+    return errors;
+}
+exports.validateEmptyOrAlternative = validateEmptyOrAlternative;
+function validateAmbiguousAlternationAlternatives(topLevelRule, maxLookahead, ignoredIssues) {
+    var orCollector = new OrCollector();
+    topLevelRule.accept(orCollector);
+    var ors = orCollector.alternations;
+    var ignoredIssuesForCurrentRule = ignoredIssues[topLevelRule.name];
+    if (ignoredIssuesForCurrentRule) {
+        ors = utils_1.reject(ors, function (currOr) {
+            return ignoredIssuesForCurrentRule[gast_1.getProductionDslName(currOr) + currOr.occurrenceInParent];
+        });
+    }
+    var errors = utils.reduce(ors, function (result, currOr) {
+        var currOccurrence = currOr.occurrenceInParent;
+        var alternatives = lookahead_1.getLookaheadPathsForOr(currOccurrence, topLevelRule, maxLookahead);
+        var altsAmbiguityErrors = checkAlternativesAmbiguities(alternatives, currOr, topLevelRule.name);
+        var altsPrefixAmbiguityErrors = checkPrefixAlternativesAmbiguities(alternatives, currOr, topLevelRule.name);
+        return result.concat(altsAmbiguityErrors, altsPrefixAmbiguityErrors);
+    }, []);
+    return errors;
+}
+exports.validateAmbiguousAlternationAlternatives = validateAmbiguousAlternationAlternatives;
+var RepetionCollector = /** @class */ (function (_super) {
+    __extends(RepetionCollector, _super);
+    function RepetionCollector() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.allProductions = [];
+        return _this;
+    }
+    RepetionCollector.prototype.visitRepetitionWithSeparator = function (manySep) {
+        this.allProductions.push(manySep);
+    };
+    RepetionCollector.prototype.visitRepetitionMandatory = function (atLeastOne) {
+        this.allProductions.push(atLeastOne);
+    };
+    RepetionCollector.prototype.visitRepetitionMandatoryWithSeparator = function (atLeastOneSep) {
+        this.allProductions.push(atLeastOneSep);
+    };
+    RepetionCollector.prototype.visitRepetition = function (many) {
+        this.allProductions.push(many);
+    };
+    return RepetionCollector;
+}(gast_public_1.gast.GAstVisitor));
+exports.RepetionCollector = RepetionCollector;
+function validateTooManyAlts(topLevelRule) {
+    var orCollector = new OrCollector();
+    topLevelRule.accept(orCollector);
+    var ors = orCollector.alternations;
+    var errors = utils.reduce(ors, function (errors, currOr) {
+        if (currOr.definition.length > 255) {
+            errors.push({
+                message: "An Alternation cannot have more than 256 alternatives:\n" +
+                    ("<OR" + currOr.occurrenceInParent + "> inside <" + topLevelRule.name + "> Rule.\n has " + (currOr.definition.length +
+                        1) + " alternatives."),
+                type: parser_public_1.ParserDefinitionErrorType.TOO_MANY_ALTS,
+                ruleName: topLevelRule.name,
+                occurrence: currOr.occurrenceInParent
+            });
+        }
+        return errors;
+    }, []);
+    return errors;
+}
+exports.validateTooManyAlts = validateTooManyAlts;
+function validateSomeNonEmptyLookaheadPath(topLevelRules, maxLookahead) {
+    var errors = [];
+    utils_1.forEach(topLevelRules, function (currTopRule) {
+        var collectorVisitor = new RepetionCollector();
+        currTopRule.accept(collectorVisitor);
+        var allRuleProductions = collectorVisitor.allProductions;
+        utils_1.forEach(allRuleProductions, function (currProd) {
+            var prodType = lookahead_1.getProdType(currProd);
+            var currOccurrence = currProd.occurrenceInParent;
+            var paths = lookahead_1.getLookaheadPathsForOptionalProd(currOccurrence, currTopRule, prodType, maxLookahead);
+            var pathsInsideProduction = paths[0];
+            if (utils_1.isEmpty(utils_1.flatten(pathsInsideProduction))) {
+                var implicitOccurrence = currProd.implicitOccurrenceIndex;
+                var dslName = gast_1.getProductionDslName(currProd);
+                if (!implicitOccurrence) {
+                    dslName += currOccurrence;
+                }
+                var errMsg = "The repetition <" + dslName + "> within Rule <" + currTopRule.name + "> can never consume any tokens.\n" +
+                    "This could lead to an infinite loop.";
+                errors.push({
+                    message: errMsg,
+                    type: parser_public_1.ParserDefinitionErrorType.NO_NON_EMPTY_LOOKAHEAD,
+                    ruleName: currTopRule.name
+                });
+            }
+        });
+    });
+    return errors;
+}
+exports.validateSomeNonEmptyLookaheadPath = validateSomeNonEmptyLookaheadPath;
+function checkAlternativesAmbiguities(alternatives, alternation, topRuleName) {
+    var foundAmbiguousPaths = [];
+    var identicalAmbiguities = utils_1.reduce(alternatives, function (result, currAlt, currAltIdx) {
+        utils_1.forEach(currAlt, function (currPath) {
+            var altsCurrPathAppearsIn = [currAltIdx];
+            utils_1.forEach(alternatives, function (currOtherAlt, currOtherAltIdx) {
+                if (currAltIdx !== currOtherAltIdx &&
+                    lookahead_1.containsPath(currOtherAlt, currPath)) {
+                    altsCurrPathAppearsIn.push(currOtherAltIdx);
+                }
+            });
+            if (altsCurrPathAppearsIn.length > 1 &&
+                !lookahead_1.containsPath(foundAmbiguousPaths, currPath)) {
+                foundAmbiguousPaths.push(currPath);
+                result.push({
+                    alts: altsCurrPathAppearsIn,
+                    path: currPath
+                });
+            }
+        });
+        return result;
+    }, []);
+    var currErrors = utils.map(identicalAmbiguities, function (currAmbDescriptor) {
+        var ambgIndices = utils_1.map(currAmbDescriptor.alts, function (currAltIdx) { return currAltIdx + 1; });
+        var pathMsg = utils_1.map(currAmbDescriptor.path, function (currtok) {
+            return tokens_public_1.tokenLabel(currtok);
+        }).join(", ");
+        var occurrence = alternation.implicitOccurrenceIndex
+            ? ""
+            : alternation.occurrenceInParent;
+        var currMessage = "Ambiguous alternatives: <" + ambgIndices.join(" ,") + "> in <OR" + occurrence + ">" +
+            (" inside <" + topRuleName + "> Rule,\n") +
+            ("<" + pathMsg + "> may appears as a prefix path in all these alternatives.\n");
+        var docs_version = version_1.VERSION.replace(/\./g, "_");
+        // Should this information be on the error message or in some common errors docs?
+        currMessage =
+            currMessage +
+                "To Resolve this, try one of of the following: \n" +
+                "1. Refactor your grammar to be LL(K) for the current value of k (by default k=5)\n" +
+                "2. Increase the value of K for your grammar by providing a larger 'maxLookahead' value in the parser's config\n" +
+                "3. This issue can be ignored (if you know what you are doing...), see" +
+                " http://sap.github.io/chevrotain/documentation/" +
+                docs_version +
+                "/interfaces/_chevrotain_d_.iparserconfig.html#ignoredissues for more" +
+                " details\n";
+        return {
+            message: currMessage,
+            type: parser_public_1.ParserDefinitionErrorType.AMBIGUOUS_ALTS,
+            ruleName: topRuleName,
+            occurrence: alternation.occurrenceInParent,
+            alternatives: [currAmbDescriptor.alts]
+        };
+    });
+    return currErrors;
+}
+function checkPrefixAlternativesAmbiguities(alternatives, alternation, ruleName) {
+    var errors = [];
+    // flatten
+    var pathsAndIndices = utils_1.reduce(alternatives, function (result, currAlt, idx) {
+        var currPathsAndIdx = utils_1.map(currAlt, function (currPath) {
+            return { idx: idx, path: currPath };
+        });
+        return result.concat(currPathsAndIdx);
+    }, []);
+    utils_1.forEach(pathsAndIndices, function (currPathAndIdx) {
+        var targetIdx = currPathAndIdx.idx;
+        var targetPath = currPathAndIdx.path;
+        var prefixAmbiguitiesPathsAndIndices = utils_1.findAll(pathsAndIndices, function (searchPathAndIdx) {
+            // prefix ambiguity can only be created from lower idx (higher priority) path
+            return (searchPathAndIdx.idx < targetIdx &&
+                // checking for strict prefix because identical lookaheads
+                // will be be detected using a different validation.
+                lookahead_1.isStrictPrefixOfPath(searchPathAndIdx.path, targetPath));
+        });
+        var currPathPrefixErrors = utils_1.map(prefixAmbiguitiesPathsAndIndices, function (currAmbPathAndIdx) {
+            var ambgIndices = [currAmbPathAndIdx.idx + 1, targetIdx + 1];
+            var pathMsg = utils_1.map(currAmbPathAndIdx.path, function (currTok) {
+                return tokens_public_1.tokenLabel(currTok);
+            }).join(", ");
+            var occurrence = alternation.implicitOccurrenceIndex
+                ? ""
+                : alternation.occurrenceInParent;
+            var currMessage = "Ambiguous alternatives: <" + ambgIndices.join(" ,") + "> due to common lookahead prefix\n" +
+                ("in <OR" + occurrence + "> inside <" + ruleName + "> Rule,\n") +
+                ("<" + pathMsg + "> may appears as a prefix path in all these alternatives.\n") +
+                "http://sap.github.io/chevrotain/website/Building_Grammars/resolving_grammar_errors.html#COMMON_PREFIX " +
+                "For farther details.";
+            return {
+                message: currMessage,
+                type: parser_public_1.ParserDefinitionErrorType.AMBIGUOUS_PREFIX_ALTS,
+                ruleName: ruleName,
+                occurrence: occurrence,
+                alternatives: ambgIndices
+            };
+        });
+        errors = errors.concat(currPathPrefixErrors);
+    });
+    return errors;
+}
+function checkTerminalAndNoneTerminalsNameSpace(ruleNames, terminalNames) {
+    var errors = [];
+    utils_1.forEach(ruleNames, function (currRuleName) {
+        if (utils_1.contains(terminalNames, currRuleName)) {
+            var errMsg = "Namespace conflict found in grammar.\n" +
+                ("The grammar has both a Terminal(Token) and a Non-Terminal(Rule) named: <" + currRuleName + ">.\n") +
+                "To resolve this make sure each Terminal and Non-Terminal names are unique\n" +
+                "This is easy to accomplish by using the convention that Terminal names start with an uppercase letter\n" +
+                "and Non-Terminal names start with a lower case letter.";
+            errors.push({
+                message: errMsg,
+                type: parser_public_1.ParserDefinitionErrorType.CONFLICT_TOKENS_RULES_NAMESPACE,
+                ruleName: currRuleName
+            });
+        }
+    });
+    return errors;
+}
+function validateDuplicateNestedRules(topLevelRules) {
+    var errors = [];
+    utils_1.forEach(topLevelRules, function (currTopRule) {
+        var namedCollectorVisitor = new cst_1.NamedDSLMethodsCollectorVisitor("");
+        currTopRule.accept(namedCollectorVisitor);
+        var nestedNames = utils_1.map(namedCollectorVisitor.result, function (currItem) { return currItem.name; });
+        var namesGroups = utils_1.groupBy(nestedNames, function (item) { return item; });
+        var duplicates = utils_1.pick(namesGroups, function (currGroup) {
+            return currGroup.length > 1;
+        });
+        utils_1.forEach(utils_1.values(duplicates), function (currDuplicates) {
+            var duplicateName = utils.first(currDuplicates);
+            var errMsg = "Duplicate nested rule name: ->" + duplicateName + "<- inside rule: ->" + currTopRule.name + "<-\n" +
+                "A nested name must be unique in the scope of a top level grammar rule.";
+            errors.push({
+                message: errMsg,
+                type: parser_public_1.ParserDefinitionErrorType.DUPLICATE_NESTED_NAME,
+                ruleName: currTopRule.name
+            });
+        });
+    });
+    return errors;
+}
+//# sourceMappingURL=checks.js.map
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var gast_public_1 = __webpack_require__(2);
+var gast_1 = __webpack_require__(23);
+var utils_1 = __webpack_require__(0);
+function first(prod) {
+    if (prod instanceof gast_public_1.gast.NonTerminal) {
+        // this could in theory cause infinite loops if
+        // (1) prod A refs prod B.
+        // (2) prod B refs prod A
+        // (3) AB can match the empty set
+        // in other words a cycle where everything is optional so the first will keep
+        // looking ahead for the next optional part and will never exit
+        // currently there is no safeguard for this unique edge case because
+        // (1) not sure a grammar in which this can happen is useful for anything (productive)
+        return first(prod.referencedRule);
+    }
+    else if (prod instanceof gast_public_1.gast.Terminal) {
+        return firstForTerminal(prod);
+    }
+    else if (gast_1.isSequenceProd(prod)) {
+        return firstForSequence(prod);
+    }
+    else if (gast_1.isBranchingProd(prod)) {
+        return firstForBranching(prod);
+    }
+    else {
+        /* istanbul ignore next */
+        throw Error("non exhaustive match");
+    }
+}
+exports.first = first;
+function firstForSequence(prod) {
+    var firstSet = [];
+    var seq = prod.definition;
+    var nextSubProdIdx = 0;
+    var hasInnerProdsRemaining = seq.length > nextSubProdIdx;
+    var currSubProd;
+    // so we enter the loop at least once (if the definition is not empty
+    var isLastInnerProdOptional = true;
+    // scan a sequence until it's end or until we have found a NONE optional production in it
+    while (hasInnerProdsRemaining && isLastInnerProdOptional) {
+        currSubProd = seq[nextSubProdIdx];
+        isLastInnerProdOptional = gast_1.isOptionalProd(currSubProd);
+        firstSet = firstSet.concat(first(currSubProd));
+        nextSubProdIdx = nextSubProdIdx + 1;
+        hasInnerProdsRemaining = seq.length > nextSubProdIdx;
+    }
+    return utils_1.uniq(firstSet);
+}
+exports.firstForSequence = firstForSequence;
+function firstForBranching(prod) {
+    var allAlternativesFirsts = utils_1.map(prod.definition, function (innerProd) {
+        return first(innerProd);
+    });
+    return utils_1.uniq(utils_1.flatten(allAlternativesFirsts));
+}
+exports.firstForBranching = firstForBranching;
+function firstForTerminal(terminal) {
+    return [terminal.terminalType];
+}
+exports.firstForTerminal = firstForTerminal;
+//# sourceMappingURL=first.js.map
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+// Lookahead keys are 32Bit integers in the form
+// TTTTTTTTT-ZZZZZZZZZZZZZZZ-YYYY-XXXX
+// XXXX -> Occurrence Index bitmap.
+// YYYY -> DSL Method Name bitmap.
+// ZZZZZZZZZZZZZZZ -> Rule short Index bitmap.
+// TTTTTTTTT -> alternation alternative index bitmap
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.BITS_FOR_METHOD_IDX = 4;
+exports.BITS_FOR_OCCURRENCE_IDX = 4;
+exports.BITS_FOR_RULE_IDX = 24;
+// TODO: validation, this means that there may at most 2^8 --> 256 alternatives for an alternation.
+exports.BITS_FOR_ALT_IDX = 8;
+// short string used as part of mapping keys.
+// being short improves the performance when composing KEYS for maps out of these
+// The 5 - 8 bits (16 possible values, are reserved for the DSL method indices)
+/* tslint:disable */
+exports.OR_IDX = 1 << exports.BITS_FOR_METHOD_IDX;
+exports.OPTION_IDX = 2 << exports.BITS_FOR_METHOD_IDX;
+exports.MANY_IDX = 3 << exports.BITS_FOR_METHOD_IDX;
+exports.AT_LEAST_ONE_IDX = 4 << exports.BITS_FOR_METHOD_IDX;
+exports.MANY_SEP_IDX = 5 << exports.BITS_FOR_METHOD_IDX;
+exports.AT_LEAST_ONE_SEP_IDX = 6 << exports.BITS_FOR_METHOD_IDX;
+/* tslint:enable */
+// this actually returns a number, but it is always used as a string (object prop key)
+function getKeyForAutomaticLookahead(ruleIdx, dslMethodIdx, occurrence) {
+    /* tslint:disable */
+    return occurrence | dslMethodIdx | ruleIdx;
+    /* tslint:enable */
+}
+exports.getKeyForAutomaticLookahead = getKeyForAutomaticLookahead;
+var BITS_START_FOR_ALT_IDX = 32 - exports.BITS_FOR_ALT_IDX;
+function getKeyForAltIndex(ruleIdx, dslMethodIdx, occurrence, altIdx) {
+    /* tslint:disable */
+    // alternative indices are zero based, thus must always add one (turn on one bit) to guarantee uniqueness.
+    var altIdxBitMap = (altIdx + 1) << BITS_START_FOR_ALT_IDX;
+    return (getKeyForAutomaticLookahead(ruleIdx, dslMethodIdx, occurrence) |
+        altIdxBitMap);
+    /* tslint:enable */
+}
+exports.getKeyForAltIndex = getKeyForAltIndex;
+//# sourceMappingURL=keys.js.map
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var utils_1 = __webpack_require__(0);
+var gast_public_1 = __webpack_require__(2);
+var interpreter_1 = __webpack_require__(7);
+var rest_1 = __webpack_require__(24);
+var tokens_1 = __webpack_require__(8);
+var PROD_TYPE;
+(function (PROD_TYPE) {
+    PROD_TYPE[PROD_TYPE["OPTION"] = 0] = "OPTION";
+    PROD_TYPE[PROD_TYPE["REPETITION"] = 1] = "REPETITION";
+    PROD_TYPE[PROD_TYPE["REPETITION_MANDATORY"] = 2] = "REPETITION_MANDATORY";
+    PROD_TYPE[PROD_TYPE["REPETITION_MANDATORY_WITH_SEPARATOR"] = 3] = "REPETITION_MANDATORY_WITH_SEPARATOR";
+    PROD_TYPE[PROD_TYPE["REPETITION_WITH_SEPARATOR"] = 4] = "REPETITION_WITH_SEPARATOR";
+    PROD_TYPE[PROD_TYPE["ALTERNATION"] = 5] = "ALTERNATION";
+})(PROD_TYPE = exports.PROD_TYPE || (exports.PROD_TYPE = {}));
+function getProdType(prod) {
+    if (prod instanceof gast_public_1.gast.Option) {
+        return PROD_TYPE.OPTION;
+    }
+    else if (prod instanceof gast_public_1.gast.Repetition) {
+        return PROD_TYPE.REPETITION;
+    }
+    else if (prod instanceof gast_public_1.gast.RepetitionMandatory) {
+        return PROD_TYPE.REPETITION_MANDATORY;
+    }
+    else if (prod instanceof gast_public_1.gast.RepetitionMandatoryWithSeparator) {
+        return PROD_TYPE.REPETITION_MANDATORY_WITH_SEPARATOR;
+    }
+    else if (prod instanceof gast_public_1.gast.RepetitionWithSeparator) {
+        return PROD_TYPE.REPETITION_WITH_SEPARATOR;
+    }
+    else if (prod instanceof gast_public_1.gast.Alternation) {
+        return PROD_TYPE.ALTERNATION;
+    }
+    else {
+        /* istanbul ignore next */
+        throw Error("non exhaustive match");
+    }
+}
+exports.getProdType = getProdType;
+function buildLookaheadFuncForOr(occurrence, ruleGrammar, k, hasPredicates, dynamicTokensEnabled, laFuncBuilder) {
+    var lookAheadPaths = getLookaheadPathsForOr(occurrence, ruleGrammar, k);
+    var tokenMatcher = areTokenCategoriesNotUsed(lookAheadPaths)
+        ? tokens_1.tokenStructuredMatcherNoCategories
+        : tokens_1.tokenStructuredMatcher;
+    return laFuncBuilder(lookAheadPaths, hasPredicates, tokenMatcher, dynamicTokensEnabled);
+}
+exports.buildLookaheadFuncForOr = buildLookaheadFuncForOr;
+/**
+ *  When dealing with an Optional production (OPTION/MANY/2nd iteration of AT_LEAST_ONE/...) we need to compare
+ *  the lookahead "inside" the production and the lookahead immediately "after" it in the same top level rule (context free).
+ *
+ *  Example: given a production:
+ *  ABC(DE)?DF
+ *
+ *  The optional '(DE)?' should only be entered if we see 'DE'. a single Token 'D' is not sufficient to distinguish between the two
+ *  alternatives.
+ *
+ *  @returns A Lookahead function which will return true IFF the parser should parse the Optional production.
+ */
+function buildLookaheadFuncForOptionalProd(occurrence, ruleGrammar, k, dynamicTokensEnabled, prodType, lookaheadBuilder) {
+    var lookAheadPaths = getLookaheadPathsForOptionalProd(occurrence, ruleGrammar, prodType, k);
+    var tokenMatcher = areTokenCategoriesNotUsed(lookAheadPaths)
+        ? tokens_1.tokenStructuredMatcherNoCategories
+        : tokens_1.tokenStructuredMatcher;
+    return lookaheadBuilder(lookAheadPaths[0], tokenMatcher, dynamicTokensEnabled);
+}
+exports.buildLookaheadFuncForOptionalProd = buildLookaheadFuncForOptionalProd;
+function buildAlternativesLookAheadFunc(alts, hasPredicates, tokenMatcher, dynamicTokensEnabled) {
+    var numOfAlts = alts.length;
+    var areAllOneTokenLookahead = utils_1.every(alts, function (currAlt) {
+        return utils_1.every(currAlt, function (currPath) {
+            return currPath.length === 1;
+        });
+    });
+    // This version takes into account the predicates as well.
+    if (hasPredicates) {
+        /**
+         * @returns {number} - The chosen alternative index
+         */
+        return function (orAlts) {
+            // unfortunately the predicates must be extracted every single time
+            // as they cannot be cached due to keep references to parameters(vars) which are no longer valid.
+            // note that in the common case of no predicates, no cpu time will be wasted on this (see else block)
+            var predicates = utils_1.map(orAlts, function (currAlt) { return currAlt.GATE; });
+            for (var t = 0; t < numOfAlts; t++) {
+                var currAlt = alts[t];
+                var currNumOfPaths = currAlt.length;
+                var currPredicate = predicates[t];
+                if (currPredicate && !currPredicate.call(this)) {
+                    // if the predicate does not match there is no point in checking the paths
+                    continue;
+                }
+                nextPath: for (var j = 0; j < currNumOfPaths; j++) {
+                    var currPath = currAlt[j];
+                    var currPathLength = currPath.length;
+                    for (var i = 0; i < currPathLength; i++) {
+                        var nextToken = this.LA(i + 1);
+                        if (tokenMatcher(nextToken, currPath[i]) === false) {
+                            // mismatch in current path
+                            // try the next pth
+                            continue nextPath;
+                        }
+                    }
+                    // found a full path that matches.
+                    // this will also work for an empty ALT as the loop will be skipped
+                    return t;
+                }
+                // none of the paths for the current alternative matched
+                // try the next alternative
+            }
+            // none of the alternatives could be matched
+            return undefined;
+        };
+    }
+    else if (areAllOneTokenLookahead && !dynamicTokensEnabled) {
+        // optimized (common) case of all the lookaheads paths requiring only
+        // a single token lookahead. These Optimizations cannot work if dynamically defined Tokens are used.
+        var singleTokenAlts = utils_1.map(alts, function (currAlt) {
+            return utils_1.flatten(currAlt);
+        });
+        var choiceToAlt_1 = utils_1.reduce(singleTokenAlts, function (result, currAlt, idx) {
+            utils_1.forEach(currAlt, function (currTokType) {
+                if (!utils_1.has(result, currTokType.tokenTypeIdx)) {
+                    result[currTokType.tokenTypeIdx] = idx;
+                }
+                utils_1.forEach(currTokType.categoryMatches, function (currExtendingType) {
+                    if (!utils_1.has(result, currExtendingType)) {
+                        result[currExtendingType] = idx;
+                    }
+                });
+            });
+            return result;
+        }, {});
+        /**
+         * @returns {number} - The chosen alternative index
+         */
+        return function () {
+            var nextToken = this.LA(1);
+            return choiceToAlt_1[nextToken.tokenTypeIdx];
+        };
+    }
+    else {
+        // optimized lookahead without needing to check the predicates at all.
+        // this causes code duplication which is intentional to improve performance.
+        /**
+         * @returns {number} - The chosen alternative index
+         */
+        return function () {
+            for (var t = 0; t < numOfAlts; t++) {
+                var currAlt = alts[t];
+                var currNumOfPaths = currAlt.length;
+                nextPath: for (var j = 0; j < currNumOfPaths; j++) {
+                    var currPath = currAlt[j];
+                    var currPathLength = currPath.length;
+                    for (var i = 0; i < currPathLength; i++) {
+                        var nextToken = this.LA(i + 1);
+                        if (tokenMatcher(nextToken, currPath[i]) === false) {
+                            // mismatch in current path
+                            // try the next pth
+                            continue nextPath;
+                        }
+                    }
+                    // found a full path that matches.
+                    // this will also work for an empty ALT as the loop will be skipped
+                    return t;
+                }
+                // none of the paths for the current alternative matched
+                // try the next alternative
+            }
+            // none of the alternatives could be matched
+            return undefined;
+        };
+    }
+}
+exports.buildAlternativesLookAheadFunc = buildAlternativesLookAheadFunc;
+function buildSingleAlternativeLookaheadFunction(alt, tokenMatcher, dynamicTokensEnabled) {
+    var areAllOneTokenLookahead = utils_1.every(alt, function (currPath) {
+        return currPath.length === 1;
+    });
+    var numOfPaths = alt.length;
+    // optimized (common) case of all the lookaheads paths requiring only
+    // a single token lookahead.
+    if (areAllOneTokenLookahead && !dynamicTokensEnabled) {
+        var singleTokensTypes = utils_1.flatten(alt);
+        if (singleTokensTypes.length === 1 &&
+            utils_1.isEmpty(singleTokensTypes[0].categoryMatches)) {
+            var expectedTokenType = singleTokensTypes[0];
+            var expectedTokenUniqueKey_1 = expectedTokenType.tokenTypeIdx;
+            return function () {
+                return this.LA(1).tokenTypeIdx === expectedTokenUniqueKey_1;
+            };
+        }
+        else {
+            var choiceToAlt_2 = utils_1.reduce(singleTokensTypes, function (result, currTokType, idx) {
+                result[currTokType.tokenTypeIdx] = true;
+                utils_1.forEach(currTokType.categoryMatches, function (currExtendingType) {
+                    result[currExtendingType] = true;
+                });
+                return result;
+            }, {});
+            return function () {
+                var nextToken = this.LA(1);
+                return choiceToAlt_2[nextToken.tokenTypeIdx] === true;
+            };
+        }
+    }
+    else {
+        return function () {
+            nextPath: for (var j = 0; j < numOfPaths; j++) {
+                var currPath = alt[j];
+                var currPathLength = currPath.length;
+                for (var i = 0; i < currPathLength; i++) {
+                    var nextToken = this.LA(i + 1);
+                    if (tokenMatcher(nextToken, currPath[i]) === false) {
+                        // mismatch in current path
+                        // try the next pth
+                        continue nextPath;
+                    }
+                }
+                // found a full path that matches.
+                return true;
+            }
+            // none of the paths matched
+            return false;
+        };
+    }
+}
+exports.buildSingleAlternativeLookaheadFunction = buildSingleAlternativeLookaheadFunction;
+var RestDefinitionFinderWalker = /** @class */ (function (_super) {
+    __extends(RestDefinitionFinderWalker, _super);
+    function RestDefinitionFinderWalker(topProd, targetOccurrence, targetProdType) {
+        var _this = _super.call(this) || this;
+        _this.topProd = topProd;
+        _this.targetOccurrence = targetOccurrence;
+        _this.targetProdType = targetProdType;
+        return _this;
+    }
+    RestDefinitionFinderWalker.prototype.startWalking = function () {
+        this.walk(this.topProd);
+        return this.restDef;
+    };
+    RestDefinitionFinderWalker.prototype.checkIsTarget = function (node, expectedProdType, currRest, prevRest) {
+        if (node.occurrenceInParent === this.targetOccurrence &&
+            this.targetProdType === expectedProdType) {
+            this.restDef = currRest.concat(prevRest);
+            return true;
+        }
+        // performance optimization, do not iterate over the entire Grammar ast after we have found the target
+        return false;
+    };
+    RestDefinitionFinderWalker.prototype.walkOption = function (optionProd, currRest, prevRest) {
+        if (!this.checkIsTarget(optionProd, PROD_TYPE.OPTION, currRest, prevRest)) {
+            _super.prototype.walkOption.call(this, optionProd, currRest, prevRest);
+        }
+    };
+    RestDefinitionFinderWalker.prototype.walkAtLeastOne = function (atLeastOneProd, currRest, prevRest) {
+        if (!this.checkIsTarget(atLeastOneProd, PROD_TYPE.REPETITION_MANDATORY, currRest, prevRest)) {
+            _super.prototype.walkOption.call(this, atLeastOneProd, currRest, prevRest);
+        }
+    };
+    RestDefinitionFinderWalker.prototype.walkAtLeastOneSep = function (atLeastOneSepProd, currRest, prevRest) {
+        if (!this.checkIsTarget(atLeastOneSepProd, PROD_TYPE.REPETITION_MANDATORY_WITH_SEPARATOR, currRest, prevRest)) {
+            _super.prototype.walkOption.call(this, atLeastOneSepProd, currRest, prevRest);
+        }
+    };
+    RestDefinitionFinderWalker.prototype.walkMany = function (manyProd, currRest, prevRest) {
+        if (!this.checkIsTarget(manyProd, PROD_TYPE.REPETITION, currRest, prevRest)) {
+            _super.prototype.walkOption.call(this, manyProd, currRest, prevRest);
+        }
+    };
+    RestDefinitionFinderWalker.prototype.walkManySep = function (manySepProd, currRest, prevRest) {
+        if (!this.checkIsTarget(manySepProd, PROD_TYPE.REPETITION_WITH_SEPARATOR, currRest, prevRest)) {
+            _super.prototype.walkOption.call(this, manySepProd, currRest, prevRest);
+        }
+    };
+    return RestDefinitionFinderWalker;
+}(rest_1.RestWalker));
+/**
+ * Returns the definition of a target production in a top level level rule.
+ */
+var InsideDefinitionFinderVisitor = /** @class */ (function (_super) {
+    __extends(InsideDefinitionFinderVisitor, _super);
+    function InsideDefinitionFinderVisitor(targetOccurrence, targetProdType) {
+        var _this = _super.call(this) || this;
+        _this.targetOccurrence = targetOccurrence;
+        _this.targetProdType = targetProdType;
+        _this.result = [];
+        return _this;
+    }
+    InsideDefinitionFinderVisitor.prototype.checkIsTarget = function (node, expectedProdName) {
+        if (node.occurrenceInParent === this.targetOccurrence &&
+            this.targetProdType === expectedProdName) {
+            this.result = node.definition;
+        }
+    };
+    InsideDefinitionFinderVisitor.prototype.visitOption = function (node) {
+        this.checkIsTarget(node, PROD_TYPE.OPTION);
+    };
+    InsideDefinitionFinderVisitor.prototype.visitRepetition = function (node) {
+        this.checkIsTarget(node, PROD_TYPE.REPETITION);
+    };
+    InsideDefinitionFinderVisitor.prototype.visitRepetitionMandatory = function (node) {
+        this.checkIsTarget(node, PROD_TYPE.REPETITION_MANDATORY);
+    };
+    InsideDefinitionFinderVisitor.prototype.visitRepetitionMandatoryWithSeparator = function (node) {
+        this.checkIsTarget(node, PROD_TYPE.REPETITION_MANDATORY_WITH_SEPARATOR);
+    };
+    InsideDefinitionFinderVisitor.prototype.visitRepetitionWithSeparator = function (node) {
+        this.checkIsTarget(node, PROD_TYPE.REPETITION_WITH_SEPARATOR);
+    };
+    InsideDefinitionFinderVisitor.prototype.visitAlternation = function (node) {
+        this.checkIsTarget(node, PROD_TYPE.ALTERNATION);
+    };
+    return InsideDefinitionFinderVisitor;
+}(gast_public_1.gast.GAstVisitor));
+function lookAheadSequenceFromAlternatives(altsDefs, k) {
+    function getOtherPaths(pathsAndSuffixes, filterIdx) {
+        return utils_1.reduce(pathsAndSuffixes, function (result, currPathsAndSuffixes, currIdx) {
+            if (currIdx !== filterIdx) {
+                var currPartialPaths = utils_1.map(currPathsAndSuffixes, function (singlePathAndSuffix) { return singlePathAndSuffix.partialPath; });
+                return result.concat(currPartialPaths);
+            }
+            return result;
+        }, []);
+    }
+    function isUniquePrefix(arr, item) {
+        return (utils_1.find(arr, function (currOtherPath) {
+            return utils_1.every(item, function (currPathTok, idx) { return currPathTok === currOtherPath[idx]; });
+        }) === undefined);
+    }
+    function initializeArrayOfArrays(size) {
+        var result = [];
+        for (var i = 0; i < size; i++) {
+            result.push([]);
+        }
+        return result;
+    }
+    var partialAlts = utils_1.map(altsDefs, function (currAlt) { return interpreter_1.possiblePathsFrom([currAlt], 1); });
+    var finalResult = initializeArrayOfArrays(partialAlts.length);
+    var newData = partialAlts;
+    // maxLookahead loop
+    for (var pathLength = 1; pathLength <= k; pathLength++) {
+        var currDataset = newData;
+        newData = initializeArrayOfArrays(currDataset.length);
+        // alternatives loop
+        for (var resultIdx = 0; resultIdx < currDataset.length; resultIdx++) {
+            var currAltPathsAndSuffixes = currDataset[resultIdx];
+            var otherPaths = getOtherPaths(currDataset, resultIdx);
+            // paths in current alternative loop
+            for (var currPathIdx = 0; currPathIdx < currAltPathsAndSuffixes.length; currPathIdx++) {
+                var currPathPrefix = currAltPathsAndSuffixes[currPathIdx].partialPath;
+                var suffixDef = currAltPathsAndSuffixes[currPathIdx].suffixDef;
+                var isUnique = isUniquePrefix(otherPaths, currPathPrefix);
+                // even if a path is not unique, but there are no longer alternatives to try
+                // or if we have reached the maximum lookahead (k) permitted.
+                if (isUnique ||
+                    utils_1.isEmpty(suffixDef) ||
+                    currPathPrefix.length === k) {
+                    var currAltResult = finalResult[resultIdx];
+                    if (!containsPath(currAltResult, currPathPrefix)) {
+                        currAltResult.push(currPathPrefix);
+                    }
+                }
+                else {
+                    var newPartialPathsAndSuffixes = interpreter_1.possiblePathsFrom(suffixDef, pathLength + 1, currPathPrefix);
+                    newData[resultIdx] = newData[resultIdx].concat(newPartialPathsAndSuffixes);
+                }
+            }
+        }
+    }
+    return finalResult;
+}
+exports.lookAheadSequenceFromAlternatives = lookAheadSequenceFromAlternatives;
+function getLookaheadPathsForOr(occurrence, ruleGrammar, k) {
+    var visitor = new InsideDefinitionFinderVisitor(occurrence, PROD_TYPE.ALTERNATION);
+    ruleGrammar.accept(visitor);
+    return lookAheadSequenceFromAlternatives(visitor.result, k);
+}
+exports.getLookaheadPathsForOr = getLookaheadPathsForOr;
+function getLookaheadPathsForOptionalProd(occurrence, ruleGrammar, prodType, k) {
+    var insideDefVisitor = new InsideDefinitionFinderVisitor(occurrence, prodType);
+    ruleGrammar.accept(insideDefVisitor);
+    var insideDef = insideDefVisitor.result;
+    var afterDefWalker = new RestDefinitionFinderWalker(ruleGrammar, occurrence, prodType);
+    var afterDef = afterDefWalker.startWalking();
+    var insideFlat = new gast_public_1.gast.Flat(insideDef);
+    var afterFlat = new gast_public_1.gast.Flat(afterDef);
+    return lookAheadSequenceFromAlternatives([insideFlat, afterFlat], k);
+}
+exports.getLookaheadPathsForOptionalProd = getLookaheadPathsForOptionalProd;
+function containsPath(alternative, path) {
+    var found = utils_1.find(alternative, function (otherPath) {
+        return (path.length === otherPath.length &&
+            utils_1.every(path, function (targetItem, idx) {
+                return targetItem === otherPath[idx];
+            }));
+    });
+    return found !== undefined;
+}
+exports.containsPath = containsPath;
+function isStrictPrefixOfPath(prefix, other) {
+    return (prefix.length < other.length &&
+        utils_1.every(prefix, function (tokType, idx) {
+            return tokType === other[idx];
+        }));
+}
+exports.isStrictPrefixOfPath = isStrictPrefixOfPath;
+function areTokenCategoriesNotUsed(lookAheadPaths) {
+    return utils_1.every(lookAheadPaths, function (singleAltPaths) {
+        return utils_1.every(singleAltPaths, function (singlePath) {
+            return utils_1.every(singlePath, function (token) { return utils_1.isEmpty(token.categoryMatches); });
+        });
+    });
+}
+exports.areTokenCategoriesNotUsed = areTokenCategoriesNotUsed;
+//# sourceMappingURL=lookahead.js.map
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports) {
+
+// Generated by CoffeeScript 1.12.6
+(function() {
+  var XMLAttribute;
+
+  module.exports = XMLAttribute = (function() {
+    function XMLAttribute(parent, name, value) {
+      this.options = parent.options;
+      this.stringify = parent.stringify;
+      if (name == null) {
+        throw new Error("Missing attribute name of element " + parent.name);
+      }
+      if (value == null) {
+        throw new Error("Missing attribute value for attribute " + name + " of element " + parent.name);
+      }
+      this.name = this.stringify.attName(name);
+      this.value = this.stringify.attValue(value);
+    }
+
+    XMLAttribute.prototype.clone = function() {
+      return Object.create(this);
+    };
+
+    XMLAttribute.prototype.toString = function(options) {
+      return this.options.writer.set(options).attribute(this);
+    };
+
+    return XMLAttribute;
+
+  })();
+
+}).call(this);
+
+
+/***/ }),
+/* 38 */
+/***/ (function(module, exports) {
+
+// Generated by CoffeeScript 1.12.6
+(function() {
+  var XMLStringifier,
+    bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+    hasProp = {}.hasOwnProperty;
+
+  module.exports = XMLStringifier = (function() {
+    function XMLStringifier(options) {
+      this.assertLegalChar = bind(this.assertLegalChar, this);
+      var key, ref, value;
+      options || (options = {});
+      this.noDoubleEncoding = options.noDoubleEncoding;
+      ref = options.stringify || {};
+      for (key in ref) {
+        if (!hasProp.call(ref, key)) continue;
+        value = ref[key];
+        this[key] = value;
+      }
+    }
+
+    XMLStringifier.prototype.eleName = function(val) {
+      val = '' + val || '';
+      return this.assertLegalChar(val);
+    };
+
+    XMLStringifier.prototype.eleText = function(val) {
+      val = '' + val || '';
+      return this.assertLegalChar(this.elEscape(val));
+    };
+
+    XMLStringifier.prototype.cdata = function(val) {
+      val = '' + val || '';
+      val = val.replace(']]>', ']]]]><![CDATA[>');
+      return this.assertLegalChar(val);
+    };
+
+    XMLStringifier.prototype.comment = function(val) {
+      val = '' + val || '';
+      if (val.match(/--/)) {
+        throw new Error("Comment text cannot contain double-hypen: " + val);
+      }
+      return this.assertLegalChar(val);
+    };
+
+    XMLStringifier.prototype.raw = function(val) {
+      return '' + val || '';
+    };
+
+    XMLStringifier.prototype.attName = function(val) {
+      return val = '' + val || '';
+    };
+
+    XMLStringifier.prototype.attValue = function(val) {
+      val = '' + val || '';
+      return this.attEscape(val);
+    };
+
+    XMLStringifier.prototype.insTarget = function(val) {
+      return '' + val || '';
+    };
+
+    XMLStringifier.prototype.insValue = function(val) {
+      val = '' + val || '';
+      if (val.match(/\?>/)) {
+        throw new Error("Invalid processing instruction value: " + val);
+      }
+      return val;
+    };
+
+    XMLStringifier.prototype.xmlVersion = function(val) {
+      val = '' + val || '';
+      if (!val.match(/1\.[0-9]+/)) {
+        throw new Error("Invalid version number: " + val);
+      }
+      return val;
+    };
+
+    XMLStringifier.prototype.xmlEncoding = function(val) {
+      val = '' + val || '';
+      if (!val.match(/^[A-Za-z](?:[A-Za-z0-9._-]|-)*$/)) {
+        throw new Error("Invalid encoding: " + val);
+      }
+      return val;
+    };
+
+    XMLStringifier.prototype.xmlStandalone = function(val) {
+      if (val) {
+        return "yes";
+      } else {
+        return "no";
+      }
+    };
+
+    XMLStringifier.prototype.dtdPubID = function(val) {
+      return '' + val || '';
+    };
+
+    XMLStringifier.prototype.dtdSysID = function(val) {
+      return '' + val || '';
+    };
+
+    XMLStringifier.prototype.dtdElementValue = function(val) {
+      return '' + val || '';
+    };
+
+    XMLStringifier.prototype.dtdAttType = function(val) {
+      return '' + val || '';
+    };
+
+    XMLStringifier.prototype.dtdAttDefault = function(val) {
+      if (val != null) {
+        return '' + val || '';
+      } else {
+        return val;
+      }
+    };
+
+    XMLStringifier.prototype.dtdEntityValue = function(val) {
+      return '' + val || '';
+    };
+
+    XMLStringifier.prototype.dtdNData = function(val) {
+      return '' + val || '';
+    };
+
+    XMLStringifier.prototype.convertAttKey = '@';
+
+    XMLStringifier.prototype.convertPIKey = '?';
+
+    XMLStringifier.prototype.convertTextKey = '#text';
+
+    XMLStringifier.prototype.convertCDataKey = '#cdata';
+
+    XMLStringifier.prototype.convertCommentKey = '#comment';
+
+    XMLStringifier.prototype.convertRawKey = '#raw';
+
+    XMLStringifier.prototype.assertLegalChar = function(str) {
+      var res;
+      res = str.match(/[\0\uFFFE\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]/);
+      if (res) {
+        throw new Error("Invalid character in string: " + str + " at index " + res.index);
+      }
+      return str;
+    };
+
+    XMLStringifier.prototype.elEscape = function(str) {
+      var ampregex;
+      ampregex = this.noDoubleEncoding ? /(?!&\S+;)&/g : /&/g;
+      return str.replace(ampregex, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\r/g, '&#xD;');
+    };
+
+    XMLStringifier.prototype.attEscape = function(str) {
+      var ampregex;
+      ampregex = this.noDoubleEncoding ? /(?!&\S+;)&/g : /&/g;
+      return str.replace(ampregex, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;').replace(/\t/g, '&#x9;').replace(/\n/g, '&#xA;').replace(/\r/g, '&#xD;');
+    };
+
+    return XMLStringifier;
+
+  })();
+
+}).call(this);
+
+
+/***/ }),
+/* 39 */
+/***/ (function(module, exports) {
+
+// Generated by CoffeeScript 1.12.6
+(function() {
+  var XMLWriterBase,
+    hasProp = {}.hasOwnProperty;
+
+  module.exports = XMLWriterBase = (function() {
+    function XMLWriterBase(options) {
+      var key, ref, ref1, ref2, ref3, ref4, ref5, ref6, value;
+      options || (options = {});
+      this.pretty = options.pretty || false;
+      this.allowEmpty = (ref = options.allowEmpty) != null ? ref : false;
+      if (this.pretty) {
+        this.indent = (ref1 = options.indent) != null ? ref1 : '  ';
+        this.newline = (ref2 = options.newline) != null ? ref2 : '\n';
+        this.offset = (ref3 = options.offset) != null ? ref3 : 0;
+        this.dontprettytextnodes = (ref4 = options.dontprettytextnodes) != null ? ref4 : 0;
+      } else {
+        this.indent = '';
+        this.newline = '';
+        this.offset = 0;
+        this.dontprettytextnodes = 0;
+      }
+      this.spacebeforeslash = (ref5 = options.spacebeforeslash) != null ? ref5 : '';
+      if (this.spacebeforeslash === true) {
+        this.spacebeforeslash = ' ';
+      }
+      this.newlinedefault = this.newline;
+      this.prettydefault = this.pretty;
+      ref6 = options.writer || {};
+      for (key in ref6) {
+        if (!hasProp.call(ref6, key)) continue;
+        value = ref6[key];
+        this[key] = value;
+      }
+    }
+
+    XMLWriterBase.prototype.set = function(options) {
+      var key, ref, value;
+      options || (options = {});
+      if ("pretty" in options) {
+        this.pretty = options.pretty;
+      }
+      if ("allowEmpty" in options) {
+        this.allowEmpty = options.allowEmpty;
+      }
+      if (this.pretty) {
+        this.indent = "indent" in options ? options.indent : '  ';
+        this.newline = "newline" in options ? options.newline : '\n';
+        this.offset = "offset" in options ? options.offset : 0;
+        this.dontprettytextnodes = "dontprettytextnodes" in options ? options.dontprettytextnodes : 0;
+      } else {
+        this.indent = '';
+        this.newline = '';
+        this.offset = 0;
+        this.dontprettytextnodes = 0;
+      }
+      this.spacebeforeslash = "spacebeforeslash" in options ? options.spacebeforeslash : '';
+      if (this.spacebeforeslash === true) {
+        this.spacebeforeslash = ' ';
+      }
+      this.newlinedefault = this.newline;
+      this.prettydefault = this.pretty;
+      ref = options.writer || {};
+      for (key in ref) {
+        if (!hasProp.call(ref, key)) continue;
+        value = ref[key];
+        this[key] = value;
+      }
+      return this;
+    };
+
+    XMLWriterBase.prototype.space = function(level) {
+      var indent;
+      if (this.pretty) {
+        indent = (level || 0) + this.offset + 1;
+        if (indent > 0) {
+          return new Array(indent).join(this.indent);
+        } else {
+          return '';
+        }
+      } else {
+        return '';
+      }
+    };
+
+    return XMLWriterBase;
+
+  })();
+
+}).call(this);
+
+
+/***/ }),
+/* 40 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export parse */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_chevrotain__);
+/**
+ * Parser: using class, seems not to work, HELP
+ *
+ * Define parser rules, see wiki
+ *
+ * @file   This files defines the LNParser class and parse function.
+ * @author Ellen Vanhove.
+ */
+// Using ES6 style imports, this means Webpack 2 can perform tree shaking
+
+
+/*import {
+    LNLexer,
+    allTokens,
+    WhiteSpace,
+    Literal, StringLiteral, NumberLiteral, ColorLiteral,
+    Forever, End, Until, Repeat, If, Else, Then,
+    StatementTerminator,
+    Label,
+    LCurlyBracket, RCurlyBracket,
+    LRoundBracket, RRoundBracket,
+    RAngleBracket, LAngleBracket,
+    LSquareBracket, RSquareBracket,
+    DoubleColon,
+} from "./LNLexer" */
+
+const lntokens = __webpack_require__(21)
+
+    let LNLexer = lntokens.LNLexer;
+    let allTokens = lntokens.allTokens;
+    let Literal = lntokens.Literal;
+    let Forever = lntokens.Forever;
+    let End = lntokens.End;
+    let Until = lntokens.Until;
+    let Repeat = lntokens.Repeat;
+    let If = lntokens.If;
+    let Else = lntokens.Else;
+    let Then = lntokens.Then;
+    let StatementTerminator = lntokens.StatementTerminator;
+    let Label = lntokens.Label;
+    let LCurlyBracket = lntokens.LCurlyBracket;
+    let RCurlyBracket = lntokens.RCurlyBracket;
+    let LRoundBracket = lntokens.LRoundBracket;
+    let RRoundBracket = lntokens.RRoundBracket;
+    let RAngleBracket = lntokens.RAngleBracket;
+    let LAngleBracket = lntokens.LAngleBracket;
+    let LSquareBracket = lntokens.LSquareBracket;
+    let RSquareBracket = lntokens.RSquareBracket;
+    let DoubleColon = lntokens.DoubleColon;
+
+class LNParser extends __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Parser"] {
+    constructor(input) {
+        super(input, allTokens);
+
+        const $ = this;
+
+        $.RULE("scripts", () => {
+            $.MANY(() => {
+                $.CONSUME(StatementTerminator);
+            });
+            $.AT_LEAST_ONE(() => {
+                $.OR([{
+                    ALT: () => {
+                        $.SUBRULE($.multipleStacks);
+                    }
+                }, {
+                    ALT: () => {
+                        $.SUBRULE($.reporterblock);
+                    }
+                }, {
+                    ALT: () => {
+                        $.SUBRULE($.booleanblock);
+                    }
+                }]);
+            });
+            $.MANY2(() => {
+                $.CONSUME2(StatementTerminator);
+            })
+
+        });
+        $.RULE("multipleStacks", () => {
+            $.AT_LEAST_ONE_SEP({
+                SEP: StatementTerminator,
+                DEF: () => {
+                    $.SUBRULE($.stack);
+                }
+            });
+        });
+
+
+        $.RULE("stack", () => {
+            $.AT_LEAST_ONE(() => {
+                $.SUBRULE($.stackline);
+            });
+        });
+
+        $.RULE("stackline", () => {
+            $.OR([{
+                NAME: "$block",
+                ALT: () => {
+                    $.SUBRULE($.block);
+                }
+            }, {
+                NAME: "$forever",
+                ALT: () => {
+                    $.SUBRULE($.forever);
+                }
+            }, {
+                NAME: "$repeat",
+                ALT: () => {
+                    $.SUBRULE($.repeat);
+                }
+            }, {
+                NAME: "$repeatuntil",
+                ALT: () => {
+                    $.SUBRULE($.repeatuntil);
+                }
+            }, {
+                NAME: "$ifelse",
+                ALT: () => {
+                    $.SUBRULE($.ifelse);
+                }
+            }]);
+        });
+
+
+        $.RULE("forever", () => {
+            $.CONSUME(Forever);
+            $.OPTION(() => {
+                $.CONSUME(StatementTerminator);
+            });
+            $.OPTION2(() => {
+                $.SUBRULE($.stack);
+            });
+            $.OPTION3(() => {
+                $.SUBRULE($.end);
+            })
+        });
+
+        $.RULE("repeat", () => {
+            $.CONSUME(Repeat);
+            $.SUBRULE($.countableinput);
+            $.OPTION(() => {
+                $.CONSUME(StatementTerminator);
+            });
+            $.OPTION2(() => {
+                $.SUBRULE($.stack);
+            });
+            $.OPTION3(() => {
+                $.SUBRULE($.end);
+            })
+
+        });
+
+        $.RULE("repeatuntil", () => {
+            $.CONSUME(Repeat);
+            $.CONSUME(Until);
+            $.SUBRULE($.booleanblock);
+            $.OPTION(() => {
+                $.CONSUME(StatementTerminator);
+            });
+            $.OPTION2(() => {
+                $.SUBRULE($.stack);
+            });
+            $.OPTION3(() => {
+                $.SUBRULE($.end);
+            })
+        });
+
+        $.RULE("ifelse", () => {
+            $.CONSUME(If);
+            $.SUBRULE($.booleanblock);
+            $.OPTION(() => {
+                $.CONSUME(Then);
+            });
+            $.OPTION2(() => {
+                $.CONSUME(StatementTerminator);
+            });
+            $.OPTION3(() => {
+                $.SUBRULE($.stack);
+            });
+            $.OPTION4(() => {
+                $.SUBRULE($.else);
+            });
+            $.OPTION5(() => {
+                $.SUBRULE($.end);
+            })
+        });
+        $.RULE("else", () => {
+            $.CONSUME(Else);
+            $.OPTION(() => {
+                $.CONSUME(StatementTerminator);
+            });
+            $.OPTION2(() => {
+                $.SUBRULE($.stack);
+            })
+        });
+
+        $.RULE("end", () => {
+            $.CONSUME(End);
+            $.OPTION(() => {
+                $.CONSUME(StatementTerminator);
+            })
+        });
+
+        $.RULE("block", () => {
+            $.AT_LEAST_ONE(() => {
+                $.OR([{
+                    ALT: () => {
+                        $.CONSUME1(Label);
+                    }
+                }, {
+                    ALT: () => {
+                        $.SUBRULE($.argument);
+                    }
+                }]);
+
+            });
+            $.OPTION(() => {
+                $.SUBRULE($.option);
+            });
+            $.OPTION2(() => {
+                $.CONSUME(StatementTerminator);
+            })
+
+        });
+
+        $.RULE("option", () => {
+            $.CONSUME(DoubleColon);
+            $.CONSUME(Label);
+        });
+
+        $.RULE("argument", () => {
+            $.OR([{
+                ALT: () => {
+                    $.CONSUME(LCurlyBracket);
+                    $.OPTION(() => {
+                        $.OR2([{
+                            ALT: () => {
+                                $.SUBRULE($.primitive);
+                            }
+                        }, {
+                            ALT: () => {
+                                $.SUBRULE($.reporterblock);
+                            }
+                        }, {
+                            ALT: () => {
+                                $.SUBRULE($.booleanblock);
+                            }
+                        }]);
+                    });
+                    $.CONSUME(RCurlyBracket);
+                }
+            }, {
+                ALT: () => {
+                    $.SUBRULE($.choice);
+                }
+            }])
+
+        });
+
+
+        $.RULE("countableinput", () => {
+
+            $.OR([{
+                ALT: () => {
+                    $.SUBRULE($.primitive);
+                }
+            }, {
+                ALT: () => {
+                    $.SUBRULE($.reporterblock);
+                }
+            }]);
+
+
+        });
+
+        $.RULE("primitive", () => {
+            $.CONSUME(Literal);
+        });
+
+        $.RULE("reporterblock", () => {
+            $.CONSUME(LRoundBracket);
+            $.OPTION(() => {
+                $.SUBRULE($.block);
+            });
+            $.CONSUME(RRoundBracket);
+
+        });
+
+        $.RULE("choice", () => {
+            $.CONSUME(LSquareBracket);
+            $.OPTION(() => {
+                $.CONSUME(Label);
+            });
+            $.CONSUME(RSquareBracket);
+        });
+
+        $.RULE("booleanblock", () => {
+            $.CONSUME(LAngleBracket);
+            $.OPTION(() => {
+                $.SUBRULE($.block);
+            });
+            $.CONSUME(RAngleBracket);
+
+        });
+
+
+        // very important to call this after all the rules have been defined.
+        // otherwise the parser may not work correctly as it will lack information
+        // derived during the self analysis phase.
+        __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Parser"].performSelfAnalysis(this);
+    }
+}
+/* unused harmony export default */
+
+
+
+// ----------------- wrapping it all together -----------------
+
+//LNParser.prototype = Object.create(Parser.prototype);
+//LNParser.prototype.constructor = LNParser;
+// reuse the same parser instance.
+const lnparser = new LNParser([]);
+/* harmony export (immutable) */ __webpack_exports__["a"] = lnparser;
+
+
+function parse(text) {
+    console.log('seperate file, class');
+    const lexResult = LNLexer.tokenize(text);
+    // setting a new input will RESET the parser instance's state.
+    lnparser.input = lexResult.tokens;
+    // any top level rule may be used as an entry point
+    const value = lnparser.scripts(); //TOP RULE
+    console.log(value);
+    console.log(lexResult.errors);
+    console.log(lnparser.errors);
+    return {
+        value: value,
+        lexErrors: lexResult.errors,
+        parseErrors: lnparser.errors
+    }
+}
+
+
+
+/***/ }),
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -16596,1830 +19054,7 @@ return jQuery;
 
 
 /***/ }),
-/* 28 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-// TODO: can this be removed? where is it used?
-exports.IN = "_~IN~_";
-//# sourceMappingURL=constants.js.map
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var tokens_public_1 = __webpack_require__(3);
-var gast_public_1 = __webpack_require__(2);
-var utils_1 = __webpack_require__(0);
-var lang_extensions_1 = __webpack_require__(5);
-var keys_1 = __webpack_require__(34);
-var GAstVisitor = gast_public_1.gast.GAstVisitor;
-function addTerminalToCst(node, token, tokenTypeName) {
-    ;
-    node.children[tokenTypeName].push(token);
-}
-exports.addTerminalToCst = addTerminalToCst;
-function addNoneTerminalToCst(node, ruleName, ruleResult) {
-    ;
-    node.children[ruleName].push(ruleResult);
-}
-exports.addNoneTerminalToCst = addNoneTerminalToCst;
-var NamedDSLMethodsCollectorVisitor = /** @class */ (function (_super) {
-    __extends(NamedDSLMethodsCollectorVisitor, _super);
-    function NamedDSLMethodsCollectorVisitor(ruleIdx) {
-        var _this = _super.call(this) || this;
-        _this.result = [];
-        _this.ruleIdx = ruleIdx;
-        return _this;
-    }
-    NamedDSLMethodsCollectorVisitor.prototype.collectNamedDSLMethod = function (node, newNodeConstructor, methodIdx) {
-        if (!utils_1.isUndefined(node.name)) {
-            // copy without name so this will indeed be processed later.
-            var nameLessNode = void 0;
-            if (utils_1.has(node, "separator")) {
-                // hack to avoid code duplication and refactoring the Gast type declaration / constructors arguments order.
-                nameLessNode = new newNodeConstructor(node.definition, node.separator, node.occurrenceInParent);
-            }
-            else {
-                nameLessNode = new newNodeConstructor(node.definition, node.occurrenceInParent);
-            }
-            var def = [nameLessNode];
-            var key = keys_1.getKeyForAutomaticLookahead(this.ruleIdx, methodIdx, node.occurrenceInParent);
-            this.result.push({ def: def, key: key, name: node.name });
-        }
-    };
-    NamedDSLMethodsCollectorVisitor.prototype.visitOption = function (node) {
-        this.collectNamedDSLMethod(node, gast_public_1.gast.Option, keys_1.OPTION_IDX);
-    };
-    NamedDSLMethodsCollectorVisitor.prototype.visitRepetition = function (node) {
-        this.collectNamedDSLMethod(node, gast_public_1.gast.Repetition, keys_1.MANY_IDX);
-    };
-    NamedDSLMethodsCollectorVisitor.prototype.visitRepetitionMandatory = function (node) {
-        this.collectNamedDSLMethod(node, gast_public_1.gast.RepetitionMandatory, keys_1.AT_LEAST_ONE_IDX);
-    };
-    NamedDSLMethodsCollectorVisitor.prototype.visitRepetitionMandatoryWithSeparator = function (node) {
-        this.collectNamedDSLMethod(node, gast_public_1.gast.RepetitionMandatoryWithSeparator, keys_1.AT_LEAST_ONE_SEP_IDX);
-    };
-    NamedDSLMethodsCollectorVisitor.prototype.visitRepetitionWithSeparator = function (node) {
-        this.collectNamedDSLMethod(node, gast_public_1.gast.RepetitionWithSeparator, keys_1.MANY_SEP_IDX);
-    };
-    NamedDSLMethodsCollectorVisitor.prototype.visitAlternation = function (node) {
-        var _this = this;
-        this.collectNamedDSLMethod(node, gast_public_1.gast.Alternation, keys_1.OR_IDX);
-        var hasMoreThanOneAlternative = node.definition.length > 1;
-        utils_1.forEach(node.definition, function (currFlatAlt, altIdx) {
-            if (!utils_1.isUndefined(currFlatAlt.name)) {
-                var def = currFlatAlt.definition;
-                if (hasMoreThanOneAlternative) {
-                    def = [new gast_public_1.gast.Option(currFlatAlt.definition)];
-                }
-                else {
-                    // mandatory
-                    def = currFlatAlt.definition;
-                }
-                var key = keys_1.getKeyForAltIndex(_this.ruleIdx, keys_1.OR_IDX, node.occurrenceInParent, altIdx);
-                _this.result.push({
-                    def: def,
-                    key: key,
-                    name: currFlatAlt.name
-                });
-            }
-        });
-    };
-    return NamedDSLMethodsCollectorVisitor;
-}(GAstVisitor));
-exports.NamedDSLMethodsCollectorVisitor = NamedDSLMethodsCollectorVisitor;
-function analyzeCst(topRules, fullToShortName) {
-    var result = { dictDef: new lang_extensions_1.HashTable(), allRuleNames: [] };
-    utils_1.forEach(topRules, function (currTopRule) {
-        var currChildrenNames = buildChildDictionaryDef(currTopRule.definition);
-        var currTopRuleShortName = fullToShortName.get(currTopRule.name);
-        result.dictDef.put(currTopRuleShortName, buildInitDefFunc(currChildrenNames));
-        result.allRuleNames.push(currTopRule.name);
-        var namedCollectorVisitor = new NamedDSLMethodsCollectorVisitor(currTopRuleShortName);
-        currTopRule.accept(namedCollectorVisitor);
-        utils_1.forEach(namedCollectorVisitor.result, function (_a) {
-            var def = _a.def, key = _a.key, name = _a.name;
-            var currNestedChildrenNames = buildChildDictionaryDef(def);
-            result.dictDef.put(key, buildInitDefFunc(currNestedChildrenNames));
-            result.allRuleNames.push(currTopRule.name + name);
-        });
-    });
-    return result;
-}
-exports.analyzeCst = analyzeCst;
-function buildInitDefFunc(childrenNames) {
-    var funcString = "return {\n";
-    funcString += utils_1.map(childrenNames, function (currName) { return "\"" + currName + "\" : []"; }).join(",\n");
-    funcString += "}";
-    // major performance optimization, faster to create the children dictionary this way
-    // versus iterating over the childrenNames each time.
-    return Function(funcString);
-}
-function buildChildDictionaryDef(initialDef) {
-    var result = [];
-    var possiblePaths = [];
-    possiblePaths.push({ def: initialDef });
-    var currDef;
-    var currInIteration;
-    var currInOption;
-    var currResult;
-    function addSingleItemToResult(itemName) {
-        result.push(itemName);
-        var nextPath = {
-            def: utils_1.drop(currDef),
-            inIteration: currInIteration,
-            inOption: currInOption,
-            currResult: utils_1.cloneObj(currResult)
-        };
-        possiblePaths.push(nextPath);
-    }
-    while (!utils_1.isEmpty(possiblePaths)) {
-        var currPath = possiblePaths.pop();
-        currDef = currPath.def;
-        currInIteration = currPath.inIteration;
-        currInOption = currPath.inOption;
-        currResult = currPath.currResult;
-        // For Example: an empty path could exist in a valid grammar in the case of an EMPTY_ALT
-        if (utils_1.isEmpty(currDef)) {
-            continue;
-        }
-        var prod = currDef[0];
-        if (prod instanceof gast_public_1.gast.Terminal) {
-            var terminalName = tokens_public_1.tokenName(prod.terminalType);
-            addSingleItemToResult(terminalName);
-        }
-        else if (prod instanceof gast_public_1.gast.NonTerminal) {
-            var nonTerminalName = prod.nonTerminalName;
-            addSingleItemToResult(nonTerminalName);
-        }
-        else if (prod instanceof gast_public_1.gast.Option) {
-            if (!utils_1.isUndefined(prod.name)) {
-                addSingleItemToResult(prod.name);
-            }
-            else {
-                var nextPathWith = {
-                    def: prod.definition.concat(utils_1.drop(currDef))
-                };
-                possiblePaths.push(nextPathWith);
-            }
-        }
-        else if (prod instanceof gast_public_1.gast.RepetitionMandatory ||
-            prod instanceof gast_public_1.gast.Repetition) {
-            if (!utils_1.isUndefined(prod.name)) {
-                addSingleItemToResult(prod.name);
-            }
-            else {
-                var nextDef = prod.definition.concat(utils_1.drop(currDef));
-                var nextPath = {
-                    def: nextDef
-                };
-                possiblePaths.push(nextPath);
-            }
-        }
-        else if (prod instanceof gast_public_1.gast.RepetitionMandatoryWithSeparator ||
-            prod instanceof gast_public_1.gast.RepetitionWithSeparator) {
-            if (!utils_1.isUndefined(prod.name)) {
-                addSingleItemToResult(prod.name);
-            }
-            else {
-                var separatorGast = new gast_public_1.gast.Terminal(prod.separator);
-                var secondIteration = new gast_public_1.gast.Repetition([separatorGast].concat(prod.definition), prod.occurrenceInParent);
-                // Hack: X (, X)* --> (, X) because it is identical in terms of identifying "isCollection?"
-                var nextDef = [secondIteration].concat(utils_1.drop(currDef));
-                var nextPath = {
-                    def: nextDef
-                };
-                possiblePaths.push(nextPath);
-            }
-        }
-        else if (prod instanceof gast_public_1.gast.Alternation) {
-            /* istanbul ignore else */
-            // IGNORE ABOVE ELSE
-            if (!utils_1.isUndefined(prod.name)) {
-                addSingleItemToResult(prod.name);
-            }
-            else {
-                // the order of alternatives is meaningful, FILO (Last path will be traversed first).
-                for (var i = prod.definition.length - 1; i >= 0; i--) {
-                    var currAlt = prod.definition[i];
-                    // named alternatives
-                    if (!utils_1.isUndefined(currAlt.name)) {
-                        addSingleItemToResult(currAlt.name);
-                    }
-                    else {
-                        var newDef = currAlt.definition.concat(utils_1.drop(currDef));
-                        var currAltPath = {
-                            def: newDef
-                        };
-                        possiblePaths.push(currAltPath);
-                    }
-                }
-            }
-        }
-        else {
-            /* istanbul ignore next */ throw Error("non exhaustive match");
-        }
-    }
-    return result;
-}
-exports.buildChildDictionaryDef = buildChildDictionaryDef;
-//# sourceMappingURL=cst.js.map
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var tokens_public_1 = __webpack_require__(3);
-var utils_1 = __webpack_require__(0);
-/**
- * This is the default logic Chevrotain uses to construct error messages.
- * When constructing a custom error message provider it may be used as a reference
- * or reused.
- */
-exports.defaultErrorProvider = {
-    buildMismatchTokenMessage: function (_a) {
-        var expected = _a.expected, actual = _a.actual, ruleName = _a.ruleName;
-        var hasLabel = tokens_public_1.hasTokenLabel(expected);
-        var expectedMsg = hasLabel
-            ? "--> " + tokens_public_1.tokenLabel(expected) + " <--"
-            : "token of type --> " + tokens_public_1.tokenName(expected) + " <--";
-        var msg = "Expecting " + expectedMsg + " but found --> '" + actual.image + "' <--";
-        return msg;
-    },
-    buildNotAllInputParsedMessage: function (_a) {
-        var firstRedundant = _a.firstRedundant, ruleName = _a.ruleName;
-        return ("Redundant input, expecting EOF but found: " + firstRedundant.image);
-    },
-    buildNoViableAltMessage: function (_a) {
-        var expectedPathsPerAlt = _a.expectedPathsPerAlt, actual = _a.actual, customUserDescription = _a.customUserDescription, ruleName = _a.ruleName;
-        var errPrefix = "Expecting: ";
-        // TODO: issue: No Viable Alternative Error may have incomplete details. #502
-        var actualText = utils_1.first(actual).image;
-        var errSuffix = "\nbut found: '" + actualText + "'";
-        if (customUserDescription) {
-            return errPrefix + customUserDescription + errSuffix;
-        }
-        else {
-            var allLookAheadPaths = utils_1.reduce(expectedPathsPerAlt, function (result, currAltPaths) { return result.concat(currAltPaths); }, []);
-            var nextValidTokenSequences = utils_1.map(allLookAheadPaths, function (currPath) {
-                return "[" + utils_1.map(currPath, function (currTokenType) {
-                    return tokens_public_1.tokenLabel(currTokenType);
-                }).join(", ") + "]";
-            });
-            var nextValidSequenceItems = utils_1.map(nextValidTokenSequences, function (itemMsg, idx) { return "  " + (idx + 1) + ". " + itemMsg; });
-            var calculatedDescription = "one of these possible Token sequences:\n" + nextValidSequenceItems.join("\n");
-            return errPrefix + calculatedDescription + errSuffix;
-        }
-    },
-    buildEarlyExitMessage: function (_a) {
-        var expectedIterationPaths = _a.expectedIterationPaths, actual = _a.actual, customUserDescription = _a.customUserDescription, ruleName = _a.ruleName;
-        var errPrefix = "Expecting: ";
-        // TODO: issue: No Viable Alternative Error may have incomplete details. #502
-        var actualText = utils_1.first(actual).image;
-        var errSuffix = "\nbut found: '" + actualText + "'";
-        if (customUserDescription) {
-            return errPrefix + customUserDescription + errSuffix;
-        }
-        else {
-            var nextValidTokenSequences = utils_1.map(expectedIterationPaths, function (currPath) {
-                return "[" + utils_1.map(currPath, function (currTokenType) {
-                    return tokens_public_1.tokenLabel(currTokenType);
-                }).join(",") + "]";
-            });
-            var calculatedDescription = "expecting at least one iteration which starts with one of these possible Token sequences::\n  " +
-                ("<" + nextValidTokenSequences.join(" ,") + ">");
-            return errPrefix + calculatedDescription + errSuffix;
-        }
-    }
-};
-Object.freeze(exports.defaultErrorProvider);
-//# sourceMappingURL=errors_public.js.map
-
-/***/ }),
-/* 31 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var utils_1 = __webpack_require__(0);
-var exceptions;
-(function (exceptions) {
-    var MISMATCHED_TOKEN_EXCEPTION = "MismatchedTokenException";
-    var NO_VIABLE_ALT_EXCEPTION = "NoViableAltException";
-    var EARLY_EXIT_EXCEPTION = "EarlyExitException";
-    var NOT_ALL_INPUT_PARSED_EXCEPTION = "NotAllInputParsedException";
-    var RECOGNITION_EXCEPTION_NAMES = [
-        MISMATCHED_TOKEN_EXCEPTION,
-        NO_VIABLE_ALT_EXCEPTION,
-        EARLY_EXIT_EXCEPTION,
-        NOT_ALL_INPUT_PARSED_EXCEPTION
-    ];
-    Object.freeze(RECOGNITION_EXCEPTION_NAMES);
-    // hacks to bypass no support for custom Errors in javascript/typescript
-    function isRecognitionException(error) {
-        // can't do instanceof on hacked custom js exceptions
-        return utils_1.contains(RECOGNITION_EXCEPTION_NAMES, error.name);
-    }
-    exceptions.isRecognitionException = isRecognitionException;
-    function MismatchedTokenException(message, token) {
-        this.name = MISMATCHED_TOKEN_EXCEPTION;
-        this.message = message;
-        this.token = token;
-        this.resyncedTokens = [];
-    }
-    exceptions.MismatchedTokenException = MismatchedTokenException;
-    // must use the "Error.prototype" instead of "new Error"
-    // because the stack trace points to where "new Error" was invoked"
-    MismatchedTokenException.prototype = Error.prototype;
-    function NoViableAltException(message, token) {
-        this.name = NO_VIABLE_ALT_EXCEPTION;
-        this.message = message;
-        this.token = token;
-        this.resyncedTokens = [];
-    }
-    exceptions.NoViableAltException = NoViableAltException;
-    NoViableAltException.prototype = Error.prototype;
-    function NotAllInputParsedException(message, token) {
-        this.name = NOT_ALL_INPUT_PARSED_EXCEPTION;
-        this.message = message;
-        this.token = token;
-        this.resyncedTokens = [];
-    }
-    exceptions.NotAllInputParsedException = NotAllInputParsedException;
-    NotAllInputParsedException.prototype = Error.prototype;
-    function EarlyExitException(message, token, previousToken) {
-        this.name = EARLY_EXIT_EXCEPTION;
-        this.message = message;
-        this.token = token;
-        this.previousToken = previousToken;
-        this.resyncedTokens = [];
-    }
-    exceptions.EarlyExitException = EarlyExitException;
-    EarlyExitException.prototype = Error.prototype;
-})(exceptions = exports.exceptions || (exports.exceptions = {}));
-//# sourceMappingURL=exceptions_public.js.map
-
-/***/ }),
-/* 32 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var utils = __webpack_require__(0);
-var utils_1 = __webpack_require__(0);
-var parser_public_1 = __webpack_require__(23);
-var gast_public_1 = __webpack_require__(2);
-var gast_1 = __webpack_require__(21);
-var tokens_public_1 = __webpack_require__(3);
-var lookahead_1 = __webpack_require__(35);
-var version_1 = __webpack_require__(25);
-var cst_1 = __webpack_require__(29);
-var interpreter_1 = __webpack_require__(6);
-function validateGrammar(topLevels, maxLookahead, tokens, ignoredIssues) {
-    var duplicateErrors = utils.map(topLevels, validateDuplicateProductions);
-    var leftRecursionErrors = utils.map(topLevels, function (currTopRule) {
-        return validateNoLeftRecursion(currTopRule, currTopRule);
-    });
-    var emptyAltErrors = [];
-    var ambiguousAltsErrors = [];
-    // left recursion could cause infinite loops in the following validations.
-    // It is safest to first have the user fix the left recursion errors first and only then examine farther issues.
-    if (utils_1.every(leftRecursionErrors, utils_1.isEmpty)) {
-        emptyAltErrors = utils_1.map(topLevels, validateEmptyOrAlternative);
-        ambiguousAltsErrors = utils_1.map(topLevels, function (currTopRule) {
-            return validateAmbiguousAlternationAlternatives(currTopRule, maxLookahead, ignoredIssues);
-        });
-    }
-    var ruleNames = utils_1.map(topLevels, function (currTopLevel) { return currTopLevel.name; });
-    var tokenNames = utils_1.map(tokens, function (currToken) { return tokens_public_1.tokenName(currToken); });
-    var termsNamespaceConflictErrors = checkTerminalAndNoneTerminalsNameSpace(ruleNames, tokenNames);
-    var tokenNameErrors = utils.map(tokenNames, validateTokenName);
-    var nestedRulesNameErrors = validateNestedRulesNames(topLevels);
-    var nestedRulesDuplicateErrors = validateDuplicateNestedRules(topLevels);
-    var emptyRepetitionErrors = validateSomeNonEmptyLookaheadPath(topLevels, maxLookahead);
-    var tooManyAltsErrors = utils.map(topLevels, validateTooManyAlts);
-    return utils.flatten(duplicateErrors.concat(tokenNameErrors, nestedRulesNameErrors, nestedRulesDuplicateErrors, emptyRepetitionErrors, leftRecursionErrors, emptyAltErrors, ambiguousAltsErrors, termsNamespaceConflictErrors, tooManyAltsErrors));
-}
-exports.validateGrammar = validateGrammar;
-function validateNestedRulesNames(topLevels) {
-    var result = [];
-    utils_1.forEach(topLevels, function (curTopLevel) {
-        var namedCollectorVisitor = new cst_1.NamedDSLMethodsCollectorVisitor("");
-        curTopLevel.accept(namedCollectorVisitor);
-        var nestedNamesPerRule = utils_1.map(namedCollectorVisitor.result, function (currItem) { return currItem.name; });
-        var currTopRuleName = curTopLevel.name;
-        result.push(utils_1.map(nestedNamesPerRule, function (currNestedName) {
-            return validateNestedRuleName(currNestedName, currTopRuleName);
-        }));
-    });
-    return utils_1.flatten(result);
-}
-function validateDuplicateProductions(topLevelRule) {
-    var collectorVisitor = new OccurrenceValidationCollector();
-    topLevelRule.accept(collectorVisitor);
-    var allRuleProductions = collectorVisitor.allProductions;
-    var productionGroups = utils.groupBy(allRuleProductions, identifyProductionForDuplicates);
-    var duplicates = utils.pick(productionGroups, function (currGroup) {
-        return currGroup.length > 1;
-    });
-    var errors = utils.map(utils.values(duplicates), function (currDuplicates) {
-        var firstProd = utils.first(currDuplicates);
-        var msg = createDuplicatesErrorMessage(currDuplicates, topLevelRule.name);
-        var dslName = gast_1.getProductionDslName(firstProd);
-        var defError = {
-            message: msg,
-            type: parser_public_1.ParserDefinitionErrorType.DUPLICATE_PRODUCTIONS,
-            ruleName: topLevelRule.name,
-            dslName: dslName,
-            occurrence: firstProd.occurrenceInParent
-        };
-        var param = getExtraProductionArgument(firstProd);
-        if (param) {
-            defError.parameter = param;
-        }
-        return defError;
-    });
-    return errors;
-}
-function createDuplicatesErrorMessage(duplicateProds, topLevelName) {
-    var firstProd = utils.first(duplicateProds);
-    var index = firstProd.occurrenceInParent;
-    var dslName = gast_1.getProductionDslName(firstProd);
-    var extraArgument = getExtraProductionArgument(firstProd);
-    var msg = "->" + dslName + "<- with occurrence index: ->" + index + "<-\n                  " + (extraArgument ? "and argument: " + extraArgument : "") + "\n                  appears more than once (" + duplicateProds.length + " times) in the top level rule: " + topLevelName + ".\n                  " + (index === 1
-        ? "note that " + dslName + " and " + dslName + "1 both have the same occurrence index 1}"
-        : "") + "}\n                  to fix this make sure each usage of " + dslName + " " + (extraArgument ? "with the argument: " + extraArgument : "") + "\n                  in the rule " + topLevelName + " has a different occurrence index (1-5), as that combination acts as a unique\n                  position key in the grammar, which is needed by the parsing engine.";
-    // white space trimming time! better to trim afterwards as it allows to use WELL formatted multi line template strings...
-    msg = msg.replace(/[ \t]+/g, " ");
-    msg = msg.replace(/\s\s+/g, "\n");
-    return msg;
-}
-function identifyProductionForDuplicates(prod) {
-    return gast_1.getProductionDslName(prod) + "_#_" + prod.occurrenceInParent + "_#_" + getExtraProductionArgument(prod);
-}
-exports.identifyProductionForDuplicates = identifyProductionForDuplicates;
-function getExtraProductionArgument(prod) {
-    if (prod instanceof gast_public_1.gast.Terminal) {
-        return tokens_public_1.tokenName(prod.terminalType);
-    }
-    else if (prod instanceof gast_public_1.gast.NonTerminal) {
-        return prod.nonTerminalName;
-    }
-    else {
-        return "";
-    }
-}
-var OccurrenceValidationCollector = /** @class */ (function (_super) {
-    __extends(OccurrenceValidationCollector, _super);
-    function OccurrenceValidationCollector() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.allProductions = [];
-        return _this;
-    }
-    OccurrenceValidationCollector.prototype.visitNonTerminal = function (subrule) {
-        this.allProductions.push(subrule);
-    };
-    OccurrenceValidationCollector.prototype.visitOption = function (option) {
-        this.allProductions.push(option);
-    };
-    OccurrenceValidationCollector.prototype.visitRepetitionWithSeparator = function (manySep) {
-        this.allProductions.push(manySep);
-    };
-    OccurrenceValidationCollector.prototype.visitRepetitionMandatory = function (atLeastOne) {
-        this.allProductions.push(atLeastOne);
-    };
-    OccurrenceValidationCollector.prototype.visitRepetitionMandatoryWithSeparator = function (atLeastOneSep) {
-        this.allProductions.push(atLeastOneSep);
-    };
-    OccurrenceValidationCollector.prototype.visitRepetition = function (many) {
-        this.allProductions.push(many);
-    };
-    OccurrenceValidationCollector.prototype.visitAlternation = function (or) {
-        this.allProductions.push(or);
-    };
-    OccurrenceValidationCollector.prototype.visitTerminal = function (terminal) {
-        this.allProductions.push(terminal);
-    };
-    return OccurrenceValidationCollector;
-}(gast_public_1.gast.GAstVisitor));
-exports.OccurrenceValidationCollector = OccurrenceValidationCollector;
-exports.validTermsPattern = /^[a-zA-Z_]\w*$/;
-exports.validNestedRuleName = new RegExp(exports.validTermsPattern.source.replace("^", "^\\$"));
-function validateRuleName(ruleName) {
-    var errors = [];
-    var errMsg;
-    if (!ruleName.match(exports.validTermsPattern)) {
-        errMsg = "Invalid Grammar rule name: ->" + ruleName + "<- it must match the pattern: ->" + exports.validTermsPattern.toString() + "<-";
-        errors.push({
-            message: errMsg,
-            type: parser_public_1.ParserDefinitionErrorType.INVALID_RULE_NAME,
-            ruleName: ruleName
-        });
-    }
-    return errors;
-}
-exports.validateRuleName = validateRuleName;
-function validateNestedRuleName(nestedRuleName, containingRuleName) {
-    var errors = [];
-    var errMsg;
-    if (!nestedRuleName.match(exports.validNestedRuleName)) {
-        errMsg =
-            "Invalid nested rule name: ->" + nestedRuleName + "<- inside rule: ->" + containingRuleName + "<-\n" +
-                ("it must match the pattern: ->" + exports.validNestedRuleName.toString() + "<-.\n") +
-                "Note that this means a nested rule name must start with the '$'(dollar) sign.";
-        errors.push({
-            message: errMsg,
-            type: parser_public_1.ParserDefinitionErrorType.INVALID_NESTED_RULE_NAME,
-            ruleName: nestedRuleName
-        });
-    }
-    return errors;
-}
-exports.validateNestedRuleName = validateNestedRuleName;
-function validateTokenName(tokenNAme) {
-    var errors = [];
-    var errMsg;
-    if (!tokenNAme.match(exports.validTermsPattern)) {
-        errMsg = "Invalid Grammar Token name: ->" + tokenNAme + "<- it must match the pattern: ->" + exports.validTermsPattern.toString() + "<-";
-        errors.push({
-            message: errMsg,
-            type: parser_public_1.ParserDefinitionErrorType.INVALID_TOKEN_NAME
-        });
-    }
-    return errors;
-}
-exports.validateTokenName = validateTokenName;
-function validateRuleDoesNotAlreadyExist(ruleName, definedRulesNames, className) {
-    var errors = [];
-    var errMsg;
-    if (utils.contains(definedRulesNames, ruleName)) {
-        errMsg = "Duplicate definition, rule: ->" + ruleName + "<- is already defined in the grammar: ->" + className + "<-";
-        errors.push({
-            message: errMsg,
-            type: parser_public_1.ParserDefinitionErrorType.DUPLICATE_RULE_NAME,
-            ruleName: ruleName
-        });
-    }
-    return errors;
-}
-exports.validateRuleDoesNotAlreadyExist = validateRuleDoesNotAlreadyExist;
-// TODO: is there anyway to get only the rule names of rules inherited from the super grammars?
-function validateRuleIsOverridden(ruleName, definedRulesNames, className) {
-    var errors = [];
-    var errMsg;
-    if (!utils.contains(definedRulesNames, ruleName)) {
-        errMsg =
-            "Invalid rule override, rule: ->" + ruleName + "<- cannot be overridden in the grammar: ->" + className + "<-" +
-                "as it is not defined in any of the super grammars ";
-        errors.push({
-            message: errMsg,
-            type: parser_public_1.ParserDefinitionErrorType.INVALID_RULE_OVERRIDE,
-            ruleName: ruleName
-        });
-    }
-    return errors;
-}
-exports.validateRuleIsOverridden = validateRuleIsOverridden;
-function validateNoLeftRecursion(topRule, currRule, path) {
-    if (path === void 0) { path = []; }
-    var errors = [];
-    var nextNonTerminals = getFirstNoneTerminal(currRule.definition);
-    if (utils.isEmpty(nextNonTerminals)) {
-        return [];
-    }
-    else {
-        var ruleName = topRule.name;
-        var foundLeftRecursion = utils.contains(nextNonTerminals, topRule);
-        var pathNames = utils.map(path, function (currRule) { return currRule.name; });
-        var leftRecursivePath = ruleName + " --> " + pathNames
-            .concat([ruleName])
-            .join(" --> ");
-        if (foundLeftRecursion) {
-            var errMsg = "Left Recursion found in grammar.\n" +
-                ("rule: <" + ruleName + "> can be invoked from itself (directly or indirectly)\n") +
-                ("without consuming any Tokens. The grammar path that causes this is: \n " + leftRecursivePath + "\n") +
-                " To fix this refactor your grammar to remove the left recursion.\n" +
-                "see: https://en.wikipedia.org/wiki/LL_parser#Left_Factoring.";
-            errors.push({
-                message: errMsg,
-                type: parser_public_1.ParserDefinitionErrorType.LEFT_RECURSION,
-                ruleName: ruleName
-            });
-        }
-        // we are only looking for cyclic paths leading back to the specific topRule
-        // other cyclic paths are ignored, we still need this difference to avoid infinite loops...
-        var validNextSteps = utils.difference(nextNonTerminals, path.concat([topRule]));
-        var errorsFromNextSteps = utils.map(validNextSteps, function (currRefRule) {
-            var newPath = utils.cloneArr(path);
-            newPath.push(currRefRule);
-            return validateNoLeftRecursion(topRule, currRefRule, newPath);
-        });
-        return errors.concat(utils.flatten(errorsFromNextSteps));
-    }
-}
-exports.validateNoLeftRecursion = validateNoLeftRecursion;
-function getFirstNoneTerminal(definition) {
-    var result = [];
-    if (utils.isEmpty(definition)) {
-        return result;
-    }
-    var firstProd = utils.first(definition);
-    if (firstProd instanceof gast_public_1.gast.NonTerminal) {
-        result.push(firstProd.referencedRule);
-    }
-    else if (firstProd instanceof gast_public_1.gast.Flat ||
-        firstProd instanceof gast_public_1.gast.Option ||
-        firstProd instanceof gast_public_1.gast.RepetitionMandatory ||
-        firstProd instanceof gast_public_1.gast.RepetitionMandatoryWithSeparator ||
-        firstProd instanceof gast_public_1.gast.RepetitionWithSeparator ||
-        firstProd instanceof gast_public_1.gast.Repetition) {
-        result = result.concat(getFirstNoneTerminal(firstProd.definition));
-    }
-    else if (firstProd instanceof gast_public_1.gast.Alternation) {
-        // each sub definition in alternation is a FLAT
-        result = utils.flatten(utils.map(firstProd.definition, function (currSubDef) {
-            return getFirstNoneTerminal(currSubDef.definition);
-        }));
-    }
-    else if (firstProd instanceof gast_public_1.gast.Terminal) {
-        // nothing to see, move along
-    }
-    else {
-        /* istanbul ignore next */
-        throw Error("non exhaustive match");
-    }
-    var isFirstOptional = gast_1.isOptionalProd(firstProd);
-    var hasMore = definition.length > 1;
-    if (isFirstOptional && hasMore) {
-        var rest = utils.drop(definition);
-        return result.concat(getFirstNoneTerminal(rest));
-    }
-    else {
-        return result;
-    }
-}
-exports.getFirstNoneTerminal = getFirstNoneTerminal;
-var OrCollector = /** @class */ (function (_super) {
-    __extends(OrCollector, _super);
-    function OrCollector() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.alternations = [];
-        return _this;
-    }
-    OrCollector.prototype.visitAlternation = function (node) {
-        this.alternations.push(node);
-    };
-    return OrCollector;
-}(gast_public_1.gast.GAstVisitor));
-function validateEmptyOrAlternative(topLevelRule) {
-    var orCollector = new OrCollector();
-    topLevelRule.accept(orCollector);
-    var ors = orCollector.alternations;
-    var errors = utils.reduce(ors, function (errors, currOr) {
-        var exceptLast = utils.dropRight(currOr.definition);
-        var currErrors = utils.map(exceptLast, function (currAlternative, currAltIdx) {
-            var possibleFirstInAlt = interpreter_1.nextPossibleTokensAfter([currAlternative], [], null, 1);
-            if (utils.isEmpty(possibleFirstInAlt)) {
-                return {
-                    message: "Ambiguous empty alternative: <" + (currAltIdx +
-                        1) + ">" +
-                        (" in <OR" + currOr.occurrenceInParent + "> inside <" + topLevelRule.name + "> Rule.\n") +
-                        "Only the last alternative may be an empty alternative.",
-                    type: parser_public_1.ParserDefinitionErrorType.NONE_LAST_EMPTY_ALT,
-                    ruleName: topLevelRule.name,
-                    occurrence: currOr.occurrenceInParent,
-                    alternative: currAltIdx + 1
-                };
-            }
-            else {
-                return null;
-            }
-        });
-        return errors.concat(utils.compact(currErrors));
-    }, []);
-    return errors;
-}
-exports.validateEmptyOrAlternative = validateEmptyOrAlternative;
-function validateAmbiguousAlternationAlternatives(topLevelRule, maxLookahead, ignoredIssues) {
-    var orCollector = new OrCollector();
-    topLevelRule.accept(orCollector);
-    var ors = orCollector.alternations;
-    var ignoredIssuesForCurrentRule = ignoredIssues[topLevelRule.name];
-    if (ignoredIssuesForCurrentRule) {
-        ors = utils_1.reject(ors, function (currOr) {
-            return ignoredIssuesForCurrentRule[gast_1.getProductionDslName(currOr) + currOr.occurrenceInParent];
-        });
-    }
-    var errors = utils.reduce(ors, function (result, currOr) {
-        var currOccurrence = currOr.occurrenceInParent;
-        var alternatives = lookahead_1.getLookaheadPathsForOr(currOccurrence, topLevelRule, maxLookahead);
-        var altsAmbiguityErrors = checkAlternativesAmbiguities(alternatives, currOr, topLevelRule.name);
-        var altsPrefixAmbiguityErrors = checkPrefixAlternativesAmbiguities(alternatives, currOr, topLevelRule.name);
-        return result.concat(altsAmbiguityErrors, altsPrefixAmbiguityErrors);
-    }, []);
-    return errors;
-}
-exports.validateAmbiguousAlternationAlternatives = validateAmbiguousAlternationAlternatives;
-var RepetionCollector = /** @class */ (function (_super) {
-    __extends(RepetionCollector, _super);
-    function RepetionCollector() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.allProductions = [];
-        return _this;
-    }
-    RepetionCollector.prototype.visitRepetitionWithSeparator = function (manySep) {
-        this.allProductions.push(manySep);
-    };
-    RepetionCollector.prototype.visitRepetitionMandatory = function (atLeastOne) {
-        this.allProductions.push(atLeastOne);
-    };
-    RepetionCollector.prototype.visitRepetitionMandatoryWithSeparator = function (atLeastOneSep) {
-        this.allProductions.push(atLeastOneSep);
-    };
-    RepetionCollector.prototype.visitRepetition = function (many) {
-        this.allProductions.push(many);
-    };
-    return RepetionCollector;
-}(gast_public_1.gast.GAstVisitor));
-exports.RepetionCollector = RepetionCollector;
-function validateTooManyAlts(topLevelRule) {
-    var orCollector = new OrCollector();
-    topLevelRule.accept(orCollector);
-    var ors = orCollector.alternations;
-    var errors = utils.reduce(ors, function (errors, currOr) {
-        if (currOr.definition.length > 255) {
-            errors.push({
-                message: "An Alternation cannot have more than 256 alternatives:\n" +
-                    ("<OR" + currOr.occurrenceInParent + "> inside <" + topLevelRule.name + "> Rule.\n has " + (currOr.definition.length +
-                        1) + " alternatives."),
-                type: parser_public_1.ParserDefinitionErrorType.TOO_MANY_ALTS,
-                ruleName: topLevelRule.name,
-                occurrence: currOr.occurrenceInParent
-            });
-        }
-        return errors;
-    }, []);
-    return errors;
-}
-exports.validateTooManyAlts = validateTooManyAlts;
-function validateSomeNonEmptyLookaheadPath(topLevelRules, maxLookahead) {
-    var errors = [];
-    utils_1.forEach(topLevelRules, function (currTopRule) {
-        var collectorVisitor = new RepetionCollector();
-        currTopRule.accept(collectorVisitor);
-        var allRuleProductions = collectorVisitor.allProductions;
-        utils_1.forEach(allRuleProductions, function (currProd) {
-            var prodType = lookahead_1.getProdType(currProd);
-            var currOccurrence = currProd.occurrenceInParent;
-            var paths = lookahead_1.getLookaheadPathsForOptionalProd(currOccurrence, currTopRule, prodType, maxLookahead);
-            var pathsInsideProduction = paths[0];
-            if (utils_1.isEmpty(utils_1.flatten(pathsInsideProduction))) {
-                var implicitOccurrence = currProd.implicitOccurrenceIndex;
-                var dslName = gast_1.getProductionDslName(currProd);
-                if (!implicitOccurrence) {
-                    dslName += currOccurrence;
-                }
-                var errMsg = "The repetition <" + dslName + "> within Rule <" + currTopRule.name + "> can never consume any tokens.\n" +
-                    "This could lead to an infinite loop.";
-                errors.push({
-                    message: errMsg,
-                    type: parser_public_1.ParserDefinitionErrorType.NO_NON_EMPTY_LOOKAHEAD,
-                    ruleName: currTopRule.name
-                });
-            }
-        });
-    });
-    return errors;
-}
-exports.validateSomeNonEmptyLookaheadPath = validateSomeNonEmptyLookaheadPath;
-function checkAlternativesAmbiguities(alternatives, alternation, topRuleName) {
-    var foundAmbiguousPaths = [];
-    var identicalAmbiguities = utils_1.reduce(alternatives, function (result, currAlt, currAltIdx) {
-        utils_1.forEach(currAlt, function (currPath) {
-            var altsCurrPathAppearsIn = [currAltIdx];
-            utils_1.forEach(alternatives, function (currOtherAlt, currOtherAltIdx) {
-                if (currAltIdx !== currOtherAltIdx &&
-                    lookahead_1.containsPath(currOtherAlt, currPath)) {
-                    altsCurrPathAppearsIn.push(currOtherAltIdx);
-                }
-            });
-            if (altsCurrPathAppearsIn.length > 1 &&
-                !lookahead_1.containsPath(foundAmbiguousPaths, currPath)) {
-                foundAmbiguousPaths.push(currPath);
-                result.push({
-                    alts: altsCurrPathAppearsIn,
-                    path: currPath
-                });
-            }
-        });
-        return result;
-    }, []);
-    var currErrors = utils.map(identicalAmbiguities, function (currAmbDescriptor) {
-        var ambgIndices = utils_1.map(currAmbDescriptor.alts, function (currAltIdx) { return currAltIdx + 1; });
-        var pathMsg = utils_1.map(currAmbDescriptor.path, function (currtok) {
-            return tokens_public_1.tokenLabel(currtok);
-        }).join(", ");
-        var occurrence = alternation.implicitOccurrenceIndex
-            ? ""
-            : alternation.occurrenceInParent;
-        var currMessage = "Ambiguous alternatives: <" + ambgIndices.join(" ,") + "> in <OR" + occurrence + ">" +
-            (" inside <" + topRuleName + "> Rule,\n") +
-            ("<" + pathMsg + "> may appears as a prefix path in all these alternatives.\n");
-        var docs_version = version_1.VERSION.replace(/\./g, "_");
-        // Should this information be on the error message or in some common errors docs?
-        currMessage =
-            currMessage +
-                "To Resolve this, try one of of the following: \n" +
-                "1. Refactor your grammar to be LL(K) for the current value of k (by default k=5)\n" +
-                "2. Increase the value of K for your grammar by providing a larger 'maxLookahead' value in the parser's config\n" +
-                "3. This issue can be ignored (if you know what you are doing...), see" +
-                " http://sap.github.io/chevrotain/documentation/" +
-                docs_version +
-                "/interfaces/_chevrotain_d_.iparserconfig.html#ignoredissues for more" +
-                " details\n";
-        return {
-            message: currMessage,
-            type: parser_public_1.ParserDefinitionErrorType.AMBIGUOUS_ALTS,
-            ruleName: topRuleName,
-            occurrence: alternation.occurrenceInParent,
-            alternatives: [currAmbDescriptor.alts]
-        };
-    });
-    return currErrors;
-}
-function checkPrefixAlternativesAmbiguities(alternatives, alternation, ruleName) {
-    var errors = [];
-    // flatten
-    var pathsAndIndices = utils_1.reduce(alternatives, function (result, currAlt, idx) {
-        var currPathsAndIdx = utils_1.map(currAlt, function (currPath) {
-            return { idx: idx, path: currPath };
-        });
-        return result.concat(currPathsAndIdx);
-    }, []);
-    utils_1.forEach(pathsAndIndices, function (currPathAndIdx) {
-        var targetIdx = currPathAndIdx.idx;
-        var targetPath = currPathAndIdx.path;
-        var prefixAmbiguitiesPathsAndIndices = utils_1.findAll(pathsAndIndices, function (searchPathAndIdx) {
-            // prefix ambiguity can only be created from lower idx (higher priority) path
-            return (searchPathAndIdx.idx < targetIdx &&
-                // checking for strict prefix because identical lookaheads
-                // will be be detected using a different validation.
-                lookahead_1.isStrictPrefixOfPath(searchPathAndIdx.path, targetPath));
-        });
-        var currPathPrefixErrors = utils_1.map(prefixAmbiguitiesPathsAndIndices, function (currAmbPathAndIdx) {
-            var ambgIndices = [currAmbPathAndIdx.idx + 1, targetIdx + 1];
-            var pathMsg = utils_1.map(currAmbPathAndIdx.path, function (currTok) {
-                return tokens_public_1.tokenLabel(currTok);
-            }).join(", ");
-            var occurrence = alternation.implicitOccurrenceIndex
-                ? ""
-                : alternation.occurrenceInParent;
-            var currMessage = "Ambiguous alternatives: <" + ambgIndices.join(" ,") + "> due to common lookahead prefix\n" +
-                ("in <OR" + occurrence + "> inside <" + ruleName + "> Rule,\n") +
-                ("<" + pathMsg + "> may appears as a prefix path in all these alternatives.\n") +
-                "http://sap.github.io/chevrotain/website/Building_Grammars/resolving_grammar_errors.html#COMMON_PREFIX " +
-                "For farther details.";
-            return {
-                message: currMessage,
-                type: parser_public_1.ParserDefinitionErrorType.AMBIGUOUS_PREFIX_ALTS,
-                ruleName: ruleName,
-                occurrence: occurrence,
-                alternatives: ambgIndices
-            };
-        });
-        errors = errors.concat(currPathPrefixErrors);
-    });
-    return errors;
-}
-function checkTerminalAndNoneTerminalsNameSpace(ruleNames, terminalNames) {
-    var errors = [];
-    utils_1.forEach(ruleNames, function (currRuleName) {
-        if (utils_1.contains(terminalNames, currRuleName)) {
-            var errMsg = "Namespace conflict found in grammar.\n" +
-                ("The grammar has both a Terminal(Token) and a Non-Terminal(Rule) named: <" + currRuleName + ">.\n") +
-                "To resolve this make sure each Terminal and Non-Terminal names are unique\n" +
-                "This is easy to accomplish by using the convention that Terminal names start with an uppercase letter\n" +
-                "and Non-Terminal names start with a lower case letter.";
-            errors.push({
-                message: errMsg,
-                type: parser_public_1.ParserDefinitionErrorType.CONFLICT_TOKENS_RULES_NAMESPACE,
-                ruleName: currRuleName
-            });
-        }
-    });
-    return errors;
-}
-function validateDuplicateNestedRules(topLevelRules) {
-    var errors = [];
-    utils_1.forEach(topLevelRules, function (currTopRule) {
-        var namedCollectorVisitor = new cst_1.NamedDSLMethodsCollectorVisitor("");
-        currTopRule.accept(namedCollectorVisitor);
-        var nestedNames = utils_1.map(namedCollectorVisitor.result, function (currItem) { return currItem.name; });
-        var namesGroups = utils_1.groupBy(nestedNames, function (item) { return item; });
-        var duplicates = utils_1.pick(namesGroups, function (currGroup) {
-            return currGroup.length > 1;
-        });
-        utils_1.forEach(utils_1.values(duplicates), function (currDuplicates) {
-            var duplicateName = utils.first(currDuplicates);
-            var errMsg = "Duplicate nested rule name: ->" + duplicateName + "<- inside rule: ->" + currTopRule.name + "<-\n" +
-                "A nested name must be unique in the scope of a top level grammar rule.";
-            errors.push({
-                message: errMsg,
-                type: parser_public_1.ParserDefinitionErrorType.DUPLICATE_NESTED_NAME,
-                ruleName: currTopRule.name
-            });
-        });
-    });
-    return errors;
-}
-//# sourceMappingURL=checks.js.map
-
-/***/ }),
-/* 33 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var gast_public_1 = __webpack_require__(2);
-var gast_1 = __webpack_require__(21);
-var utils_1 = __webpack_require__(0);
-function first(prod) {
-    if (prod instanceof gast_public_1.gast.NonTerminal) {
-        // this could in theory cause infinite loops if
-        // (1) prod A refs prod B.
-        // (2) prod B refs prod A
-        // (3) AB can match the empty set
-        // in other words a cycle where everything is optional so the first will keep
-        // looking ahead for the next optional part and will never exit
-        // currently there is no safeguard for this unique edge case because
-        // (1) not sure a grammar in which this can happen is useful for anything (productive)
-        return first(prod.referencedRule);
-    }
-    else if (prod instanceof gast_public_1.gast.Terminal) {
-        return firstForTerminal(prod);
-    }
-    else if (gast_1.isSequenceProd(prod)) {
-        return firstForSequence(prod);
-    }
-    else if (gast_1.isBranchingProd(prod)) {
-        return firstForBranching(prod);
-    }
-    else {
-        /* istanbul ignore next */
-        throw Error("non exhaustive match");
-    }
-}
-exports.first = first;
-function firstForSequence(prod) {
-    var firstSet = [];
-    var seq = prod.definition;
-    var nextSubProdIdx = 0;
-    var hasInnerProdsRemaining = seq.length > nextSubProdIdx;
-    var currSubProd;
-    // so we enter the loop at least once (if the definition is not empty
-    var isLastInnerProdOptional = true;
-    // scan a sequence until it's end or until we have found a NONE optional production in it
-    while (hasInnerProdsRemaining && isLastInnerProdOptional) {
-        currSubProd = seq[nextSubProdIdx];
-        isLastInnerProdOptional = gast_1.isOptionalProd(currSubProd);
-        firstSet = firstSet.concat(first(currSubProd));
-        nextSubProdIdx = nextSubProdIdx + 1;
-        hasInnerProdsRemaining = seq.length > nextSubProdIdx;
-    }
-    return utils_1.uniq(firstSet);
-}
-exports.firstForSequence = firstForSequence;
-function firstForBranching(prod) {
-    var allAlternativesFirsts = utils_1.map(prod.definition, function (innerProd) {
-        return first(innerProd);
-    });
-    return utils_1.uniq(utils_1.flatten(allAlternativesFirsts));
-}
-exports.firstForBranching = firstForBranching;
-function firstForTerminal(terminal) {
-    return [terminal.terminalType];
-}
-exports.firstForTerminal = firstForTerminal;
-//# sourceMappingURL=first.js.map
-
-/***/ }),
-/* 34 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-// Lookahead keys are 32Bit integers in the form
-// TTTTTTTTT-ZZZZZZZZZZZZZZZ-YYYY-XXXX
-// XXXX -> Occurrence Index bitmap.
-// YYYY -> DSL Method Name bitmap.
-// ZZZZZZZZZZZZZZZ -> Rule short Index bitmap.
-// TTTTTTTTT -> alternation alternative index bitmap
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.BITS_FOR_METHOD_IDX = 4;
-exports.BITS_FOR_OCCURRENCE_IDX = 4;
-exports.BITS_FOR_RULE_IDX = 24;
-// TODO: validation, this means that there may at most 2^8 --> 256 alternatives for an alternation.
-exports.BITS_FOR_ALT_IDX = 8;
-// short string used as part of mapping keys.
-// being short improves the performance when composing KEYS for maps out of these
-// The 5 - 8 bits (16 possible values, are reserved for the DSL method indices)
-/* tslint:disable */
-exports.OR_IDX = 1 << exports.BITS_FOR_METHOD_IDX;
-exports.OPTION_IDX = 2 << exports.BITS_FOR_METHOD_IDX;
-exports.MANY_IDX = 3 << exports.BITS_FOR_METHOD_IDX;
-exports.AT_LEAST_ONE_IDX = 4 << exports.BITS_FOR_METHOD_IDX;
-exports.MANY_SEP_IDX = 5 << exports.BITS_FOR_METHOD_IDX;
-exports.AT_LEAST_ONE_SEP_IDX = 6 << exports.BITS_FOR_METHOD_IDX;
-/* tslint:enable */
-// this actually returns a number, but it is always used as a string (object prop key)
-function getKeyForAutomaticLookahead(ruleIdx, dslMethodIdx, occurrence) {
-    /* tslint:disable */
-    return occurrence | dslMethodIdx | ruleIdx;
-    /* tslint:enable */
-}
-exports.getKeyForAutomaticLookahead = getKeyForAutomaticLookahead;
-var BITS_START_FOR_ALT_IDX = 32 - exports.BITS_FOR_ALT_IDX;
-function getKeyForAltIndex(ruleIdx, dslMethodIdx, occurrence, altIdx) {
-    /* tslint:disable */
-    // alternative indices are zero based, thus must always add one (turn on one bit) to guarantee uniqueness.
-    var altIdxBitMap = (altIdx + 1) << BITS_START_FOR_ALT_IDX;
-    return (getKeyForAutomaticLookahead(ruleIdx, dslMethodIdx, occurrence) |
-        altIdxBitMap);
-    /* tslint:enable */
-}
-exports.getKeyForAltIndex = getKeyForAltIndex;
-//# sourceMappingURL=keys.js.map
-
-/***/ }),
-/* 35 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var utils_1 = __webpack_require__(0);
-var gast_public_1 = __webpack_require__(2);
-var interpreter_1 = __webpack_require__(6);
-var rest_1 = __webpack_require__(22);
-var tokens_1 = __webpack_require__(7);
-var PROD_TYPE;
-(function (PROD_TYPE) {
-    PROD_TYPE[PROD_TYPE["OPTION"] = 0] = "OPTION";
-    PROD_TYPE[PROD_TYPE["REPETITION"] = 1] = "REPETITION";
-    PROD_TYPE[PROD_TYPE["REPETITION_MANDATORY"] = 2] = "REPETITION_MANDATORY";
-    PROD_TYPE[PROD_TYPE["REPETITION_MANDATORY_WITH_SEPARATOR"] = 3] = "REPETITION_MANDATORY_WITH_SEPARATOR";
-    PROD_TYPE[PROD_TYPE["REPETITION_WITH_SEPARATOR"] = 4] = "REPETITION_WITH_SEPARATOR";
-    PROD_TYPE[PROD_TYPE["ALTERNATION"] = 5] = "ALTERNATION";
-})(PROD_TYPE = exports.PROD_TYPE || (exports.PROD_TYPE = {}));
-function getProdType(prod) {
-    if (prod instanceof gast_public_1.gast.Option) {
-        return PROD_TYPE.OPTION;
-    }
-    else if (prod instanceof gast_public_1.gast.Repetition) {
-        return PROD_TYPE.REPETITION;
-    }
-    else if (prod instanceof gast_public_1.gast.RepetitionMandatory) {
-        return PROD_TYPE.REPETITION_MANDATORY;
-    }
-    else if (prod instanceof gast_public_1.gast.RepetitionMandatoryWithSeparator) {
-        return PROD_TYPE.REPETITION_MANDATORY_WITH_SEPARATOR;
-    }
-    else if (prod instanceof gast_public_1.gast.RepetitionWithSeparator) {
-        return PROD_TYPE.REPETITION_WITH_SEPARATOR;
-    }
-    else if (prod instanceof gast_public_1.gast.Alternation) {
-        return PROD_TYPE.ALTERNATION;
-    }
-    else {
-        /* istanbul ignore next */
-        throw Error("non exhaustive match");
-    }
-}
-exports.getProdType = getProdType;
-function buildLookaheadFuncForOr(occurrence, ruleGrammar, k, hasPredicates, dynamicTokensEnabled, laFuncBuilder) {
-    var lookAheadPaths = getLookaheadPathsForOr(occurrence, ruleGrammar, k);
-    var tokenMatcher = areTokenCategoriesNotUsed(lookAheadPaths)
-        ? tokens_1.tokenStructuredMatcherNoCategories
-        : tokens_1.tokenStructuredMatcher;
-    return laFuncBuilder(lookAheadPaths, hasPredicates, tokenMatcher, dynamicTokensEnabled);
-}
-exports.buildLookaheadFuncForOr = buildLookaheadFuncForOr;
-/**
- *  When dealing with an Optional production (OPTION/MANY/2nd iteration of AT_LEAST_ONE/...) we need to compare
- *  the lookahead "inside" the production and the lookahead immediately "after" it in the same top level rule (context free).
- *
- *  Example: given a production:
- *  ABC(DE)?DF
- *
- *  The optional '(DE)?' should only be entered if we see 'DE'. a single Token 'D' is not sufficient to distinguish between the two
- *  alternatives.
- *
- *  @returns A Lookahead function which will return true IFF the parser should parse the Optional production.
- */
-function buildLookaheadFuncForOptionalProd(occurrence, ruleGrammar, k, dynamicTokensEnabled, prodType, lookaheadBuilder) {
-    var lookAheadPaths = getLookaheadPathsForOptionalProd(occurrence, ruleGrammar, prodType, k);
-    var tokenMatcher = areTokenCategoriesNotUsed(lookAheadPaths)
-        ? tokens_1.tokenStructuredMatcherNoCategories
-        : tokens_1.tokenStructuredMatcher;
-    return lookaheadBuilder(lookAheadPaths[0], tokenMatcher, dynamicTokensEnabled);
-}
-exports.buildLookaheadFuncForOptionalProd = buildLookaheadFuncForOptionalProd;
-function buildAlternativesLookAheadFunc(alts, hasPredicates, tokenMatcher, dynamicTokensEnabled) {
-    var numOfAlts = alts.length;
-    var areAllOneTokenLookahead = utils_1.every(alts, function (currAlt) {
-        return utils_1.every(currAlt, function (currPath) {
-            return currPath.length === 1;
-        });
-    });
-    // This version takes into account the predicates as well.
-    if (hasPredicates) {
-        /**
-         * @returns {number} - The chosen alternative index
-         */
-        return function (orAlts) {
-            // unfortunately the predicates must be extracted every single time
-            // as they cannot be cached due to keep references to parameters(vars) which are no longer valid.
-            // note that in the common case of no predicates, no cpu time will be wasted on this (see else block)
-            var predicates = utils_1.map(orAlts, function (currAlt) { return currAlt.GATE; });
-            for (var t = 0; t < numOfAlts; t++) {
-                var currAlt = alts[t];
-                var currNumOfPaths = currAlt.length;
-                var currPredicate = predicates[t];
-                if (currPredicate && !currPredicate.call(this)) {
-                    // if the predicate does not match there is no point in checking the paths
-                    continue;
-                }
-                nextPath: for (var j = 0; j < currNumOfPaths; j++) {
-                    var currPath = currAlt[j];
-                    var currPathLength = currPath.length;
-                    for (var i = 0; i < currPathLength; i++) {
-                        var nextToken = this.LA(i + 1);
-                        if (tokenMatcher(nextToken, currPath[i]) === false) {
-                            // mismatch in current path
-                            // try the next pth
-                            continue nextPath;
-                        }
-                    }
-                    // found a full path that matches.
-                    // this will also work for an empty ALT as the loop will be skipped
-                    return t;
-                }
-                // none of the paths for the current alternative matched
-                // try the next alternative
-            }
-            // none of the alternatives could be matched
-            return undefined;
-        };
-    }
-    else if (areAllOneTokenLookahead && !dynamicTokensEnabled) {
-        // optimized (common) case of all the lookaheads paths requiring only
-        // a single token lookahead. These Optimizations cannot work if dynamically defined Tokens are used.
-        var singleTokenAlts = utils_1.map(alts, function (currAlt) {
-            return utils_1.flatten(currAlt);
-        });
-        var choiceToAlt_1 = utils_1.reduce(singleTokenAlts, function (result, currAlt, idx) {
-            utils_1.forEach(currAlt, function (currTokType) {
-                if (!utils_1.has(result, currTokType.tokenTypeIdx)) {
-                    result[currTokType.tokenTypeIdx] = idx;
-                }
-                utils_1.forEach(currTokType.categoryMatches, function (currExtendingType) {
-                    if (!utils_1.has(result, currExtendingType)) {
-                        result[currExtendingType] = idx;
-                    }
-                });
-            });
-            return result;
-        }, {});
-        /**
-         * @returns {number} - The chosen alternative index
-         */
-        return function () {
-            var nextToken = this.LA(1);
-            return choiceToAlt_1[nextToken.tokenTypeIdx];
-        };
-    }
-    else {
-        // optimized lookahead without needing to check the predicates at all.
-        // this causes code duplication which is intentional to improve performance.
-        /**
-         * @returns {number} - The chosen alternative index
-         */
-        return function () {
-            for (var t = 0; t < numOfAlts; t++) {
-                var currAlt = alts[t];
-                var currNumOfPaths = currAlt.length;
-                nextPath: for (var j = 0; j < currNumOfPaths; j++) {
-                    var currPath = currAlt[j];
-                    var currPathLength = currPath.length;
-                    for (var i = 0; i < currPathLength; i++) {
-                        var nextToken = this.LA(i + 1);
-                        if (tokenMatcher(nextToken, currPath[i]) === false) {
-                            // mismatch in current path
-                            // try the next pth
-                            continue nextPath;
-                        }
-                    }
-                    // found a full path that matches.
-                    // this will also work for an empty ALT as the loop will be skipped
-                    return t;
-                }
-                // none of the paths for the current alternative matched
-                // try the next alternative
-            }
-            // none of the alternatives could be matched
-            return undefined;
-        };
-    }
-}
-exports.buildAlternativesLookAheadFunc = buildAlternativesLookAheadFunc;
-function buildSingleAlternativeLookaheadFunction(alt, tokenMatcher, dynamicTokensEnabled) {
-    var areAllOneTokenLookahead = utils_1.every(alt, function (currPath) {
-        return currPath.length === 1;
-    });
-    var numOfPaths = alt.length;
-    // optimized (common) case of all the lookaheads paths requiring only
-    // a single token lookahead.
-    if (areAllOneTokenLookahead && !dynamicTokensEnabled) {
-        var singleTokensTypes = utils_1.flatten(alt);
-        if (singleTokensTypes.length === 1 &&
-            utils_1.isEmpty(singleTokensTypes[0].categoryMatches)) {
-            var expectedTokenType = singleTokensTypes[0];
-            var expectedTokenUniqueKey_1 = expectedTokenType.tokenTypeIdx;
-            return function () {
-                return this.LA(1).tokenTypeIdx === expectedTokenUniqueKey_1;
-            };
-        }
-        else {
-            var choiceToAlt_2 = utils_1.reduce(singleTokensTypes, function (result, currTokType, idx) {
-                result[currTokType.tokenTypeIdx] = true;
-                utils_1.forEach(currTokType.categoryMatches, function (currExtendingType) {
-                    result[currExtendingType] = true;
-                });
-                return result;
-            }, {});
-            return function () {
-                var nextToken = this.LA(1);
-                return choiceToAlt_2[nextToken.tokenTypeIdx] === true;
-            };
-        }
-    }
-    else {
-        return function () {
-            nextPath: for (var j = 0; j < numOfPaths; j++) {
-                var currPath = alt[j];
-                var currPathLength = currPath.length;
-                for (var i = 0; i < currPathLength; i++) {
-                    var nextToken = this.LA(i + 1);
-                    if (tokenMatcher(nextToken, currPath[i]) === false) {
-                        // mismatch in current path
-                        // try the next pth
-                        continue nextPath;
-                    }
-                }
-                // found a full path that matches.
-                return true;
-            }
-            // none of the paths matched
-            return false;
-        };
-    }
-}
-exports.buildSingleAlternativeLookaheadFunction = buildSingleAlternativeLookaheadFunction;
-var RestDefinitionFinderWalker = /** @class */ (function (_super) {
-    __extends(RestDefinitionFinderWalker, _super);
-    function RestDefinitionFinderWalker(topProd, targetOccurrence, targetProdType) {
-        var _this = _super.call(this) || this;
-        _this.topProd = topProd;
-        _this.targetOccurrence = targetOccurrence;
-        _this.targetProdType = targetProdType;
-        return _this;
-    }
-    RestDefinitionFinderWalker.prototype.startWalking = function () {
-        this.walk(this.topProd);
-        return this.restDef;
-    };
-    RestDefinitionFinderWalker.prototype.checkIsTarget = function (node, expectedProdType, currRest, prevRest) {
-        if (node.occurrenceInParent === this.targetOccurrence &&
-            this.targetProdType === expectedProdType) {
-            this.restDef = currRest.concat(prevRest);
-            return true;
-        }
-        // performance optimization, do not iterate over the entire Grammar ast after we have found the target
-        return false;
-    };
-    RestDefinitionFinderWalker.prototype.walkOption = function (optionProd, currRest, prevRest) {
-        if (!this.checkIsTarget(optionProd, PROD_TYPE.OPTION, currRest, prevRest)) {
-            _super.prototype.walkOption.call(this, optionProd, currRest, prevRest);
-        }
-    };
-    RestDefinitionFinderWalker.prototype.walkAtLeastOne = function (atLeastOneProd, currRest, prevRest) {
-        if (!this.checkIsTarget(atLeastOneProd, PROD_TYPE.REPETITION_MANDATORY, currRest, prevRest)) {
-            _super.prototype.walkOption.call(this, atLeastOneProd, currRest, prevRest);
-        }
-    };
-    RestDefinitionFinderWalker.prototype.walkAtLeastOneSep = function (atLeastOneSepProd, currRest, prevRest) {
-        if (!this.checkIsTarget(atLeastOneSepProd, PROD_TYPE.REPETITION_MANDATORY_WITH_SEPARATOR, currRest, prevRest)) {
-            _super.prototype.walkOption.call(this, atLeastOneSepProd, currRest, prevRest);
-        }
-    };
-    RestDefinitionFinderWalker.prototype.walkMany = function (manyProd, currRest, prevRest) {
-        if (!this.checkIsTarget(manyProd, PROD_TYPE.REPETITION, currRest, prevRest)) {
-            _super.prototype.walkOption.call(this, manyProd, currRest, prevRest);
-        }
-    };
-    RestDefinitionFinderWalker.prototype.walkManySep = function (manySepProd, currRest, prevRest) {
-        if (!this.checkIsTarget(manySepProd, PROD_TYPE.REPETITION_WITH_SEPARATOR, currRest, prevRest)) {
-            _super.prototype.walkOption.call(this, manySepProd, currRest, prevRest);
-        }
-    };
-    return RestDefinitionFinderWalker;
-}(rest_1.RestWalker));
-/**
- * Returns the definition of a target production in a top level level rule.
- */
-var InsideDefinitionFinderVisitor = /** @class */ (function (_super) {
-    __extends(InsideDefinitionFinderVisitor, _super);
-    function InsideDefinitionFinderVisitor(targetOccurrence, targetProdType) {
-        var _this = _super.call(this) || this;
-        _this.targetOccurrence = targetOccurrence;
-        _this.targetProdType = targetProdType;
-        _this.result = [];
-        return _this;
-    }
-    InsideDefinitionFinderVisitor.prototype.checkIsTarget = function (node, expectedProdName) {
-        if (node.occurrenceInParent === this.targetOccurrence &&
-            this.targetProdType === expectedProdName) {
-            this.result = node.definition;
-        }
-    };
-    InsideDefinitionFinderVisitor.prototype.visitOption = function (node) {
-        this.checkIsTarget(node, PROD_TYPE.OPTION);
-    };
-    InsideDefinitionFinderVisitor.prototype.visitRepetition = function (node) {
-        this.checkIsTarget(node, PROD_TYPE.REPETITION);
-    };
-    InsideDefinitionFinderVisitor.prototype.visitRepetitionMandatory = function (node) {
-        this.checkIsTarget(node, PROD_TYPE.REPETITION_MANDATORY);
-    };
-    InsideDefinitionFinderVisitor.prototype.visitRepetitionMandatoryWithSeparator = function (node) {
-        this.checkIsTarget(node, PROD_TYPE.REPETITION_MANDATORY_WITH_SEPARATOR);
-    };
-    InsideDefinitionFinderVisitor.prototype.visitRepetitionWithSeparator = function (node) {
-        this.checkIsTarget(node, PROD_TYPE.REPETITION_WITH_SEPARATOR);
-    };
-    InsideDefinitionFinderVisitor.prototype.visitAlternation = function (node) {
-        this.checkIsTarget(node, PROD_TYPE.ALTERNATION);
-    };
-    return InsideDefinitionFinderVisitor;
-}(gast_public_1.gast.GAstVisitor));
-function lookAheadSequenceFromAlternatives(altsDefs, k) {
-    function getOtherPaths(pathsAndSuffixes, filterIdx) {
-        return utils_1.reduce(pathsAndSuffixes, function (result, currPathsAndSuffixes, currIdx) {
-            if (currIdx !== filterIdx) {
-                var currPartialPaths = utils_1.map(currPathsAndSuffixes, function (singlePathAndSuffix) { return singlePathAndSuffix.partialPath; });
-                return result.concat(currPartialPaths);
-            }
-            return result;
-        }, []);
-    }
-    function isUniquePrefix(arr, item) {
-        return (utils_1.find(arr, function (currOtherPath) {
-            return utils_1.every(item, function (currPathTok, idx) { return currPathTok === currOtherPath[idx]; });
-        }) === undefined);
-    }
-    function initializeArrayOfArrays(size) {
-        var result = [];
-        for (var i = 0; i < size; i++) {
-            result.push([]);
-        }
-        return result;
-    }
-    var partialAlts = utils_1.map(altsDefs, function (currAlt) { return interpreter_1.possiblePathsFrom([currAlt], 1); });
-    var finalResult = initializeArrayOfArrays(partialAlts.length);
-    var newData = partialAlts;
-    // maxLookahead loop
-    for (var pathLength = 1; pathLength <= k; pathLength++) {
-        var currDataset = newData;
-        newData = initializeArrayOfArrays(currDataset.length);
-        // alternatives loop
-        for (var resultIdx = 0; resultIdx < currDataset.length; resultIdx++) {
-            var currAltPathsAndSuffixes = currDataset[resultIdx];
-            var otherPaths = getOtherPaths(currDataset, resultIdx);
-            // paths in current alternative loop
-            for (var currPathIdx = 0; currPathIdx < currAltPathsAndSuffixes.length; currPathIdx++) {
-                var currPathPrefix = currAltPathsAndSuffixes[currPathIdx].partialPath;
-                var suffixDef = currAltPathsAndSuffixes[currPathIdx].suffixDef;
-                var isUnique = isUniquePrefix(otherPaths, currPathPrefix);
-                // even if a path is not unique, but there are no longer alternatives to try
-                // or if we have reached the maximum lookahead (k) permitted.
-                if (isUnique ||
-                    utils_1.isEmpty(suffixDef) ||
-                    currPathPrefix.length === k) {
-                    var currAltResult = finalResult[resultIdx];
-                    if (!containsPath(currAltResult, currPathPrefix)) {
-                        currAltResult.push(currPathPrefix);
-                    }
-                }
-                else {
-                    var newPartialPathsAndSuffixes = interpreter_1.possiblePathsFrom(suffixDef, pathLength + 1, currPathPrefix);
-                    newData[resultIdx] = newData[resultIdx].concat(newPartialPathsAndSuffixes);
-                }
-            }
-        }
-    }
-    return finalResult;
-}
-exports.lookAheadSequenceFromAlternatives = lookAheadSequenceFromAlternatives;
-function getLookaheadPathsForOr(occurrence, ruleGrammar, k) {
-    var visitor = new InsideDefinitionFinderVisitor(occurrence, PROD_TYPE.ALTERNATION);
-    ruleGrammar.accept(visitor);
-    return lookAheadSequenceFromAlternatives(visitor.result, k);
-}
-exports.getLookaheadPathsForOr = getLookaheadPathsForOr;
-function getLookaheadPathsForOptionalProd(occurrence, ruleGrammar, prodType, k) {
-    var insideDefVisitor = new InsideDefinitionFinderVisitor(occurrence, prodType);
-    ruleGrammar.accept(insideDefVisitor);
-    var insideDef = insideDefVisitor.result;
-    var afterDefWalker = new RestDefinitionFinderWalker(ruleGrammar, occurrence, prodType);
-    var afterDef = afterDefWalker.startWalking();
-    var insideFlat = new gast_public_1.gast.Flat(insideDef);
-    var afterFlat = new gast_public_1.gast.Flat(afterDef);
-    return lookAheadSequenceFromAlternatives([insideFlat, afterFlat], k);
-}
-exports.getLookaheadPathsForOptionalProd = getLookaheadPathsForOptionalProd;
-function containsPath(alternative, path) {
-    var found = utils_1.find(alternative, function (otherPath) {
-        return (path.length === otherPath.length &&
-            utils_1.every(path, function (targetItem, idx) {
-                return targetItem === otherPath[idx];
-            }));
-    });
-    return found !== undefined;
-}
-exports.containsPath = containsPath;
-function isStrictPrefixOfPath(prefix, other) {
-    return (prefix.length < other.length &&
-        utils_1.every(prefix, function (tokType, idx) {
-            return tokType === other[idx];
-        }));
-}
-exports.isStrictPrefixOfPath = isStrictPrefixOfPath;
-function areTokenCategoriesNotUsed(lookAheadPaths) {
-    return utils_1.every(lookAheadPaths, function (singleAltPaths) {
-        return utils_1.every(singleAltPaths, function (singlePath) {
-            return utils_1.every(singlePath, function (token) { return utils_1.isEmpty(token.categoryMatches); });
-        });
-    });
-}
-exports.areTokenCategoriesNotUsed = areTokenCategoriesNotUsed;
-//# sourceMappingURL=lookahead.js.map
-
-/***/ }),
-/* 36 */
-/***/ (function(module, exports) {
-
-// Generated by CoffeeScript 1.12.6
-(function() {
-  var XMLAttribute;
-
-  module.exports = XMLAttribute = (function() {
-    function XMLAttribute(parent, name, value) {
-      this.options = parent.options;
-      this.stringify = parent.stringify;
-      if (name == null) {
-        throw new Error("Missing attribute name of element " + parent.name);
-      }
-      if (value == null) {
-        throw new Error("Missing attribute value for attribute " + name + " of element " + parent.name);
-      }
-      this.name = this.stringify.attName(name);
-      this.value = this.stringify.attValue(value);
-    }
-
-    XMLAttribute.prototype.clone = function() {
-      return Object.create(this);
-    };
-
-    XMLAttribute.prototype.toString = function(options) {
-      return this.options.writer.set(options).attribute(this);
-    };
-
-    return XMLAttribute;
-
-  })();
-
-}).call(this);
-
-
-/***/ }),
-/* 37 */
-/***/ (function(module, exports) {
-
-// Generated by CoffeeScript 1.12.6
-(function() {
-  var XMLStringifier,
-    bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-    hasProp = {}.hasOwnProperty;
-
-  module.exports = XMLStringifier = (function() {
-    function XMLStringifier(options) {
-      this.assertLegalChar = bind(this.assertLegalChar, this);
-      var key, ref, value;
-      options || (options = {});
-      this.noDoubleEncoding = options.noDoubleEncoding;
-      ref = options.stringify || {};
-      for (key in ref) {
-        if (!hasProp.call(ref, key)) continue;
-        value = ref[key];
-        this[key] = value;
-      }
-    }
-
-    XMLStringifier.prototype.eleName = function(val) {
-      val = '' + val || '';
-      return this.assertLegalChar(val);
-    };
-
-    XMLStringifier.prototype.eleText = function(val) {
-      val = '' + val || '';
-      return this.assertLegalChar(this.elEscape(val));
-    };
-
-    XMLStringifier.prototype.cdata = function(val) {
-      val = '' + val || '';
-      val = val.replace(']]>', ']]]]><![CDATA[>');
-      return this.assertLegalChar(val);
-    };
-
-    XMLStringifier.prototype.comment = function(val) {
-      val = '' + val || '';
-      if (val.match(/--/)) {
-        throw new Error("Comment text cannot contain double-hypen: " + val);
-      }
-      return this.assertLegalChar(val);
-    };
-
-    XMLStringifier.prototype.raw = function(val) {
-      return '' + val || '';
-    };
-
-    XMLStringifier.prototype.attName = function(val) {
-      return val = '' + val || '';
-    };
-
-    XMLStringifier.prototype.attValue = function(val) {
-      val = '' + val || '';
-      return this.attEscape(val);
-    };
-
-    XMLStringifier.prototype.insTarget = function(val) {
-      return '' + val || '';
-    };
-
-    XMLStringifier.prototype.insValue = function(val) {
-      val = '' + val || '';
-      if (val.match(/\?>/)) {
-        throw new Error("Invalid processing instruction value: " + val);
-      }
-      return val;
-    };
-
-    XMLStringifier.prototype.xmlVersion = function(val) {
-      val = '' + val || '';
-      if (!val.match(/1\.[0-9]+/)) {
-        throw new Error("Invalid version number: " + val);
-      }
-      return val;
-    };
-
-    XMLStringifier.prototype.xmlEncoding = function(val) {
-      val = '' + val || '';
-      if (!val.match(/^[A-Za-z](?:[A-Za-z0-9._-]|-)*$/)) {
-        throw new Error("Invalid encoding: " + val);
-      }
-      return val;
-    };
-
-    XMLStringifier.prototype.xmlStandalone = function(val) {
-      if (val) {
-        return "yes";
-      } else {
-        return "no";
-      }
-    };
-
-    XMLStringifier.prototype.dtdPubID = function(val) {
-      return '' + val || '';
-    };
-
-    XMLStringifier.prototype.dtdSysID = function(val) {
-      return '' + val || '';
-    };
-
-    XMLStringifier.prototype.dtdElementValue = function(val) {
-      return '' + val || '';
-    };
-
-    XMLStringifier.prototype.dtdAttType = function(val) {
-      return '' + val || '';
-    };
-
-    XMLStringifier.prototype.dtdAttDefault = function(val) {
-      if (val != null) {
-        return '' + val || '';
-      } else {
-        return val;
-      }
-    };
-
-    XMLStringifier.prototype.dtdEntityValue = function(val) {
-      return '' + val || '';
-    };
-
-    XMLStringifier.prototype.dtdNData = function(val) {
-      return '' + val || '';
-    };
-
-    XMLStringifier.prototype.convertAttKey = '@';
-
-    XMLStringifier.prototype.convertPIKey = '?';
-
-    XMLStringifier.prototype.convertTextKey = '#text';
-
-    XMLStringifier.prototype.convertCDataKey = '#cdata';
-
-    XMLStringifier.prototype.convertCommentKey = '#comment';
-
-    XMLStringifier.prototype.convertRawKey = '#raw';
-
-    XMLStringifier.prototype.assertLegalChar = function(str) {
-      var res;
-      res = str.match(/[\0\uFFFE\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]/);
-      if (res) {
-        throw new Error("Invalid character in string: " + str + " at index " + res.index);
-      }
-      return str;
-    };
-
-    XMLStringifier.prototype.elEscape = function(str) {
-      var ampregex;
-      ampregex = this.noDoubleEncoding ? /(?!&\S+;)&/g : /&/g;
-      return str.replace(ampregex, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\r/g, '&#xD;');
-    };
-
-    XMLStringifier.prototype.attEscape = function(str) {
-      var ampregex;
-      ampregex = this.noDoubleEncoding ? /(?!&\S+;)&/g : /&/g;
-      return str.replace(ampregex, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;').replace(/\t/g, '&#x9;').replace(/\n/g, '&#xA;').replace(/\r/g, '&#xD;');
-    };
-
-    return XMLStringifier;
-
-  })();
-
-}).call(this);
-
-
-/***/ }),
-/* 38 */
-/***/ (function(module, exports) {
-
-// Generated by CoffeeScript 1.12.6
-(function() {
-  var XMLWriterBase,
-    hasProp = {}.hasOwnProperty;
-
-  module.exports = XMLWriterBase = (function() {
-    function XMLWriterBase(options) {
-      var key, ref, ref1, ref2, ref3, ref4, ref5, ref6, value;
-      options || (options = {});
-      this.pretty = options.pretty || false;
-      this.allowEmpty = (ref = options.allowEmpty) != null ? ref : false;
-      if (this.pretty) {
-        this.indent = (ref1 = options.indent) != null ? ref1 : '  ';
-        this.newline = (ref2 = options.newline) != null ? ref2 : '\n';
-        this.offset = (ref3 = options.offset) != null ? ref3 : 0;
-        this.dontprettytextnodes = (ref4 = options.dontprettytextnodes) != null ? ref4 : 0;
-      } else {
-        this.indent = '';
-        this.newline = '';
-        this.offset = 0;
-        this.dontprettytextnodes = 0;
-      }
-      this.spacebeforeslash = (ref5 = options.spacebeforeslash) != null ? ref5 : '';
-      if (this.spacebeforeslash === true) {
-        this.spacebeforeslash = ' ';
-      }
-      this.newlinedefault = this.newline;
-      this.prettydefault = this.pretty;
-      ref6 = options.writer || {};
-      for (key in ref6) {
-        if (!hasProp.call(ref6, key)) continue;
-        value = ref6[key];
-        this[key] = value;
-      }
-    }
-
-    XMLWriterBase.prototype.set = function(options) {
-      var key, ref, value;
-      options || (options = {});
-      if ("pretty" in options) {
-        this.pretty = options.pretty;
-      }
-      if ("allowEmpty" in options) {
-        this.allowEmpty = options.allowEmpty;
-      }
-      if (this.pretty) {
-        this.indent = "indent" in options ? options.indent : '  ';
-        this.newline = "newline" in options ? options.newline : '\n';
-        this.offset = "offset" in options ? options.offset : 0;
-        this.dontprettytextnodes = "dontprettytextnodes" in options ? options.dontprettytextnodes : 0;
-      } else {
-        this.indent = '';
-        this.newline = '';
-        this.offset = 0;
-        this.dontprettytextnodes = 0;
-      }
-      this.spacebeforeslash = "spacebeforeslash" in options ? options.spacebeforeslash : '';
-      if (this.spacebeforeslash === true) {
-        this.spacebeforeslash = ' ';
-      }
-      this.newlinedefault = this.newline;
-      this.prettydefault = this.pretty;
-      ref = options.writer || {};
-      for (key in ref) {
-        if (!hasProp.call(ref, key)) continue;
-        value = ref[key];
-        this[key] = value;
-      }
-      return this;
-    };
-
-    XMLWriterBase.prototype.space = function(level) {
-      var indent;
-      if (this.pretty) {
-        indent = (level || 0) + this.offset + 1;
-        if (indent > 0) {
-          return new Array(indent).join(this.indent);
-        } else {
-          return '';
-        }
-      } else {
-        return '';
-      }
-    };
-
-    return XMLWriterBase;
-
-  })();
-
-}).call(this);
-
-
-/***/ }),
-/* 39 */
+/* 42 */
 /***/ (function(module, exports) {
 
 module.exports =
@@ -21996,7 +22631,7 @@ module.exports =
 /******/ ]);
 
 /***/ }),
-/* 40 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.6
@@ -22005,13 +22640,13 @@ module.exports =
 
   ref = __webpack_require__(4), assign = ref.assign, isFunction = ref.isFunction;
 
-  XMLDocument = __webpack_require__(52);
+  XMLDocument = __webpack_require__(54);
 
-  XMLDocumentCB = __webpack_require__(53);
+  XMLDocumentCB = __webpack_require__(55);
 
-  XMLStringWriter = __webpack_require__(26);
+  XMLStringWriter = __webpack_require__(28);
 
-  XMLStreamWriter = __webpack_require__(54);
+  XMLStreamWriter = __webpack_require__(56);
 
   module.exports.create = function(name, xmldec, doctype, options) {
     var doc, root;
@@ -22055,56 +22690,57 @@ module.exports =
 
 
 /***/ }),
-/* 41 */
+/* 44 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseTextToXML;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__grammar_js__ = __webpack_require__(56);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__LNParserF__ = __webpack_require__(58);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__XMLVisitor__ = __webpack_require__(59);
+/**
+ * Provide high level function to transform text to XML
+ *
+ * Perform lexing,parsing and visiting.
+ *
+ * @file   This files defines the parseTextToXML function.
+ * @author Ellen Vanhove.
+ */
 
 
-var {
-    lexer,
-    parser,
-    visitor,
-} = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__grammar_js__["a" /* default */])()
 
 
+let visitor = __WEBPACK_IMPORTED_MODULE_1__XMLVisitor__["a" /* XMLVisitor */];
+
+/**
+ * todo: return error message in case something goos wrong
+ * @param text
+ * @returns xml or undefined
+ */
 function parseTextToXML(text) {
-    var cst = getCst(text);
+    let cst = getCst(text);
     if (cst) {
-        var xml = execXmlVisitor(cst);
+        let xml = execXmlVisitor(cst);
+        //console.log(xml);
         return xml;
     }
 }
 
 function getCst(text) {
-    let lexingResult = lexer.tokenize(text);
-    // "input" is a setter which will reset the parser's state.
-    parser.input = lexingResult.tokens;
-
-    let cst = parser.scripts(); //startrule
-
-    if (parser.errors.length > 0) {
-        console.log(parser.errors)
-        console.log("sad sad panda, Parsing errors detected");
-        return;
-    } else {
-        return cst;
-    }
+    let r = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__LNParserF__["a" /* parse */])(text);
+    return r.value;
 }
 
 function execXmlVisitor(cst) {
-    var v = new visitor({
+    let v = new visitor({
         x: 10,
         y: 10
     });
-    var xml = v.getXML(cst);
+    let xml = v.getXML(cst);
     return xml;
 }
 
 /***/ }),
-/* 42 */
+/* 45 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -22114,11 +22750,11 @@ function execXmlVisitor(cst) {
 /* harmony export (immutable) */ __webpack_exports__["c"] = glowBlock;
 /* harmony export (immutable) */ __webpack_exports__["e"] = report;
 /* harmony export (immutable) */ __webpack_exports__["d"] = changeValue;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(41);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_scratch_blocks__ = __webpack_require__(39);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_scratch_blocks__ = __webpack_require__(42);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_scratch_blocks___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_scratch_blocks__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parser_parserUtils_js__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parser_parserUtils_js__ = __webpack_require__(44);
 
 
 
@@ -22207,82 +22843,13 @@ function fitBlocks(workspace, id) {
 }
 
 /***/ }),
-/* 43 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var parser_public_1 = __webpack_require__(23);
-var lexer_public_1 = __webpack_require__(24);
-var tokens_public_1 = __webpack_require__(3);
-var exceptions_public_1 = __webpack_require__(31);
-var gast_public_1 = __webpack_require__(2);
-var cache_public_1 = __webpack_require__(45);
-var interpreter_1 = __webpack_require__(6);
-var version_1 = __webpack_require__(25);
-var errors_public_1 = __webpack_require__(30);
-var render_public_1 = __webpack_require__(44);
-/**
- * defines the public API of
- * changes here may require major version change. (semVer)
- */
-var API = {};
-// semantic version
-API.VERSION = version_1.VERSION;
-// runtime API
-API.Parser = parser_public_1.Parser;
-API.ParserDefinitionErrorType = parser_public_1.ParserDefinitionErrorType;
-API.Lexer = lexer_public_1.Lexer;
-API.LexerDefinitionErrorType = lexer_public_1.LexerDefinitionErrorType;
-API.EOF = tokens_public_1.EOF;
-// Tokens utilities
-API.tokenName = tokens_public_1.tokenName;
-API.tokenLabel = tokens_public_1.tokenLabel;
-API.tokenMatcher = tokens_public_1.tokenMatcher;
-API.createToken = tokens_public_1.createToken;
-API.createTokenInstance = tokens_public_1.createTokenInstance;
-// Other Utilities
-API.EMPTY_ALT = parser_public_1.EMPTY_ALT;
-API.defaultErrorProvider = errors_public_1.defaultErrorProvider;
-API.exceptions = {};
-API.exceptions.isRecognitionException = exceptions_public_1.exceptions.isRecognitionException;
-API.exceptions.EarlyExitException = exceptions_public_1.exceptions.EarlyExitException;
-API.exceptions.MismatchedTokenException = exceptions_public_1.exceptions.MismatchedTokenException;
-API.exceptions.NotAllInputParsedException =
-    exceptions_public_1.exceptions.NotAllInputParsedException;
-API.exceptions.NoViableAltException = exceptions_public_1.exceptions.NoViableAltException;
-// grammar reflection API
-API.gast = {};
-API.gast.GAstVisitor = gast_public_1.gast.GAstVisitor;
-API.gast.Flat = gast_public_1.gast.Flat;
-API.gast.Repetition = gast_public_1.gast.Repetition;
-API.gast.RepetitionWithSeparator = gast_public_1.gast.RepetitionWithSeparator;
-API.gast.RepetitionMandatory = gast_public_1.gast.RepetitionMandatory;
-API.gast.RepetitionMandatoryWithSeparator =
-    gast_public_1.gast.RepetitionMandatoryWithSeparator;
-API.gast.Option = gast_public_1.gast.Option;
-API.gast.Alternation = gast_public_1.gast.Alternation;
-API.gast.NonTerminal = gast_public_1.gast.NonTerminal;
-API.gast.Terminal = gast_public_1.gast.Terminal;
-API.gast.Rule = gast_public_1.gast.Rule;
-API.gast.serializeGrammar = gast_public_1.gast.serializeGrammar;
-API.gast.serializeProduction = gast_public_1.gast.serializeProduction;
-API.interperter = {};
-API.interperter.NextAfterTokenWalker = interpreter_1.NextAfterTokenWalker;
-API.clearCache = cache_public_1.clearCache;
-API.createSyntaxDiagramsCode = render_public_1.createSyntaxDiagramsCode;
-module.exports = API;
-//# sourceMappingURL=api.js.map
-
-/***/ }),
-/* 44 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var version_1 = __webpack_require__(25);
+var version_1 = __webpack_require__(27);
 function createSyntaxDiagramsCode(grammar, _a) {
     var _b = _a === void 0 ? {} : _a, _c = _b.resourceBase, resourceBase = _c === void 0 ? "https://unpkg.com/chevrotain@" + version_1.VERSION + "/diagrams/" : _c, _d = _b.css, css = _d === void 0 ? "https://unpkg.com/chevrotain@" + version_1.VERSION + "/diagrams/diagrams.css" : _d;
     var header = "\n<!-- This is a generated file -->\n<!DOCTYPE html>\n<meta charset=\"utf-8\">\n<style>\n  body {\n    background-color: hsl(30, 20%, 95%)\n  }\n</style>\n\n";
@@ -22297,13 +22864,13 @@ exports.createSyntaxDiagramsCode = createSyntaxDiagramsCode;
 //# sourceMappingURL=render_public.js.map
 
 /***/ }),
-/* 45 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var cache_1 = __webpack_require__(20);
+var cache_1 = __webpack_require__(22);
 /**
  * Clears the chevrotain internal cache.
  * This should not be used in regular work flows, This is intended for
@@ -22317,7 +22884,7 @@ exports.clearCache = clearCache;
 //# sourceMappingURL=cache_public.js.map
 
 /***/ }),
-/* 46 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22325,7 +22892,7 @@ exports.clearCache = clearCache;
 Object.defineProperty(exports, "__esModule", { value: true });
 var utils_1 = __webpack_require__(0);
 var lang_extensions_1 = __webpack_require__(5);
-var checks_1 = __webpack_require__(32);
+var checks_1 = __webpack_require__(33);
 function defaultVisit(ctx, param) {
     var childrenNames = utils_1.keys(ctx);
     var childrenNamesLength = childrenNames.length;
@@ -22452,13 +23019,13 @@ exports.validateRedundantMethods = validateRedundantMethods;
 //# sourceMappingURL=cst_visitor.js.map
 
 /***/ }),
-/* 47 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var range_1 = __webpack_require__(51);
+var range_1 = __webpack_require__(53);
 var gast_public_1 = __webpack_require__(2);
 var utils_1 = __webpack_require__(0);
 var ProdType;
@@ -22824,7 +23391,7 @@ exports.findClosingOffset = findClosingOffset;
 //# sourceMappingURL=gast_builder.js.map
 
 /***/ }),
-/* 48 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22840,12 +23407,12 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var rest_1 = __webpack_require__(22);
+var rest_1 = __webpack_require__(24);
 var lang_extensions_1 = __webpack_require__(5);
 var gast_public_1 = __webpack_require__(2);
-var first_1 = __webpack_require__(33);
+var first_1 = __webpack_require__(34);
 var utils_1 = __webpack_require__(0);
-var constants_1 = __webpack_require__(28);
+var constants_1 = __webpack_require__(29);
 var tokens_public_1 = __webpack_require__(3);
 // This ResyncFollowsWalker computes all of the follows required for RESYNC
 // (skipping reference production).
@@ -22895,7 +23462,7 @@ exports.buildInProdFollowPrefix = buildInProdFollowPrefix;
 //# sourceMappingURL=follow.js.map
 
 /***/ }),
-/* 49 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22911,7 +23478,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var parser_public_1 = __webpack_require__(23);
+var parser_public_1 = __webpack_require__(25);
 var gast_public_1 = __webpack_require__(2);
 var utils_1 = __webpack_require__(0);
 function resolveGrammar(topLevels) {
@@ -22961,14 +23528,14 @@ exports.GastRefResolverVisitor = GastRefResolverVisitor;
 //# sourceMappingURL=resolver.js.map
 
 /***/ }),
-/* 50 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tokens_public_1 = __webpack_require__(3);
-var lexer_public_1 = __webpack_require__(24);
+var lexer_public_1 = __webpack_require__(26);
 var utils_1 = __webpack_require__(0);
 var PATTERN = "PATTERN";
 exports.DEFAULT_MODE = "defaultMode";
@@ -23557,7 +24124,7 @@ exports.LineTerminatorOptimizedTester = {
 //# sourceMappingURL=lexer.js.map
 
 /***/ }),
-/* 51 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23596,7 +24163,7 @@ exports.isValidRange = isValidRange;
 //# sourceMappingURL=range.js.map
 
 /***/ }),
-/* 52 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.6
@@ -23609,9 +24176,9 @@ exports.isValidRange = isValidRange;
 
   XMLNode = __webpack_require__(1);
 
-  XMLStringifier = __webpack_require__(37);
+  XMLStringifier = __webpack_require__(38);
 
-  XMLStringWriter = __webpack_require__(26);
+  XMLStringWriter = __webpack_require__(28);
 
   module.exports = XMLDocument = (function(superClass) {
     extend(XMLDocument, superClass);
@@ -23650,7 +24217,7 @@ exports.isValidRange = isValidRange;
 
 
 /***/ }),
-/* 53 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.6
@@ -23660,35 +24227,35 @@ exports.isValidRange = isValidRange;
 
   ref = __webpack_require__(4), isObject = ref.isObject, isFunction = ref.isFunction, isPlainObject = ref.isPlainObject;
 
-  XMLElement = __webpack_require__(16);
+  XMLElement = __webpack_require__(17);
 
-  XMLCData = __webpack_require__(8);
+  XMLCData = __webpack_require__(9);
 
-  XMLComment = __webpack_require__(9);
+  XMLComment = __webpack_require__(10);
 
-  XMLRaw = __webpack_require__(18);
+  XMLRaw = __webpack_require__(19);
 
-  XMLText = __webpack_require__(19);
+  XMLText = __webpack_require__(20);
 
-  XMLProcessingInstruction = __webpack_require__(17);
+  XMLProcessingInstruction = __webpack_require__(18);
 
-  XMLDeclaration = __webpack_require__(14);
+  XMLDeclaration = __webpack_require__(15);
 
-  XMLDocType = __webpack_require__(15);
+  XMLDocType = __webpack_require__(16);
 
-  XMLDTDAttList = __webpack_require__(10);
+  XMLDTDAttList = __webpack_require__(11);
 
-  XMLDTDEntity = __webpack_require__(12);
+  XMLDTDEntity = __webpack_require__(13);
 
-  XMLDTDElement = __webpack_require__(11);
+  XMLDTDElement = __webpack_require__(12);
 
-  XMLDTDNotation = __webpack_require__(13);
+  XMLDTDNotation = __webpack_require__(14);
 
-  XMLAttribute = __webpack_require__(36);
+  XMLAttribute = __webpack_require__(37);
 
-  XMLStringifier = __webpack_require__(37);
+  XMLStringifier = __webpack_require__(38);
 
-  XMLStringWriter = __webpack_require__(26);
+  XMLStringWriter = __webpack_require__(28);
 
   module.exports = XMLDocumentCB = (function() {
     function XMLDocumentCB(options, onData, onEnd) {
@@ -24058,7 +24625,7 @@ exports.isValidRange = isValidRange;
 
 
 /***/ }),
-/* 54 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.6
@@ -24067,31 +24634,31 @@ exports.isValidRange = isValidRange;
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  XMLDeclaration = __webpack_require__(14);
+  XMLDeclaration = __webpack_require__(15);
 
-  XMLDocType = __webpack_require__(15);
+  XMLDocType = __webpack_require__(16);
 
-  XMLCData = __webpack_require__(8);
+  XMLCData = __webpack_require__(9);
 
-  XMLComment = __webpack_require__(9);
+  XMLComment = __webpack_require__(10);
 
-  XMLElement = __webpack_require__(16);
+  XMLElement = __webpack_require__(17);
 
-  XMLRaw = __webpack_require__(18);
+  XMLRaw = __webpack_require__(19);
 
-  XMLText = __webpack_require__(19);
+  XMLText = __webpack_require__(20);
 
-  XMLProcessingInstruction = __webpack_require__(17);
+  XMLProcessingInstruction = __webpack_require__(18);
 
-  XMLDTDAttList = __webpack_require__(10);
+  XMLDTDAttList = __webpack_require__(11);
 
-  XMLDTDElement = __webpack_require__(11);
+  XMLDTDElement = __webpack_require__(12);
 
-  XMLDTDEntity = __webpack_require__(12);
+  XMLDTDEntity = __webpack_require__(13);
 
-  XMLDTDNotation = __webpack_require__(13);
+  XMLDTDNotation = __webpack_require__(14);
 
-  XMLWriterBase = __webpack_require__(38);
+  XMLWriterBase = __webpack_require__(39);
 
   module.exports = XMLStreamWriter = (function(superClass) {
     extend(XMLStreamWriter, superClass);
@@ -24343,11 +24910,1290 @@ exports.isValidRange = isValidRange;
 
 
 /***/ }),
-/* 55 */
+/* 57 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var blocks = new  Object();
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_chevrotain__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__LNParser__ = __webpack_require__(40);
+/**
+ * info visitor.
+ *
+ * Visit a cst and generates a json structur to provide information about the visited element.
+ *
+ * @file   This files defines the InformationVisitor class.
+ * @author Ellen Vanhove.
+ */
+
+//import {NumberLiteral, ColorLiteral} from "./LNLexer";
+const lntokens = __webpack_require__(21);
+let NumberLiteral = lntokens.NumberLiteral;
+let ColorLiteral = lntokens.ColorLiteral;
+
+
+const BaseCstVisitor = __WEBPACK_IMPORTED_MODULE_1__LNParser__["a" /* lnparser */].getBaseCstVisitorConstructor();
+
+class InformationVisitor extends BaseCstVisitor {
+
+    constructor() {
+        super();
+        // This helper will detect any missing or redundant methods on this visitor
+        this.validateVisitor()
+    }
+
+    scripts(ctx) {
+        let s = [];
+        for (let i = 0; i < ctx.multipleStacks.length; i++) {
+            s.push(this.visit(ctx.multipleStacks[i]))
+        }
+        for (let i = 0; i < ctx.reporterblock.length; i++) {
+            s.push(this.visit(ctx.reporterblock[i]))
+        }
+        for (let i = 0; i < ctx.booleanblock.length; i++) {
+            s.push(this.visit(ctx.booleanblock[i]))
+        }
+        return s
+    }
+
+    multipleStacks(ctx) {
+        let s = [];
+        for (let i = 0; i < ctx.stack.length; i++) {
+            s.push(this.visit(ctx.stack[i]))
+        }
+        return {
+            'type': 'multiple stacks',
+            'stacks': s
+        }
+    }
+
+
+    stack(ctx) {
+        let blocks = [];
+        for (let i = 0; i < ctx.stackline.length; i++) {
+            blocks.push(this.visit(ctx.stackline[i]))
+        }
+        return blocks
+    }
+
+    stackline(ctx) {
+        let v = ctx;
+        if (ctx.$forever.length > 0) {
+            v = this.visit(ctx.$forever)
+        } else if (ctx.$repeatuntil.length > 0) {
+            v = this.visit(ctx.$repeatuntil)
+        } else if (ctx.$repeat.length > 0) {
+            v = this.visit(ctx.$repeat)
+        } else if (ctx.$block.length > 0) {
+            v = this.visit(ctx.$block)
+        } else if (ctx.$ifelse.length > 0) {
+            v = this.visit(ctx.$ifelse)
+        }
+        return {
+            'type': 'stackblock',
+            'value': v
+        }
+    }
+
+    stackline$forever(ctx) {
+        return {
+            'type': 'stackblock',
+            'value': this.visit(ctx.forever)
+        }
+    }
+
+    stackline$repeat(ctx) {
+        return {
+            'type': 'stackblock',
+            'value': this.visit(ctx.repeat)
+        }
+    }
+
+    stackline$repeatuntil(ctx) {
+        return {
+            'type': 'stackblock',
+            'value': this.visit(ctx.repeatuntil)
+        }
+    }
+
+    stackline$ifelse(ctx) {
+        return {
+            'type': 'stackblock',
+            'value': this.visit(ctx.ifelse)
+        }
+    }
+
+    stackline$block(ctx) {
+        return {
+            'type': 'stackblock',
+            'value': this.visit(ctx.block)
+        }
+    }
+
+    forever(ctx) {
+        return {
+            'action': 'forever',
+            'stack': this.visit(ctx.stack)
+        }
+    }
+
+
+    repeat(ctx) {
+        return {
+            'action': 'repeat',
+            'amount': this.visit(ctx.countableinput),
+            'stack': this.visit(ctx.stack)
+        }
+    }
+
+    repeatuntil(ctx) {
+        return {
+            'action': 'repeat until',
+            'until': this.visit(ctx.booleanblock),
+            'stack': this.visit(ctx.stack)
+        }
+    }
+
+    ifelse(ctx) {
+        if (ctx.else.length > 0) {
+            return {
+                'action': 'ifelse',
+                'until': this.visit(ctx.booleanblock),
+                'stack_one': ctx.stack.length > 0 ? this.visit(ctx.stack[0]) : '',
+                'stack_two': this.visit(ctx.else)
+            }
+        } else {
+            return {
+                'action': 'if',
+                'until': this.visit(ctx.booleanblock),
+                'stack_one': ctx.stack.length > 0 ? this.visit(ctx.stack[0]) : ''
+            }
+        }
+    }
+
+    else(ctx) {
+        return ctx.stack.length > 0 ? this.visit(ctx.stack[0]) : ''
+    }
+
+    end(ctx) {
+    }
+
+    block(ctx) {
+        let text = '';
+        let a = 0;
+        for (let i = 0; i < ctx.Label.length; i++) {
+            if (a < ctx.argument.length) {
+                while (a < ctx.argument.length && this.getOffsetArgument(ctx.argument[a]) < ctx.Label[i].startOffset) {
+                    text += '{}';//this.getOffsetArgument(ctx.argument[a])
+                    a++;
+                }
+            }
+
+            text += ctx.Label[i].image
+        }
+        for (a; a < ctx.argument.length; a++) {
+            text += '{}'
+        }
+
+
+        let args = [];
+        for (let i = 0; i < ctx.argument.length; i++) {
+            args.push(this.visit(ctx.argument[i]))
+        }
+        let ofs = 0;
+        if (ctx.argument[0]) {
+            ofs = this.getOffsetArgument(ctx.argument[0]) < ctx.Label[0].startOffset ? this.getOffsetArgument(ctx.argument[0]) : ctx.Label[0].startOffset
+        } else {
+            ofs = ctx.Label[0].startOffset
+        }
+        return {
+            'text': text,
+            'argumenten': args,
+            'option': this.visit(ctx.option),
+            'offset': ofs
+        }
+    }
+
+    getOffsetArgument(arg) {
+        if (!arg) {
+            return Number.MAX_SAFE_INTEGER; //avoid infinite loop
+        }
+        let child = this.visit(arg);
+        return child.offset
+    }
+
+    option(ctx) {
+        return {
+            'text': ctx.Label[0].image,
+            'type': 'option',
+            'offset': ctx.DoubleColon[0].startOffset,
+        }
+    }
+
+    argument(ctx) {
+        if (ctx.primitive.length > 0) {
+            return this.visit(ctx.primitive)
+        } else if (ctx.reporterblock.length > 0) {
+            return this.visit(ctx.reporterblock)
+        } else if (ctx.booleanblock.length > 0) {
+            return this.visit(ctx.booleanblock)
+        } else if (ctx.choice.length > 0) {
+            return this.visit(ctx.choice)
+        } else {
+            //empty
+            return {
+                'value': '',
+                'type': 'empty',
+                'offset': ctx.LCurlyBracket[0].startOffset,
+            }
+        }
+    }
+
+    primitive(ctx) {
+        if (__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["tokenMatcher"])(ctx.Literal[0], NumberLiteral)) {
+            return {
+                'value': ctx.Literal[0].image,
+                'type': 'number',
+                'offset': ctx.Literal[0].startOffset,
+            };
+        } else if (__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["tokenMatcher"])(ctx.Literal[0], ColorLiteral)) {
+            return {
+                'value': ctx.Literal[0].image,
+                'type': 'color',
+                'offset': ctx.Literal[0].startOffset,
+            };
+        } else {
+            return {
+                'value': ctx.Literal[0].image,
+                'type': 'text',
+                'offset': ctx.Literal[0].startOffset,
+            };
+        }
+
+    }
+
+
+    countableinput(ctx) {
+        if (ctx.primitive.length > 0) {
+            return this.visit(ctx.primitive)
+        } else if (ctx.reporterblock.length > 0) {
+            return this.visit(ctx.reporterblock)
+        }
+    }
+
+    choice(ctx) {
+        return {
+            'type': 'choice',
+            'value': ctx.Label[0].image,
+            'offset': ctx.LSquareBracket[0].startOffset,
+            'text': ctx.Label[0].image,
+        };
+    }
+
+    reporterblock(ctx) {
+        let b = this.visit(ctx.block);
+        return {
+            'type': 'reporterblock',
+            'value': b,
+            'offset': b.offset,
+            'text': b.text
+        };
+    }
+
+    booleanblock(ctx) {
+        let b = this.visit(ctx.block);
+        return {
+            'type': 'booleanblock',
+            'value': b,
+            'offset': b.offset,
+            'text': b.text
+        };
+    }
+
+
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = InformationVisitor;
+
+
+
+/***/ }),
+/* 58 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = parse;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_chevrotain__);
+/**
+ * Parser
+ *
+ * Define parser rules, see wiki
+ *
+ * @file   This files defines the LNParser class and parse function.
+ * @author Ellen Vanhove.
+ */
+// Using ES6 style imports, this means Webpack 2 can perform tree shaking
+
+
+/*import {
+    LNLexer,
+    allTokens,
+    WhiteSpace,
+    Literal, StringLiteral, NumberLiteral, ColorLiteral,
+    Forever, End, Until, Repeat, If, Else, Then,
+    StatementTerminator,
+    Label,
+    LCurlyBracket, RCurlyBracket,
+    LRoundBracket, RRoundBracket,
+    RAngleBracket, LAngleBracket,
+    LSquareBracket, RSquareBracket,
+    DoubleColon,
+} from "./LNLexer" */
+
+const lntokens = __webpack_require__(21)
+
+let LNLexer = lntokens.LNLexer;
+let allTokens = lntokens.allTokens;
+let Literal = lntokens.Literal;
+let Forever = lntokens.Forever;
+let End = lntokens.End;
+let Until = lntokens.Until;
+let Repeat = lntokens.Repeat;
+let If = lntokens.If;
+let Else = lntokens.Else;
+let Then = lntokens.Then;
+let StatementTerminator = lntokens.StatementTerminator;
+let Label = lntokens.Label;
+let LCurlyBracket = lntokens.LCurlyBracket;
+let RCurlyBracket = lntokens.RCurlyBracket;
+let LRoundBracket = lntokens.LRoundBracket;
+let RRoundBracket = lntokens.RRoundBracket;
+let RAngleBracket = lntokens.RAngleBracket;
+let LAngleBracket = lntokens.LAngleBracket;
+let LSquareBracket = lntokens.LSquareBracket;
+let RSquareBracket = lntokens.RSquareBracket;
+let DoubleColon = lntokens.DoubleColon;
+
+// ----------------- parser -----------------
+// Note that this is a Pure grammar, it only describes the grammar
+// Not any actions (semantics) to perform during parsing.
+function LNParser(input) {
+    __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Parser"].call(this, input, allTokens, {
+        outputCst: true
+    });
+
+    const $ = this;
+
+    $.RULE("scripts", () => {
+        $.MANY(() => {
+            $.CONSUME(StatementTerminator);
+        });
+        $.AT_LEAST_ONE(() => {
+            $.OR([{
+                ALT: () => {
+                    $.SUBRULE($.multipleStacks);
+                }
+            }, {
+                ALT: () => {
+                    $.SUBRULE($.reporterblock);
+                }
+            }, {
+                ALT: () => {
+                    $.SUBRULE($.booleanblock);
+                }
+            }]);
+        });
+        $.MANY2(() => {
+            $.CONSUME2(StatementTerminator);
+        })
+
+    });
+    $.RULE("multipleStacks", () => {
+        $.AT_LEAST_ONE_SEP({
+            SEP: StatementTerminator,
+            DEF: () => {
+                $.SUBRULE($.stack);
+            }
+        });
+    });
+
+
+    $.RULE("stack", () => {
+        $.AT_LEAST_ONE(() => {
+            $.SUBRULE($.stackline);
+        });
+    });
+
+    $.RULE("stackline", () => {
+        $.OR([{
+            NAME: "$block",
+            ALT: () => {
+                $.SUBRULE($.block);
+            }
+        }, {
+            NAME: "$forever",
+            ALT: () => {
+                $.SUBRULE($.forever);
+            }
+        }, {
+            NAME: "$repeat",
+            ALT: () => {
+                $.SUBRULE($.repeat);
+            }
+        }, {
+            NAME: "$repeatuntil",
+            ALT: () => {
+                $.SUBRULE($.repeatuntil);
+            }
+        }, {
+            NAME: "$ifelse",
+            ALT: () => {
+                $.SUBRULE($.ifelse);
+            }
+        }]);
+    });
+
+
+    $.RULE("forever", () => {
+        $.CONSUME(Forever);
+        $.OPTION(() => {
+            $.CONSUME(StatementTerminator);
+        });
+        $.OPTION2(() => {
+            $.SUBRULE($.stack);
+        });
+        $.OPTION3(() => {
+            $.SUBRULE($.end);
+        })
+    });
+
+    $.RULE("repeat", () => {
+        $.CONSUME(Repeat);
+        $.SUBRULE($.countableinput);
+        $.OPTION(() => {
+            $.CONSUME(StatementTerminator);
+        });
+        $.OPTION2(() => {
+            $.SUBRULE($.stack);
+        });
+        $.OPTION3(() => {
+            $.SUBRULE($.end);
+        })
+
+    });
+
+    $.RULE("repeatuntil", () => {
+        $.CONSUME(Repeat);
+        $.CONSUME(Until);
+        $.SUBRULE($.booleanblock);
+        $.OPTION(() => {
+            $.CONSUME(StatementTerminator);
+        });
+        $.OPTION2(() => {
+            $.SUBRULE($.stack);
+        });
+        $.OPTION3(() => {
+            $.SUBRULE($.end);
+        })
+    });
+
+    $.RULE("ifelse", () => {
+        $.CONSUME(If);
+        $.SUBRULE($.booleanblock);
+        $.OPTION(() => {
+            $.CONSUME(Then);
+        });
+        $.OPTION2(() => {
+            $.CONSUME(StatementTerminator);
+        });
+        $.OPTION3(() => {
+            $.SUBRULE($.stack);
+        });
+        $.OPTION4(() => {
+            $.SUBRULE($.else);
+        });
+        $.OPTION5(() => {
+            $.SUBRULE($.end);
+        })
+    });
+    $.RULE("else", () => {
+        $.CONSUME(Else);
+        $.OPTION(() => {
+            $.CONSUME(StatementTerminator);
+        });
+        $.OPTION2(() => {
+            $.SUBRULE($.stack);
+        })
+    });
+
+    $.RULE("end", () => {
+        $.CONSUME(End);
+        $.OPTION(() => {
+            $.CONSUME(StatementTerminator);
+        })
+    });
+
+    $.RULE("block", () => {
+        $.AT_LEAST_ONE(() => {
+            $.OR([{
+                ALT: () => {
+                    $.CONSUME1(Label);
+                }
+            }, {
+                ALT: () => {
+                    $.SUBRULE($.argument);
+                }
+            }]);
+
+        });
+        $.OPTION(() => {
+            $.SUBRULE($.option)
+        });
+        $.OPTION2(() => {
+            $.CONSUME(StatementTerminator);
+        })
+
+    });
+
+    $.RULE("option", () => {
+        $.CONSUME(DoubleColon);
+        $.CONSUME(Label);
+    });
+
+    $.RULE("argument", () => {
+        $.OR([{
+            ALT: () => {
+                $.CONSUME(LCurlyBracket);
+                $.OPTION(() => {
+                    $.OR2([{
+                        ALT: () => {
+                            $.SUBRULE($.primitive);
+                        }
+                    }, {
+                        ALT: () => {
+                            $.SUBRULE($.reporterblock);
+                        }
+                    }, {
+                        ALT: () => {
+                            $.SUBRULE($.booleanblock);
+                        }
+                    }]);
+                });
+                $.CONSUME(RCurlyBracket);
+            }
+        }, {
+            ALT: () => {
+                $.SUBRULE($.choice);
+            }
+        }])
+
+    });
+
+
+    $.RULE("countableinput", () => {
+
+        $.OR([{
+            ALT: () => {
+                $.SUBRULE($.primitive);
+            }
+        }, {
+            ALT: () => {
+                $.SUBRULE($.reporterblock);
+            }
+        }]);
+
+
+    });
+
+    $.RULE("primitive", () => {
+        $.CONSUME(Literal);
+    });
+
+    $.RULE("reporterblock", () => {
+        $.CONSUME(LRoundBracket);
+        $.OPTION(() => {
+            $.SUBRULE($.block);
+        });
+        $.CONSUME(RRoundBracket);
+
+    });
+
+    $.RULE("choice", () => {
+        $.CONSUME(LSquareBracket);
+        $.OPTION(() => {
+            $.CONSUME(Label);
+        });
+        $.CONSUME(RSquareBracket);
+    });
+
+    $.RULE("booleanblock", () => {
+        $.CONSUME(LAngleBracket);
+        $.OPTION(() => {
+            $.SUBRULE($.block);
+        });
+        $.CONSUME(RAngleBracket);
+
+    });
+
+
+    // very important to call this after all the rules have been defined.
+    // otherwise the parser may not work correctly as it will lack information
+    // derived during the self analysis phase.
+    __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Parser"].performSelfAnalysis(this);
+}
+
+LNParser.prototype = Object.create(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["Parser"].prototype);
+LNParser.prototype.constructor = LNParser;
+
+// wrapping it all together
+// reuse the same parser instance.
+const lnparser = new LNParser([]);
+/* unused harmony export lnparser */
+
+
+function parse(text) {
+    //console.log('seperate file, function');
+    const lexResult = LNLexer.tokenize(text);
+    // setting a new input will RESET the parser instance's state.
+    lnparser.input = lexResult.tokens;
+    // any top level rule may be used as an entry point
+    const value = lnparser.scripts(); //TOP RULE
+    /*console.log(value);
+    console.log(lexResult.errors);
+    console.log(lnparser.errors);*/
+    return {
+        value: value,
+        lexErrors: lexResult.errors,
+        parseErrors: lnparser.errors
+    }
+}
+
+
+
+/***/ }),
+/* 59 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_chevrotain__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_xmlbuilder__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_xmlbuilder___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_xmlbuilder__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__blocks__ = __webpack_require__(60);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__LNParser__ = __webpack_require__(40);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__InfoVisitor__ = __webpack_require__(57);
+/**
+ * XML visitor.
+ *
+ * Visit a cst and creates an XML.
+ *
+ * @file   This files defines the XMLVisitor class.
+ * @author Ellen Vanhove.
+ */
+
+
+
+
+const lntokens = __webpack_require__(21);
+let NumberLiteral = lntokens.NumberLiteral;
+let ColorLiteral = lntokens.ColorLiteral;
+
+
+//const BaseCstVisitor = parser.getBaseCstVisitorConstructor();
+const BaseCstVisitorWithDefaults = __WEBPACK_IMPORTED_MODULE_3__LNParser__["a" /* lnparser */].getBaseCstVisitorConstructorWithDefaults();
+
+class XMLVisitor extends BaseCstVisitorWithDefaults {
+
+    constructor(coordinate = {
+                    x: 0,
+                    y: 1
+                },
+                increase = {
+                    x: 75,
+                    y: 100
+                }) {
+        super();
+        // This helper will detect any missing or redundant methods on this visitor
+        this.validateVisitor();
+
+        //the visitor stores an xml, this is reinit every visit call.
+        //the builder keeps where we are adding the next block
+        this.xml = null;
+        //xml root
+        this.xmlRoot = null;
+        //first block in this xml
+        this.firstBlock = null;
+
+        //location of the blocks
+        this.location = coordinate;
+        this.increase = increase;
+
+        //what kind of blocks should we build now? top, reporter, stack or boolean?
+        //top = the first block in a stack, can be a stack or hat block
+        //todo: cap block
+        this.modus = 'root';
+        this.scriptCounter = 0;
+        this.blockCounter = 0;
+        this.prevBlockCounter = 0;
+        this.isTop = true;
+
+        //id generation
+        this.counter = 0;
+
+        //variables
+        this.varMap = new Object();
+        this.varCounter = 0;
+
+        //warnings
+        this.warnings = [];
+
+        //informationvistor
+        this.infoVisitor = new __WEBPACK_IMPORTED_MODULE_4__InfoVisitor__["a" /* InformationVisitor */]();
+
+    }
+
+    getNextId() {
+        return this.counter++;
+    }
+
+    getVariableID(varName, variableType = '') {
+        //if first time this variable is encoutered, create an ID for it
+        if (!this.varMap[varName]) {
+            this.varMap[varName] = {
+                'id': 'var' + this.varCounter++,
+                'variableType': variableType
+            }
+        }
+        return this.varMap[varName].id;
+    }
+
+
+    addLocationBelow(xmlElement) {
+        xmlElement.att('x', this.location.x);
+        if (this.prevBlockCounter === 0) {
+            xmlElement.att('y', this.location.y);
+            this.prevBlockCounter = this.blockCounter;
+        } else {
+            xmlElement.att('y', this.location.y + this.increase.y * this.prevBlockCounter);
+            this.prevBlockCounter = this.blockCounter;
+        }
+    }
+
+    getXML(cst) {
+        //reset
+        this.modus = 'stackblock';
+        this.xml = __WEBPACK_IMPORTED_MODULE_1_xmlbuilder___default.a.begin().ele('xml').att('xmlns', 'http://www.w3.org/1999/xhtml');
+        this.xmlRoot = this.xml;
+        this.visit(cst);
+        //insert variables
+        if (this.firstBlock) {
+            this.xml = this.firstBlock.insertBefore('variables');
+        } else {
+            this.xml = this.xmlRoot.ele('variables');
+        }
+        for (let key in this.varMap) {
+            if (this.varMap.hasOwnProperty(key)) {
+                this.xml.ele('variable', {
+                    'type': this.varMap[key].variableType,
+                    'id': this.varMap[key].id,
+                }, key);
+            }
+        }
+        return this.xml.end({
+            pretty: true
+        });
+
+    }
+
+    visitSubStack(stack) {
+        let head = this.xml;
+        this.visit(stack);
+        this.xml = head;
+    }
+
+    scripts(ctx) {
+        for (let i = 0; i < ctx.multipleStacks.length; i++) {
+            this.visit(ctx.multipleStacks[i])
+        }
+        for (let i = 0; i < ctx.reporterblock.length; i++) {
+            this.isTop = true;
+            this.visit(ctx.reporterblock[i]);
+            this.addLocationBelow(this.xml);
+            this.scriptCounter++;
+        }
+        for (let i = 0; i < ctx.booleanblock.length; i++) {
+            this.isTop = true;
+            this.visit(ctx.booleanblock[i]);
+            this.addLocationBelow(this.xml);
+            this.scriptCounter++;
+        }
+    }
+
+    multipleStacks(ctx) {
+        for (let i = 0; i < ctx.stack.length; i++) {
+            this.isTop = true;
+            this.visit(ctx.stack[i]);
+            this.addLocationBelow(this.xml);
+            this.xml = this.xml.up();
+            this.scriptCounter++;
+        }
+    }
+
+
+    end(ctx) { /*will never be used*/
+    }
+
+    forever(ctx) {
+        this.xml = this.xml.ele('block', {
+            'type': 'control_forever',
+            'id': this.getNextId(),
+        }, ' ').ele('statement ', {
+            'name': 'SUBSTACK'
+        }, ' ');
+        this.visitSubStack(ctx.stack);
+        this.xml = this.xml.up()
+    }
+
+
+    repeat(ctx) {
+        this.xml = this.xml.ele('block', {
+            'type': 'control_repeat',
+            'id': this.getNextId(),
+        }).ele('value', {
+            'name': 'TIMES'
+        });
+        this.visit(ctx.countableinput);
+        this.xml = this.xml.up().ele('statement ', {
+            'name': 'SUBSTACK'
+        });
+        this.visitSubStack(ctx.stack);
+        this.xml = this.xml.up(); //go out of statement
+    }
+
+    repeatuntil(ctx) {
+        this.xml = this.xml.ele('block', {
+            'type': 'control_repeat_until',
+            'id': this.getNextId(),
+        }).ele('value', {
+            'name': 'CONDITION'
+        });
+        this.visit(ctx.booleanblock);
+        this.xml = this.xml.up().ele('statement ', {
+            'name': 'SUBSTACK'
+        });
+        this.visitSubStack(ctx.stack);
+        this.xml = this.xml.up();
+    }
+
+    ifelse(ctx) {
+        if (ctx.else.length === 0) {
+            this.xml = this.xml.ele('block', {
+                'type': 'control_if',
+                'id': this.getNextId(),
+            });
+        } else {
+            this.xml = this.xml.ele('block', {
+                'type': 'control_if_else',
+                'id': this.getNextId(),
+            });
+        }
+        this.xml = this.xml.ele('value', {
+            'name': 'CONDITION'
+        });
+        this.visit(ctx.booleanblock);
+        //Stack
+        //go up from condition
+        this.xml = this.xml.up().ele('statement ', {
+            'name': 'SUBSTACK'
+        });
+        this.visitSubStack(ctx.stack); //when no index is given it is always 0
+        this.xml = this.xml.up();
+        if (ctx.else.length !== 0) {
+            this.visit(ctx.else);
+        }
+    }
+
+    else(ctx) {
+        this.xml = this.xml.ele('statement ', {
+            'name': 'SUBSTACK2'
+        });
+        this.visitSubStack(ctx.stack[0]);
+        this.xml = this.xml.up();
+    }
+
+    stack(ctx) {
+        for (let i = 0; i < ctx.stackline.length; i++) {
+            this.visit(ctx.stackline[i]);
+            this.xml = this.xml.ele('next');
+        }
+        for (let i = 0; i < ctx.stackline.length - 1; i++) {
+            this.xml = this.xml.up().up();
+        }
+        this.xml = this.xml.up(); //End with blocks open so that insertbefore works #hacky
+    }
+
+    //if using visitor with defaults, this can be removed
+    //defaults do not work for return values...
+    /*stackline(ctx,inArg) {
+        if (ctx.$forever.length > 0) {
+            this.visit(ctx.$forever)
+        } else if (ctx.$repeatuntil.length > 0) {
+            this.visit(ctx.$repeatuntil)
+        } else if (ctx.$repeat.length > 0) {
+            this.visit(ctx.$repeat)
+        } else if (ctx.$block.length > 0) {
+            this.visit(ctx.$block)
+        } else if (ctx.$ifelse.length > 0) {
+            this.visit(ctx.$ifelse)
+        }
+        /*if (!this.firstBlock) {
+            this.firstBlock = this.xml
+        }
+        this.blockCounter++;
+    }*/
+
+    stackline$forever(ctx) {
+        console.log('here');
+        this.visit(ctx.forever);
+        if (!this.firstBlock) {
+            this.firstBlock = this.xml;
+        }
+        this.blockCounter++;
+    }
+
+    stackline$repeat(ctx) {
+        this.visit(ctx.repeat);
+        if (!this.firstBlock) {
+            this.firstBlock = this.xml;
+        }
+        this.blockCounter++;
+    }
+
+    stackline$repeatuntil(ctx) {
+        this.visit(ctx.repeatuntil);
+        if (!this.firstBlock) {
+            this.firstBlock = this.xml;
+        }
+        this.blockCounter++;
+    }
+
+    stackline$ifelse(ctx) {
+        this.visit(ctx.ifelse);
+        if (!this.firstBlock) {
+            this.firstBlock = this.xml;
+        }
+        this.blockCounter++;
+    }
+
+    stackline$block(ctx) {
+        this.visit(ctx.block);
+        if (!this.firstBlock) {
+            this.firstBlock = this.xml;
+        }
+        this.blockCounter++;
+    }
+
+
+    makeMatchString(ctx) {
+        let matchString = '';
+        let a = 0;
+        for (let i = 0; i < ctx.Label.length; i++) {
+            if (a < ctx.argument.length) {
+                while (a < ctx.argument.length && this.getOffsetArgument(ctx.argument[a]) < ctx.Label[i].startOffset) {
+                    matchString += ' %' + (a + 1) + ' ';
+                    ++a;
+                }
+            }
+            matchString += ' ' + ctx.Label[i].image + ' ';
+        }
+        for (a; a < ctx.argument.length; a++) {
+            matchString += ' %' + (a + 1) + ' ';
+        }
+        return this.cleanupText(matchString)
+    }
+
+    generateStackBlock(ctx, matchString) {
+        let blockid = this.getNextId();
+        this.xml = this.xml.ele('block', {
+            'id': blockid,
+        });
+        this.xml.att('type', 'procedures_call');
+        this.addMutation(ctx, matchString, blockid, true);
+    }
+
+    addMutation(ctx, matchString, blockid, visitArgs) {
+        let args = [];
+        let argumentnames = [];
+        let argumentdefaults = [];
+        let argumentids = [];
+
+        //this is a very weird construction but it works...
+        //assign this to a variable so that it can be accesed by the function
+        let thisVisitor = this;
+        let proccode = matchString.replace(/%[1-9]/g, function (m) {
+            let index = m[1] - 1;
+            return thisVisitor.getPlaceholder(ctx.argument[index])
+        });
+        for (let i = 0; i < ctx.argument.length; i++) {
+            //make names
+            //hier was iets raar...
+            let name = this.getString(ctx.argument[i])
+            if (!name) {
+                name = 'argumentname_' + blockid + '_' + i
+            }
+            argumentnames.push(name); //('argumentname_' + blockid + '_' + i)
+            argumentdefaults.push('');
+            argumentids.push(this.getVariableID(argumentnames[argumentnames.length - 1], 'arg')); //(blockid + '_arg_' + this.getNextId())
+
+            if (visitArgs) {
+                //make xml
+                this.xml = this.xml.ele('value', {
+                    'name': argumentnames[argumentnames.length - 1]
+                });
+                let arg = this.visit(ctx.argument[i]);
+                this.xml = this.xml.up();
+                args.push(arg);
+            }
+
+        }
+        if (argumentnames.length > 0) {
+            this.xml.ele('mutation', {
+                'proccode': proccode,
+                'argumentnames': '["' + argumentnames.join('","') + '"]',
+                //'argumentdefaults': "['" + argumentdefaults.join("','") + "']",
+                'warp': 'false',
+                'argumentids': '["' + argumentids.join('","') + '"]'
+            });
+        } else {
+            this.xml.ele('mutation', {
+                'proccode': proccode
+            });
+        }
+    }
+
+    cleanupText(text) {
+        //remove double spaces to easier match, because life is already difficult enough <3.
+        text = text.replace(/ +(?= )/g, '');
+        //' ?'
+        text = text.replace(/ +(?=[\?])/g, '');
+        //text = text.replace(/ +(?=[\%][^sbn])/g, '');
+        //remove spaces at beginning and end
+        text = text.trim();
+        return text;
+    }
+
+    generateReporterBlock(ctx, matchString) {
+        let varID = this.getVariableID(matchString);
+        if (this.getString(ctx.option[0]) === 'list') {
+            this.xml = this.xml.ele('block', {
+                'type': 'data_listcontents',
+                'id': this.getNextId(),
+            }).ele('field', {
+                'name': 'LIST',
+                'id': varID,
+            }, matchString).up(); //up field
+        } else {
+            this.xml = this.xml.ele('block', {
+                'type': 'data_variable',
+                'id': this.getNextId(),
+            }).ele('field', {
+                'name': 'VARIABLE',
+                'id': varID,
+            }, matchString).up(); //up field
+        }
+    }
+
+    generateBooleanBlock(ctx, matchString) {
+        this.xml = this.xml.ele('block', {
+            'type': 'extension_wedo_boolean',
+            'id': this.getNextId(),
+        })
+    }
+
+    block(ctx) {
+        let matchString = this.makeMatchString(ctx);
+        //console.log(matchString)
+        if (matchString.startsWith("define")) {
+            matchString = matchString.replace(/define/, '');
+            let blockid = this.getNextId();
+            this.xml = this.xml.ele('block', {
+                'type': 'procedures_definition',
+                'id': blockid,
+            }).ele('statement', {
+                'name': 'custom_block'
+            }).ele('shadow', {
+                'type': 'procedures_prototype'
+            });
+            this.addMutation(ctx, matchString, blockid, false);
+            this.xml = this.xml.up().up()
+        } else if (matchString in __WEBPACK_IMPORTED_MODULE_2__blocks__["a" /* default */]) {
+            __WEBPACK_IMPORTED_MODULE_2__blocks__["a" /* default */][matchString](ctx, this);
+            if (this.modus === 'reporterblock' || this.modus === 'booleanblock') {
+                if (this.isTop) {
+                    this.addLocationBelow(this.xml)
+                }
+                this.xml = this.xml.up();
+            }
+        } else { //what should be done if the block is unknown
+            switch (this.modus) {
+                case 'stackblock':
+                    this.generateStackBlock(ctx, matchString);
+                    break;
+                case 'reporterblock':
+                    this.generateReporterBlock(ctx, matchString);
+                    break;
+                case 'booleanblock':
+                    this.generateBooleanBlock(ctx, matchString);
+                    break;
+            }
+            if (this.modus === 'reporterblock' || this.modus === 'booleanblock') {
+                if (!this.firstBlock) {
+                    this.firstBlock = this.xml
+                }
+
+                if (this.isTop) {
+                    this.addLocationBelow(this.xml)
+                }
+
+                this.blockCounter++;
+
+                this.xml = this.xml.up();
+            }
+        }
+        this.isTop = false
+    }
+
+    argument(ctx) { //return is necessary for menu..
+        if (ctx.primitive.length > 0) {
+            return this.visit(ctx.primitive)
+        } else if (ctx.reporterblock.length > 0) {
+            return this.visit(ctx.reporterblock)
+        } else if (ctx.booleanblock.length > 0) {
+            return this.visit(ctx.booleanblock)
+        } else if (ctx.choice.length > 0) {
+            return this.visit(ctx.choice)
+        } else {
+            //empty
+        }
+    }
+
+    getString(ctx) {
+        if (ctx) {
+            let o = this.infoVisitor.visit(ctx)
+            return o.text
+        } else {
+            return ''
+        }
+    }
+
+    getPlaceholder(ctx) {
+        if (!ctx || !ctx.children) {
+            return '%s'
+        }
+        let type = this.getType(ctx)
+        if (type === 'number') {
+            return '%n'
+        } else if (type === 'booleanblock') {
+            return '%b'
+        } else {
+            return '%s'
+        }
+    }
+
+    getType(ctx) {
+        if (ctx) {
+            let o = this.infoVisitor.visit(ctx);
+            return o.type
+        } else {
+            return 'empty'
+        }
+    }
+
+    getOffsetArgument(arg) {
+        if (!arg) {
+            console.log('This should not happen');
+            return Number.MAX_SAFE_INTEGER; //avoid infinite loop
+        }
+        let child = this.infoVisitor.visit(arg)
+        return child.offset
+    }
+
+    choice(ctx) {
+        //todo: try to remove this because it is inconsistent that here is the only return...
+        //console.log('nah')
+        if (ctx.Label[0]) {
+            return ctx.Label[0].image;
+        } else {
+            return ""
+        }
+    }
+
+    option(ctx) {
+
+    }
+
+    primitive(ctx) {
+        //todo: try to remove this because it is inconsistent that here is the only return...
+        if (__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["tokenMatcher"])(ctx.Literal[0], NumberLiteral)) {
+            this.xml.ele('shadow', {
+                'type': 'math_number',
+                'id': this.getNextId(),
+            }).ele('field', {
+                'name': 'NUM',
+            }, ctx.Literal[0].image)
+        } else if (__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["tokenMatcher"])(ctx.Literal[0], ColorLiteral)) {
+            this.xml.ele('shadow', {
+                'type': 'colour_picker',
+                'id': this.getNextId(),
+            }).ele('field', {
+                'name': 'COLOUR',
+            }, ctx.Literal[0].image)
+        } else {
+            this.xml.ele('shadow', {
+                'type': 'text',
+                'id': this.getNextId(),
+            }).ele('field', {
+                'name': 'TEXT',
+            }, ctx.Literal[0].image)
+
+        }
+        return ctx.Literal[0].image;
+    }
+
+    reporterblock(ctx) {
+        let prevModus = this.modus;
+        this.modus = 'reporterblock';
+        this.visit(ctx.block);
+        this.modus = prevModus;
+    }
+
+    booleanblock(ctx) {
+        let prevModus = this.modus;
+        this.modus = 'booleanblock';
+        this.visit(ctx.block);
+        this.modus = prevModus;
+    }
+
+    /*countableinput(ctx) {
+        if (ctx.primitive.length > 0) {
+            this.visit(ctx.primitive)
+        } else if (ctx.reporterblock.length > 0) {
+            this.visit(ctx.reporterblock)
+        }
+    }*/
+
+
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = XMLVisitor;
+
+
+
+/***/ }),
+/* 60 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+let blocks = new  Object();
 /* harmony default export */ __webpack_exports__["a"] = (blocks);
 
 
@@ -24374,7 +26220,7 @@ blocks["wait until %1"]=function(ctx,visitor){return universalBlockConverter(ctx
 blocks["when I start as a clone"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"control_start_as_clone", "args":[],"shape":"hatblock"} ); }
 blocks["create clone of %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"control_create_clone_of", "args":[{"type":"input_value","name":"CLONE_OPTION","menu":"control_create_clone_of_menu"}],"shape":"statement"} ); }
 blocks["delete this clone"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"control_delete_this_clone", "args":[],"shape":"capblock"} ); }
-blocks["stop %1"] = function(ctx, visitor) {
+blocks["stop %1"] = function (ctx, visitor) {
     visitor.xml = visitor.xml.ele('block', {
         'id': visitor.getNextId(),
         'type': "control_stop"
@@ -24382,10 +26228,10 @@ blocks["stop %1"] = function(ctx, visitor) {
 
     visitor.xml = visitor.xml.ele('field', {
         'name': "STOP_OPTION"
-    },visitor.visit(ctx.argument));
-    
+    }, visitor.visit(ctx.argument));
+
     visitor.xml = visitor.xml.up();
-}
+};
 
 blocks["touching %1?"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_touchingobject", "args":[{"type":"input_value","name":"TOUCHINGOBJECTMENU","menu":"sensing_touchingobjectmenu"}],"shape":"booleanblock"} ); }
 blocks["touching color %1?"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_touchingcolor", "args":[{"type":"input_value","name":"COLOR"}],"shape":"booleanblock"} ); }
@@ -24419,7 +26265,7 @@ blocks["turn left %1 degrees"]=blocks["turn cww %1 degrees"]
 blocks["point in direction %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_pointindirection", "args":[{"type":"input_value","name":"DIRECTION"}],"shape":"statement"} ); }
 blocks["point towards %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_pointtowards", "args":[{"type":"input_value","name":"TOWARDS","menu":"motion_pointtowards_menu"}],"shape":"statement"} ); }
 blocks["go to x: %1 y: %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_gotoxy", "args":[{"type":"input_value","name":"X"},{"type":"input_value","name":"Y"}],"shape":"statement"} ); }
-blocks["go to %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_goto", "args":[{"type":"input_value","name":"TO","menu":"motion_goto_menu"}],"shape":"statement"} ); }
+
 blocks["glide %1 secs to x: %2 y: %3"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_glidesecstoxy", "args":[{"type":"input_value","name":"SECS"},{"type":"input_value","name":"X"},{"type":"input_value","name":"Y"}],"shape":"statement"} ); }
 blocks["glide %1 secs to %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_glideto", "args":[{"type":"input_value","name":"SECS"},{"type":"input_value","name":"TO","menu":"motion_glideto_menu"}],"shape":"statement"} ); }
 blocks["change x by %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_changexby", "args":[{"type":"input_value","name":"DX"}],"shape":"statement"} ); }
@@ -24446,7 +26292,6 @@ blocks["size"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor
 blocks["switch costume to %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_switchcostumeto", "args":[{"type":"input_value","name":"COSTUME","menu":"looks_costume"}],"shape":"statement"} ); }
 blocks["next costume"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_nextcostume","shape":"statement"} ); }
 blocks["switch backdrop to %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_switchbackdropto", "args":[{"type":"input_value","name":"BACKDROP","menu":"looks_backdrops"}],"shape":"statement"} ); }
-blocks["go to %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_gotofrontback", "args":[{"type":"field_dropdown","name":"FRONT_BACK","options":[["front","front"],["back","back"]]}],"shape":"statement"} ); }
 blocks["go %1 %2 layers"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_goforwardbackwardlayers", "args":[{"type":"field_dropdown","name":"FORWARD_BACKWARD","options":[["forward","forward"],["backward","backward"]]},{"type":"input_value","name":"NUM"}],"shape":"statement"} ); }
 blocks["backdrop %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_backdropnumbername", "args":[{"type":"field_dropdown","name":"NUMBER_NAME","options":[["number","number"],["name","name"]]}],"shape":"reporterblock"} ); }
 blocks["costume %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_costumenumbername", "args":[{"type":"field_dropdown","name":"NUMBER_NAME","options":[["number","number"],["name","name"]]}],"shape":"reporterblock"} ); }
@@ -24508,20 +26353,20 @@ function universalBlockConverter(ctx, visitor, structure) {
         'id': visitor.getNextId(),
         'type': structure.type
     });
-    for (var i = 0; i < ctx.argument.length; i++) {
-        var arg = structure.args[i]
+    for (let i = 0; i < ctx.argument.length; i++) {
+        let arg = structure.args[i];
         if (arg.menu) {
 
             visitor.xml = visitor.xml.ele('value', {
                 'name': arg.name
-            })
+            });
             visitor.xml.ele('shadow', {
                 'type': arg.menu //this was added to the json and was not default.
             }).ele('field', {
                 'name': arg.name
             }, visitor.visit(ctx.argument[i])); // '_mouse_'
             visitor.xml = visitor.xml.up();
-        } else if (arg.type == 'input_value') {
+        } else if (arg.type === 'input_value') {
 
             visitor.xml = visitor.xml.ele('value', {
                 'name': arg.name
@@ -24529,7 +26374,7 @@ function universalBlockConverter(ctx, visitor, structure) {
             visitor.visit(ctx.argument[i]);
             visitor.xml = visitor.xml.up();
 
-        } else if (arg.type == 'field_dropdown') {
+        } else if (arg.type === 'field_dropdown') {
             visitor.xml = visitor.xml.ele('field', {
                 'name': arg.name
             }, visitor.visit(ctx.argument[i])); //'all around' //this is ugly because 'option' is the only one that returns something... and there is no check whether the option is existing and valid
@@ -24543,33 +26388,32 @@ function universalBlockConverter(ctx, visitor, structure) {
 // variable and list operations require special treatment considering the IDS
 //=======================================================================================================================================
 
-blocks["set %1 to %2"]=function(ctx,visitor){return variableBlockConverter(ctx, visitor, { "type":"data_setvariableto", "args":[{"type":"field_variable","name":"VARIABLE"},{"type":"input_value","name":"VALUE"}],"shape":"statement"} ); }
-blocks["change %1 by %2"]=function(ctx,visitor){return variableBlockConverter(ctx, visitor, { "type":"data_changevariableby", "args":[{"type":"field_variable","name":"VARIABLE"},{"type":"input_value","name":"VALUE"}],"shape":"statement"} ); }
+blocks["set %1 to %2"]=function(ctx,visitor){return variableBlockConverter(ctx, visitor, { "type":"data_setvariableto", "args":[{"type":"field_variable","name":"variable"},{"type":"input_value","name":"VALUE"}],"shape":"statement"} ); }
+blocks["change %1 by %2"]=function(ctx,visitor){return variableBlockConverter(ctx, visitor, { "type":"data_changevariableby", "args":[{"type":"field_variable","name":"variable"},{"type":"input_value","name":"VALUE"}],"shape":"statement"} ); }
 
-blocks["add %1 to %2"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_addtolist", "args":[{"type":"input_value","name":"ITEM"},{"type":"field_variable","name":"LIST","variableTypes":["list"]}],"shape":"statement"} ); }
-blocks["delete %1 of %2"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_deleteoflist", "args":[{"type":"input_value","name":"INDEX"},{"type":"field_variable","name":"LIST","variableTypes":["list"]}],"shape":"statement"} ); }
-blocks["insert %1 at %2 of %3"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_insertatlist", "args":[{"type":"input_value","name":"ITEM"},{"type":"input_value","name":"INDEX"},{"type":"field_variable","name":"LIST","variableTypes":["list"]}],"shape":"statement"} ); }
-blocks["replace item %1 of %2 with %3"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_replaceitemoflist", "args":[{"type":"input_value","name":"INDEX"},{"type":"field_variable","name":"LIST","variableTypes":["list"]},{"type":"input_value","name":"ITEM"}],"shape":"statement"} ); }
-blocks["item %1 of %2"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_itemoflist", "args":[{"type":"input_value","name":"INDEX"},{"type":"field_variable","name":"LIST","variableTypes":["list"]}],"shape":"booleans"} ); }
-blocks["show list %1"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_showlist", "args":[{"type":"field_variable","name":"LIST","variableTypes":["list"]}],"shape":"statement"} ); }
-blocks["hide list %1"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_hidelist", "args":[{"type":"field_variable","name":"LIST","variableTypes":["list"]}],"shape":"statement"} ); }
+blocks["add %1 to %2"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_addtolist", "args":[{"type":"input_value","name":"ITEM"},{"type":"field_variable","name":"LIST","variabletypes":["list"]}],"shape":"statement"} ); }
+blocks["delete %1 of %2"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_deleteoflist", "args":[{"type":"input_value","name":"INDEX"},{"type":"field_variable","name":"LIST","variabletypes":["list"]}],"shape":"statement"} ); }
+blocks["insert %1 at %2 of %3"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_insertatlist", "args":[{"type":"input_value","name":"ITEM"},{"type":"input_value","name":"INDEX"},{"type":"field_variable","name":"LIST","variabletypes":["list"]}],"shape":"statement"} ); }
+blocks["replace item %1 of %2 with %3"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_replaceitemoflist", "args":[{"type":"input_value","name":"INDEX"},{"type":"field_variable","name":"LIST","variabletypes":["list"]},{"type":"input_value","name":"ITEM"}],"shape":"statement"} ); }
+blocks["item %1 of %2"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_itemoflist", "args":[{"type":"input_value","name":"INDEX"},{"type":"field_variable","name":"LIST","variabletypes":["list"]}],"shape":"booleans"} ); }
+blocks["show list %1"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_showlist", "args":[{"type":"field_variable","name":"LIST","variabletypes":["list"]}],"shape":"statement"} ); }
+blocks["hide list %1"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_hidelist", "args":[{"type":"field_variable","name":"LIST","variabletypes":["list"]}],"shape":"statement"} ); }
 
 function variableBlockConverter(ctx, visitor, structure) {
-                visitor.xml = visitor.xml.ele('block', {
-                    'id': visitor.getNextId(),
-                });
-                visitor.xml.att('type', structure.type);
-                var varble = visitor.visit(ctx.argument[0]);
-                visitor.getVariableID(varble)
-                visitor.xml = visitor.xml.ele('field', {
-                    'name': 'VARIABLE'
-                }, varble);
-                visitor.xml = visitor.xml.up();
-                visitor.xml = visitor.xml.ele('value', {
-                    'name': 'VALUE'
-                })
-                visitor.visit(ctx.argument[1]);
-                visitor.xml = visitor.xml.up();
+    visitor.xml = visitor.xml.ele('block', {
+        'id': visitor.getNextId(),
+    });
+    visitor.xml.att('type', structure.type);
+    let varble = visitor.visit(ctx.argument[0]);
+    visitor.getVariableID(varble)
+    visitor.xml = visitor.xml.ele('field', {
+        'name': 'VARIABLE'
+    }, varble);
+    visitor.xml = visitor.xml.up().ele('value', {
+        'name': 'VALUE'
+    });
+    visitor.visit(ctx.argument[1]);
+    visitor.xml = visitor.xml.up();
 }
 
 function listBlockConverter(ctx, visitor, structure) {
@@ -24577,23 +26421,23 @@ function listBlockConverter(ctx, visitor, structure) {
         'id': visitor.getNextId(),
         'type': structure.type
     });
-    for (var i = 0; i < ctx.argument.length; i++) {
-        var arg = structure.args[i]
-        if (arg.name == 'LIST') {
-            var varble = visitor.visit(ctx.argument[i]);
-            visitor.getVariableID(varble,'list')
+    for (let i = 0; i < ctx.argument.length; i++) {
+        let arg = structure.args[i];
+        if (arg.name === 'LIST') {
+            let varble = visitor.visit(ctx.argument[i]);
+            visitor.getVariableID(varble, 'list');
             visitor.xml = visitor.xml.ele('field', {
                 'name': 'LIST',
-                'variabletype':'list',
+                'variabletype': 'list',
             }, varble);
             visitor.xml = visitor.xml.up();
-        } else if (arg.type == 'input_value') {
+        } else if (arg.type === 'input_value') {
             visitor.xml = visitor.xml.ele('value', {
                 'name': arg.name
             });
             visitor.visit(ctx.argument[i]);
             visitor.xml = visitor.xml.up();
-        } else if (arg.type == 'field_dropdown') {
+        } else if (arg.type === 'field_dropdown') {
             visitor.xml = visitor.xml.ele('field', {
                 'name': arg.name
             }, visitor.visit(ctx.argument[i])); //'all around' //this is ugly because 'menu' is the only one that returns something... and there is no check whether the option is existing and valid
@@ -24602,7 +26446,7 @@ function listBlockConverter(ctx, visitor, structure) {
     }
 }
 
-blocks["when I receive %1"]=function(ctx,visitor){return messageBlockconverter(ctx, visitor, { "type":"event_whenbroadcastreceived", "args":[{"type":"field_variable","name":"BROADCAST_OPTION","variableTypes":["broadcast_msg"],"variable":"message1"}],"shape":"hatblock"} ); }
+blocks["when I receive %1"]=function(ctx,visitor){return messageBlockconverter(ctx, visitor, { "type":"event_whenbroadcastreceived", "args":[{"type":"field_variable","name":"BROADCAST_OPTION","variabletypes":["broadcast_msg"],"variable":"message1"}],"shape":"hatblock"} ); }
 blocks["broadcast %1"]=function(ctx,visitor){return messageShadowBlockconverter(ctx, visitor, { "type":"event_broadcast", "args":[{"type":"input_value","name":"BROADCAST_INPUT"}],"shape":"statement"} ); }
 blocks["broadcast %1 and wait"]=function(ctx,visitor){return messageShadowBlockconverter(ctx, visitor, { "type":"event_broadcastandwait", "args":[{"type":"input_value","name":"BROADCAST_INPUT"}],"shape":"statement"} ); }
 
@@ -24612,20 +26456,20 @@ function messageShadowBlockconverter(ctx, visitor,structure) {
         'type': structure.type
     });
 
-    var varble = visitor.visit(ctx.argument[0]);
-    var arg = structure.args[0]
-    var id = visitor.getVariableID(varble,'broadcast_msg')
+    let varble = visitor.visit(ctx.argument[0]);
+    let arg = structure.args[0];
+    let id = visitor.getVariableID(varble, 'broadcast_msg');
 
     visitor.xml = visitor.xml.ele('value', {
         'name': arg.name
-    })
+    });
     visitor.xml.ele('shadow', {
         'type': "event_broadcast_menu"
     }).ele('field', {
         'name': 'BROADCAST_OPTION',
         'variabletype':"broadcast_msg",
         'id':id
-    }, varble); 
+    }, varble);
     visitor.xml = visitor.xml.up();
 }
 
@@ -24635,16 +26479,16 @@ function messageBlockconverter(ctx, visitor,structure) {
         'type': structure.type
     });
 
-    var varble = visitor.visit(ctx.argument[0]);
-    var arg = structure.args[0]
-    var id = visitor.getVariableID(varble,'broadcast_msg')
+    let varble = visitor.visit(ctx.argument[0]);
+    let arg = structure.args[0];
+    let id = visitor.getVariableID(varble, 'broadcast_msg');
 
     visitor.xml.ele('field', {
         'name': "BROADCAST_OPTION",
         'variabletype':"broadcast_msg",
         'id':id
-    }, varble); 
-    
+    }, varble);
+
 }
 
 //=======================================================================================================================================
@@ -24652,38 +26496,38 @@ function messageBlockconverter(ctx, visitor,structure) {
 //=======================================================================================================================================
 
 
-var lookSetEffect=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_seteffectto", "args":[{"type":"field_dropdown","name":"EFFECT","options":[["color","COLOR"],["fisheye","FISHEYE"],["whirl","WHIRL"],["pixelate","PIXELATE"],["mosaic","MOSAIC"],["brightness","BRIGHTNESS"],["ghost","GHOST"]]},{"type":"input_value","name":"VALUE"}],"shape":"statement"} ); }
-var soundSetEffect=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sound_seteffectto", "args":[{"type":"field_dropdown","name":"EFFECT","options":[["pitch","PITCH"],["pan left/right","PAN"]]},{"type":"input_value","name":"VALUE"}],"shape":"statement"} ); }
+let lookSetEffect=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_seteffectto", "args":[{"type":"field_dropdown","name":"EFFECT","options":[["color","COLOR"],["fisheye","FISHEYE"],["whirl","WHIRL"],["pixelate","PIXELATE"],["mosaic","MOSAIC"],["brightness","BRIGHTNESS"],["ghost","GHOST"]]},{"type":"input_value","name":"VALUE"}],"shape":"statement"} ); }
+let soundSetEffect=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sound_seteffectto", "args":[{"type":"field_dropdown","name":"EFFECT","options":[["pitch","PITCH"],["pan left/right","PAN"]]},{"type":"input_value","name":"VALUE"}],"shape":"statement"} ); }
 blocks["set %1 effect to %2"] = function(ctx, visitor) {
-    var opt = visitor.getString(ctx.option[0]);
-    if (opt == 'sound') {
+    let opt = visitor.getString(ctx.option[0]);
+    if (opt === 'sound') {
         return soundSetEffect(ctx, visitor);
     }
-   	var label = visitor.getString(ctx.argument[0]);
-    if (label == "pan left/right" || label =='pitch' ){
+   	let label = visitor.getString(ctx.argument[0]);
+    if (label === "pan left/right" || label ==='pitch' ){
     	return soundSetEffect(ctx, visitor);
     }
     return lookSetEffect(ctx, visitor);
-}
+};
 
-var soundChangeEffect=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sound_changeeffectby", "args":[{"type":"field_dropdown","name":"EFFECT","options":[["pitch","PITCH"],["pan left/right","PAN"]]},{"type":"input_value","name":"VALUE"}],"shape":"statement"} ); }
-var lookChangeEffect=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_changeeffectby", "args":[{"type":"field_dropdown","name":"EFFECT","options":[["color","COLOR"],["fisheye","FISHEYE"],["whirl","WHIRL"],["pixelate","PIXELATE"],["mosaic","MOSAIC"],["brightness","BRIGHTNESS"],["ghost","GHOST"]]},{"type":"input_value","name":"CHANGE"}],"shape":"statement"} ); }
+let soundChangeEffect=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sound_changeeffectby", "args":[{"type":"field_dropdown","name":"EFFECT","options":[["pitch","PITCH"],["pan left/right","PAN"]]},{"type":"input_value","name":"VALUE"}],"shape":"statement"} ); }
+let lookChangeEffect=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_changeeffectby", "args":[{"type":"field_dropdown","name":"EFFECT","options":[["color","COLOR"],["fisheye","FISHEYE"],["whirl","WHIRL"],["pixelate","PIXELATE"],["mosaic","MOSAIC"],["brightness","BRIGHTNESS"],["ghost","GHOST"]]},{"type":"input_value","name":"CHANGE"}],"shape":"statement"} ); }
 blocks["change %1 effect by %2"] = function(ctx, visitor) {
-    var opt = visitor.getString(ctx.option[0]);
-    var label = visitor.getString(ctx.argument[0]);
+    let opt = visitor.getString(ctx.option[0]);
+    let label = visitor.getString(ctx.argument[0]);
     console.log(label);
-    if (opt == 'sound') {
+    if (opt === 'sound') {
         return soundChangeEffect(ctx, visitor);
     }
-    if (label == "pan left/right" || label =='pitch' ){
+    if (label === "pan left/right" || label ==='pitch' ){
     	return soundChangeEffect(ctx, visitor);
     }
 
     return lookChangeEffect(ctx, visitor);
-}
+};
 
-var operatorOf=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_mathop", "args":[{"type":"field_dropdown","name":"OPERATOR","options":[["abs","abs"],["floor","floor"],["ceiling","ceiling"],["sqrt","sqrt"],["sin","sin"],["cos","cos"],["tan","tan"],["asin","asin"],["acos","acos"],["atan","atan"],["ln","ln"],["log","log"],["e ^","e ^"],["10 ^","10 ^"]]},{"type":"input_value","name":"NUM"}],"shape":"reporterblock"} ); }
-var sensingOf = function(ctx, visitor) {
+let operatorOf=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_mathop", "args":[{"type":"field_dropdown","name":"OPERATOR","options":[["abs","abs"],["floor","floor"],["ceiling","ceiling"],["sqrt","sqrt"],["sin","sin"],["cos","cos"],["tan","tan"],["asin","asin"],["acos","acos"],["atan","atan"],["ln","ln"],["log","log"],["e ^","e ^"],["10 ^","10 ^"]]},{"type":"input_value","name":"NUM"}],"shape":"reporterblock"} ); }
+let sensingOf = function (ctx, visitor) {
     //return universalBlockConverter(ctx, visitor, { "type":"sensing_of", "args":[{"type":"field_dropdown","name":"PROPERTY","options":[["x position","x position"],["y position","y position"],["direction","direction"],["costume #","costume #"],["costume name","costume name"],["size","size"],["volume","volume"],["backdrop #","backdrop #"],["backdrop name","backdrop name"]],'menu':'sensing_of_object_menu'},{"type":"input_value","name":"OBJECT"}],"shape":"booleans"} ); 
     //something was weird here...
     visitor.xml = visitor.xml.ele('block', {
@@ -24693,1294 +26537,75 @@ var sensingOf = function(ctx, visitor) {
     visitor.xml = visitor.xml.ele('field', {
         'name': 'PROPERTY'
     }, visitor.visit(ctx.argument[0])); //'all around' //this is ugly because 'option' is the only one that returns something... and there is no check whether the option is existing and valid
-    visitor.xml = visitor.xml.up();
-    visitor.xml = visitor.xml.ele('value', {
+    visitor.xml = visitor.xml.up().ele('value', {
         'name': 'OBJECT'
-    })
+    });
+    //no assignement bcs of visist
     visitor.xml.ele('shadow', {
         'type': 'sensing_of_object_menu' //this was added to the json and was not default.
     }).ele('field', {
         'name': 'OBJECT'
     }, visitor.visit(ctx.argument[1])); // '_mouse_'
     visitor.xml = visitor.xml.up();
-}
+};
 
 blocks["%1 of %2"] = function(ctx, visitor) {
-    var argType = visitor.getType(ctx.argument[1]);
-    if (argType == 'menu') {
+    let argType = visitor.getType(ctx.argument[1]);
+    if (argType === 'choice') {
         return sensingOf(ctx, visitor);
     }
     return operatorOf(ctx, visitor);
-}
+};
 
-var operatorContains=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_contains", "args":[{"type":"input_value","name":"STRING1"},{"type":"input_value","name":"STRING2"}],"shape":"booleanblock"} ); }
-var listContains=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_listcontainsitem", "args":[{"type":"field_variable","name":"LIST","variableTypes":["list"]},{"type":"input_value","name":"ITEM"}],"shape":"booleanblock"} ); }
-blocks["%1 contains %2?"] = function(ctx, visitor) {
-    var argType = visitor.getType(ctx.argument[0]);
-    if (argType == 'menu') {
+let operatorContains=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_contains", "args":[{"type":"input_value","name":"STRING1"},{"type":"input_value","name":"STRING2"}],"shape":"booleanblock"} ); }
+let listContains=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_listcontainsitem", "args":[{"type":"field_variable","name":"LIST","variabletypes":["list"]},{"type":"input_value","name":"ITEM"}],"shape":"booleanblock"} ); }
+blocks["%1 contains %2?"] = function (ctx, visitor) {
+    let argType = visitor.getType(ctx.argument[0]);
+    if (argType === 'choice') {
         return listContains(ctx, visitor);
     }
     return operatorContains(ctx, visitor);
 
-}
+};
 
 
-var operatorLengthOf=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_length", "args":[{"type":"input_value","name":"STRING"}],"shape":"reporterblock"} ); }
-var listLengthOf=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_lengthoflist", "args":[{"type":"field_variable","name":"LIST","variableTypes":["list"]}],"shape":"reporterblock"} ); }
+let operatorLengthOf=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_length", "args":[{"type":"input_value","name":"STRING"}],"shape":"reporterblock"} ); }
+let listLengthOf=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_lengthoflist", "args":[{"type":"field_variable","name":"LIST","variabletypes":["list"]}],"shape":"reporterblock"} ); }
 
 blocks["length of %1"] = function(ctx, visitor) {
-    var argType = visitor.getType(ctx.argument[0]);
-    if (argType == 'menu') {
+    let argType = visitor.getType(ctx.argument[0]);
+    if (argType === 'choice') {
         return listLengthOf(ctx, visitor);
     }
     return operatorLengthOf(ctx, visitor);
 
-}
+};
 
+let motionGoTo=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_goto", "args":[{"type":"input_value","name":"TO","menu":"motion_goto_menu"}],"shape":"statement"} ); }
+let looksGoTo =function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_gotofrontback", "args":[{"type":"field_dropdown","name":"FRONT_BACK","options":[["front","front"],["back","back"]]}],"shape":"statement"} ); }
 
+blocks["go to %1"] = function(ctx, visitor) {
+    let argType = visitor.getString(ctx.argument[0]);
+    console.log('-'+argType);
+    if (argType === 'front' || argType === 'back') {
+        return looksGoTo(ctx, visitor);
+    }
+    return motionGoTo(ctx, visitor);
+
+};
 
 /***/ }),
-/* 56 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = myGrammar;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain__ = __webpack_require__(43);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_chevrotain__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_xmlbuilder__ = __webpack_require__(40);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_xmlbuilder___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_xmlbuilder__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__blocks__ = __webpack_require__(55);
-
-
-
-
-function myGrammar() {
-    "use strict";
-    const createToken = __WEBPACK_IMPORTED_MODULE_0_chevrotain___default.a.createToken;
-    const tokenMatcher = __WEBPACK_IMPORTED_MODULE_0_chevrotain___default.a.tokenMatcher;
-    const Lexer = __WEBPACK_IMPORTED_MODULE_0_chevrotain___default.a.Lexer;
-    const Parser = __WEBPACK_IMPORTED_MODULE_0_chevrotain___default.a.Parser;
-
-    var Label = createToken({
-        name: "Label",
-        pattern:
-        //not [] {} () " :: ; \n # unless escaped
-        // : followed by not : or in the end
-        //    /(:?[^\{\(\)\}\<\>\[\]:;\\"\n#]|\\[\{\(\)\}\<\>\[\]:;\\"\n#])+:?/,
-            /(:?[^\{\(\)\}\<\>\[\]:;\\"\n#]|\\[\{\(\)\}\<\>\[\]:;\\"\n#])+/,
-        line_breaks: true
-    });
-    const LCurly = createToken({
-        name: "LCurly",
-        pattern: /{/
-    });
-    const RCurly = createToken({
-        name: "RCurly",
-        pattern: /}/
-    });
-
-    const LPar = createToken({
-        name: "LPar",
-        pattern: /\(/
-    });
-    const RPar = createToken({
-        name: "RPar",
-        pattern: /\)/
-    });
-
-    var GreaterThan = createToken({
-        name: "GreaterThan",
-        pattern: />/
-    });
-    var LessThan = createToken({
-        name: "LessThan",
-        pattern: /</
-    });
-    var LSquareBracket = createToken({
-        name: "LSquareBracket",
-        pattern: /\[/
-    });
-    var RSquareBracket = createToken({
-        name: "RSquareBracket",
-        pattern: /\]/
-    });
-    var DoubleColon = createToken({
-        name: "DoubleColon",
-        pattern: /::/
-    });
-    const Arg = createToken({
-        name: "Arg",
-        pattern: Lexer.NA
-    });
-    const TextArg = createToken({
-        name: "TextArg",
-        pattern: /"[^"]*"/,
-        categories: Arg
-    });
-    const NumberArg = createToken({
-        name: "NumberArg",
-        pattern: /-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?/,
-        categories: [Arg, Label]
-    });
-    const ColorArg = createToken({
-        name: "ColorArg",
-        pattern: /#[0-9a-z]{6}/,
-        categories: [Arg]
-    });
-    const Forever = createToken({
-        name: "Forever",
-        pattern: /forever/,
-    });
-    const End = createToken({
-        name: "End",
-        pattern: /end/,
-    });
-    const Then = createToken({
-        name: "Then",
-        pattern: /then/,
-    });
-    const Repeat = createToken({
-        name: "Repeat",
-        pattern: /repeat/,
-    });
-
-    const If = createToken({
-        name: "If",
-        pattern: /if/
-    });
-    const Else = createToken({
-        name: "Else",
-        pattern: /else/,
-    });
-
-    const Until = createToken({
-        name: "Until",
-        pattern: /until/,
-        categories: Label //because this word occurs in 'until done', should not be a problem as it is never first
-    });
-
-    // marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
-    const WhiteSpace = createToken({
-        name: "WhiteSpace",
-        pattern: / +/,
-        group: Lexer.SKIPPED,
-        line_breaks: false
-    });
-
-    let LineEnd = createToken({
-        name: "LineEnd",
-        pattern: /;\n|;|\n/,
-        line_breaks: true
-    })
-
-    const allTokens = [
-        WhiteSpace,
-        Arg, TextArg, NumberArg, ColorArg,
-        Forever, End, Until, Repeat, If, Else, Then,
-        LineEnd,
-        Label,
-        LCurly, RCurly,
-        LPar, RPar,
-        GreaterThan, LessThan,
-        LSquareBracket, RSquareBracket,
-        DoubleColon,
-    ];
-    const MyLexer = new Lexer(allTokens);
-
-
-    // ----------------- parser -----------------
-    // Note that this is a Pure grammar, it only describes the grammar
-    // Not any actions (semantics) to perform during parsing.
-    function MyParser(input) {
-        Parser.call(this, input, allTokens, {
-            outputCst: true
-        });
-
-        const $ = this;
-
-        $.RULE("multipleStacks", () => {
-            $.AT_LEAST_ONE_SEP({
-                SEP: LineEnd,
-                DEF: () => {
-                    $.SUBRULE($.stack);
-                }
-            });
-
-        });
-
-        $.RULE("scripts", () => {
-            $.MANY1(function() {
-                $.CONSUME1(LineEnd);
-            })
-            $.AT_LEAST_ONE2(function() {
-
-                $.OR([{
-                    ALT: function() {
-                        $.SUBRULE($.multipleStacks);
-                    }
-                }, {
-                    ALT: function() {
-                        return $.SUBRULE($.reporterblock);
-                    }
-                }, {
-                    ALT: function() {
-                        return $.SUBRULE($.booleanblock);
-                    }
-                }]);
-
-            })
-
-            $.MANY2(function() {
-                $.CONSUME2(LineEnd);
-            })
-
-        });
-
-        $.RULE("end", () => {
-            $.CONSUME(End);
-            $.OPTION1(() => {
-                $.CONSUME1(LineEnd);
-            })
-        });
-
-        $.RULE("forever", () => {
-            $.CONSUME(Forever);
-            $.OPTION1(() => {
-                $.CONSUME1(LineEnd);
-            })
-            $.OPTION2(() => {
-                $.SUBRULE1($.stack);
-            })
-            $.OPTION3(() => {
-                $.SUBRULE1($.end);
-            })
-        });
-
-        $.RULE("repeat", () => {
-            $.CONSUME(Repeat);
-            $.SUBRULE($.countableinput);
-            $.OPTION1(() => {
-                $.CONSUME1(LineEnd);
-            })
-            $.OPTION2(() => {
-                $.SUBRULE1($.stack);
-            })
-            $.OPTION3(() => {
-                $.SUBRULE1($.end);
-            })
-
-        });
-
-        $.RULE("repeatuntil", () => {
-            $.CONSUME(Repeat);
-            $.CONSUME(Until);
-            $.SUBRULE($.booleanblock);
-            $.OPTION1(() => {
-                $.CONSUME1(LineEnd);
-            })
-            $.OPTION2(() => {
-                $.SUBRULE1($.stack);
-            })
-            $.OPTION3(() => {
-                $.SUBRULE1($.end);
-            })
-        });
-
-        $.RULE("ifelse", () => {
-            $.CONSUME(If);
-            $.SUBRULE($.booleanblock);
-            $.OPTION1(() => {
-                $.CONSUME(Then);
-            })
-            $.OPTION2(() => {
-                $.CONSUME1(LineEnd);
-            })
-            $.OPTION3(() => {
-                $.SUBRULE1($.stack);
-            })
-            $.OPTION4(() => {
-                $.SUBRULE1($.else);
-            })
-            $.OPTION5(() => {
-                $.SUBRULE1($.end);
-            })
-        });
-        $.RULE("else", () => {
-            $.CONSUME(Else);
-            $.OPTION1(() => {
-                $.CONSUME2(LineEnd);
-            })
-            $.OPTION2(() => {
-                $.SUBRULE2($.stack);
-            })
-        });
-        $.RULE("stack", () => {
-            $.AT_LEAST_ONE(function() {
-                $.SUBRULE($.stackline);
-            });
-        });
-
-        $.RULE("stackline", () => {
-            $.OR([{
-                ALT: function() {
-                    return $.SUBRULE($.block);
-                }
-            }, {
-                ALT: function() {
-                    return $.SUBRULE($.forever);
-                }
-            }, {
-                ALT: function() {
-                    return $.SUBRULE($.repeat);
-                }
-            }, {
-                ALT: function() {
-                    return $.SUBRULE($.repeatuntil);
-                }
-            }, {
-                ALT: function() {
-                    return $.SUBRULE($.ifelse);
-                }
-            }]);
-        });
-
-        $.RULE("block", () => {
-            $.AT_LEAST_ONE(function() {
-                $.OR2([{
-                    ALT: function() {
-                        return $.CONSUME1(Label);
-                    }
-                }, {
-                    ALT: function() {
-                        return $.SUBRULE($.argument);
-                    }
-                }]);
-
-            });
-            $.OPTION(() => {
-                $.SUBRULE($.option)
-            })
-            $.OPTION2(() => {
-                $.CONSUME1(LineEnd);
-            })
-
-        });
-
-        $.RULE("option", () => {
-            $.CONSUME(DoubleColon);
-            $.CONSUME(Label);
-        });
-
-        $.RULE("argument", function() {
-            $.OR1([{
-                ALT: function() {
-                    $.CONSUME(LCurly);
-                    $.OPTION(() => {
-                        $.OR2([{
-                            ALT: function() {
-                                return $.SUBRULE($.primitive);
-                            }
-                        }, {
-                            ALT: function() {
-                                return $.SUBRULE($.reporterblock);
-                            }
-                        }, {
-                            ALT: function() {
-                                return $.SUBRULE($.booleanblock);
-                            }
-                        }]);
-                    })
-                    $.CONSUME(RCurly);
-                }
-            }, {
-                ALT: function() {
-                    return $.SUBRULE($.menu);
-                }
-            }])
-
-        });
-
-        $.RULE("countableinput", function() {
-
-            $.OR([{
-                ALT: function() {
-                    return $.SUBRULE($.primitive);
-                }
-            }, {
-                ALT: function() {
-                    return $.SUBRULE($.reporterblock);
-                }
-            }]);
-
-
-        });
-
-        $.RULE("primitive", function() {
-            $.CONSUME(Arg);
-        });
-
-        $.RULE("reporterblock", function() {
-            $.CONSUME(LPar);
-            $.OPTION(() => {
-                $.SUBRULE($.block);
-            })
-            $.CONSUME(RPar);
-
-        });
-
-        $.RULE("menu", function() {
-            $.CONSUME(LSquareBracket);
-            $.OPTION(() => {
-                $.CONSUME1(Label);
-            })
-            $.CONSUME(RSquareBracket);
-        });
-
-        $.RULE("booleanblock", function() {
-            $.CONSUME(LessThan);
-            $.OPTION(() => {
-                $.SUBRULE($.block);
-            })
-            $.CONSUME(GreaterThan);
-
-        });
-
-
-        // very important to call this after all the rules have been defined.
-        // otherwise the parser may not work correctly as it will lack information
-        // derived during the self analysis phase.
-        Parser.performSelfAnalysis(this);
-    }
-
-    MyParser.prototype = Object.create(Parser.prototype);
-    MyParser.prototype.constructor = MyParser;
-
-
-    // wrapping it all together
-    // reuse the same parser instance.
-    const parser = new MyParser([]);
-
-
-    // ----------------- Interpreter -----------------
-    const BaseCstVisitor = parser.getBaseCstVisitorConstructor()
-
-    //======================================================================================
-    // ----------------- information -----------------
-    class InformationVisitor extends BaseCstVisitor {
-
-        constructor() {
-            super()
-                // This helper will detect any missing or redundant methods on this visitor
-            this.validateVisitor()
-        }
-
-        multipleStacks(ctx) {
-            var s = []
-            for (var i = 0; i < ctx.stack.length; i++) {
-                s.push(this.visit(ctx.stack[i]))
-            }
-            return {
-                'type': 'multiple stacks',
-                'stacks': s
-            }
-        }
-
-        scripts(ctx) {
-            var s = []
-            for (var i = 0; i < ctx.multipleStacks.length; i++) {
-                s.push(this.visit(ctx.multipleStacks[i]))
-            }
-            for (var i = 0; i < ctx.reporterblock.length; i++) {
-                s.push(this.visit(ctx.reporterblock[i]))
-            }
-            for (var i = 0; i < ctx.booleanblock.length; i++) {
-                s.push(this.visit(ctx.booleanblock[i]))
-            }
-            return s
-        }
-
-        end(ctx) {}
-
-        forever(ctx) {
-            return {
-                'action': 'forever',
-                'stack': this.visit(ctx.stack)
-            }
-        }
-
-
-        repeat(ctx) {
-            return {
-                'action': 'repeat',
-                'amount': this.visit(ctx.countableinput),
-                'stack': this.visit(ctx.stack)
-            }
-        }
-
-        repeatuntil(ctx) {
-            return {
-                'action': 'repeat until',
-                'until': this.visit(ctx.booleanblock),
-                'stack': this.visit(ctx.stack)
-            }
-        }
-
-        ifelse(ctx) {
-            if (ctx.else.length > 0) {
-                return {
-                    'action': 'ifelse',
-                    'until': this.visit(ctx.booleanblock),
-                    'stack_one': ctx.stack.length > 0 ? this.visit(ctx.stack[0]) : '',
-                    'stack_two': this.visit(ctx.else)
-                }
-            } else {
-                return {
-                    'action': 'if',
-                    'until': this.visit(ctx.booleanblock),
-                    'stack_one': ctx.stack.length > 0 ? this.visit(ctx.stack[0]) : ''
-                }
-            }
-        }
-
-        else(ctx) {
-            return ctx.stack.length > 0 ? this.visit(ctx.stack[0]) : ''
-        }
-        stack(ctx) {
-            var blocks = []
-            for (var i = 0; i < ctx.stackline.length; i++) {
-                blocks.push(this.visit(ctx.stackline[i]))
-            }
-            return blocks
-        }
-
-        stackline(ctx) {
-            var v = ctx
-            if (ctx.forever.length > 0) {
-                v = this.visit(ctx.forever)
-            } else if (ctx.repeatuntil.length > 0) {
-                v = this.visit(ctx.repeatuntil)
-            } else if (ctx.repeat.length > 0) {
-                v = this.visit(ctx.repeat)
-            } else if (ctx.block.length > 0) {
-                v = this.visit(ctx.block)
-            } else if (ctx.ifelse.length > 0) {
-                v = this.visit(ctx.ifelse)
-            }
-            return {
-                'type': 'stackblock',
-                'value': v
-            }
-        }
-
-        block(ctx) {
-            var text = ''
-            var a = 0;
-            for (var i = 0; i < ctx.Label.length; i++) {
-                if (a < ctx.argument.length) {
-                    while (a < ctx.argument.length && this.getOffsetArgument(ctx.argument[a]) < ctx.Label[i].startOffset) {
-                        text += '{}' //this.getOffsetArgument(ctx.argument[a]) 
-                        a++;
-                    }
-                }
-
-                text += ctx.Label[i].image
-            }
-            for (a; a < ctx.argument.length; a++) {
-                text += '{}'
-            }
-
-
-            var args = []
-            for (var i = 0; i < ctx.argument.length; i++) {
-                args.push(this.visit(ctx.argument[i]))
-            }
-            var ofs = 0;
-            if(ctx.argument[0]){
-                ofs = this.getOffsetArgument(ctx.argument[0]) < ctx.Label[0].startOffset ? this.getOffsetArgument(ctx.argument[0]) : ctx.Label[0].startOffset
-            }else{
-                ofs = ctx.Label[0].startOffset
-            }
-            return {
-                'text': text,
-                'argumenten': args,
-                'option': this.visit(ctx.option),
-                'offset': ofs
-            }
-        }
-
-        getOffsetArgument(arg) {
-            if (!arg) {
-                return 999999999999999 //todo integer max int ofzo
-            }
-            var child = this.visit(arg)
-            return child.offset
-        }
-
-        option(ctx) {
-            return {
-                'text': ctx.Label[0].image,
-                'type': 'option',
-                'offset': ctx.DoubleColon[0].startOffset,
-            }
-        }
-
-        argument(ctx) {
-            if (ctx.primitive.length > 0) {
-                return this.visit(ctx.primitive)
-            } else if (ctx.reporterblock.length > 0) {
-                return this.visit(ctx.reporterblock)
-            } else if (ctx.booleanblock.length > 0) {
-                return this.visit(ctx.booleanblock)
-            } else if (ctx.menu.length > 0) {
-                return this.visit(ctx.menu)
-            } else {
-                //empty 
-                return {
-                    'value': '',
-                    'type': 'empty',
-                    'offset': ctx.LCurly[0].startOffset,
-                }
-            }
-        }
-
-        primitive(ctx) {
-            if (tokenMatcher(ctx.Arg[0], NumberArg)) {
-                return {
-                    'value': ctx.Arg[0].image,
-                    'type': 'number',
-                    'offset': ctx.Arg[0].startOffset,
-                }
-            } else if (tokenMatcher(ctx.Arg[0], ColorArg)) {
-                return {
-                    'value': ctx.Arg[0].image,
-                    'type': 'color',
-                    'offset': ctx.Arg[0].startOffset,
-                }
-            } else {
-                return {
-                    'value': ctx.Arg[0].image,
-                    'type': 'text',
-                    'offset': ctx.Arg[0].startOffset,
-                }
-            }
-
-        }
-
-
-        countableinput(ctx) {
-            if (ctx.primitive.length > 0) {
-                return this.visit(ctx.primitive)
-            } else if (ctx.reporterblock.length > 0) {
-                return this.visit(ctx.reporterblock)
-            }
-        }
-        menu(ctx) {
-            return {
-                'type': 'menu',
-                'value': ctx.Label[0].image,
-                'offset': ctx.LSquareBracket[0].startOffset,
-            };
-        }
-
-        reporterblock(ctx) {
-            var b = this.visit(ctx.block);
-            return {
-                'type': 'reporterblock',
-                'value': b,
-                'offset': b.offset,
-                'text':b.text
-            };
-        }
-
-        booleanblock(ctx) {
-            var b = this.visit(ctx.block);
-            return {
-                'type': 'booleanblock',
-                'value': b,
-                'offset': b.offset,
-                'text':b.text
-            };
-        }
-
-
-    }
-
-
-    //======================================================================================
-    // ----------------- XML -----------------
-    class XMLVisitor extends BaseCstVisitor {
-
-        constructor(coordinate = {
-                x: 0,
-                y: 0
-            },
-            increase = {
-                x: 75,
-                y: 100
-            }) {
-            super()
-                // This helper will detect any missing or redundant methods on this visitor
-            this.validateVisitor()
-
-            //the visitor stores an xml, this is reinit every visit call.
-            //the builder keeps where we are adding the next block
-            this.xml = null;
-            //xml root
-            this.xmlRoot = null;
-            //first block in this xml
-            this.firstBlock = null;
-
-            //location of the blocks
-            this.location = coordinate;
-            this.increase = increase;
-
-            //what kind of blocks should we build now? top, reporter, stack or boolean?
-            //top = the first block in a stack, can be a stack or hat block
-            //todo: cap block
-            this.modus = 'root'
-            this.scriptCounter = 0;
-            this.blockCounter = 0;
-            this.prevBlockCounter = 0;
-            this.isTop = true;
-
-            //id generation
-            this.counter = 0
-
-            //variables
-            this.varMap = new Object();
-            this.varCounter = 0
-
-            //warnings
-            this.warnings = []
-
-            //informationvistor
-            this.infoVisitor = new InformationVisitor();
-
-        }
-
-        getNextId() {
-            return this.counter++;
-        }
-
-        getVariableID(varName, variableType = '') {
-            //if first time this variable is encoutered, create an ID for it
-            if (!this.varMap[varName]) {
-                this.varMap[varName] = {
-                    'id': 'var' + this.varCounter++,
-                    'variableType': variableType
-                }
-            }
-            return this.varMap[varName].id;
-        }
-
-
-        addLocationBelow(xmlElement) {
-            xmlElement.att('x', this.location.x);
-            if (this.prevBlockCounter == 0) {
-                xmlElement.att('y', this.location.y);
-                this.prevBlockCounter = this.blockCounter;
-            } else {
-                xmlElement.att('y', this.location.y + this.increase.y * this.prevBlockCounter);
-                this.prevBlockCounter = this.blockCounter;
-            }
-        }
-
-        getXML(cst) {
-            //reset
-            this.modus = 'stackblock'
-            this.xml = __WEBPACK_IMPORTED_MODULE_1_xmlbuilder___default.a.begin().ele('xml').att('xmlns', 'http://www.w3.org/1999/xhtml');
-            this.xmlRoot = this.xml;
-            this.visit(cst);
-            //insert variables
-            if (this.firstBlock) {
-                this.xml = this.firstBlock.insertBefore('variables');
-            } else {
-                this.xml = this.xmlRoot.ele('variables');
-            }
-            for (var key in this.varMap) {
-                if (this.varMap.hasOwnProperty(key)) {
-                    this.xml.ele('variable', {
-                        'type': this.varMap[key].variableType,
-                        'id': this.varMap[key].id,
-                    }, key);
-                }
-            }
-            return this.xml.end({
-                pretty: true
-            });
-
-        }
-
-        visitSubStack(stack) {
-            var head = this.xml;
-            this.visit(stack)
-            this.xml = head;
-        }
-
-        scripts(ctx) {
-            for (var i = 0; i < ctx.multipleStacks.length; i++) {
-                this.visit(ctx.multipleStacks[i])
-            }
-            for (var i = 0; i < ctx.reporterblock.length; i++) {
-                this.isTop = true
-                this.visit(ctx.reporterblock[i])
-                this.addLocationBelow(this.xml)
-                this.scriptCounter++;
-            }
-            for (var i = 0; i < ctx.booleanblock.length; i++) {
-                this.isTop = true
-                this.visit(ctx.booleanblock[i])
-                this.addLocationBelow(this.xml)
-                this.scriptCounter++;
-            }
-        }
-
-        multipleStacks(ctx) {
-            for (var i = 0; i < ctx.stack.length; i++) {
-                this.isTop = true
-                this.visit(ctx.stack[i])
-                this.addLocationBelow(this.xml)
-                this.xml = this.xml.up()
-                this.scriptCounter++;
-            }
-        }
-
-
-
-        end(ctx) { /*will never be used*/ }
-
-        forever(ctx) {
-            this.xml = this.xml.ele('block', {
-                'type': 'control_forever',
-                'id': this.getNextId(),
-            }, ' ');
-            this.xml = this.xml.ele('statement ', {
-                'name': 'SUBSTACK'
-            }, ' ');
-            this.visitSubStack(ctx.stack);
-            this.xml = this.xml.up()
-        }
-
-
-        repeat(ctx) {
-            this.xml = this.xml.ele('block', {
-                'type': 'control_repeat',
-                'id': this.getNextId(),
-            }).ele('value', {
-                'name': 'TIMES'
-            });
-            this.visit(ctx.countableinput);
-            this.xml = this.xml.up();
-            this.xml = this.xml.ele('statement ', {
-                'name': 'SUBSTACK'
-            });
-            this.visitSubStack(ctx.stack);
-            this.xml = this.xml.up(); //go out of statement 
-        }
-
-        repeatuntil(ctx) {
-            this.xml = this.xml.ele('block', {
-                'type': 'control_repeat_until',
-                'id': this.getNextId(),
-            });
-            this.xml = this.xml.ele('value', {
-                'name': 'CONDITION'
-            });
-            this.visit(ctx.booleanblock);
-            this.xml = this.xml.up();
-            this.xml = this.xml.ele('statement ', {
-                'name': 'SUBSTACK'
-            });
-            this.visitSubStack(ctx.stack);
-            this.xml = this.xml.up();
-        }
-
-        ifelse(ctx) {
-            if (ctx.else.length === 0) {
-                this.xml = this.xml.ele('block', {
-                    'type': 'control_if',
-                    'id': this.getNextId(),
-                });
-            } else {
-                this.xml = this.xml.ele('block', {
-                    'type': 'control_if_else',
-                    'id': this.getNextId(),
-                });
-            }
-            this.xml = this.xml.ele('value', {
-                'name': 'CONDITION'
-            });
-            this.visit(ctx.booleanblock);
-            //Stack
-            this.xml = this.xml.up(); //go up from condition
-            this.xml = this.xml.ele('statement ', {
-                'name': 'SUBSTACK'
-            });
-            this.visitSubStack(ctx.stack); //when no index is given it is always 0
-            this.xml = this.xml.up();
-            if (ctx.else.length != 0) {
-                this.visit(ctx.else);
-            }
-        }
-
-        else(ctx) {
-            this.xml = this.xml.ele('statement ', {
-                'name': 'SUBSTACK2'
-            });
-            this.visitSubStack(ctx.stack[0]);
-            this.xml = this.xml.up();
-        }
-
-        stack(ctx) {
-            for (var i = 0; i < ctx.stackline.length; i++) {
-                this.visit(ctx.stackline[i])
-                this.xml = this.xml.ele('next');
-            }
-            for (var i = 0; i < ctx.stackline.length - 1; i++) {
-                this.xml = this.xml.up().up();
-            }
-            this.xml = this.xml.up(); //End with blocks open so that insertbefore works #hacky
-        }
-
-        stackline(ctx) {
-            if (ctx.forever.length > 0) {
-                this.visit(ctx.forever)
-            } else if (ctx.repeatuntil.length > 0) {
-                this.visit(ctx.repeatuntil)
-            } else if (ctx.repeat.length > 0) {
-                this.visit(ctx.repeat)
-            } else if (ctx.block.length > 0) {
-                this.visit(ctx.block)
-            } else if (ctx.ifelse.length > 0) {
-                this.visit(ctx.ifelse)
-            }
-            if (!this.firstBlock) {
-                this.firstBlock = this.xml
-            }
-            this.blockCounter++;
-        }
-
-        makeMatchString(ctx) {
-            var matchString = ''
-            var a = 0;
-            for (var i = 0; i < ctx.Label.length; i++) {
-                if (a < ctx.argument.length) {
-                    while (a < ctx.argument.length && this.getOffsetArgument(ctx.argument[a]) < ctx.Label[i].startOffset) {
-                        matchString += ' %' + (a + 1) + ' ';
-                        ++a;
-                    }
-                }
-                matchString += ' ' + ctx.Label[i].image + ' ';
-            }
-            for (a; a < ctx.argument.length; a++) {
-                matchString += ' %' + (a + 1) + ' ';
-            }
-            return this.cleanupText(matchString)
-        }
-
-        generateStackBlock(ctx, matchString) {
-
-            var blockid = this.getNextId();
-            this.xml = this.xml.ele('block', {
-                'id': blockid,
-            });
-            this.xml.att('type', 'procedures_call')
-
-            this.addMutation(ctx, matchString, blockid, true);
-
-        }
-
-        addMutation(ctx, matchString, blockid, visitArgs) {
-            var args = []
-            var argumentnames = []
-            var argumentdefaults = []
-            var argumentids = []
-
-            //this is a very weird construction but it works...
-            //assign this to a variable so that it can be accesed by the function
-            var thisVisitor = this;
-            var proccode = matchString.replace(/%[1-9]/g, function(m) {
-                var index = m[1] - 1;
-                return thisVisitor.getPlaceholder(ctx.argument[index])
-            });
-            for (var i = 0; i < ctx.argument.length; i++) {
-                //make names
-                args.push(arg);
-                var name = this.getString(ctx.argument[i])
-                if(!name){
-                    name = 'argumentname_' + blockid + '_' + i
-                }
-                argumentnames.push(name)//('argumentname_' + blockid + '_' + i)
-                argumentdefaults.push('')
-                argumentids.push(this.getVariableID(argumentnames[argumentnames.length - 1],'arg'))//(blockid + '_arg_' + this.getNextId())
-                
-                if (visitArgs) {
-                        //make xml
-                    this.xml = this.xml.ele('value', {
-                        'name': argumentnames[argumentnames.length - 1]
-                    });
-                    var arg = this.visit(ctx.argument[i])
-                    this.xml = this.xml.up();
-                }
-
-            }
-            if (argumentnames.length > 0) {
-                this.xml.ele('mutation', {
-                    'proccode': proccode,
-                    'argumentnames': '["' + argumentnames.join('","') + '"]',
-                    //'argumentdefaults': "['" + argumentdefaults.join("','") + "']",
-                    'warp': 'false',
-                    'argumentids': '["' + argumentids.join('","') + '"]'
-                });
-            } else {
-                this.xml.ele('mutation', {
-                    'proccode': proccode
-                });
-            }
-        }
-
-        cleanupText(text) {
-            //remove double spaces to easier match, because life is already difficult enough <3.
-            text = text.replace(/ +(?= )/g, '');
-            //' ?' 
-            text = text.replace(/ +(?=[\?])/g, '');
-            //text = text.replace(/ +(?=[\%][^sbn])/g, '');
-            //remove spaces at beginning and end
-            text = text.trim();
-            return text;
-        }
-
-        generateReporterBlock(ctx, matchString) {
-            var varID = this.getVariableID(matchString);
-            if (this.getString(ctx.option[0]) == 'list') {
-                this.xml = this.xml.ele('block', {
-                    'type': 'data_listcontents',
-                    'id': this.getNextId(),
-                }).ele('field', {
-                    'name': 'LIST',
-                    'id': varID,
-                }, matchString)
-                this.xml = this.xml.up(); //up field
-            } else {
-                this.xml = this.xml.ele('block', {
-                    'type': 'data_variable',
-                    'id': this.getNextId(),
-                }).ele('field', {
-                    'name': 'VARIABLE',
-                    'id': varID,
-                }, matchString)
-                this.xml = this.xml.up(); //up field
-            }
-        }
-
-        generateBooleanBlock(ctx, matchString) {
-            this.xml = this.xml.ele('block', {
-                'type': 'extension_wedo_boolean',
-                'id': this.getNextId(),
-            })
-        }
-
-        block(ctx) {
-            var matchString = this.makeMatchString(ctx)
-            //console.log(matchString)
-            if (matchString.startsWith("define")) {
-                matchString = matchString.replace(/define/, '');
-                var blockid = this.getNextId()
-                this.xml = this.xml.ele('block', {
-                    'type': 'procedures_definition',
-                    'id': blockid,
-                })
-                this.xml = this.xml.ele('statement', {
-                        'name': 'custom_block'
-                    }).ele('shadow', {
-                        'type': 'procedures_prototype'
-                    })
-                    /*.ele('mutation',{
-                                    'proccode':'helo'
-                                })*/
-                this.addMutation(ctx, matchString, blockid, false);
-                this.xml = this.xml.up().up()
-            } else if (matchString in __WEBPACK_IMPORTED_MODULE_2__blocks__["a" /* default */]) {
-                __WEBPACK_IMPORTED_MODULE_2__blocks__["a" /* default */][matchString](ctx, this);
-                if (this.modus == 'reporterblock' || this.modus == 'booleanblock') {
-                    if (this.isTop) {
-                        this.addLocationBelow(this.xml)
-                    }
-                    this.xml = this.xml.up();
-                }
-            } else { //what should be done if the block is unknown
-                switch (this.modus) {
-                    case 'stackblock':
-                        this.generateStackBlock(ctx, matchString);
-                        break;
-                    case 'reporterblock':
-                        this.generateReporterBlock(ctx, matchString);
-                        break;
-                    case 'booleanblock':
-                        this.generateBooleanBlock(ctx, matchString);
-                        break;
-                }
-                if (this.modus == 'reporterblock' || this.modus == 'booleanblock') {
-                    if (!this.firstBlock) {
-                        this.firstBlock = this.xml
-                    }
-
-                    if (this.isTop) {
-                        this.addLocationBelow(this.xml)
-                    }
-
-                    this.blockCounter++;
-
-                    this.xml = this.xml.up();
-                }
-            }
-            this.isTop = false
-        }
-
-        argument(ctx) {
-            if (ctx.primitive.length > 0) {
-                return this.visit(ctx.primitive)
-            } else if (ctx.reporterblock.length > 0) {
-                return this.visit(ctx.reporterblock)
-            } else if (ctx.booleanblock.length > 0) {
-                return this.visit(ctx.booleanblock)
-            } else if (ctx.menu.length > 0) {
-                return this.visit(ctx.menu)
-            } else {
-                //empty 
-            }
-        }
-        getString(ctx) {
-            if (ctx) {
-                var o = this.infoVisitor.visit(ctx)
-                return o.text
-            } else {
-                return ''
-            }
-        }
-
-        getPlaceholder(ctx) {
-            if (!ctx || !ctx.children) {
-                return '%s'
-            }
-            var type = this.getType(ctx)
-            if (type == 'number') {
-                return '%n'
-            } else if (type == 'booleanblock') {
-                return '%b'
-            } else {
-                return '%s'
-            }
-        }
-
-        getType(ctx) {
-            if (ctx) {
-                var o = this.infoVisitor.visit(ctx)
-                return o.type
-            } else {
-                return 'empty'
-            }
-        }
-        getOffsetArgument(arg) {
-            if (!arg) {
-                console.log('This should not happen')
-                return 999999999999999999999 //todo maxint ofzo om te vermijden dat het ine en oneindige lus raakt?
-            }
-            /*if (arg.children.menu.length > 0) {
-                return arg.children.menu[0].children.LSquareBracket[0].startOffset
-            } else {
-                return arg.children.LCurly[0].startOffset
-            }*/
-            var child = this.infoVisitor.visit(arg)
-            return child.offset
-        }
-
-        menu(ctx) {
-            if (ctx.Label[0]) {
-                return ctx.Label[0].image;
-            } else {
-                return ""
-            }
-        }
-
-        option(ctx) {
-
-        }
-
-        primitive(ctx) {
-            if (tokenMatcher(ctx.Arg[0], NumberArg)) {
-                this.xml.ele('shadow', {
-                    'type': 'math_number',
-                    'id': this.getNextId(),
-                }).ele('field', {
-                    'name': 'NUM',
-                }, ctx.Arg[0].image)
-            } else if (tokenMatcher(ctx.Arg[0], ColorArg)) {
-                this.xml.ele('shadow', {
-                    'type': 'colour_picker',
-                    'id': this.getNextId(),
-                }).ele('field', {
-                    'name': 'COLOUR',
-                }, ctx.Arg[0].image)
-            } else {
-                this.xml.ele('shadow', {
-                    'type': 'text',
-                    'id': this.getNextId(),
-                }).ele('field', {
-                    'name': 'TEXT',
-                }, ctx.Arg[0].image)
-
-            }
-            return ctx.Arg[0].image;
-        }
-
-        reporterblock(ctx) {
-            var prevModus = this.modus;
-            this.modus = 'reporterblock';
-            this.visit(ctx.block);
-            this.modus = prevModus;
-        }
-
-        booleanblock(ctx) {
-            var prevModus = this.modus;
-            this.modus = 'booleanblock';
-            this.visit(ctx.block);
-            this.modus = prevModus;
-        }
-
-        countableinput(ctx) {
-            if (ctx.primitive.length > 0) {
-                this.visit(ctx.primitive)
-            } else if (ctx.reporterblock.length > 0) {
-                this.visit(ctx.reporterblock)
-            }
-        }
-
-
-
-    }
-
-    // for the playground to work the returned object must contain these fields
-    return {
-        lexer: MyLexer,
-        parser: parser,
-        visitor: XMLVisitor
-    };
-}
-
-/***/ }),
-/* 57 */,
-/* 58 */,
-/* 59 */,
-/* 60 */,
-/* 61 */
+/* 61 */,
+/* 62 */,
+/* 63 */,
+/* 64 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(41);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__webtools_scratchify_js__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__webtools_scratchify_js__ = __webpack_require__(45);
 
 
 
@@ -25991,7 +26616,7 @@ __WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready(function() {
 
 __WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready(function() {
     
-    var navListItems = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('ul.setup-panel li a'),
+    let navListItems = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('ul.setup-panel li a'),
         allWells = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('.setup-content');
 
     //allWells.hide();
@@ -25999,7 +26624,7 @@ __WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready(function() {
     navListItems.click(function(e)
     {
         e.preventDefault();
-        var $target = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(__WEBPACK_IMPORTED_MODULE_0_jquery___default()(this).attr('href')),
+        let $target = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(__WEBPACK_IMPORTED_MODULE_0_jquery___default()(this).attr('href')),
             $item = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(this).closest('li');
         
         if (!$item.hasClass('disabled')) {
@@ -26074,7 +26699,7 @@ __WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready(function() {
     //     e.preventDefault();
     // })
 
-    // var div0glow = true;
+    // let div0glow = true;
     // $('#glow-Div1').on('click', function(e) {
     //     console.log('hello world');
     //     stackGlow('Div0',1,div0glow);
@@ -26087,7 +26712,7 @@ __WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready(function() {
     {
         e.preventDefault();
     })
-    var div1glow = true;
+    let div1glow = true;
     __WEBPACK_IMPORTED_MODULE_0_jquery___default()("#glow-repeat-div1").on('click', function(e) {
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__webtools_scratchify_js__["b" /* stackGlow */])('nul',8,div1glow); //WHY verdwijnt het hier?????? -> dut is niet als het het eerste is
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__webtools_scratchify_js__["c" /* glowBlock */])('nul',6,div1glow);
@@ -26098,8 +26723,8 @@ __WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready(function() {
     {
         e.preventDefault();
     })
-    var div2glow = true;
-    var div2value = 4;
+    let div2glow = true;
+    let div2value = 4;
 
     function changeGlowDiv2(){
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__webtools_scratchify_js__["b" /* stackGlow */])('vierkant',7,div2glow); 
@@ -26161,7 +26786,7 @@ __WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready(function() {
     {
         e.preventDefault();
     })
-    var div3glow = true;
+    let div3glow = true;
     __WEBPACK_IMPORTED_MODULE_0_jquery___default()("#glow-Div3-half").on('click', function(e) {
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__webtools_scratchify_js__["b" /* stackGlow */])('cwcirkel',5,div3glow); 
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__webtools_scratchify_js__["b" /* stackGlow */])('cwcirkel',7,div3glow); 
@@ -26174,7 +26799,7 @@ __WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready(function() {
     {
         e.preventDefault();
     })
-    var div3glow2 = true;
+    let div3glow2 = true;
     __WEBPACK_IMPORTED_MODULE_0_jquery___default()("#glow-Div3-richting").on('click', function(e) {
         //stackGlow('Div3',5,div3glow); 
         //stackGlow('Div3',7,div3glow); 
@@ -26192,7 +26817,7 @@ __WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready(function() {
 
 function scrollTo(target){
     //target: jquery element
-    var position = target.position();
+    let position = target.position();
     scroll(0,position.top);
 }
 

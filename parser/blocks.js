@@ -1,4 +1,4 @@
-var blocks = new  Object();
+let blocks = new  Object();
 export default blocks;
 
 
@@ -25,7 +25,7 @@ blocks["wait until %1"]=function(ctx,visitor){return universalBlockConverter(ctx
 blocks["when I start as a clone"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"control_start_as_clone", "args":[],"shape":"hatblock"} ); }
 blocks["create clone of %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"control_create_clone_of", "args":[{"type":"input_value","name":"CLONE_OPTION","menu":"control_create_clone_of_menu"}],"shape":"statement"} ); }
 blocks["delete this clone"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"control_delete_this_clone", "args":[],"shape":"capblock"} ); }
-blocks["stop %1"] = function(ctx, visitor) {
+blocks["stop %1"] = function (ctx, visitor) {
     visitor.xml = visitor.xml.ele('block', {
         'id': visitor.getNextId(),
         'type': "control_stop"
@@ -33,10 +33,10 @@ blocks["stop %1"] = function(ctx, visitor) {
 
     visitor.xml = visitor.xml.ele('field', {
         'name': "STOP_OPTION"
-    },visitor.visit(ctx.argument));
-    
+    }, visitor.visit(ctx.argument));
+
     visitor.xml = visitor.xml.up();
-}
+};
 
 blocks["touching %1?"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_touchingobject", "args":[{"type":"input_value","name":"TOUCHINGOBJECTMENU","menu":"sensing_touchingobjectmenu"}],"shape":"booleanblock"} ); }
 blocks["touching color %1?"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_touchingcolor", "args":[{"type":"input_value","name":"COLOR"}],"shape":"booleanblock"} ); }
@@ -70,7 +70,7 @@ blocks["turn left %1 degrees"]=blocks["turn cww %1 degrees"]
 blocks["point in direction %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_pointindirection", "args":[{"type":"input_value","name":"DIRECTION"}],"shape":"statement"} ); }
 blocks["point towards %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_pointtowards", "args":[{"type":"input_value","name":"TOWARDS","menu":"motion_pointtowards_menu"}],"shape":"statement"} ); }
 blocks["go to x: %1 y: %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_gotoxy", "args":[{"type":"input_value","name":"X"},{"type":"input_value","name":"Y"}],"shape":"statement"} ); }
-blocks["go to %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_goto", "args":[{"type":"input_value","name":"TO","menu":"motion_goto_menu"}],"shape":"statement"} ); }
+
 blocks["glide %1 secs to x: %2 y: %3"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_glidesecstoxy", "args":[{"type":"input_value","name":"SECS"},{"type":"input_value","name":"X"},{"type":"input_value","name":"Y"}],"shape":"statement"} ); }
 blocks["glide %1 secs to %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_glideto", "args":[{"type":"input_value","name":"SECS"},{"type":"input_value","name":"TO","menu":"motion_glideto_menu"}],"shape":"statement"} ); }
 blocks["change x by %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_changexby", "args":[{"type":"input_value","name":"DX"}],"shape":"statement"} ); }
@@ -97,7 +97,6 @@ blocks["size"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor
 blocks["switch costume to %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_switchcostumeto", "args":[{"type":"input_value","name":"COSTUME","menu":"looks_costume"}],"shape":"statement"} ); }
 blocks["next costume"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_nextcostume","shape":"statement"} ); }
 blocks["switch backdrop to %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_switchbackdropto", "args":[{"type":"input_value","name":"BACKDROP","menu":"looks_backdrops"}],"shape":"statement"} ); }
-blocks["go to %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_gotofrontback", "args":[{"type":"field_dropdown","name":"FRONT_BACK","options":[["front","front"],["back","back"]]}],"shape":"statement"} ); }
 blocks["go %1 %2 layers"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_goforwardbackwardlayers", "args":[{"type":"field_dropdown","name":"FORWARD_BACKWARD","options":[["forward","forward"],["backward","backward"]]},{"type":"input_value","name":"NUM"}],"shape":"statement"} ); }
 blocks["backdrop %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_backdropnumbername", "args":[{"type":"field_dropdown","name":"NUMBER_NAME","options":[["number","number"],["name","name"]]}],"shape":"reporterblock"} ); }
 blocks["costume %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_costumenumbername", "args":[{"type":"field_dropdown","name":"NUMBER_NAME","options":[["number","number"],["name","name"]]}],"shape":"reporterblock"} ); }
@@ -159,20 +158,20 @@ function universalBlockConverter(ctx, visitor, structure) {
         'id': visitor.getNextId(),
         'type': structure.type
     });
-    for (var i = 0; i < ctx.argument.length; i++) {
-        var arg = structure.args[i]
+    for (let i = 0; i < ctx.argument.length; i++) {
+        let arg = structure.args[i];
         if (arg.menu) {
 
             visitor.xml = visitor.xml.ele('value', {
                 'name': arg.name
-            })
+            });
             visitor.xml.ele('shadow', {
                 'type': arg.menu //this was added to the json and was not default.
             }).ele('field', {
                 'name': arg.name
             }, visitor.visit(ctx.argument[i])); // '_mouse_'
             visitor.xml = visitor.xml.up();
-        } else if (arg.type == 'input_value') {
+        } else if (arg.type === 'input_value') {
 
             visitor.xml = visitor.xml.ele('value', {
                 'name': arg.name
@@ -180,7 +179,7 @@ function universalBlockConverter(ctx, visitor, structure) {
             visitor.visit(ctx.argument[i]);
             visitor.xml = visitor.xml.up();
 
-        } else if (arg.type == 'field_dropdown') {
+        } else if (arg.type === 'field_dropdown') {
             visitor.xml = visitor.xml.ele('field', {
                 'name': arg.name
             }, visitor.visit(ctx.argument[i])); //'all around' //this is ugly because 'option' is the only one that returns something... and there is no check whether the option is existing and valid
@@ -194,33 +193,32 @@ function universalBlockConverter(ctx, visitor, structure) {
 // variable and list operations require special treatment considering the IDS
 //=======================================================================================================================================
 
-blocks["set %1 to %2"]=function(ctx,visitor){return variableBlockConverter(ctx, visitor, { "type":"data_setvariableto", "args":[{"type":"field_variable","name":"VARIABLE"},{"type":"input_value","name":"VALUE"}],"shape":"statement"} ); }
-blocks["change %1 by %2"]=function(ctx,visitor){return variableBlockConverter(ctx, visitor, { "type":"data_changevariableby", "args":[{"type":"field_variable","name":"VARIABLE"},{"type":"input_value","name":"VALUE"}],"shape":"statement"} ); }
+blocks["set %1 to %2"]=function(ctx,visitor){return variableBlockConverter(ctx, visitor, { "type":"data_setvariableto", "args":[{"type":"field_variable","name":"variable"},{"type":"input_value","name":"VALUE"}],"shape":"statement"} ); }
+blocks["change %1 by %2"]=function(ctx,visitor){return variableBlockConverter(ctx, visitor, { "type":"data_changevariableby", "args":[{"type":"field_variable","name":"variable"},{"type":"input_value","name":"VALUE"}],"shape":"statement"} ); }
 
-blocks["add %1 to %2"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_addtolist", "args":[{"type":"input_value","name":"ITEM"},{"type":"field_variable","name":"LIST","variableTypes":["list"]}],"shape":"statement"} ); }
-blocks["delete %1 of %2"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_deleteoflist", "args":[{"type":"input_value","name":"INDEX"},{"type":"field_variable","name":"LIST","variableTypes":["list"]}],"shape":"statement"} ); }
-blocks["insert %1 at %2 of %3"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_insertatlist", "args":[{"type":"input_value","name":"ITEM"},{"type":"input_value","name":"INDEX"},{"type":"field_variable","name":"LIST","variableTypes":["list"]}],"shape":"statement"} ); }
-blocks["replace item %1 of %2 with %3"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_replaceitemoflist", "args":[{"type":"input_value","name":"INDEX"},{"type":"field_variable","name":"LIST","variableTypes":["list"]},{"type":"input_value","name":"ITEM"}],"shape":"statement"} ); }
-blocks["item %1 of %2"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_itemoflist", "args":[{"type":"input_value","name":"INDEX"},{"type":"field_variable","name":"LIST","variableTypes":["list"]}],"shape":"booleans"} ); }
-blocks["show list %1"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_showlist", "args":[{"type":"field_variable","name":"LIST","variableTypes":["list"]}],"shape":"statement"} ); }
-blocks["hide list %1"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_hidelist", "args":[{"type":"field_variable","name":"LIST","variableTypes":["list"]}],"shape":"statement"} ); }
+blocks["add %1 to %2"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_addtolist", "args":[{"type":"input_value","name":"ITEM"},{"type":"field_variable","name":"LIST","variabletypes":["list"]}],"shape":"statement"} ); }
+blocks["delete %1 of %2"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_deleteoflist", "args":[{"type":"input_value","name":"INDEX"},{"type":"field_variable","name":"LIST","variabletypes":["list"]}],"shape":"statement"} ); }
+blocks["insert %1 at %2 of %3"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_insertatlist", "args":[{"type":"input_value","name":"ITEM"},{"type":"input_value","name":"INDEX"},{"type":"field_variable","name":"LIST","variabletypes":["list"]}],"shape":"statement"} ); }
+blocks["replace item %1 of %2 with %3"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_replaceitemoflist", "args":[{"type":"input_value","name":"INDEX"},{"type":"field_variable","name":"LIST","variabletypes":["list"]},{"type":"input_value","name":"ITEM"}],"shape":"statement"} ); }
+blocks["item %1 of %2"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_itemoflist", "args":[{"type":"input_value","name":"INDEX"},{"type":"field_variable","name":"LIST","variabletypes":["list"]}],"shape":"booleans"} ); }
+blocks["show list %1"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_showlist", "args":[{"type":"field_variable","name":"LIST","variabletypes":["list"]}],"shape":"statement"} ); }
+blocks["hide list %1"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_hidelist", "args":[{"type":"field_variable","name":"LIST","variabletypes":["list"]}],"shape":"statement"} ); }
 
 function variableBlockConverter(ctx, visitor, structure) {
-                visitor.xml = visitor.xml.ele('block', {
-                    'id': visitor.getNextId(),
-                });
-                visitor.xml.att('type', structure.type);
-                var varble = visitor.visit(ctx.argument[0]);
-                visitor.getVariableID(varble)
-                visitor.xml = visitor.xml.ele('field', {
-                    'name': 'VARIABLE'
-                }, varble);
-                visitor.xml = visitor.xml.up();
-                visitor.xml = visitor.xml.ele('value', {
-                    'name': 'VALUE'
-                })
-                visitor.visit(ctx.argument[1]);
-                visitor.xml = visitor.xml.up();
+    visitor.xml = visitor.xml.ele('block', {
+        'id': visitor.getNextId(),
+    });
+    visitor.xml.att('type', structure.type);
+    let varble = visitor.visit(ctx.argument[0]);
+    visitor.getVariableID(varble)
+    visitor.xml = visitor.xml.ele('field', {
+        'name': 'VARIABLE'
+    }, varble);
+    visitor.xml = visitor.xml.up().ele('value', {
+        'name': 'VALUE'
+    });
+    visitor.visit(ctx.argument[1]);
+    visitor.xml = visitor.xml.up();
 }
 
 function listBlockConverter(ctx, visitor, structure) {
@@ -228,23 +226,23 @@ function listBlockConverter(ctx, visitor, structure) {
         'id': visitor.getNextId(),
         'type': structure.type
     });
-    for (var i = 0; i < ctx.argument.length; i++) {
-        var arg = structure.args[i]
-        if (arg.name == 'LIST') {
-            var varble = visitor.visit(ctx.argument[i]);
-            visitor.getVariableID(varble,'list')
+    for (let i = 0; i < ctx.argument.length; i++) {
+        let arg = structure.args[i];
+        if (arg.name === 'LIST') {
+            let varble = visitor.visit(ctx.argument[i]);
+            visitor.getVariableID(varble, 'list');
             visitor.xml = visitor.xml.ele('field', {
                 'name': 'LIST',
-                'variabletype':'list',
+                'variabletype': 'list',
             }, varble);
             visitor.xml = visitor.xml.up();
-        } else if (arg.type == 'input_value') {
+        } else if (arg.type === 'input_value') {
             visitor.xml = visitor.xml.ele('value', {
                 'name': arg.name
             });
             visitor.visit(ctx.argument[i]);
             visitor.xml = visitor.xml.up();
-        } else if (arg.type == 'field_dropdown') {
+        } else if (arg.type === 'field_dropdown') {
             visitor.xml = visitor.xml.ele('field', {
                 'name': arg.name
             }, visitor.visit(ctx.argument[i])); //'all around' //this is ugly because 'menu' is the only one that returns something... and there is no check whether the option is existing and valid
@@ -253,7 +251,7 @@ function listBlockConverter(ctx, visitor, structure) {
     }
 }
 
-blocks["when I receive %1"]=function(ctx,visitor){return messageBlockconverter(ctx, visitor, { "type":"event_whenbroadcastreceived", "args":[{"type":"field_variable","name":"BROADCAST_OPTION","variableTypes":["broadcast_msg"],"variable":"message1"}],"shape":"hatblock"} ); }
+blocks["when I receive %1"]=function(ctx,visitor){return messageBlockconverter(ctx, visitor, { "type":"event_whenbroadcastreceived", "args":[{"type":"field_variable","name":"BROADCAST_OPTION","variabletypes":["broadcast_msg"],"variable":"message1"}],"shape":"hatblock"} ); }
 blocks["broadcast %1"]=function(ctx,visitor){return messageShadowBlockconverter(ctx, visitor, { "type":"event_broadcast", "args":[{"type":"input_value","name":"BROADCAST_INPUT"}],"shape":"statement"} ); }
 blocks["broadcast %1 and wait"]=function(ctx,visitor){return messageShadowBlockconverter(ctx, visitor, { "type":"event_broadcastandwait", "args":[{"type":"input_value","name":"BROADCAST_INPUT"}],"shape":"statement"} ); }
 
@@ -263,20 +261,20 @@ function messageShadowBlockconverter(ctx, visitor,structure) {
         'type': structure.type
     });
 
-    var varble = visitor.visit(ctx.argument[0]);
-    var arg = structure.args[0]
-    var id = visitor.getVariableID(varble,'broadcast_msg')
+    let varble = visitor.visit(ctx.argument[0]);
+    let arg = structure.args[0];
+    let id = visitor.getVariableID(varble, 'broadcast_msg');
 
     visitor.xml = visitor.xml.ele('value', {
         'name': arg.name
-    })
+    });
     visitor.xml.ele('shadow', {
         'type': "event_broadcast_menu"
     }).ele('field', {
         'name': 'BROADCAST_OPTION',
         'variabletype':"broadcast_msg",
         'id':id
-    }, varble); 
+    }, varble);
     visitor.xml = visitor.xml.up();
 }
 
@@ -286,16 +284,16 @@ function messageBlockconverter(ctx, visitor,structure) {
         'type': structure.type
     });
 
-    var varble = visitor.visit(ctx.argument[0]);
-    var arg = structure.args[0]
-    var id = visitor.getVariableID(varble,'broadcast_msg')
+    let varble = visitor.visit(ctx.argument[0]);
+    let arg = structure.args[0];
+    let id = visitor.getVariableID(varble, 'broadcast_msg');
 
     visitor.xml.ele('field', {
         'name': "BROADCAST_OPTION",
         'variabletype':"broadcast_msg",
         'id':id
-    }, varble); 
-    
+    }, varble);
+
 }
 
 //=======================================================================================================================================
@@ -303,38 +301,38 @@ function messageBlockconverter(ctx, visitor,structure) {
 //=======================================================================================================================================
 
 
-var lookSetEffect=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_seteffectto", "args":[{"type":"field_dropdown","name":"EFFECT","options":[["color","COLOR"],["fisheye","FISHEYE"],["whirl","WHIRL"],["pixelate","PIXELATE"],["mosaic","MOSAIC"],["brightness","BRIGHTNESS"],["ghost","GHOST"]]},{"type":"input_value","name":"VALUE"}],"shape":"statement"} ); }
-var soundSetEffect=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sound_seteffectto", "args":[{"type":"field_dropdown","name":"EFFECT","options":[["pitch","PITCH"],["pan left/right","PAN"]]},{"type":"input_value","name":"VALUE"}],"shape":"statement"} ); }
+let lookSetEffect=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_seteffectto", "args":[{"type":"field_dropdown","name":"EFFECT","options":[["color","COLOR"],["fisheye","FISHEYE"],["whirl","WHIRL"],["pixelate","PIXELATE"],["mosaic","MOSAIC"],["brightness","BRIGHTNESS"],["ghost","GHOST"]]},{"type":"input_value","name":"VALUE"}],"shape":"statement"} ); }
+let soundSetEffect=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sound_seteffectto", "args":[{"type":"field_dropdown","name":"EFFECT","options":[["pitch","PITCH"],["pan left/right","PAN"]]},{"type":"input_value","name":"VALUE"}],"shape":"statement"} ); }
 blocks["set %1 effect to %2"] = function(ctx, visitor) {
-    var opt = visitor.getString(ctx.option[0]);
-    if (opt == 'sound') {
+    let opt = visitor.getString(ctx.option[0]);
+    if (opt === 'sound') {
         return soundSetEffect(ctx, visitor);
     }
-   	var label = visitor.getString(ctx.argument[0]);
-    if (label == "pan left/right" || label =='pitch' ){
+   	let label = visitor.getString(ctx.argument[0]);
+    if (label === "pan left/right" || label ==='pitch' ){
     	return soundSetEffect(ctx, visitor);
     }
     return lookSetEffect(ctx, visitor);
-}
+};
 
-var soundChangeEffect=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sound_changeeffectby", "args":[{"type":"field_dropdown","name":"EFFECT","options":[["pitch","PITCH"],["pan left/right","PAN"]]},{"type":"input_value","name":"VALUE"}],"shape":"statement"} ); }
-var lookChangeEffect=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_changeeffectby", "args":[{"type":"field_dropdown","name":"EFFECT","options":[["color","COLOR"],["fisheye","FISHEYE"],["whirl","WHIRL"],["pixelate","PIXELATE"],["mosaic","MOSAIC"],["brightness","BRIGHTNESS"],["ghost","GHOST"]]},{"type":"input_value","name":"CHANGE"}],"shape":"statement"} ); }
+let soundChangeEffect=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sound_changeeffectby", "args":[{"type":"field_dropdown","name":"EFFECT","options":[["pitch","PITCH"],["pan left/right","PAN"]]},{"type":"input_value","name":"VALUE"}],"shape":"statement"} ); }
+let lookChangeEffect=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_changeeffectby", "args":[{"type":"field_dropdown","name":"EFFECT","options":[["color","COLOR"],["fisheye","FISHEYE"],["whirl","WHIRL"],["pixelate","PIXELATE"],["mosaic","MOSAIC"],["brightness","BRIGHTNESS"],["ghost","GHOST"]]},{"type":"input_value","name":"CHANGE"}],"shape":"statement"} ); }
 blocks["change %1 effect by %2"] = function(ctx, visitor) {
-    var opt = visitor.getString(ctx.option[0]);
-    var label = visitor.getString(ctx.argument[0]);
+    let opt = visitor.getString(ctx.option[0]);
+    let label = visitor.getString(ctx.argument[0]);
     console.log(label);
-    if (opt == 'sound') {
+    if (opt === 'sound') {
         return soundChangeEffect(ctx, visitor);
     }
-    if (label == "pan left/right" || label =='pitch' ){
+    if (label === "pan left/right" || label ==='pitch' ){
     	return soundChangeEffect(ctx, visitor);
     }
 
     return lookChangeEffect(ctx, visitor);
-}
+};
 
-var operatorOf=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_mathop", "args":[{"type":"field_dropdown","name":"OPERATOR","options":[["abs","abs"],["floor","floor"],["ceiling","ceiling"],["sqrt","sqrt"],["sin","sin"],["cos","cos"],["tan","tan"],["asin","asin"],["acos","acos"],["atan","atan"],["ln","ln"],["log","log"],["e ^","e ^"],["10 ^","10 ^"]]},{"type":"input_value","name":"NUM"}],"shape":"reporterblock"} ); }
-var sensingOf = function(ctx, visitor) {
+let operatorOf=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_mathop", "args":[{"type":"field_dropdown","name":"OPERATOR","options":[["abs","abs"],["floor","floor"],["ceiling","ceiling"],["sqrt","sqrt"],["sin","sin"],["cos","cos"],["tan","tan"],["asin","asin"],["acos","acos"],["atan","atan"],["ln","ln"],["log","log"],["e ^","e ^"],["10 ^","10 ^"]]},{"type":"input_value","name":"NUM"}],"shape":"reporterblock"} ); }
+let sensingOf = function (ctx, visitor) {
     //return universalBlockConverter(ctx, visitor, { "type":"sensing_of", "args":[{"type":"field_dropdown","name":"PROPERTY","options":[["x position","x position"],["y position","y position"],["direction","direction"],["costume #","costume #"],["costume name","costume name"],["size","size"],["volume","volume"],["backdrop #","backdrop #"],["backdrop name","backdrop name"]],'menu':'sensing_of_object_menu'},{"type":"input_value","name":"OBJECT"}],"shape":"booleans"} ); 
     //something was weird here...
     visitor.xml = visitor.xml.ele('block', {
@@ -344,47 +342,59 @@ var sensingOf = function(ctx, visitor) {
     visitor.xml = visitor.xml.ele('field', {
         'name': 'PROPERTY'
     }, visitor.visit(ctx.argument[0])); //'all around' //this is ugly because 'option' is the only one that returns something... and there is no check whether the option is existing and valid
-    visitor.xml = visitor.xml.up();
-    visitor.xml = visitor.xml.ele('value', {
+    visitor.xml = visitor.xml.up().ele('value', {
         'name': 'OBJECT'
-    })
+    });
+    //no assignement bcs of visist
     visitor.xml.ele('shadow', {
         'type': 'sensing_of_object_menu' //this was added to the json and was not default.
     }).ele('field', {
         'name': 'OBJECT'
     }, visitor.visit(ctx.argument[1])); // '_mouse_'
     visitor.xml = visitor.xml.up();
-}
+};
 
 blocks["%1 of %2"] = function(ctx, visitor) {
-    var argType = visitor.getType(ctx.argument[1]);
-    if (argType == 'menu') {
+    let argType = visitor.getType(ctx.argument[1]);
+    if (argType === 'choice') {
         return sensingOf(ctx, visitor);
     }
     return operatorOf(ctx, visitor);
-}
+};
 
-var operatorContains=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_contains", "args":[{"type":"input_value","name":"STRING1"},{"type":"input_value","name":"STRING2"}],"shape":"booleanblock"} ); }
-var listContains=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_listcontainsitem", "args":[{"type":"field_variable","name":"LIST","variableTypes":["list"]},{"type":"input_value","name":"ITEM"}],"shape":"booleanblock"} ); }
-blocks["%1 contains %2?"] = function(ctx, visitor) {
-    var argType = visitor.getType(ctx.argument[0]);
-    if (argType == 'menu') {
+let operatorContains=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_contains", "args":[{"type":"input_value","name":"STRING1"},{"type":"input_value","name":"STRING2"}],"shape":"booleanblock"} ); }
+let listContains=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_listcontainsitem", "args":[{"type":"field_variable","name":"LIST","variabletypes":["list"]},{"type":"input_value","name":"ITEM"}],"shape":"booleanblock"} ); }
+blocks["%1 contains %2?"] = function (ctx, visitor) {
+    let argType = visitor.getType(ctx.argument[0]);
+    if (argType === 'choice') {
         return listContains(ctx, visitor);
     }
     return operatorContains(ctx, visitor);
 
-}
+};
 
 
-var operatorLengthOf=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_length", "args":[{"type":"input_value","name":"STRING"}],"shape":"reporterblock"} ); }
-var listLengthOf=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_lengthoflist", "args":[{"type":"field_variable","name":"LIST","variableTypes":["list"]}],"shape":"reporterblock"} ); }
+let operatorLengthOf=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_length", "args":[{"type":"input_value","name":"STRING"}],"shape":"reporterblock"} ); }
+let listLengthOf=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_lengthoflist", "args":[{"type":"field_variable","name":"LIST","variabletypes":["list"]}],"shape":"reporterblock"} ); }
 
 blocks["length of %1"] = function(ctx, visitor) {
-    var argType = visitor.getType(ctx.argument[0]);
-    if (argType == 'menu') {
+    let argType = visitor.getType(ctx.argument[0]);
+    if (argType === 'choice') {
         return listLengthOf(ctx, visitor);
     }
     return operatorLengthOf(ctx, visitor);
 
-}
+};
 
+let motionGoTo=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_goto", "args":[{"type":"input_value","name":"TO","menu":"motion_goto_menu"}],"shape":"statement"} ); }
+let looksGoTo =function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_gotofrontback", "args":[{"type":"field_dropdown","name":"FRONT_BACK","options":[["front","front"],["back","back"]]}],"shape":"statement"} ); }
+
+blocks["go to %1"] = function(ctx, visitor) {
+    let argType = visitor.getString(ctx.argument[0]);
+    console.log('-'+argType);
+    if (argType === 'front' || argType === 'back') {
+        return looksGoTo(ctx, visitor);
+    }
+    return motionGoTo(ctx, visitor);
+
+};

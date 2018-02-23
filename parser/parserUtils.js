@@ -1,41 +1,41 @@
-import myGrammar from './grammar.js'
+/**
+ * Provide high level function to transform text to XML
+ *
+ * Perform lexing,parsing and visiting.
+ *
+ * @file   This files defines the parseTextToXML function.
+ * @author Ellen Vanhove.
+ */
 
-var {
-    lexer,
-    parser,
-    visitor,
-} = myGrammar()
+import {parse} from './LNParserF'
+import {XMLVisitor} from './XMLVisitor'
 
+let visitor = XMLVisitor;
 
+/**
+ * todo: return error message in case something goos wrong
+ * @param text
+ * @returns xml or undefined
+ */
 export default function parseTextToXML(text) {
-    var cst = getCst(text);
+    let cst = getCst(text);
     if (cst) {
-        var xml = execXmlVisitor(cst);
+        let xml = execXmlVisitor(cst);
+        //console.log(xml);
         return xml;
     }
 }
 
 function getCst(text) {
-    let lexingResult = lexer.tokenize(text);
-    // "input" is a setter which will reset the parser's state.
-    parser.input = lexingResult.tokens;
-
-    let cst = parser.scripts(); //startrule
-
-    if (parser.errors.length > 0) {
-        console.log(parser.errors)
-        console.log("sad sad panda, Parsing errors detected");
-        return;
-    } else {
-        return cst;
-    }
+    let r = parse(text);
+    return r.value;
 }
 
 function execXmlVisitor(cst) {
-    var v = new visitor({
+    let v = new visitor({
         x: 10,
         y: 10
     });
-    var xml = v.getXML(cst);
+    let xml = v.getXML(cst);
     return xml;
 }
