@@ -214,8 +214,7 @@ function variableBlockConverter(ctx, visitor, structure) {
     visitor.xml = visitor.xml.ele('field', {
         'name': 'VARIABLE'
     }, varble);
-    visitor.xml = visitor.xml.up();
-    visitor.xml = visitor.xml.ele('value', {
+    visitor.xml = visitor.xml.up().ele('value', {
         'name': 'VALUE'
     });
     visitor.visit(ctx.argument[1]);
@@ -314,7 +313,7 @@ blocks["set %1 effect to %2"] = function(ctx, visitor) {
     	return soundSetEffect(ctx, visitor);
     }
     return lookSetEffect(ctx, visitor);
-}
+};
 
 let soundChangeEffect=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sound_changeeffectby", "args":[{"type":"field_dropdown","name":"EFFECT","options":[["pitch","PITCH"],["pan left/right","PAN"]]},{"type":"input_value","name":"VALUE"}],"shape":"statement"} ); }
 let lookChangeEffect=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_changeeffectby", "args":[{"type":"field_dropdown","name":"EFFECT","options":[["color","COLOR"],["fisheye","FISHEYE"],["whirl","WHIRL"],["pixelate","PIXELATE"],["mosaic","MOSAIC"],["brightness","BRIGHTNESS"],["ghost","GHOST"]]},{"type":"input_value","name":"CHANGE"}],"shape":"statement"} ); }
@@ -330,7 +329,7 @@ blocks["change %1 effect by %2"] = function(ctx, visitor) {
     }
 
     return lookChangeEffect(ctx, visitor);
-}
+};
 
 let operatorOf=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_mathop", "args":[{"type":"field_dropdown","name":"OPERATOR","options":[["abs","abs"],["floor","floor"],["ceiling","ceiling"],["sqrt","sqrt"],["sin","sin"],["cos","cos"],["tan","tan"],["asin","asin"],["acos","acos"],["atan","atan"],["ln","ln"],["log","log"],["e ^","e ^"],["10 ^","10 ^"]]},{"type":"input_value","name":"NUM"}],"shape":"reporterblock"} ); }
 let sensingOf = function (ctx, visitor) {
@@ -343,10 +342,10 @@ let sensingOf = function (ctx, visitor) {
     visitor.xml = visitor.xml.ele('field', {
         'name': 'PROPERTY'
     }, visitor.visit(ctx.argument[0])); //'all around' //this is ugly because 'option' is the only one that returns something... and there is no check whether the option is existing and valid
-    visitor.xml = visitor.xml.up();
-    visitor.xml = visitor.xml.ele('value', {
+    visitor.xml = visitor.xml.up().ele('value', {
         'name': 'OBJECT'
     });
+    //no assignement bcs of visist
     visitor.xml.ele('shadow', {
         'type': 'sensing_of_object_menu' //this was added to the json and was not default.
     }).ele('field', {
@@ -361,7 +360,7 @@ blocks["%1 of %2"] = function(ctx, visitor) {
         return sensingOf(ctx, visitor);
     }
     return operatorOf(ctx, visitor);
-}
+};
 
 let operatorContains=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_contains", "args":[{"type":"input_value","name":"STRING1"},{"type":"input_value","name":"STRING2"}],"shape":"booleanblock"} ); }
 let listContains=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_listcontainsitem", "args":[{"type":"field_variable","name":"LIST","variabletypes":["list"]},{"type":"input_value","name":"ITEM"}],"shape":"booleanblock"} ); }
