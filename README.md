@@ -1,7 +1,10 @@
 # scratch LN
-Provide an textual representation of the blocks from scratch 3.0. This text can be used within an html document and using some javascript magic this wil be converted to scratch blocks. Also some function to indicate certain blocks are provided.
+Describe snippets of Scratch 3.0 code in text. The Scratch-LN JavaScript library will dynamically render them as Scratch blocks.
+[Give it a spin](https://scratch4d.github.io/scratch-LN/example/).
 
-This is work in progress :)
+
+<img src="https://scratch4d.github.io/scratch-LN/img/simple_html_and_rendering.PNG">
+
 
 ## Getting Started
 0. open a terminal and clone this project.
