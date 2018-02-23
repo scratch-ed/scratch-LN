@@ -18,7 +18,17 @@ Describe snippets of Scratch 3.0 code in text. The Scratch-LN JavaScript library
 	- `localhost:8008\example.html`  : example exercise (teken het cdj logo)
 	- `localhost:8008\simple.html` : simple html
 
+## Usage
+todo
 
+### Features
+* generates scratch 3.0 blocks
+* highlight blocks or stacks
+* change value of fields
+
+### Planned features
+* generate text from Scratch blocks
+* add custom id to blocks
 
 ## Authors
 
