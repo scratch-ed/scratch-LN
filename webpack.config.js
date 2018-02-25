@@ -37,6 +37,7 @@ module.exports = [
             'run':'./webtools/run.js',
             'example':'./examples/example.js',
             'nice_live_view':'./examples/nice_live_view.js',
+            'markdown_scratch':'./webtools/markdown_scratch.js',
         },
         output: {
             filename: 'example/[name].js'
