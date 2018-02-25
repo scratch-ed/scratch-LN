@@ -38,6 +38,7 @@ module.exports = [
             'example':'./examples/example.js',
             'nice_live_view':'./examples/nice_live_view.js',
             'run_markdown':'./webtools/markdown_scratch.js',
+            'run_keepText':'./webtools/run_keepText.js',
         },
         output: {
             filename: 'example/[name].js'
