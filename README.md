@@ -18,6 +18,8 @@ Advantages of textual embedding in ebooks and websites:
 
 - [live preview](https://scratch4d.github.io/scratch-LN/example/)
 - [example of different blocks](https://scratch4d.github.io/scratch-LN/example/test.html)
+- [markdown example](https://scratch4d.github.io/scratch-LN/example/markdown_example)
+    - The markdown file can be found [here](https://raw.githubusercontent.com/scratch4d/scratch-LN/gh-pages/example/markdown_example.md)
 - [simple example in Dutch](https://scratch4d.github.io/scratch-LN/example/simple.html)
 - [more complicated example in Dutch](https://scratch4d.github.io/scratch-LN/example/example.html) use the buttons to indicate/change the blocks.
 
