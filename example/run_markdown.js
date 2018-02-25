@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 68);
+/******/ 	return __webpack_require__(__webpack_require__.s = 69);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -26602,7 +26602,8 @@ blocks["go to %1"] = function(ctx, visitor) {
 /* 65 */,
 /* 66 */,
 /* 67 */,
-/* 68 */
+/* 68 */,
+/* 69 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -26614,17 +26615,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 __WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready(function() {
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__webtools_scratchify_js__["a" /* default */])();
-    //scroll down #makeUrLifeEasy
-    window.scrollTo(0,document.body.scrollHeight);
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__webtools_scratchify_js__["a" /* default */])('language-scratch');
 });
-
-
-
-
-
-
 
 /***/ })
 /******/ ]);
-//# sourceMappingURL=test.js.map
+//# sourceMappingURL=run_markdown.js.map

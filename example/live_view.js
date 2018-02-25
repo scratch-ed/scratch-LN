@@ -1563,12 +1563,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var parser_public_1 = __webpack_require__(25);
 var lexer_public_1 = __webpack_require__(26);
 var tokens_public_1 = __webpack_require__(3);
-var exceptions_public_1 = __webpack_require__(32);
+var exceptions_public_1 = __webpack_require__(33);
 var gast_public_1 = __webpack_require__(2);
 var cache_public_1 = __webpack_require__(47);
 var interpreter_1 = __webpack_require__(7);
 var version_1 = __webpack_require__(27);
-var errors_public_1 = __webpack_require__(31);
+var errors_public_1 = __webpack_require__(32);
 var render_public_1 = __webpack_require__(46);
 /**
  * defines the public API of
@@ -1644,7 +1644,7 @@ var rest_1 = __webpack_require__(24);
 var gast_public_1 = __webpack_require__(2);
 var utils_1 = __webpack_require__(0);
 var tokens_public_1 = __webpack_require__(3);
-var first_1 = __webpack_require__(34);
+var first_1 = __webpack_require__(35);
 /* tslint:enable:no-use-before-declare */
 var AbstractNextPossibleTokensWalker = /** @class */ (function (_super) {
     __extends(AbstractNextPossibleTokensWalker, _super);
@@ -2732,7 +2732,7 @@ exports.isTokenType = isTokenType;
 
   XMLNode = __webpack_require__(1);
 
-  XMLAttribute = __webpack_require__(37);
+  XMLAttribute = __webpack_require__(38);
 
   module.exports = XMLElement = (function(superClass) {
     extend(XMLElement, superClass);
@@ -3531,24 +3531,24 @@ function restForRepetitionWithSeparator(repSepProd, currRest, prevRest) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var cache = __webpack_require__(22);
 var cache_1 = __webpack_require__(22);
-var exceptions_public_1 = __webpack_require__(32);
+var exceptions_public_1 = __webpack_require__(33);
 var lang_extensions_1 = __webpack_require__(5);
 var resolver_1 = __webpack_require__(51);
-var checks_1 = __webpack_require__(33);
+var checks_1 = __webpack_require__(34);
 var utils_1 = __webpack_require__(0);
 var follow_1 = __webpack_require__(50);
 var tokens_public_1 = __webpack_require__(3);
-var lookahead_1 = __webpack_require__(36);
+var lookahead_1 = __webpack_require__(37);
 var gast_builder_1 = __webpack_require__(49);
 var interpreter_1 = __webpack_require__(7);
-var constants_1 = __webpack_require__(29);
+var constants_1 = __webpack_require__(30);
 var gast_public_1 = __webpack_require__(2);
 var gast_1 = __webpack_require__(23);
 var tokens_1 = __webpack_require__(8);
-var cst_1 = __webpack_require__(30);
-var keys_1 = __webpack_require__(35);
+var cst_1 = __webpack_require__(31);
+var keys_1 = __webpack_require__(36);
 var cst_visitor_1 = __webpack_require__(48);
-var errors_public_1 = __webpack_require__(31);
+var errors_public_1 = __webpack_require__(32);
 var serializeGrammar = gast_public_1.gast.serializeGrammar;
 var ParserDefinitionErrorType;
 (function (ParserDefinitionErrorType) {
@@ -6199,7 +6199,7 @@ exports.VERSION = "1.0.1";
 
   XMLDTDNotation = __webpack_require__(14);
 
-  XMLWriterBase = __webpack_require__(39);
+  XMLWriterBase = __webpack_require__(40);
 
   module.exports = XMLStringWriter = (function(superClass) {
     extend(XMLStringWriter, superClass);
@@ -6506,7 +6506,8 @@ exports.VERSION = "1.0.1";
 
 
 /***/ }),
-/* 29 */
+/* 29 */,
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6517,7 +6518,7 @@ exports.IN = "_~IN~_";
 //# sourceMappingURL=constants.js.map
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6537,7 +6538,7 @@ var tokens_public_1 = __webpack_require__(3);
 var gast_public_1 = __webpack_require__(2);
 var utils_1 = __webpack_require__(0);
 var lang_extensions_1 = __webpack_require__(5);
-var keys_1 = __webpack_require__(35);
+var keys_1 = __webpack_require__(36);
 var GAstVisitor = gast_public_1.gast.GAstVisitor;
 function addTerminalToCst(node, token, tokenTypeName) {
     ;
@@ -6752,7 +6753,7 @@ exports.buildChildDictionaryDef = buildChildDictionaryDef;
 //# sourceMappingURL=cst.js.map
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6825,7 +6826,7 @@ Object.freeze(exports.defaultErrorProvider);
 //# sourceMappingURL=errors_public.js.map
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6890,7 +6891,7 @@ var exceptions;
 //# sourceMappingURL=exceptions_public.js.map
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6912,9 +6913,9 @@ var parser_public_1 = __webpack_require__(25);
 var gast_public_1 = __webpack_require__(2);
 var gast_1 = __webpack_require__(23);
 var tokens_public_1 = __webpack_require__(3);
-var lookahead_1 = __webpack_require__(36);
+var lookahead_1 = __webpack_require__(37);
 var version_1 = __webpack_require__(27);
-var cst_1 = __webpack_require__(30);
+var cst_1 = __webpack_require__(31);
 var interpreter_1 = __webpack_require__(7);
 function validateGrammar(topLevels, maxLookahead, tokens, ignoredIssues) {
     var duplicateErrors = utils.map(topLevels, validateDuplicateProductions);
@@ -7476,7 +7477,7 @@ function validateDuplicateNestedRules(topLevelRules) {
 //# sourceMappingURL=checks.js.map
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7545,7 +7546,7 @@ exports.firstForTerminal = firstForTerminal;
 //# sourceMappingURL=first.js.map
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7593,7 +7594,7 @@ exports.getKeyForAltIndex = getKeyForAltIndex;
 //# sourceMappingURL=keys.js.map
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8027,7 +8028,7 @@ exports.areTokenCategoriesNotUsed = areTokenCategoriesNotUsed;
 //# sourceMappingURL=lookahead.js.map
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports) {
 
 // Generated by CoffeeScript 1.12.6
@@ -8064,7 +8065,7 @@ exports.areTokenCategoriesNotUsed = areTokenCategoriesNotUsed;
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports) {
 
 // Generated by CoffeeScript 1.12.6
@@ -8233,7 +8234,7 @@ exports.areTokenCategoriesNotUsed = areTokenCategoriesNotUsed;
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports) {
 
 // Generated by CoffeeScript 1.12.6
@@ -8329,7 +8330,7 @@ exports.areTokenCategoriesNotUsed = areTokenCategoriesNotUsed;
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8683,7 +8684,6 @@ function parse(text) {
 
 
 /***/ }),
-/* 41 */,
 /* 42 */
 /***/ (function(module, exports) {
 
@@ -12420,7 +12420,7 @@ exports.clearCache = clearCache;
 Object.defineProperty(exports, "__esModule", { value: true });
 var utils_1 = __webpack_require__(0);
 var lang_extensions_1 = __webpack_require__(5);
-var checks_1 = __webpack_require__(33);
+var checks_1 = __webpack_require__(34);
 function defaultVisit(ctx, param) {
     var childrenNames = utils_1.keys(ctx);
     var childrenNamesLength = childrenNames.length;
@@ -12938,9 +12938,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var rest_1 = __webpack_require__(24);
 var lang_extensions_1 = __webpack_require__(5);
 var gast_public_1 = __webpack_require__(2);
-var first_1 = __webpack_require__(34);
+var first_1 = __webpack_require__(35);
 var utils_1 = __webpack_require__(0);
-var constants_1 = __webpack_require__(29);
+var constants_1 = __webpack_require__(30);
 var tokens_public_1 = __webpack_require__(3);
 // This ResyncFollowsWalker computes all of the follows required for RESYNC
 // (skipping reference production).
@@ -13704,7 +13704,7 @@ exports.isValidRange = isValidRange;
 
   XMLNode = __webpack_require__(1);
 
-  XMLStringifier = __webpack_require__(38);
+  XMLStringifier = __webpack_require__(39);
 
   XMLStringWriter = __webpack_require__(28);
 
@@ -13779,9 +13779,9 @@ exports.isValidRange = isValidRange;
 
   XMLDTDNotation = __webpack_require__(14);
 
-  XMLAttribute = __webpack_require__(37);
+  XMLAttribute = __webpack_require__(38);
 
-  XMLStringifier = __webpack_require__(38);
+  XMLStringifier = __webpack_require__(39);
 
   XMLStringWriter = __webpack_require__(28);
 
@@ -14186,7 +14186,7 @@ exports.isValidRange = isValidRange;
 
   XMLDTDNotation = __webpack_require__(14);
 
-  XMLWriterBase = __webpack_require__(39);
+  XMLWriterBase = __webpack_require__(40);
 
   module.exports = XMLStreamWriter = (function(superClass) {
     extend(XMLStreamWriter, superClass);
@@ -14444,7 +14444,7 @@ exports.isValidRange = isValidRange;
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_chevrotain__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__LNParser__ = __webpack_require__(40);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__LNParser__ = __webpack_require__(41);
 /**
  * info visitor.
  *
@@ -15108,7 +15108,7 @@ function parse(text) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_xmlbuilder__ = __webpack_require__(43);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_xmlbuilder___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_xmlbuilder__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__blocks__ = __webpack_require__(60);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__LNParser__ = __webpack_require__(40);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__LNParser__ = __webpack_require__(41);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__InfoVisitor__ = __webpack_require__(57);
 /**
  * XML visitor.
