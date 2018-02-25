@@ -22717,10 +22717,13 @@ let visitor = __WEBPACK_IMPORTED_MODULE_1__XMLVisitor__["a" /* XMLVisitor */];
  * @param text
  * @returns xml or undefined
  */
-function parseTextToXML(text) {
+function parseTextToXML(text,location={
+        x: 10,
+        y: 10
+    }) {
     let cst = getCst(text);
     if (cst) {
-        let xml = execXmlVisitor(cst);
+        let xml = execXmlVisitor(cst,location);
         //console.log(xml);
         return xml;
     }
@@ -22731,11 +22734,8 @@ function getCst(text) {
     return r.value;
 }
 
-function execXmlVisitor(cst) {
-    let v = new visitor({
-        x: 10,
-        y: 10
-    });
+function execXmlVisitor(cst,location) {
+    let v = new visitor(location);
     let xml = v.getXML(cst);
     return xml;
 }
@@ -28140,8 +28140,8 @@ window.onload = function () {
     //https://developers.google.com/blockly/guides/configure/web/resizable
     let blocklyDiv = document.getElementById('blocklyDiv');
     let blocklyArea = document.getElementById('blocklyArea');
-    blocklyDiv.style.width = '50%';
-    blocklyDiv.style.height = '90%';
+    blocklyDiv.style.width = '45%';
+    blocklyDiv.style.height = '80%';
     __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.svgResize(workspace);
 
 };
@@ -28162,13 +28162,13 @@ function updateWorkspace() {
     let xml = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__parser_parserUtils_js__["a" /* default */])(text);
     //console.log(xml)
     if (xml) { //clear workspace
-        updateWarnings('')
+        updateWarnings('No errors');
         workspace.clear();
         //add to workspace
         let dom = Blockly.Xml.textToDom(xml);
         Blockly.Xml.domToWorkspace(dom, workspace)
     } else {
-        updateWarnings('workspace not updated:text is incorrect') //todo: add clear message
+        updateWarnings('workspace not updated:text is incorrect'); //todo: add clear message
     }
 }
 
