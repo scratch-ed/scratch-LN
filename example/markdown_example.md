@@ -1,4 +1,4 @@
-<script type="text/javascript" src="example/run_markdown.js" charset="utf-8"></script>
+<script type="text/javascript" src="run_markdown.js" charset="utf-8"></script>
 
 
 Draw a square:
