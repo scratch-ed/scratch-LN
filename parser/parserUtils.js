@@ -17,10 +17,13 @@ let visitor = XMLVisitor;
  * @param text
  * @returns xml or undefined
  */
-export default function parseTextToXML(text) {
+export default function parseTextToXML(text,location={
+        x: 10,
+        y: 10
+    }) {
     let cst = getCst(text);
     if (cst) {
-        let xml = execXmlVisitor(cst);
+        let xml = execXmlVisitor(cst,location);
         //console.log(xml);
         return xml;
     }
@@ -31,11 +34,8 @@ function getCst(text) {
     return r.value;
 }
 
-function execXmlVisitor(cst) {
-    let v = new visitor({
-        x: 10,
-        y: 10
-    });
+function execXmlVisitor(cst,location) {
+    let v = new visitor(location);
     let xml = v.getXML(cst);
     return xml;
 }

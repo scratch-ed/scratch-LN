@@ -50,8 +50,8 @@ window.onload = function () {
     //https://developers.google.com/blockly/guides/configure/web/resizable
     let blocklyDiv = document.getElementById('blocklyDiv');
     let blocklyArea = document.getElementById('blocklyArea');
-    blocklyDiv.style.width = '50%';
-    blocklyDiv.style.height = '90%';
+    blocklyDiv.style.width = '45%';
+    blocklyDiv.style.height = '80%';
     ScratchBlocks.svgResize(workspace);
 
 };
@@ -72,13 +72,13 @@ function updateWorkspace() {
     let xml = parseTextToXML(text);
     //console.log(xml)
     if (xml) { //clear workspace
-        updateWarnings('')
+        updateWarnings('No errors');
         workspace.clear();
         //add to workspace
         let dom = Blockly.Xml.textToDom(xml);
         Blockly.Xml.domToWorkspace(dom, workspace)
     } else {
-        updateWarnings('workspace not updated:text is incorrect') //todo: add clear message
+        updateWarnings('workspace not updated:text is incorrect'); //todo: add clear message
     }
 }
 

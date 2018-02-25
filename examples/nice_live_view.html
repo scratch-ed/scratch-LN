@@ -1,11 +1,13 @@
 <html>
     <head>
         <meta charset="utf-8">
+       <!--  <link rel="stylesheet" type="text/css" media="screen" href="/scratch-LN/assets/css/style.css?v=d68aed45b03457b0f1b368aced7ef7a77e028874"> -->
+        <link rel="stylesheet" type="text/css" media="screen" href="https://scratch4d.github.io/scratch-LN/assets/css/style.css?v=d68aed45b03457b0f1b368aced7ef7a77e028874">
         <script type="text/javascript" src="nice_live_view.js" charset="utf-8"></script>
         <style type="text/css">
         #editor{
             width: 45%;
-            height: 80%;
+            height: 68%;
             font-size: 25px; 
             resize: none; 
             border: 1px solid;
@@ -23,6 +25,9 @@
             float: left;
             margin-right: 2%;
         }
+        #view{
+            margin-left: 5%
+        }
         mark {
               border-radius: 3px;
               /*color: transparent;*/
@@ -32,14 +37,34 @@
               /*display: block;
               margin: 0 auto;
               transform: translateZ(0);
-              -webkit-text-size-adjust: none;*/
+              -webkit-text-size-adjust: none;
+              */
             }
+        #warnings{
+            color: red;
+            font-size: 25px; 
+        }
         </style>
         
     </head>
     <body>
+        <div id="header_wrap" class="outer">
+            <header class="inner">
+              <a id="forkme_banner" href="https://github.com/scratch4d/scratch-LN">View on GitHub</a>
+              <h1 id="project_title">scratch-LN</h1>
+              <h2 id="project_tagline">https://scratch4d.github.io/scratch-LN/</h2>
+            </header>
+        </div>
         
-        <div id="blocklyDiv"></div>
+        <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+      Type scratch-LN text in the editor, the syntax can be found  <a href="https://www.w3schools.com">here</a> .
+      </section>
+
+        <div id="view">
+            <div id="warnings">ok</div>
+            <div id="blocklyDiv"></div>
+        </div>
 
         <div id="control">
             <p>
@@ -56,10 +81,12 @@
 
             <div class = "container">
             <textarea id="editor"></textarea>
-            <div id="warnings"></div>
+            
             </div>
-        <div>
-		
+        </div>
+        
+		</div>
+
   		
     </body>
 </html>

@@ -66,6 +66,10 @@ module.exports = [
             new CopyWebpackPlugin([{
                 from: 'examples/simple.html',
                 to: 'example/simple.html'
+            }]),
+            new CopyWebpackPlugin([{
+                from: 'examples/documentation.html',
+                to: 'example/documentation.html'
             }]),/*
             new CopyWebpackPlugin([{
                 from: 'node_modules/scratch-blocks/media',
