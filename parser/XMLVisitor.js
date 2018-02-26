@@ -223,7 +223,9 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
         this.xml = this.xml.up().ele('statement ', {
             'name': 'SUBSTACK'
         });
-        this.visitSubStack(ctx.stack); //when no index is given it is always 0
+        if(ctx.stack.length>0) {
+            this.visitSubStack(ctx.stack); //when no index is given it is always 0
+        }
         this.xml = this.xml.up();
         if (ctx.else.length !== 0) {
             this.visit(ctx.else);
@@ -234,7 +236,9 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
         this.xml = this.xml.ele('statement ', {
             'name': 'SUBSTACK2'
         });
-        this.visitSubStack(ctx.stack[0]);
+        if(ctx.stack.length>0) {
+            this.visitSubStack(ctx.stack[0]);
+        }
         this.xml = this.xml.up();
     }
 
