@@ -15,7 +15,10 @@ This is work in progress :)
 	- `localhost:8008\example.html`  : example exercise (teken het cdj logo)
 	- `localhost:8008\simple.html` : simple html
 
-
+###  Running tests
+0. go to the root folder
+1. run `npm install`
+2. run `npm test` 
 
 ## Authors
 
