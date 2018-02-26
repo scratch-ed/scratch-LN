@@ -33,7 +33,7 @@ module.exports = [
         target: 'web',
         entry: {
             'live_view':'./live_view/live_view.js',
-            'test':'./test/test.js',
+            'test':'./testWebpage/test.js',
             'run':'./webtools/run.js',
             'example':'./examples/example.js',
             'nice_live_view':'./examples/nice_live_view.js',
@@ -48,7 +48,7 @@ module.exports = [
                 to: 'index.html'
             }]),
             new CopyWebpackPlugin([{
-                from: './test/test.html',
+                from: './testWebpage/test.html',
                 to: 'test.html'
             }]),new CopyWebpackPlugin([{
                 from: './examples/nice_live_view.html',
