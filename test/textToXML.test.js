@@ -3,6 +3,7 @@
  *
  *
  * setup: https://mochajs.org/#getting-started and https://x-team.com/blog/setting-up-javascript-testing-tools-for-es6/.
+ * use `mocha --compilers js:babel-register --require babel-polyfill` for the transpiler!
  * Based on http://chaijs.com/plugins/chai-string/
  * equalIgnoreSpaces: ignores spaces and newlines
  *
