@@ -105,6 +105,7 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
         if (this.firstBlock) {
             this.xml = this.firstBlock.insertBefore('variables');
         } else {
+            console.log('no first block');
             this.xml = this.xmlRoot.ele('variables');
         }
         for (let key in this.varMap) {
@@ -269,7 +270,6 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
     }*/
 
     stackline$forever(ctx) {
-        console.log('here');
         this.visit(ctx.forever);
         if (!this.firstBlock) {
             this.firstBlock = this.xml;
@@ -448,6 +448,10 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
                 if (this.isTop) {
                     this.addLocationBelow(this.xml)
                 }
+                if (!this.firstBlock) {
+                    this.firstBlock = this.xml;
+                }
+                this.blockCounter++;
                 this.xml = this.xml.up();
             }
         } else { //what should be done if the block is unknown
@@ -476,6 +480,7 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
                 this.xml = this.xml.up();
             }
         }
+
         this.isTop = false
     }
 

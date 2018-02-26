@@ -320,7 +320,6 @@ let lookChangeEffect=function(ctx,visitor){return universalBlockConverter(ctx, v
 blocks["change %1 effect by %2"] = function(ctx, visitor) {
     let opt = visitor.getString(ctx.option[0]);
     let label = visitor.getString(ctx.argument[0]);
-    console.log(label);
     if (opt === 'sound') {
         return soundChangeEffect(ctx, visitor);
     }
@@ -391,7 +390,6 @@ let looksGoTo =function(ctx,visitor){return universalBlockConverter(ctx, visitor
 
 blocks["go to %1"] = function(ctx, visitor) {
     let argType = visitor.getString(ctx.argument[0]);
-    console.log('-'+argType);
     if (argType === 'front' || argType === 'back') {
         return looksGoTo(ctx, visitor);
     }
