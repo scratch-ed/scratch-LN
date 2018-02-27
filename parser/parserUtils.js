@@ -9,11 +9,32 @@
 
 import {parse} from './LNParserF'
 import {XMLVisitor} from './XMLVisitor'
+import {blockspecifications} from '../blockspecification/blockspecification'
+import blocks from './blocks'
 
 let visitor = XMLVisitor;
 
+export function init_parser_utils(){
+    console.log('parser utils called');
+   // blockspecifications
+
+    for(let x=0; x<blockspecifications.length;x++){
+        let b = blockspecifications[x];
+        console.log(b);
+        let ts = b['template'];
+        for(let t=0; t<ts.length;t++) {
+            blocks[b['template'][t]] = function (ctx, visitor) {
+                return b['converter'](ctx, visitor, b['description']);
+            }
+        }
+    }
+}
+
+init_parser_utils();
+
+
 /**
- * todo: return error message in case something goos wrong
+ * todo: return error message in case something goes wrong
  * @param text
  * @returns xml or undefined
  */
