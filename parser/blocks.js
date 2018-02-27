@@ -105,7 +105,7 @@ blocks["next backdrop"]=function(ctx,visitor){return universalBlockConverter(ctx
 
 blocks["clear"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"pen_clear","shape":"statement"} ); };
 blocks["stamp"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"pen_stamp","shape":"statement"} ); };
-blocks["pen down"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"pen_pendown","shape":"statement"} ); };
+//blocks["pen down"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"pen_pendown","shape":"statement"} ); };
 blocks["pen up"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"pen_penup","shape":"statement"} ); };
 blocks["set pen color to %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"pen_setpencolortocolor", "args":[{"type":"input_value","name":"COLOR"}],"shape":"statement"} ); };
 blocks["change pen color by %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"pen_changepencolorby", "args":[{"type":"input_value","name":"COLOR"}],"shape":"statement"} ); };

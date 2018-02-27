@@ -1,6 +1,3 @@
-import {universalBlockConverter} from "../parser/blocks";
-import blocks from "../parser/blocks";
-
 /**
  * Specification of blocks.
  *
@@ -9,9 +6,13 @@ import blocks from "../parser/blocks";
  * @file   This files defines the blockspecifications const.
  * @author Ellen Vanhove.
  */
+import {universalBlockConverter} from "../parser/blocks";
+import blocks from "../parser/blocks";
+
+
 
 export const blockspecifications = [{
-    "template": ["test", "test2"],
+    "template": ["go to %1","test", "test2"],
     "description": {
         "type": "looks_gotofrontback",
         "args": [{"type": "field_dropdown", "name": "FRONT_BACK", "options": [["front", "front"], ["back", "back"]]}],
@@ -19,8 +20,8 @@ export const blockspecifications = [{
     },
     "converter": universalBlockConverter
 }, {
-    "template": ["pen"],
-    "description": {"type": "pen_penup", "shape": "statement"},
+    "template": ["pen down"],
+    "description": { "type":"pen_pendown","shape":"statement"},
     "converter": universalBlockConverter
 }
 ];
