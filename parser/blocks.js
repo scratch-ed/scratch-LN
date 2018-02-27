@@ -69,7 +69,7 @@ blocks["turn left %1 degrees"]=blocks["turn cww %1 degrees"];
 
 blocks["point in direction %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_pointindirection", "args":[{"type":"input_value","name":"DIRECTION"}],"shape":"statement"} ); };
 blocks["point towards %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_pointtowards", "args":[{"type":"input_value","name":"TOWARDS","menu":"motion_pointtowards_menu"}],"shape":"statement"} ); };
-blocks["go to x: %1 y: %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_gotoxy", "args":[{"type":"input_value","name":"X"},{"type":"input_value","name":"Y"}],"shape":"statement"} ); };
+//blocks["go to x: %1 y: %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_gotoxy", "args":[{"type":"input_value","name":"X"},{"type":"input_value","name":"Y"}],"shape":"statement"} ); };
 
 blocks["glide %1 secs to x: %2 y: %3"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_glidesecstoxy", "args":[{"type":"input_value","name":"SECS"},{"type":"input_value","name":"X"},{"type":"input_value","name":"Y"}],"shape":"statement"} ); };
 blocks["glide %1 secs to %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_glideto", "args":[{"type":"input_value","name":"SECS"},{"type":"input_value","name":"TO","menu":"motion_glideto_menu"}],"shape":"statement"} ); };
@@ -85,7 +85,7 @@ blocks["y position"]=function(ctx,visitor){return universalBlockConverter(ctx, v
 blocks["direction"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_direction","shape":"reporterblock"} ); };
 
 blocks["say %1 for %2 seconds"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_sayforsecs", "args":[{"type":"input_value","name":"MESSAGE"},{"type":"input_value","name":"SECS"}],"shape":"statement"} ); };
-blocks["say %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_say", "args":[{"type":"input_value","name":"MESSAGE"}],"shape":"statement"} ); };
+//blocks["say %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_say", "args":[{"type":"input_value","name":"MESSAGE"}],"shape":"statement"} ); };
 blocks["think %1 for %2 seconds"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_thinkforsecs", "args":[{"type":"input_value","name":"MESSAGE"},{"type":"input_value","name":"SECS"}],"shape":"statement"} ); };
 blocks["think %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_think", "args":[{"type":"input_value","name":"MESSAGE"}],"shape":"statement"} ); };
 blocks["show"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_show","shape":"statement"} ); };

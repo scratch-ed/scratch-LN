@@ -23,18 +23,26 @@ export function init_parser_utils(){
     //generate the functions in blocks
     for(let x=0; x<blockspecifications.length;x++){
         let b = blockspecifications[x];
-        let ts = b['template'];
-        for(let t=0; t<ts.length;t++) {
-            //can this differently?
-            blocks[b['template'][t]] = function (ctx, visitor) {
-                return b['converter'](ctx, visitor, b['description']);
+        if(Array.isArray(b['template'])) {
+            let ts = b['template'];
+            for(let t=0; t<ts.length;t++) {
+                //can this differently?
+                blocks[b['template'][t]] = function (ctx, visitor) {
+                    return b['converter'](ctx, visitor, b['description']);
+                }
             }
+        }else{
+            //console.log(typeof b['template']);
+            blocks[b['template']] = function (ctx, visitor) {
+                return b['converter'](ctx, visitor, b['description']);
+            };
+
         }
+
     }
 }
 
 init_parser_utils();
-
 
 /**
  * todo: return error message in case something goes wrong
