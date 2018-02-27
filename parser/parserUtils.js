@@ -14,15 +14,18 @@ import blocks from './blocks'
 
 let visitor = XMLVisitor;
 
+/**
+ * init blocks with information from blockspecifications
+ */
 export function init_parser_utils(){
     console.log('parser utils called');
    // blockspecifications
-
+    //generate the functions in blocks
     for(let x=0; x<blockspecifications.length;x++){
         let b = blockspecifications[x];
-        console.log(b);
         let ts = b['template'];
         for(let t=0; t<ts.length;t++) {
+            //can this differently?
             blocks[b['template'][t]] = function (ctx, visitor) {
                 return b['converter'](ctx, visitor, b['description']);
             }
