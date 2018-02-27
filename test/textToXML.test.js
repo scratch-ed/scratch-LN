@@ -28,7 +28,7 @@ describe('ifelse', function() {
 });
  */
 
-describe('scripts_pen', function() {
+describe('pen', function() {
     describe('pen up', function() {
         it('should return valid xml', function() {
             let parsed = parseTextToXML('pen up');
@@ -41,9 +41,350 @@ describe('scripts_pen', function() {
             assert.equalIgnoreSpaces(parsed, expected);
         });
     });
+
+    describe('stack blocks', function() {
+        it('should return valid xml', function() {
+            let parsed = parseTextToXML('clear;\n' +
+                'stamp;\n' +
+                'pen down;\n' +
+                'pen up;\n' +
+                'set pen color to {};\n' +
+                'set pen color to {#123456}\n' +
+                'change pen color by {10};\n' +
+                'set pen color to {0};\n' +
+                'change pen shade by {10};\n' +
+                'change pen size by {1};\n' +
+                'set pen size to {1};\n' +
+                'change pen transparency by {10};');
+            let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
+                '  <variables/>\n' +
+                '  <block id="0" type="pen_clear" x="10" y="10">\n' +
+                '    <next>\n' +
+                '      <block id="1" type="pen_stamp">\n' +
+                '        <next>\n' +
+                '          <block id="2" type="pen_pendown">\n' +
+                '            <next>\n' +
+                '              <block id="3" type="pen_penup">\n' +
+                '                <next>\n' +
+                '                  <block id="4" type="pen_setpencolortonum">\n' +
+                '                    <value name="COLOR"/>\n' +
+                '                    <next>\n' +
+                '                      <block id="5" type="pen_setpencolortonum">\n' +
+                '                        <value name="COLOR">\n' +
+                '                          <shadow type="colour_picker" id="6">\n' +
+                '                            <field name="COLOUR">#123456</field>\n' +
+                '                          </shadow>\n' +
+                '                        </value>\n' +
+                '                        <next>\n' +
+                '                          <block id="7" type="pen_changepencolorby">\n' +
+                '                            <value name="COLOR">\n' +
+                '                              <shadow type="math_number" id="8">\n' +
+                '                                <field name="NUM">10</field>\n' +
+                '                              </shadow>\n' +
+                '                            </value>\n' +
+                '                            <next>\n' +
+                '                              <block id="9" type="pen_setpencolortonum">\n' +
+                '                                <value name="COLOR">\n' +
+                '                                  <shadow type="math_number" id="10">\n' +
+                '                                    <field name="NUM">0</field>\n' +
+                '                                  </shadow>\n' +
+                '                                </value>\n' +
+                '                                <next>\n' +
+                '                                  <block id="11" type="pen_changepenshadeby">\n' +
+                '                                    <value name="SHADE">\n' +
+                '                                      <shadow type="math_number" id="12">\n' +
+                '                                        <field name="NUM">10</field>\n' +
+                '                                      </shadow>\n' +
+                '                                    </value>\n' +
+                '                                    <next>\n' +
+                '                                      <block id="13" type="pen_changepensizeby">\n' +
+                '                                        <value name="SIZE">\n' +
+                '                                          <shadow type="math_number" id="14">\n' +
+                '                                            <field name="NUM">1</field>\n' +
+                '                                          </shadow>\n' +
+                '                                        </value>\n' +
+                '                                        <next>\n' +
+                '                                          <block id="15" type="pen_setpensizeto">\n' +
+                '                                            <value name="SIZE">\n' +
+                '                                              <shadow type="math_number" id="16">\n' +
+                '                                                <field name="NUM">1</field>\n' +
+                '                                              </shadow>\n' +
+                '                                            </value>\n' +
+                '                                            <next>\n' +
+                '                                              <block id="17" type="pen_changepentransparencyby">\n' +
+                '                                                <value name="TRANSPARENCY">\n' +
+                '                                                  <shadow type="math_number" id="18">\n' +
+                '                                                    <field name="NUM">10</field>\n' +
+                '                                                  </shadow>\n' +
+                '                                                </value>\n' +
+                '                                                <next/>\n' +
+                '                                              </block>\n' +
+                '                                            </next>\n' +
+                '                                          </block>\n' +
+                '                                        </next>\n' +
+                '                                      </block>\n' +
+                '                                    </next>\n' +
+                '                                  </block>\n' +
+                '                                </next>\n' +
+                '                              </block>\n' +
+                '                            </next>\n' +
+                '                          </block>\n' +
+                '                        </next>\n' +
+                '                      </block>\n' +
+                '                    </next>\n' +
+                '                  </block>\n' +
+                '                </next>\n' +
+                '              </block>\n' +
+                '            </next>\n' +
+                '          </block>\n' +
+                '        </next>\n' +
+                '      </block>\n' +
+                '    </next>\n' +
+                '  </block>\n' +
+                '</xml>';
+            assert.equalIgnoreSpaces(parsed, expected);
+        });
+    });
 });
 
-
+describe('operators', function() {
+    it('should return valid xml', function() {
+        let parsed = parseTextToXML('{1} + {2}\n' +
+            '\n' +
+            '{1} - {2}\n' +
+            '\n' +
+            '{1} * {2}\n' +
+            '\n' +
+            '{1} / {2}\n' +
+            '\n' +
+            'pick random {1} to {10}\n' +
+            '\n' +
+            '{1} \\< {2}\n' +
+            '\n' +
+            '{1} \\> {2}\n' +
+            '\n' +
+            '{1} = {2}\n' +
+            '\n' +
+            ' {} and {}\n' +
+            '\n' +
+            ' {} or {}\n' +
+            '\n' +
+            'not {}\n' +
+            '\n' +
+            'join {"hello"} {"world"}\n' +
+            '\n' +
+            'letter {1} of {"world"}\n' +
+            '\n' +
+            'length of {"world"}\n' +
+            '\n' +
+            '{"hello"} contains {"world"} ?\n' +
+            '\n' +
+            ' {3} mod {2}\n' +
+            '\n' +
+            'round {2.22}\n' +
+            '\n' +
+            ' [abs] of {-1}');
+        let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
+            '  <variables/>\n' +
+            '  <block id="0" type="operator_add" x="10" y="10">\n' +
+            '    <value name="NUM1">\n' +
+            '      <shadow type="math_number" id="1">\n' +
+            '        <field name="NUM">1</field>\n' +
+            '      </shadow>\n' +
+            '    </value>\n' +
+            '    <value name="NUM2">\n' +
+            '      <shadow type="math_number" id="2">\n' +
+            '        <field name="NUM">2</field>\n' +
+            '      </shadow>\n' +
+            '    </value>\n' +
+            '    <next/>\n' +
+            '  </block>\n' +
+            '  <block id="3" type="operator_subtract" x="10" y="110">\n' +
+            '    <value name="NUM1">\n' +
+            '      <shadow type="math_number" id="4">\n' +
+            '        <field name="NUM">1</field>\n' +
+            '      </shadow>\n' +
+            '    </value>\n' +
+            '    <value name="NUM2">\n' +
+            '      <shadow type="math_number" id="5">\n' +
+            '        <field name="NUM">2</field>\n' +
+            '      </shadow>\n' +
+            '    </value>\n' +
+            '    <next/>\n' +
+            '  </block>\n' +
+            '  <block id="6" type="operator_multiply" x="10" y="210">\n' +
+            '    <value name="NUM1">\n' +
+            '      <shadow type="math_number" id="7">\n' +
+            '        <field name="NUM">1</field>\n' +
+            '      </shadow>\n' +
+            '    </value>\n' +
+            '    <value name="NUM2">\n' +
+            '      <shadow type="math_number" id="8">\n' +
+            '        <field name="NUM">2</field>\n' +
+            '      </shadow>\n' +
+            '    </value>\n' +
+            '    <next/>\n' +
+            '  </block>\n' +
+            '  <block id="9" type="operator_divide" x="10" y="310">\n' +
+            '    <value name="NUM1">\n' +
+            '      <shadow type="math_number" id="10">\n' +
+            '        <field name="NUM">1</field>\n' +
+            '      </shadow>\n' +
+            '    </value>\n' +
+            '    <value name="NUM2">\n' +
+            '      <shadow type="math_number" id="11">\n' +
+            '        <field name="NUM">2</field>\n' +
+            '      </shadow>\n' +
+            '    </value>\n' +
+            '    <next/>\n' +
+            '  </block>\n' +
+            '  <block id="12" type="operator_random" x="10" y="410">\n' +
+            '    <value name="FROM">\n' +
+            '      <shadow type="math_number" id="13">\n' +
+            '        <field name="NUM">1</field>\n' +
+            '      </shadow>\n' +
+            '    </value>\n' +
+            '    <value name="TO">\n' +
+            '      <shadow type="math_number" id="14">\n' +
+            '        <field name="NUM">10</field>\n' +
+            '      </shadow>\n' +
+            '    </value>\n' +
+            '    <next/>\n' +
+            '  </block>\n' +
+            '  <block id="15" type="operator_lt" x="10" y="510">\n' +
+            '    <value name="OPERAND1">\n' +
+            '      <shadow type="math_number" id="16">\n' +
+            '        <field name="NUM">1</field>\n' +
+            '      </shadow>\n' +
+            '    </value>\n' +
+            '    <value name="OPERAND2">\n' +
+            '      <shadow type="math_number" id="17">\n' +
+            '        <field name="NUM">2</field>\n' +
+            '      </shadow>\n' +
+            '    </value>\n' +
+            '    <next/>\n' +
+            '  </block>\n' +
+            '  <block id="18" type="operator_gt" x="10" y="610">\n' +
+            '    <value name="OPERAND1">\n' +
+            '      <shadow type="math_number" id="19">\n' +
+            '        <field name="NUM">1</field>\n' +
+            '      </shadow>\n' +
+            '    </value>\n' +
+            '    <value name="OPERAND2">\n' +
+            '      <shadow type="math_number" id="20">\n' +
+            '        <field name="NUM">2</field>\n' +
+            '      </shadow>\n' +
+            '    </value>\n' +
+            '    <next/>\n' +
+            '  </block>\n' +
+            '  <block id="21" type="operator_equals" x="10" y="710">\n' +
+            '    <value name="OPERAND1">\n' +
+            '      <shadow type="math_number" id="22">\n' +
+            '        <field name="NUM">1</field>\n' +
+            '      </shadow>\n' +
+            '    </value>\n' +
+            '    <value name="OPERAND2">\n' +
+            '      <shadow type="math_number" id="23">\n' +
+            '        <field name="NUM">2</field>\n' +
+            '      </shadow>\n' +
+            '    </value>\n' +
+            '    <next/>\n' +
+            '  </block>\n' +
+            '  <block id="24" type="operator_and" x="10" y="810">\n' +
+            '    <value name="OPERAND1"/>\n' +
+            '    <value name="OPERAND2"/>\n' +
+            '    <next/>\n' +
+            '  </block>\n' +
+            '  <block id="25" type="operator_or" x="10" y="910">\n' +
+            '    <value name="OPERAND1"/>\n' +
+            '    <value name="OPERAND2"/>\n' +
+            '    <next/>\n' +
+            '  </block>\n' +
+            '  <block id="26" type="operator_not" x="10" y="1010">\n' +
+            '    <value name="OPERAND"/>\n' +
+            '    <next/>\n' +
+            '  </block>\n' +
+            '  <block id="27" type="operator_join" x="10" y="1110">\n' +
+            '    <value name="STRING1">\n' +
+            '      <shadow type="text" id="28">\n' +
+            '        <field name="TEXT">"hello"</field>\n' +
+            '      </shadow>\n' +
+            '    </value>\n' +
+            '    <value name="STRING2">\n' +
+            '      <shadow type="text" id="29">\n' +
+            '        <field name="TEXT">"world"</field>\n' +
+            '      </shadow>\n' +
+            '    </value>\n' +
+            '    <next/>\n' +
+            '  </block>\n' +
+            '  <block id="30" type="operator_letter_of" x="10" y="1210">\n' +
+            '    <value name="LETTER">\n' +
+            '      <shadow type="math_number" id="31">\n' +
+            '        <field name="NUM">1</field>\n' +
+            '      </shadow>\n' +
+            '    </value>\n' +
+            '    <value name="STRING">\n' +
+            '      <shadow type="text" id="32">\n' +
+            '        <field name="TEXT">"world"</field>\n' +
+            '      </shadow>\n' +
+            '    </value>\n' +
+            '    <next/>\n' +
+            '  </block>\n' +
+            '  <block id="33" type="operator_length" x="10" y="1310">\n' +
+            '    <value name="STRING">\n' +
+            '      <shadow type="text" id="34">\n' +
+            '        <field name="TEXT">"world"</field>\n' +
+            '      </shadow>\n' +
+            '    </value>\n' +
+            '    <next/>\n' +
+            '  </block>\n' +
+            '  <block id="35" type="operator_contains" x="10" y="1410">\n' +
+            '    <value name="STRING1">\n' +
+            '      <shadow type="text" id="36">\n' +
+            '        <field name="TEXT">"hello"</field>\n' +
+            '      </shadow>\n' +
+            '    </value>\n' +
+            '    <value name="STRING2">\n' +
+            '      <shadow type="text" id="37">\n' +
+            '        <field name="TEXT">"world"</field>\n' +
+            '      </shadow>\n' +
+            '    </value>\n' +
+            '    <next/>\n' +
+            '  </block>\n' +
+            '  <block id="38" type="operator_mod" x="10" y="1510">\n' +
+            '    <value name="NUM1">\n' +
+            '      <shadow type="math_number" id="39">\n' +
+            '        <field name="NUM">3</field>\n' +
+            '      </shadow>\n' +
+            '    </value>\n' +
+            '    <value name="NUM2">\n' +
+            '      <shadow type="math_number" id="40">\n' +
+            '        <field name="NUM">2</field>\n' +
+            '      </shadow>\n' +
+            '    </value>\n' +
+            '    <next/>\n' +
+            '  </block>\n' +
+            '  <block id="41" type="operator_round" x="10" y="1610">\n' +
+            '    <value name="NUM">\n' +
+            '      <shadow type="math_number" id="42">\n' +
+            '        <field name="NUM">2.22</field>\n' +
+            '      </shadow>\n' +
+            '    </value>\n' +
+            '    <next/>\n' +
+            '  </block>\n' +
+            '  <block id="43" type="operator_mathop" x="10" y="1710">\n' +
+            '    <field name="OPERATOR">abs</field>\n' +
+            '    <value name="NUM">\n' +
+            '      <shadow type="math_number" id="44">\n' +
+            '        <field name="NUM">-1</field>\n' +
+            '      </shadow>\n' +
+            '    </value>\n' +
+            '    <next/>\n' +
+            '  </block>\n' +
+            '</xml>';
+        assert.equalIgnoreSpaces(parsed, expected);
+    });
+});
 
 describe('Sounds', function() {
     describe('', function() {
@@ -203,6 +544,38 @@ describe('Sounds', function() {
                 '  <variables/>\n' +
                 '  <block id="0" type="sound_volume" x="10" y="10"/>\n' +
                 '  <block id="1" type="sound_tempo" x="10" y="110"/>\n' +
+                '</xml>';
+            assert.equalIgnoreSpaces(parsed, expected);
+        });
+    });
+    describe('variables int', function() {
+        it('should return valid xml', function() {
+            let parsed = parseTextToXML('\n' +
+                'change [a] by {1};\n' +
+                'change [a] by {(a)}');
+            let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
+                '  <variables>\n' +
+                '    <variable type="" id="var0">a</variable>\n' +
+                '  </variables>\n' +
+                '  <block id="0" type="data_changevariableby" x="10" y="10">\n' +
+                '    <field name="VARIABLE">a</field>\n' +
+                '    <value name="VALUE">\n' +
+                '      <shadow type="math_number" id="1">\n' +
+                '        <field name="NUM">1</field>\n' +
+                '      </shadow>\n' +
+                '    </value>\n' +
+                '    <next>\n' +
+                '      <block id="2" type="data_changevariableby">\n' +
+                '        <field name="VARIABLE">a</field>\n' +
+                '        <value name="VALUE">\n' +
+                '          <block type="data_variable" id="3">\n' +
+                '            <field name="VARIABLE" id="var0">a</field>\n' +
+                '          </block>\n' +
+                '        </value>\n' +
+                '        <next/>\n' +
+                '      </block>\n' +
+                '    </next>\n' +
+                '  </block>\n' +
                 '</xml>';
             assert.equalIgnoreSpaces(parsed, expected);
         });
