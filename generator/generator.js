@@ -1,4 +1,6 @@
 import ScratchBlocks from 'scratch-blocks';
+import {blockspecifications} from "../blockspecification/blockspecification";
+import blocks from "../parser/blocks";
 
 
 export default function generateText(workspace) {
@@ -60,3 +62,24 @@ ScratchBlocks.text['motion_movesteps'] = function (block) {
 ScratchBlocks.text['math_number'] = function (block) {
     return [block.getFieldValue('NUM'), ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
+
+
+//=================
+/**
+ * init blocks with information from blockspecifications
+ */
+export function init_generator(){
+    console.log('parser utils called');
+    // blockspecifications
+    //generate the functions in blocks
+    for(let x=0; x<blockspecifications.length;x++){
+        let b = blockspecifications[x];
+        let template = b['template'][0];
+        let type = b['description']['type'];
+        ScratchBlocks.text[type] = function (block) {
+            return template+'\n' + ScratchBlocks.text.getNextCode(block);
+        };
+    }
+}
+
+init_generator();
