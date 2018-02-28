@@ -160,6 +160,7 @@ describe('loops', function() {
                 'forever\n' +
                 'forever');
             let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
+                '  <variables/>\n' +
                 '  <block type="control_forever" id="0" x="10" y="10">\n' +
                 '     \n' +
                 '    <statement  name="SUBSTACK">\n' +
@@ -168,7 +169,6 @@ describe('loops', function() {
                 '         \n' +
                 '        <statement  name="SUBSTACK">\n' +
                 '           \n' +
-                '          <variables/>\n' +
                 '          <block type="control_forever" id="2">\n' +
                 '             \n' +
                 '            <statement  name="SUBSTACK"> </statement >\n' +
@@ -192,6 +192,7 @@ describe('loops', function() {
                 'end\n' +
                 'asdf');
             let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
+                '<variables/>\n'+
                 '  <block type="control_repeat" id="0" x="10" y="10">\n' +
                 '    <value name="TIMES">\n' +
                 '      <shadow type="math_number" id="1">\n' +
@@ -199,7 +200,6 @@ describe('loops', function() {
                 '      </shadow>\n' +
                 '    </value>\n' +
                 '    <statement  name="SUBSTACK">\n' +
-                '      <variables/>\n' +
                 '      <block id="2" type="procedures_call">\n' +
                 '        <mutation proccode="adsf"/>\n' +
                 '        <next/>\n' +
@@ -229,10 +229,10 @@ describe('ifelse', function() {
                 'else\n' +
                 'if <>');
             let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
+                '  <variables/>\n' +
                 '  <block type="control_if_else" id="0" x="10" y="10">\n' +
                 '    <value name="CONDITION"/>\n' +
                 '    <statement  name="SUBSTACK">\n' +
-                '      <variables/>\n' +
                 '      <block type="control_if" id="1">\n' +
                 '        <value name="CONDITION"/>\n' +
                 '        <statement  name="SUBSTACK"/>\n' +
@@ -260,10 +260,10 @@ describe('ifelse', function() {
                 'else\n' +
                 'pen up');
             let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
+                '      <variables/>\n' +
                 '  <block type="control_if_else" id="0" x="10" y="10">\n' +
                 '    <value name="CONDITION"/>\n' +
                 '    <statement  name="SUBSTACK">\n' +
-                '      <variables/>\n' +
                 '      <block id="1" type="pen_penup">\n' +
                 '        <next/>\n' +
                 '      </block>\n' +
@@ -301,11 +301,11 @@ describe('ifelse', function() {
                 'else\n' +
                 'pen up');
             let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
+                '      <variables/>\n' +
                 '  <block type="control_if_else" id="0" x="10" y="10">\n' +
                 '    <value name="CONDITION"/>\n' +
                 '    <statement  name="SUBSTACK"/>\n' +
                 '    <statement  name="SUBSTACK2">\n' +
-                '      <variables/>\n' +
                 '      <block id="1" type="pen_penup">\n' +
                 '        <next/>\n' +
                 '      </block>\n' +
@@ -331,10 +331,10 @@ describe('ifelse', function() {
                 'end\n' +
                 'pen up\n');
             let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
+                '      <variables/>\n' +
                 '  <block type="control_if_else" id="0" x="10" y="10">\n' +
                 '    <value name="CONDITION"/>\n' +
                 '    <statement  name="SUBSTACK">\n' +
-                '      <variables/>\n' +
                 '      <block id="1" type="pen_penup">\n' +
                 '        <next/>\n' +
                 '      </block>\n' +
@@ -410,10 +410,10 @@ describe('ifelse', function() {
                 'pen up\n' +
                 'else');
             let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
+                '      <variables/>\n' +
                 '  <block type="control_if_else" id="0" x="10" y="10">\n' +
                 '    <value name="CONDITION"/>\n' +
                 '    <statement  name="SUBSTACK">\n' +
-                '      <variables/>\n' +
                 '      <block id="1" type="pen_penup">\n' +
                 '        <next/>\n' +
                 '      </block>\n' +
@@ -434,11 +434,11 @@ describe('ifelse', function() {
                 'end\n' +
                 'clear');
             let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
-                '  <block type="control_if" id="0" x="10" y="10">\n' +
-                '    <value name="CONDITION">\n' +
                 '      <variables>\n' +
                 '        <variable type="list" id="var0">lili</variable>\n' +
                 '      </variables>\n' +
+                '  <block type="control_if" id="0" x="10" y="10">\n' +
+                '    <value name="CONDITION">\n' +
                 '      <block id="1" type="data_listcontainsitem" x="10" y="10">\n' +
                 '        <field name="LIST" variabletype="list">lili</field>\n' +
                 '        <value name="ITEM">\n' +

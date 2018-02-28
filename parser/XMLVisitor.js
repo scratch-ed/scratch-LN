@@ -39,6 +39,8 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
         this.xmlRoot = null;
         //first block in this xml
         this.firstBlock = null;
+        //placeholder in the beginning for variables
+        this.variablesTag = null;
 
         //location of the blocks
         this.location = coordinate;
@@ -99,15 +101,10 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
         //reset
         this.modus = 'stackblock';
         this.xml = builder.begin().ele('xml').att('xmlns', 'http://www.w3.org/1999/xhtml');
+        this.variablesTag = this.xml.ele('variables');
         this.xmlRoot = this.xml;
         this.visit(cst);
-        //insert variables
-        if (this.firstBlock) {
-            this.xml = this.firstBlock.insertBefore('variables');
-        } else {
-            console.log('no first block');
-            this.xml = this.xmlRoot.ele('variables');
-        }
+        this.xml = this.variablesTag;
         for (let key in this.varMap) {
             if (this.varMap.hasOwnProperty(key)) {
                 this.xml.ele('variable', {

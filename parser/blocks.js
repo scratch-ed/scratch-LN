@@ -79,7 +79,7 @@ blocks["change y by %1"]=function(ctx,visitor){return universalBlockConverter(ct
 blocks["set y to %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_sety", "args":[{"type":"input_value","name":"Y"}],"shape":"statement"} ); };
 //todo: "if"
 blocks["if on edge, bounce"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_ifonedgebounce","shape":"statement"} ); };
-blocks["set rotation style %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_setrotationstyle", "args":[{"type":"field_dropdown","name":"STYLE","options":[["left-right","left-right"],["don't rotate","don't rotate"],["all around","all around"]]}],"shape":"statement"} ); };
+//blocks["set rotation style %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_setrotationstyle", "args":[{"type":"field_dropdown","name":"STYLE","options":[["left-right","left-right"],["don't rotate","don't rotate"],["all around","all around"]]}],"shape":"statement"} ); };
 blocks["x position"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_xposition","shape":"reporterblock"} ); };
 blocks["y position"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_yposition","shape":"reporterblock"} ); };
 blocks["direction"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_direction","shape":"reporterblock"} ); };

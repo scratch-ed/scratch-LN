@@ -160,9 +160,9 @@ describe('variables', function() {
                 'say {(mouse x)}\n' +
                 'say {({({({1}*{({10} /{2})})}-{3})}+{22222})};');
             let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
+                '  <variables/>\n' +
                 '  <block id="0" type="looks_say" x="10" y="10">\n' +
                 '    <value name="MESSAGE">\n' +
-                '      <variables/>\n' +
                 '      <block id="1" type="operator_add" x="10" y="10">\n' +
                 '        <value name="NUM1">\n' +
                 '          <shadow type="math_number" id="2">\n' +

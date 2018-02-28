@@ -9,7 +9,13 @@
 import {universalBlockConverter} from "../parser/blocks";
 import blocks from "../parser/blocks";
 
+/*
+ {"template":"",
+        "description": ,
+            "converter": universalBlockConverter
+        }
 
+ */
 export const blockspecifications = [
         /*{ //this is already a special case
         "template": ["go to %1"],
@@ -40,8 +46,21 @@ export const blockspecifications = [
                 "shape": "statement"
             },
             "converter": universalBlockConverter
+        }, {
+            "template": "set rotation style %1",
+            "description": {
+                "type": "motion_setrotationstyle",
+                "args": [{
+                    "type": "field_dropdown",
+                    "name": "STYLE",
+                    "options": [["left-right", "left-right"], ["don't rotate", "don't rotate"], ["all around", "all around"]]
+                }],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
         }
+
 
     ]
 ;
-//blocks["go to x: %1 y: %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor,  ); };
+

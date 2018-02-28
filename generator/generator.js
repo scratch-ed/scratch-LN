@@ -88,17 +88,24 @@ ScratchBlocks.text['math_number'] = function (block) {
 ScratchBlocks.text['text'] = function (block) {
     return [block.getFieldValue('TEXT'), ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
+
+ScratchBlocks.text['data_variable'] = function (block) {
+    return ['('+block.getFieldValue('VARIABLE')+')', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+};
+
+
 //========================================
 
 /**
  * init the generator with information from blockspecifications
+ *
  */
 export function init_generator(){
     //generate the functions
     for(let x=0; x<blockspecifications.length;x++){
         let b = blockspecifications[x];
         let template;
-        if(b['template'].isArray) {
+        if(Array.isArray(b['template'])) {
              template = b['template'][0];
         }else{
             template = b['template'];
