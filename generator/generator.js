@@ -90,7 +90,8 @@ ScratchBlocks.text['text'] = function (block) {
 };
 
 ScratchBlocks.text['data_variable'] = function (block) {
-    return ['('+block.getFieldValue('VARIABLE')+')', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+    //variables are a bit different... getfieldvalue returns the id 
+    return ['('+block.getField('VARIABLE').getText()+')', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
 
 
