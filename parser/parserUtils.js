@@ -47,66 +47,74 @@ export function init_parser_utils() {
 
 }
 
-
-
-
-    function createBlockEntry(templateString, specification) {
-        //if the template has no converter assigned yet, there is no problem, just create it
-        if (!blocks[templateString]) {
-            blocks[templateString] = createBlockFunction(specification);
-        } else {
-            let alreadyExistingTemplate = blocks[templateString];
-            //wrap the previous one
-            blocks[templateString] = function (ctx, visitor) {
-                //if it not succeeds
-                let first_call_executed = alreadyExistingTemplate(ctx, visitor);
-                if (!first_call_executed) {
-                    //Call the next one
-                    return createBlockFunction(specification)(ctx,visitor);
-                }
-                return first_call_executed;
+/**
+ * adds an function element to blocks
+ * @param templateString {String} to match so that the block from the definition is build
+ * @param specification as defined in blockspecifications
+ */
+function createBlockEntry(templateString, specification) {
+    //if the template has no converter assigned yet, there is no problem, just create it
+    if (!blocks[templateString]) {
+        blocks[templateString] = createBlockFunction(specification);
+    } else {
+        let higherDefinedSpecification = blocks[templateString];
+        //wrap the previous one
+        blocks[templateString] = function (ctx, visitor) {
+            //if it not succeeds
+            let first_call_executed = higherDefinedSpecification(ctx, visitor);
+            if (!first_call_executed) {
+                //Call the next one
+                return createBlockFunction(specification)(ctx, visitor);
             }
+            return first_call_executed;
         }
     }
+}
 
-    function createBlockFunction(specification) {
-        let b = specification;
-        return function (ctx, visitor) {
-            if (!b['predicate'] || b['predicate'](ctx, visitor)) {
-                b['converter'](ctx, visitor, b['description']);
-                return true;
-            }
-            return false;
-        };
-
-    }
-    
-    init_parser_utils();
-
-    /**
-     * todo: return error message in case something goes wrong
-     * @param text
-     * @returns xml or undefined
-     */
-    export default function parseTextToXML(text) {
-        let cst = getCst(text);
-        if (cst) {
-            let xml = execXmlVisitor(cst);
-            //console.log(xml);
-            return xml;
+/**
+ * creates a function that can be called with (ctx,visitor)
+ * it creates xml based on the specifications by calling the converter function if the predicate is true
+ * @param specification object as defined in the file blockspecifications
+ * @returns {Function}
+ */
+function createBlockFunction(specification) {
+    let b = specification;
+    return function (ctx, visitor) {
+        if (!b['predicate'] || b['predicate'](ctx, visitor)) {
+            b['converter'](ctx, visitor, b['description']);
+            return true;
         }
-    }
+        return false;
+    };
 
-    function getCst(text) {
-        let r = parse(text);
-        return r.value;
-    }
+}
 
-    function execXmlVisitor(cst) {
-        let v = new visitor({
-            x: 10,
-            y: 10
-        });
-        let xml = v.getXML(cst);
+init_parser_utils();
+
+/**
+ * todo: return error message in case something goes wrong
+ * @param text
+ * @returns xml or undefined
+ */
+export default function parseTextToXML(text) {
+    let cst = getCst(text);
+    if (cst) {
+        let xml = execXmlVisitor(cst);
+        //console.log(xml);
         return xml;
     }
+}
+
+function getCst(text) {
+    let r = parse(text);
+    return r.value;
+}
+
+function execXmlVisitor(cst) {
+    let v = new visitor({
+        x: 10,
+        y: 10
+    });
+    let xml = v.getXML(cst);
+    return xml;
+}
