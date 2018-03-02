@@ -7,7 +7,6 @@
  * @author Ellen Vanhove.
  */
 import {universalBlockConverter} from "../parser/blocks";
-import blocks from "../parser/blocks";
 
 /*
  {"template":"",
@@ -77,9 +76,24 @@ export const blockspecifications = [
                 "shape": "statement"
             },
             "converter": universalBlockConverter
+        }, {
+            "template": "%1 + %2",
+            "description": {
+                "type": "operator_add",
+                "args": [{"type": "input_value", "name": "NUM1"}, {"type": "input_value", "name": "NUM2"}],
+                "shape": "reporterblock"
+            },
+            "converter": universalBlockConverter
+        }, {
+            "template": "not %1",
+            "description": {
+                "type": "operator_not",
+                "args": [{"type": "input_value", "name": "OPERAND", "check": "Boolean"}],
+                "shape": "booleanblock"
+            },
+            "converter": universalBlockConverter
         }
 
 
     ]
 ;
-

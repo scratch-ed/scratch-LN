@@ -2,7 +2,7 @@ let blocks = {};
 export default blocks;
 
 
-blocks["%1 + %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_add", "args":[{"type":"input_value","name":"NUM1"},{"type":"input_value","name":"NUM2"}],"shape":"reporterblock"} ); };
+//blocks["%1 + %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_add", "args":[{"type":"input_value","name":"NUM1"},{"type":"input_value","name":"NUM2"}],"shape":"reporterblock"} ); };
 blocks["%1 - %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_subtract", "args":[{"type":"input_value","name":"NUM1"},{"type":"input_value","name":"NUM2"}],"shape":"reporterblock"} ); };
 blocks["%1 * %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_multiply", "args":[{"type":"input_value","name":"NUM1"},{"type":"input_value","name":"NUM2"}],"shape":"reporterblock"} ); };
 blocks["%1 / %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_divide", "args":[{"type":"input_value","name":"NUM1"},{"type":"input_value","name":"NUM2"}],"shape":"reporterblock"} ); };
@@ -12,7 +12,7 @@ blocks["%1 = %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visi
 blocks["%1 \\> %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_gt", "args":[{"type":"input_value","name":"OPERAND1"},{"type":"input_value","name":"OPERAND2"}],"shape":"booleanblock"} ); };
 blocks["%1 and %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_and", "args":[{"type":"input_value","name":"OPERAND1","check":"Boolean"},{"type":"input_value","name":"OPERAND2","check":"Boolean"}],"shape":"booleanblock"} ); };
 blocks["%1 or %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_or", "args":[{"type":"input_value","name":"OPERAND1","check":"Boolean"},{"type":"input_value","name":"OPERAND2","check":"Boolean"}],"shape":"booleanblock"} ); };
-blocks["not %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_not", "args":[{"type":"input_value","name":"OPERAND","check":"Boolean"}],"shape":"booleanblock"} ); };
+//blocks["not %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_not", "args":[{"type":"input_value","name":"OPERAND","check":"Boolean"}],"shape":"booleanblock"} ); };
 blocks["join %1 %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_join", "args":[{"type":"input_value","name":"STRING1"},{"type":"input_value","name":"STRING2"}],"shape":"reporterblock"} ); };
 blocks["letter %1 of %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_letter_of", "args":[{"type":"input_value","name":"LETTER"},{"type":"input_value","name":"STRING"}],"shape":"reporterblock"} ); };
 

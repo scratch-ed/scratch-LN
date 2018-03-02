@@ -95,6 +95,12 @@ ScratchBlocks.text['data_variable'] = function (block) {
 };
 
 
+ScratchBlocks.text['data_listcontents'] = function (block) {
+    //variables are a bit different... getfieldvalue returns the id
+    return ['('+block.getField('LIST').getText()+'::list)', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+};
+
+
 //========================================
 
 /**
@@ -124,7 +130,7 @@ export function init_generator(){
                         break;
                     default:
                         v = ScratchBlocks.text.valueToCode(block, args[i].name, ScratchBlocks.text.ORDER_NONE); //returns undefined if empty
-                        v = '{' +  v + '}'; //results in {} if empty
+                        v = '{' +  v + '}'; //results is {} if empty
                 }
                 values.push(v);
             }
