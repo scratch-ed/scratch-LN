@@ -15,6 +15,7 @@ export default function generateText(workspace) {
     console.log('_____________');
     console.log(u);
     console.log('_____________');
+    return u
 }
 
 // scratch LN
@@ -75,7 +76,6 @@ ScratchBlocks.text['pen_penup'] = function (block) {
 
 ScratchBlocks.text['motion_movesteps'] = function (block) {
     let value_name = ScratchBlocks.text.valueToCode(block, 'STEPS', ScratchBlocks.text.ORDER_NONE);
-    console.log(value_name);
     return 'move %1 steps;\n'.format('{' + value_name + '}') + ScratchBlocks.text.getNextCode(block);
 };
 //====examples
@@ -90,7 +90,7 @@ ScratchBlocks.text['text'] = function (block) {
 };
 
 ScratchBlocks.text['data_variable'] = function (block) {
-    //variables are a bit different... getfieldvalue returns the id 
+    //variables are a bit different... getfieldvalue returns the id
     return ['('+block.getField('VARIABLE').getText()+')', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
 
