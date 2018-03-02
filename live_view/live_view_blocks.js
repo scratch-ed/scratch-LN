@@ -29,6 +29,7 @@ window.onload = function () {
     //ScratchBlocks.mainWorkspace.getFlyout(). reflow();
 
     //all events in blockly: https://developers.google.com/blockly/reference/js/Blockly.Events
+    //https://developers.google.com/blockly/guides/configure/web/events
     ScratchBlocks.mainWorkspace.addChangeListener((e) => {
             console.log('change listerener called ####### START');
             console.log(e);
@@ -36,6 +37,7 @@ window.onload = function () {
                //
             }else if(e instanceof  ScratchBlocks.Events.BlockChange //change value
                         || e instanceof  ScratchBlocks.Events.BlockMove  //move/delete/create block
+                        || e instanceof ScratchBlocks.Events.VAR_RENAME
                             ){
                 generateTextWorkspace() ;
             }
