@@ -33,11 +33,10 @@ window.onload = function () {
     ScratchBlocks.mainWorkspace.addChangeListener((e) => {
             console.log('change listerener called ####### START');
             console.log(e);
-            if(e instanceof  ScratchBlocks.Events.BlockCreate){
-               //
-            }else if(e instanceof  ScratchBlocks.Events.BlockChange //change value
+            //for some reason does type not what i expect for blockchange and blockmove but it is necesaary for var rename...
+            if(e instanceof  ScratchBlocks.Events.BlockChange //change value
                         || e instanceof  ScratchBlocks.Events.BlockMove  //move/delete/create block
-                        || e instanceof ScratchBlocks.Events.VAR_RENAME
+                        || e.type ==  ScratchBlocks.Events.VAR_RENAME
                             ){
                 generateTextWorkspace() ;
             }
