@@ -17,15 +17,21 @@ import blocks from "../parser/blocks";
 
  */
 export const blockspecifications = [
-        /*{ //this is already a special case
+        { //this is already a special case
         "template": ["go to %1"],
         "description": {
             "type": "looks_gotofrontback",
             "args": [{"type": "field_dropdown", "name": "FRONT_BACK", "options": [["front", "front"], ["back", "back"]]}],
             "shape": "statement"
         },
-        "converter": goToConverter //how do i do this???
-    },*/ {
+        "converter": universalBlockConverter, //how do i do this???
+        "predicate": (ctx,visitor) => {
+            let arg = visitor.getString(ctx.argument[0]);
+            return (arg === 'front' || arg === 'back') ;
+        }
+        
+    }, 
+    {
             "template": ["pen down"],
             "description": {"type": "pen_pendown", "shape": "statement"},
             "converter": universalBlockConverter

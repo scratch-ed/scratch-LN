@@ -389,8 +389,8 @@ let motionGoTo=function(ctx,visitor){return universalBlockConverter(ctx, visitor
 let looksGoTo =function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_gotofrontback", "args":[{"type":"field_dropdown","name":"FRONT_BACK","options":[["front","front"],["back","back"]]}],"shape":"statement"} ); };
 
 blocks["go to %1"] = function(ctx, visitor) {
-    let argType = visitor.getString(ctx.argument[0]);
-    if (argType === 'front' || argType === 'back') {
+    let arg = visitor.getString(ctx.argument[0]);
+    if (arg === 'front' || arg === 'back') {
         return looksGoTo(ctx, visitor);
     }
     return motionGoTo(ctx, visitor);
