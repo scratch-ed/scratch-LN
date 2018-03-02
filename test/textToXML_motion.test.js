@@ -30,6 +30,25 @@ describe('ifelse', function() {
 
 
 describe('motion',function(){
+
+    describe('go to location', function() {
+        it('should return valid xml', function() {
+            let parsed = parseTextToXML('go to [mouse-pointer];');
+            let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
+                '  <variables/>\n' +
+                '  <block id="0" type="motion_goto" x="10" y="10">\n' +
+                '    <value name="TO">\n' +
+                '      <shadow type="motion_goto_menu">\n' +
+                '        <field name="TO">mouse-pointer</field>\n' +
+                '      </shadow>\n' +
+                '    </value>\n' +
+                '    <next/>\n' +
+                '  </block>\n' +
+                '</xml>';
+            assert.equalIgnoreSpaces(parsed, expected);
+        });
+    });
+
     describe('stack blocks', function() {
         it('should return valid xml', function() {
             let parsed = parseTextToXML('move {10} steps;\n' +

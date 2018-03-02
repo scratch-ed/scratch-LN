@@ -385,6 +385,7 @@ blocks["length of %1"] = function(ctx, visitor) {
 
 };
 
+/*
 let motionGoTo=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_goto", "args":[{"type":"input_value","name":"TO","menu":"motion_goto_menu"}],"shape":"statement"} ); };
 let looksGoTo =function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_gotofrontback", "args":[{"type":"field_dropdown","name":"FRONT_BACK","options":[["front","front"],["back","back"]]}],"shape":"statement"} ); };
 
@@ -396,3 +397,4 @@ blocks["go to %1"] = function(ctx, visitor) {
     return motionGoTo(ctx, visitor);
 
 };
+*/

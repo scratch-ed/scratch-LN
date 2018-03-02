@@ -17,21 +17,34 @@ import blocks from "../parser/blocks";
 
  */
 export const blockspecifications = [
-        { //this is already a special case
-        "template": ["go to %1"],
-        "description": {
-            "type": "looks_gotofrontback",
-            "args": [{"type": "field_dropdown", "name": "FRONT_BACK", "options": [["front", "front"], ["back", "back"]]}],
-            "shape": "statement"
+        {
+            "template": ["go to %1"],
+            "description": {
+                "type": "looks_gotofrontback",
+                "args": [{
+                    "type": "field_dropdown",
+                    "name": "FRONT_BACK",
+                    "options": [["front", "front"], ["back", "back"]]
+                }],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter,
+            "predicate": (ctx, visitor) => {
+                let arg = visitor.getString(ctx.argument[0]);
+                return (arg === 'front' || arg === 'back');
+            }
+
         },
-        "converter": universalBlockConverter, //how do i do this???
-        "predicate": (ctx,visitor) => {
-            let arg = visitor.getString(ctx.argument[0]);
-            return (arg === 'front' || arg === 'back') ;
-        }
-        
-    }, 
-    {
+        {
+            "template": ["go to %1"],
+            "description": {
+                "type": "motion_goto",
+                "args": [{"type": "input_value", "name": "TO", "menu": "motion_goto_menu"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter,
+        },
+        {
             "template": ["pen down"],
             "description": {"type": "pen_pendown", "shape": "statement"},
             "converter": universalBlockConverter

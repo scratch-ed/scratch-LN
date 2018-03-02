@@ -17,57 +17,96 @@ let visitor = XMLVisitor;
 /**
  * init blocks with information from blockspecifications
  */
-export function init_parser_utils(){
+export function init_parser_utils() {
     console.log('parser utils called');
-   // blockspecifications
+    // blockspecifications
     //generate the functions in blocks
-    for(let x=0; x<blockspecifications.length;x++){
+    for (let x = 0; x < blockspecifications.length; x++) {
         let b = blockspecifications[x];
-        if(Array.isArray(b['template'])) {
+        if (Array.isArray(b['template'])) {
             let ts = b['template'];
-            for(let t=0; t<ts.length;t++) {
+            for (let t = 0; t < ts.length; t++) {
                 //can this differently?
-                blocks[b['template'][t]] = function (ctx, visitor) {
+                /*blocks[b['template'][t]] = function (ctx, visitor) {
+                    return b['converter'](ctx, visitor, b['description']);
+                }*/
+                createBlockEntry(b['template'][t], b)
+            }
+        } else {
+            //console.log(typeof b['template']);
+            /*blocks[b['template']] = function (ctx, visitor) {
+                if(!b['predicate'] || b['predicate'](ctx,visitor)) {
                     return b['converter'](ctx, visitor, b['description']);
                 }
-            }
-        }else{
-            //console.log(typeof b['template']);
-            blocks[b['template']] = function (ctx, visitor) {
-                return b['converter'](ctx, visitor, b['description']);
-            };
+            };*/
+            createBlockEntry(b['template'], b)
 
         }
 
     }
+
 }
 
-init_parser_utils();
 
-/**
- * todo: return error message in case something goes wrong
- * @param text
- * @returns xml or undefined
- */
-export default function parseTextToXML(text) {
-    let cst = getCst(text);
-    if (cst) {
-        let xml = execXmlVisitor(cst);
-        //console.log(xml);
+
+
+    function createBlockEntry(templateString, specification) {
+        //if the template has no converter assigned yet, there is no problem, just create it
+        if (!blocks[templateString]) {
+            blocks[templateString] = createBlockFunction(specification);
+        } else {
+            let alreadyExistingTemplate = blocks[templateString];
+            //wrap the previous one
+            blocks[templateString] = function (ctx, visitor) {
+                //if it not succeeds
+                let first_call_executed = alreadyExistingTemplate(ctx, visitor);
+                if (!first_call_executed) {
+                    //Call the next one
+                    return createBlockFunction(specification)(ctx,visitor);
+                }
+                return first_call_executed;
+            }
+        }
+    }
+
+    function createBlockFunction(specification) {
+        let b = specification;
+        return function (ctx, visitor) {
+            if (!b['predicate'] || b['predicate'](ctx, visitor)) {
+                b['converter'](ctx, visitor, b['description']);
+                return true;
+            }
+            return false;
+        };
+
+    }
+    
+    init_parser_utils();
+
+    /**
+     * todo: return error message in case something goes wrong
+     * @param text
+     * @returns xml or undefined
+     */
+    export default function parseTextToXML(text) {
+        let cst = getCst(text);
+        if (cst) {
+            let xml = execXmlVisitor(cst);
+            //console.log(xml);
+            return xml;
+        }
+    }
+
+    function getCst(text) {
+        let r = parse(text);
+        return r.value;
+    }
+
+    function execXmlVisitor(cst) {
+        let v = new visitor({
+            x: 10,
+            y: 10
+        });
+        let xml = v.getXML(cst);
         return xml;
     }
-}
-
-function getCst(text) {
-    let r = parse(text);
-    return r.value;
-}
-
-function execXmlVisitor(cst) {
-    let v = new visitor({
-        x: 10,
-        y: 10
-    });
-    let xml = v.getXML(cst);
-    return xml;
-}
