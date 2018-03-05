@@ -15,6 +15,12 @@ import {universalBlockConverter} from "../parser/blocks";
         }
 
  */
+let looksSoundPredicate = function (ctx, visitor) {
+    let opt = visitor.getString(ctx.option[0]);
+    let label = visitor.getString(ctx.argument[0]);
+    return (opt === 'sound') || (label === "pan left/right" || label === 'pitch');
+};
+
 export const blockspecifications = [
         {
             "template": ["go to %1"],
@@ -956,11 +962,7 @@ export const blockspecifications = [
                 "shape": "statement"
             },
             "converter": universalBlockConverter,
-            "predicate": function (ctx, visitor) {
-                let opt = visitor.getString(ctx.option[0]);
-                let label = visitor.getString(ctx.argument[0]);
-                return (opt === 'sound') || (label === "pan left/right" || label === 'pitch');
-            }
+            "predicate": looksSoundPredicate
         },
         {
             "template": "set %1 effect to %2",
@@ -974,6 +976,34 @@ export const blockspecifications = [
                 "shape": "statement"
             },
             "converter": universalBlockConverter
-        }
+        },
+        {
+            "template": "change %1 effect by %2",
+            "description": {
+                "type": "sound_changeeffectby",
+                "args": [{
+                    "type": "field_dropdown",
+                    "name": "EFFECT",
+                    "options": [["pitch", "PITCH"], ["pan left/right", "PAN"]]
+                }, {"type": "input_value", "name": "VALUE"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter,
+            "predicate": looksSoundPredicate
+        },
+        {
+            "template": "change %1 effect by %2",
+            "description": {
+                "type": "looks_changeeffectby",
+                "args": [{
+                    "type": "field_dropdown",
+                    "name": "EFFECT",
+                    "options": [["color", "COLOR"], ["fisheye", "FISHEYE"], ["whirl", "WHIRL"], ["pixelate", "PIXELATE"], ["mosaic", "MOSAIC"], ["brightness", "BRIGHTNESS"], ["ghost", "GHOST"]]
+                }, {"type": "input_value", "name": "CHANGE"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+        },
     ]
 ;
+

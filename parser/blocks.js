@@ -165,34 +165,7 @@ function messageBlockconverter(ctx, visitor,structure) {
 //=======================================================================================================================================
 
 
-// let lookSetEffect=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_seteffectto", "args":[{"type":"field_dropdown","name":"EFFECT","options":[["color","COLOR"],["fisheye","FISHEYE"],["whirl","WHIRL"],["pixelate","PIXELATE"],["mosaic","MOSAIC"],["brightness","BRIGHTNESS"],["ghost","GHOST"]]},{"type":"input_value","name":"VALUE"}],"shape":"statement"} ); };
-// let soundSetEffect=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sound_seteffectto", "args":[{"type":"field_dropdown","name":"EFFECT","options":[["pitch","PITCH"],["pan left/right","PAN"]]},{"type":"input_value","name":"VALUE"}],"shape":"statement"} ); };
-// blocks["set %1 effect to %2"] = function(ctx, visitor) {
-//     let opt = visitor.getString(ctx.option[0]);
-//     if (opt === 'sound') {
-//         return soundSetEffect(ctx, visitor);
-//     }
-//    	let label = visitor.getString(ctx.argument[0]);
-//     if (label === "pan left/right" || label ==='pitch' ){
-//     	return soundSetEffect(ctx, visitor);
-//     }
-//     return lookSetEffect(ctx, visitor);
-// };
 
-let soundChangeEffect=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sound_changeeffectby", "args":[{"type":"field_dropdown","name":"EFFECT","options":[["pitch","PITCH"],["pan left/right","PAN"]]},{"type":"input_value","name":"VALUE"}],"shape":"statement"} ); };
-let lookChangeEffect=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_changeeffectby", "args":[{"type":"field_dropdown","name":"EFFECT","options":[["color","COLOR"],["fisheye","FISHEYE"],["whirl","WHIRL"],["pixelate","PIXELATE"],["mosaic","MOSAIC"],["brightness","BRIGHTNESS"],["ghost","GHOST"]]},{"type":"input_value","name":"CHANGE"}],"shape":"statement"} ); };
-blocks["change %1 effect by %2"] = function(ctx, visitor) {
-    let opt = visitor.getString(ctx.option[0]);
-    let label = visitor.getString(ctx.argument[0]);
-    if (opt === 'sound') {
-        return soundChangeEffect(ctx, visitor);
-    }
-    if (label === "pan left/right" || label ==='pitch' ){
-    	return soundChangeEffect(ctx, visitor);
-    }
-
-    return lookChangeEffect(ctx, visitor);
-};
 
 let operatorOf=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_mathop", "args":[{"type":"field_dropdown","name":"OPERATOR","options":[["abs","abs"],["floor","floor"],["ceiling","ceiling"],["sqrt","sqrt"],["sin","sin"],["cos","cos"],["tan","tan"],["asin","asin"],["acos","acos"],["atan","atan"],["ln","ln"],["log","log"],["e ^","e ^"],["10 ^","10 ^"]]},{"type":"input_value","name":"NUM"}],"shape":"reporterblock"} ); };
 let sensingOf = function (ctx, visitor) {
