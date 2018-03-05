@@ -20,11 +20,12 @@ export default blocks;
 // blocks["%1 mod %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_mod", "args":[{"type":"input_value","name":"NUM1"},{"type":"input_value","name":"NUM2"}],"shape":"reporterblock"} ); };
 // blocks["round %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_round", "args":[{"type":"input_value","name":"NUM"}],"shape":"reporterblock"} ); };
 
-blocks["wait %1 seconds"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"control_wait", "args":[{"type":"input_value","name":"DURATION"}],"shape":"statement"} ); };
-blocks["wait until %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"control_wait_until", "args":[{"type":"input_value","name":"CONDITION","check":"Boolean"}],"shape":"statement"} ); };
-blocks["when I start as a clone"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"control_start_as_clone", "args":[],"shape":"hatblock"} ); };
-blocks["create clone of %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"control_create_clone_of", "args":[{"type":"input_value","name":"CLONE_OPTION","menu":"control_create_clone_of_menu"}],"shape":"statement"} ); };
-blocks["delete this clone"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"control_delete_this_clone", "args":[],"shape":"capblock"} ); };
+// blocks["wait %1 seconds"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"control_wait", "args":[{"type":"input_value","name":"DURATION"}],"shape":"statement"} ); };
+// blocks["wait until %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"control_wait_until", "args":[{"type":"input_value","name":"CONDITION","check":"Boolean"}],"shape":"statement"} ); };
+// blocks["when I start as a clone"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"control_start_as_clone", "args":[],"shape":"hatblock"} ); };
+// blocks["create clone of %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"control_create_clone_of", "args":[{"type":"input_value","name":"CLONE_OPTION","menu":"control_create_clone_of_menu"}],"shape":"statement"} ); };
+// blocks["delete this clone"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"control_delete_this_clone", "args":[],"shape":"capblock"} ); };
+
 blocks["stop %1"] = function (ctx, visitor) {
     visitor.xml = visitor.xml.ele('block', {
         'id': visitor.getNextId(),
@@ -38,51 +39,51 @@ blocks["stop %1"] = function (ctx, visitor) {
     visitor.xml = visitor.xml.up();
 };
 
-blocks["touching %1?"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_touchingobject", "args":[{"type":"input_value","name":"TOUCHINGOBJECTMENU","menu":"sensing_touchingobjectmenu"}],"shape":"booleanblock"} ); };
-blocks["touching color %1?"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_touchingcolor", "args":[{"type":"input_value","name":"COLOR"}],"shape":"booleanblock"} ); };
-blocks["color %1 is touching %2?"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_coloristouchingcolor", "args":[{"type":"input_value","name":"COLOR"},{"type":"input_value","name":"COLOR2"}],"shape":"booleanblock"} ); };
-blocks["distance to %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_distanceto", "args":[{"type":"input_value","name":"DISTANCETOMENU","menu":"sensing_distancetomenu"}],"shape":"reporterblock"} ); };
-blocks["ask %1 and wait"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_askandwait", "args":[{"type":"input_value","name":"QUESTION"}],"shape":"statement"} ); };
-blocks["answer"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_answer","shape":"reporterblock"} ); };
-blocks["key %1 pressed?"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_keypressed", "args":[{"type":"field_dropdown","name":"KEY_OPTION","options":[["space","space"],["left arrow","left arrow"],["right arrow","right arrow"],["down arrow","down arrow"],["up arrow","up arrow"],["any","any"],["a","a"],["b","b"],["c","c"],["d","d"],["e","e"],["f","f"],["g","g"],["h","h"],["i","i"],["j","j"],["k","k"],["l","l"],["m","m"],["n","n"],["o","o"],["p","p"],["q","q"],["r","r"],["s","s"],["t","t"],["u","u"],["v","v"],["w","w"],["x","x"],["y","y"],["z","z"],["0","0"],["1","1"],["2","2"],["3","3"],["4","4"],["5","5"],["6","6"],["7","7"],["8","8"],["9","9"]]}],"shape":"booleanblock"} ); };
-blocks["mouse down?"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_mousedown","shape":"booleanblock"} ); };
-blocks["mouse x"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_mousex","shape":"reporterblock"} ); };
-blocks["mouse y"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_mousey","shape":"reporterblock"} ); };
-blocks["set drag mode %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_setdragmode", "args":[{"type":"field_dropdown","name":"DRAG_MODE","options":[["draggable","draggable"],["not draggable","not draggable"]]}],"shape":"statement"} ); };
-blocks["loudness"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_loudness","shape":"reporterblock"} ); };
-blocks["video %1 on %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_videoon", "args":[{"type":"input_value","name":"VIDEOONMENU1"},{"type":"input_value","name":"VIDEOONMENU2"}],"shape":"reporterblock"} ); };
-blocks["turn video %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_videotoggle", "args":[{"type":"input_value","name":"VIDEOTOGGLEMENU"}],"shape":"statement"} ); };
-blocks["set video transparency to %1%"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_setvideotransparency", "args":[{"type":"input_value","name":"TRANSPARENCY"}],"shape":"statement"} ); };
-blocks["timer"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_timer","shape":"reporterblock"} ); };
-blocks["reset timer"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_resettimer","shape":"statement"} ); };
-blocks["current %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_current", "args":[{"type":"field_dropdown","name":"CURRENTMENU","options":[["year","YEAR"],["month","MONTH"],["date","DATE"],["day of week","DAYOFWEEK"],["hour","HOUR"],["minute","MINUTE"],["second","SECOND"]]}],"shape":"reporterblock"} ); };
-blocks["days since 2000"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_dayssince2000","shape":"reporterblock"} ); };
-blocks["username"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_username","shape":"reporterblock"} ); };
+// blocks["touching %1?"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_touchingobject", "args":[{"type":"input_value","name":"TOUCHINGOBJECTMENU","menu":"sensing_touchingobjectmenu"}],"shape":"booleanblock"} ); };
+// blocks["touching color %1?"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_touchingcolor", "args":[{"type":"input_value","name":"COLOR"}],"shape":"booleanblock"} ); };
+// blocks["color %1 is touching %2?"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_coloristouchingcolor", "args":[{"type":"input_value","name":"COLOR"},{"type":"input_value","name":"COLOR2"}],"shape":"booleanblock"} ); };
+// blocks["distance to %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_distanceto", "args":[{"type":"input_value","name":"DISTANCETOMENU","menu":"sensing_distancetomenu"}],"shape":"reporterblock"} ); };
+// blocks["ask %1 and wait"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_askandwait", "args":[{"type":"input_value","name":"QUESTION"}],"shape":"statement"} ); };
+// blocks["answer"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_answer","shape":"reporterblock"} ); };
+// blocks["key %1 pressed?"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_keypressed", "args":[{"type":"field_dropdown","name":"KEY_OPTION","options":[["space","space"],["left arrow","left arrow"],["right arrow","right arrow"],["down arrow","down arrow"],["up arrow","up arrow"],["any","any"],["a","a"],["b","b"],["c","c"],["d","d"],["e","e"],["f","f"],["g","g"],["h","h"],["i","i"],["j","j"],["k","k"],["l","l"],["m","m"],["n","n"],["o","o"],["p","p"],["q","q"],["r","r"],["s","s"],["t","t"],["u","u"],["v","v"],["w","w"],["x","x"],["y","y"],["z","z"],["0","0"],["1","1"],["2","2"],["3","3"],["4","4"],["5","5"],["6","6"],["7","7"],["8","8"],["9","9"]]}],"shape":"booleanblock"} ); };
+// blocks["mouse down?"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_mousedown","shape":"booleanblock"} ); };
+// blocks["mouse x"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_mousex","shape":"reporterblock"} ); };
+// blocks["mouse y"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_mousey","shape":"reporterblock"} ); };
+// blocks["set drag mode %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_setdragmode", "args":[{"type":"field_dropdown","name":"DRAG_MODE","options":[["draggable","draggable"],["not draggable","not draggable"]]}],"shape":"statement"} ); };
+// blocks["loudness"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_loudness","shape":"reporterblock"} ); };
+// blocks["video %1 on %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_videoon", "args":[{"type":"input_value","name":"VIDEOONMENU1"},{"type":"input_value","name":"VIDEOONMENU2"}],"shape":"reporterblock"} ); };
+// blocks["turn video %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_videotoggle", "args":[{"type":"input_value","name":"VIDEOTOGGLEMENU"}],"shape":"statement"} ); };
+// blocks["set video transparency to %1%"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_setvideotransparency", "args":[{"type":"input_value","name":"TRANSPARENCY"}],"shape":"statement"} ); };
+// blocks["timer"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_timer","shape":"reporterblock"} ); };
+// blocks["reset timer"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_resettimer","shape":"statement"} ); };
+// blocks["current %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_current", "args":[{"type":"field_dropdown","name":"CURRENTMENU","options":[["year","YEAR"],["month","MONTH"],["date","DATE"],["day of week","DAYOFWEEK"],["hour","HOUR"],["minute","MINUTE"],["second","SECOND"]]}],"shape":"reporterblock"} ); };
+// blocks["days since 2000"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_dayssince2000","shape":"reporterblock"} ); };
+// blocks["username"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"sensing_username","shape":"reporterblock"} ); };
 
 
-blocks["move %1 steps"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_movesteps", "args":[{"type":"input_value","name":"STEPS"}],"shape":"statement"} ); };
-blocks["turn cw %1 degrees"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_turnright", "args":[{"type":"input_value","name":"DEGREES"}],"shape":"statement"} ); };
-blocks["turn right %1 degrees"] = blocks["turn cw %2 degrees"];
-
-blocks["turn ccw %1 degrees"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_turnleft", "args":[{"type":"input_value","name":"DEGREES"}],"shape":"statement"} ); };
-blocks["turn left %1 degrees"]=blocks["turn cww %1 degrees"];
-
-blocks["point in direction %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_pointindirection", "args":[{"type":"input_value","name":"DIRECTION"}],"shape":"statement"} ); };
-blocks["point towards %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_pointtowards", "args":[{"type":"input_value","name":"TOWARDS","menu":"motion_pointtowards_menu"}],"shape":"statement"} ); };
-//blocks["go to x: %1 y: %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_gotoxy", "args":[{"type":"input_value","name":"X"},{"type":"input_value","name":"Y"}],"shape":"statement"} ); };
-
-blocks["glide %1 secs to x: %2 y: %3"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_glidesecstoxy", "args":[{"type":"input_value","name":"SECS"},{"type":"input_value","name":"X"},{"type":"input_value","name":"Y"}],"shape":"statement"} ); };
-blocks["glide %1 secs to %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_glideto", "args":[{"type":"input_value","name":"SECS"},{"type":"input_value","name":"TO","menu":"motion_glideto_menu"}],"shape":"statement"} ); };
-blocks["change x by %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_changexby", "args":[{"type":"input_value","name":"DX"}],"shape":"statement"} ); };
-blocks["set x to %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_setx", "args":[{"type":"input_value","name":"X"}],"shape":"statement"} ); };
-blocks["change y by %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_changeyby", "args":[{"type":"input_value","name":"DY"}],"shape":"statement"} ); };
-blocks["set y to %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_sety", "args":[{"type":"input_value","name":"Y"}],"shape":"statement"} ); };
-//todo: "if"
-blocks["if on edge, bounce"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_ifonedgebounce","shape":"statement"} ); };
-//blocks["set rotation style %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_setrotationstyle", "args":[{"type":"field_dropdown","name":"STYLE","options":[["left-right","left-right"],["don't rotate","don't rotate"],["all around","all around"]]}],"shape":"statement"} ); };
-blocks["x position"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_xposition","shape":"reporterblock"} ); };
-blocks["y position"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_yposition","shape":"reporterblock"} ); };
-blocks["direction"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_direction","shape":"reporterblock"} ); };
+// blocks["move %1 steps"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_movesteps", "args":[{"type":"input_value","name":"STEPS"}],"shape":"statement"} ); };
+// blocks["turn cw %1 degrees"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_turnright", "args":[{"type":"input_value","name":"DEGREES"}],"shape":"statement"} ); };
+// blocks["turn right %1 degrees"] = blocks["turn cw %2 degrees"];
+//
+// blocks["turn ccw %1 degrees"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_turnleft", "args":[{"type":"input_value","name":"DEGREES"}],"shape":"statement"} ); };
+// blocks["turn left %1 degrees"]=blocks["turn cww %1 degrees"];
+//
+// blocks["point in direction %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_pointindirection", "args":[{"type":"input_value","name":"DIRECTION"}],"shape":"statement"} ); };
+// blocks["point towards %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_pointtowards", "args":[{"type":"input_value","name":"TOWARDS","menu":"motion_pointtowards_menu"}],"shape":"statement"} ); };
+// //blocks["go to x: %1 y: %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_gotoxy", "args":[{"type":"input_value","name":"X"},{"type":"input_value","name":"Y"}],"shape":"statement"} ); };
+//
+// blocks["glide %1 secs to x: %2 y: %3"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_glidesecstoxy", "args":[{"type":"input_value","name":"SECS"},{"type":"input_value","name":"X"},{"type":"input_value","name":"Y"}],"shape":"statement"} ); };
+// blocks["glide %1 secs to %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_glideto", "args":[{"type":"input_value","name":"SECS"},{"type":"input_value","name":"TO","menu":"motion_glideto_menu"}],"shape":"statement"} ); };
+// blocks["change x by %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_changexby", "args":[{"type":"input_value","name":"DX"}],"shape":"statement"} ); };
+// blocks["set x to %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_setx", "args":[{"type":"input_value","name":"X"}],"shape":"statement"} ); };
+// blocks["change y by %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_changeyby", "args":[{"type":"input_value","name":"DY"}],"shape":"statement"} ); };
+// blocks["set y to %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_sety", "args":[{"type":"input_value","name":"Y"}],"shape":"statement"} ); };
+// //todo: "if"
+// blocks["if on edge, bounce"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_ifonedgebounce","shape":"statement"} ); };
+// //blocks["set rotation style %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_setrotationstyle", "args":[{"type":"field_dropdown","name":"STYLE","options":[["left-right","left-right"],["don't rotate","don't rotate"],["all around","all around"]]}],"shape":"statement"} ); };
+// blocks["x position"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_xposition","shape":"reporterblock"} ); };
+// blocks["y position"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_yposition","shape":"reporterblock"} ); };
+// blocks["direction"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"motion_direction","shape":"reporterblock"} ); };
 
 blocks["say %1 for %2 seconds"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_sayforsecs", "args":[{"type":"input_value","name":"MESSAGE"},{"type":"input_value","name":"SECS"}],"shape":"statement"} ); };
 //blocks["say %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"looks_say", "args":[{"type":"input_value","name":"MESSAGE"}],"shape":"statement"} ); };
