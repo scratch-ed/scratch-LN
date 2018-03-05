@@ -708,7 +708,7 @@ export const blockspecifications = [
                 return (argType === 'color');
             }
         },
-        {//todo
+        {
             "template": "set pen color to %1",
             "description": {
                 "type": "pen_setpencolortonum",
@@ -895,28 +895,85 @@ export const blockspecifications = [
             "description": {"type": "sound_tempo", "shape": "reporterblock"},
             "converter": universalBlockConverter
         },
-    //=== events =============================================================
-        {"template":["when gf clicked","when greenflag clicked"],
-            "description":{ "type":"event_whenflagclicked", "args":[],"shape":"hatblock"} ,
+        //=== events =============================================================
+        {
+            "template": ["when gf clicked", "when greenflag clicked"],
+            "description": {"type": "event_whenflagclicked", "args": [], "shape": "hatblock"},
             "converter": universalBlockConverter
         },
-        {"template":"when this sprite clicked",
-            "description":{ "type":"event_whenthisspriteclicked","shape":"hatblock"} ,
+        {
+            "template": "when this sprite clicked",
+            "description": {"type": "event_whenthisspriteclicked", "shape": "hatblock"},
             "converter": universalBlockConverter
         },
-        {"template":"when backdrop switches to %1",
-            "description":{ "type":"event_whenbackdropswitchesto", "args":[{"type":"field_dropdown","name":"BACKDROP","options":[["backdrop1","BACKDROP1"]]}],"shape":"hatblock"} ,
+        {
+            "template": "when backdrop switches to %1",
+            "description": {
+                "type": "event_whenbackdropswitchesto",
+                "args": [{"type": "field_dropdown", "name": "BACKDROP", "options": [["backdrop1", "BACKDROP1"]]}],
+                "shape": "hatblock"
+            },
             "converter": universalBlockConverter
         },
-        {"template":"when %1 \\> %2",
-            "description":{ "type":"event_whengreaterthan", "args":[{"type":"field_dropdown","name":"WHENGREATERTHANMENU","options":[["timer","TIMER"]]},{"type":"input_value","name":"VALUE"}],"shape":"hatblock"} ,
+        {
+            "template": "when %1 \\> %2",
+            "description": {
+                "type": "event_whengreaterthan",
+                "args": [{
+                    "type": "field_dropdown",
+                    "name": "WHENGREATERTHANMENU",
+                    "options": [["timer", "TIMER"]]
+                }, {"type": "input_value", "name": "VALUE"}],
+                "shape": "hatblock"
+            },
             "converter": universalBlockConverter
         },
-        {"template":"when %1 key pressed",
-            "description":{ "type":"event_whenkeypressed", "args":[{"type":"field_dropdown","name":"KEY_OPTION","options":[["space","space"],["left arrow","left arrow"],["right arrow","right arrow"],["down arrow","down arrow"],["up arrow","up arrow"],["any","any"],["a","a"],["b","b"],["c","c"],["d","d"],["e","e"],["f","f"],["g","g"],["h","h"],["i","i"],["j","j"],["k","k"],["l","l"],["m","m"],["n","n"],["o","o"],["p","p"],["q","q"],["r","r"],["s","s"],["t","t"],["u","u"],["v","v"],["w","w"],["x","x"],["y","y"],["z","z"],["0","0"],["1","1"],["2","2"],["3","3"],["4","4"],["5","5"],["6","6"],["7","7"],["8","8"],["9","9"]]}],"shape":"hatblock"} ,
+        {
+            "template": "when %1 key pressed",
+            "description": {
+                "type": "event_whenkeypressed",
+                "args": [{
+                    "type": "field_dropdown",
+                    "name": "KEY_OPTION",
+                    "options": [["space", "space"], ["left arrow", "left arrow"], ["right arrow", "right arrow"], ["down arrow", "down arrow"], ["up arrow", "up arrow"], ["any", "any"], ["a", "a"], ["b", "b"], ["c", "c"], ["d", "d"], ["e", "e"], ["f", "f"], ["g", "g"], ["h", "h"], ["i", "i"], ["j", "j"], ["k", "k"], ["l", "l"], ["m", "m"], ["n", "n"], ["o", "o"], ["p", "p"], ["q", "q"], ["r", "r"], ["s", "s"], ["t", "t"], ["u", "u"], ["v", "v"], ["w", "w"], ["x", "x"], ["y", "y"], ["z", "z"], ["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"]]
+                }],
+                "shape": "hatblock"
+            },
+            "converter": universalBlockConverter
+        },
+// =========================================================
+// with the same text
+// =========================================================
+        {
+            "template": "set %1 effect to %2",
+            "description": {
+                "type": "sound_seteffectto",
+                "args": [{
+                    "type": "field_dropdown",
+                    "name": "EFFECT",
+                    "options": [["pitch", "PITCH"], ["pan left/right", "PAN"]]
+                }, {"type": "input_value", "name": "VALUE"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter,
+            "predicate": function (ctx, visitor) {
+                let opt = visitor.getString(ctx.option[0]);
+                let label = visitor.getString(ctx.argument[0]);
+                return (opt === 'sound') || (label === "pan left/right" || label === 'pitch');
+            }
+        },
+        {
+            "template": "set %1 effect to %2",
+            "description": {
+                "type": "looks_seteffectto",
+                "args": [{
+                    "type": "field_dropdown",
+                    "name": "EFFECT",
+                    "options": [["color", "COLOR"], ["fisheye", "FISHEYE"], ["whirl", "WHIRL"], ["pixelate", "PIXELATE"], ["mosaic", "MOSAIC"], ["brightness", "BRIGHTNESS"], ["ghost", "GHOST"]]
+                }, {"type": "input_value", "name": "VALUE"}],
+                "shape": "statement"
+            },
             "converter": universalBlockConverter
         }
-
-
     ]
 ;
