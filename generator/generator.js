@@ -137,6 +137,16 @@ ScratchBlocks.text['control_if_else'] = function (block) {
 
 //========================================
 
+//======= custom blocks ==================
+ScratchBlocks.text['procedures_call'] = function (block) {
+    let procCode = block.getProcCode();
+    //todo
+    return procCode;
+
+};
+
+//========================================
+
 /**
  * init the generator with information from blockspecifications
  *
