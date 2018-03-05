@@ -94,60 +94,133 @@ export const blockspecifications = [
             "converter": universalBlockConverter
         },
 
-//operator
-{"template":"%1 - %2", 
- "description":{ "type":"operator_subtract", "args":[{"type":"input_value","name":"NUM1"},{"type":"input_value","name":"NUM2"}],"shape":"reporterblock"} , 
- "converter": universalBlockConverter 
-},
-{"template":"%1 * %2", 
- "description":{ "type":"operator_multiply", "args":[{"type":"input_value","name":"NUM1"},{"type":"input_value","name":"NUM2"}],"shape":"reporterblock"} , 
- "converter": universalBlockConverter 
-},
-{"template":"%1 / %2", 
- "description":{ "type":"operator_divide", "args":[{"type":"input_value","name":"NUM1"},{"type":"input_value","name":"NUM2"}],"shape":"reporterblock"} , 
- "converter": universalBlockConverter 
-},
-{"template":"pick random %1 to %2", 
- "description":{ "type":"operator_random", "args":[{"type":"input_value","name":"FROM"},{"type":"input_value","name":"TO"}],"shape":"reporterblock"} , 
- "converter": universalBlockConverter 
-},
-{"template":"%1 \\< %2", 
- "description":{ "type":"operator_lt", "args":[{"type":"input_value","name":"OPERAND1"},{"type":"input_value","name":"OPERAND2"}],"shape":"booleanblock"} , 
- "converter": universalBlockConverter 
-},
-{"template":"%1 = %2", 
- "description":{ "type":"operator_equals", "args":[{"type":"input_value","name":"OPERAND1"},{"type":"input_value","name":"OPERAND2"}],"shape":"booleanblock"} , 
- "converter": universalBlockConverter 
-},
-{"template":"%1 \\> %2", 
- "description":{ "type":"operator_gt", "args":[{"type":"input_value","name":"OPERAND1"},{"type":"input_value","name":"OPERAND2"}],"shape":"booleanblock"} , 
- "converter": universalBlockConverter 
-},
-{"template":"%1 and %2", 
- "description":{ "type":"operator_and", "args":[{"type":"input_value","name":"OPERAND1","check":"Boolean"},{"type":"input_value","name":"OPERAND2","check":"Boolean"}],"shape":"booleanblock"} , 
- "converter": universalBlockConverter 
-},
-{"template":"%1 or %2", 
- "description":{ "type":"operator_or", "args":[{"type":"input_value","name":"OPERAND1","check":"Boolean"},{"type":"input_value","name":"OPERAND2","check":"Boolean"}],"shape":"booleanblock"} , 
- "converter": universalBlockConverter 
-},
-{"template":"join %1 %2", 
- "description":{ "type":"operator_join", "args":[{"type":"input_value","name":"STRING1"},{"type":"input_value","name":"STRING2"}],"shape":"reporterblock"} , 
- "converter": universalBlockConverter 
-},
-{"template":"letter %1 of %2", 
- "description":{ "type":"operator_letter_of", "args":[{"type":"input_value","name":"LETTER"},{"type":"input_value","name":"STRING"}],"shape":"reporterblock"} , 
- "converter": universalBlockConverter 
-},
-{"template":"%1 mod %2", 
- "description":{ "type":"operator_mod", "args":[{"type":"input_value","name":"NUM1"},{"type":"input_value","name":"NUM2"}],"shape":"reporterblock"} , 
- "converter": universalBlockConverter 
-},
-{"template":"round %1", 
- "description":{ "type":"operator_round", "args":[{"type":"input_value","name":"NUM"}],"shape":"reporterblock"} , 
- "converter": universalBlockConverter 
-}
-
+//==== operator ===================================================
+        {
+            "template": "%1 - %2",
+            "description": {
+                "type": "operator_subtract",
+                "args": [{"type": "input_value", "name": "NUM1"}, {"type": "input_value", "name": "NUM2"}],
+                "shape": "reporterblock"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "%1 * %2",
+            "description": {
+                "type": "operator_multiply",
+                "args": [{"type": "input_value", "name": "NUM1"}, {"type": "input_value", "name": "NUM2"}],
+                "shape": "reporterblock"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "%1 / %2",
+            "description": {
+                "type": "operator_divide",
+                "args": [{"type": "input_value", "name": "NUM1"}, {"type": "input_value", "name": "NUM2"}],
+                "shape": "reporterblock"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "pick random %1 to %2",
+            "description": {
+                "type": "operator_random",
+                "args": [{"type": "input_value", "name": "FROM"}, {"type": "input_value", "name": "TO"}],
+                "shape": "reporterblock"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "%1 \\< %2",
+            "description": {
+                "type": "operator_lt",
+                "args": [{"type": "input_value", "name": "OPERAND1"}, {"type": "input_value", "name": "OPERAND2"}],
+                "shape": "booleanblock"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "%1 = %2",
+            "description": {
+                "type": "operator_equals",
+                "args": [{"type": "input_value", "name": "OPERAND1"}, {"type": "input_value", "name": "OPERAND2"}],
+                "shape": "booleanblock"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "%1 \\> %2",
+            "description": {
+                "type": "operator_gt",
+                "args": [{"type": "input_value", "name": "OPERAND1"}, {"type": "input_value", "name": "OPERAND2"}],
+                "shape": "booleanblock"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "%1 and %2",
+            "description": {
+                "type": "operator_and",
+                "args": [{"type": "input_value", "name": "OPERAND1", "check": "Boolean"}, {
+                    "type": "input_value",
+                    "name": "OPERAND2",
+                    "check": "Boolean"
+                }],
+                "shape": "booleanblock"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "%1 or %2",
+            "description": {
+                "type": "operator_or",
+                "args": [{"type": "input_value", "name": "OPERAND1", "check": "Boolean"}, {
+                    "type": "input_value",
+                    "name": "OPERAND2",
+                    "check": "Boolean"
+                }],
+                "shape": "booleanblock"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "join %1 %2",
+            "description": {
+                "type": "operator_join",
+                "args": [{"type": "input_value", "name": "STRING1"}, {"type": "input_value", "name": "STRING2"}],
+                "shape": "reporterblock"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "letter %1 of %2",
+            "description": {
+                "type": "operator_letter_of",
+                "args": [{"type": "input_value", "name": "LETTER"}, {"type": "input_value", "name": "STRING"}],
+                "shape": "reporterblock"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "%1 mod %2",
+            "description": {
+                "type": "operator_mod",
+                "args": [{"type": "input_value", "name": "NUM1"}, {"type": "input_value", "name": "NUM2"}],
+                "shape": "reporterblock"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "round %1",
+            "description": {
+                "type": "operator_round",
+                "args": [{"type": "input_value", "name": "NUM"}],
+                "shape": "reporterblock"
+            },
+            "converter": universalBlockConverter
+        }
+//==================================================================
 
     ]
 ;
