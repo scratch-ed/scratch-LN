@@ -3,22 +3,22 @@ export default blocks;
 
 
 //blocks["%1 + %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_add", "args":[{"type":"input_value","name":"NUM1"},{"type":"input_value","name":"NUM2"}],"shape":"reporterblock"} ); };
-blocks["%1 - %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_subtract", "args":[{"type":"input_value","name":"NUM1"},{"type":"input_value","name":"NUM2"}],"shape":"reporterblock"} ); };
-blocks["%1 * %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_multiply", "args":[{"type":"input_value","name":"NUM1"},{"type":"input_value","name":"NUM2"}],"shape":"reporterblock"} ); };
-blocks["%1 / %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_divide", "args":[{"type":"input_value","name":"NUM1"},{"type":"input_value","name":"NUM2"}],"shape":"reporterblock"} ); };
-blocks["pick random %1 to %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_random", "args":[{"type":"input_value","name":"FROM"},{"type":"input_value","name":"TO"}],"shape":"reporterblock"} ); };
-blocks["%1 \\< %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_lt", "args":[{"type":"input_value","name":"OPERAND1"},{"type":"input_value","name":"OPERAND2"}],"shape":"booleanblock"} ); };
-blocks["%1 = %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_equals", "args":[{"type":"input_value","name":"OPERAND1"},{"type":"input_value","name":"OPERAND2"}],"shape":"booleanblock"} ); };
-blocks["%1 \\> %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_gt", "args":[{"type":"input_value","name":"OPERAND1"},{"type":"input_value","name":"OPERAND2"}],"shape":"booleanblock"} ); };
-blocks["%1 and %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_and", "args":[{"type":"input_value","name":"OPERAND1","check":"Boolean"},{"type":"input_value","name":"OPERAND2","check":"Boolean"}],"shape":"booleanblock"} ); };
-blocks["%1 or %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_or", "args":[{"type":"input_value","name":"OPERAND1","check":"Boolean"},{"type":"input_value","name":"OPERAND2","check":"Boolean"}],"shape":"booleanblock"} ); };
-//blocks["not %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_not", "args":[{"type":"input_value","name":"OPERAND","check":"Boolean"}],"shape":"booleanblock"} ); };
-blocks["join %1 %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_join", "args":[{"type":"input_value","name":"STRING1"},{"type":"input_value","name":"STRING2"}],"shape":"reporterblock"} ); };
-blocks["letter %1 of %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_letter_of", "args":[{"type":"input_value","name":"LETTER"},{"type":"input_value","name":"STRING"}],"shape":"reporterblock"} ); };
-
-
-blocks["%1 mod %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_mod", "args":[{"type":"input_value","name":"NUM1"},{"type":"input_value","name":"NUM2"}],"shape":"reporterblock"} ); };
-blocks["round %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_round", "args":[{"type":"input_value","name":"NUM"}],"shape":"reporterblock"} ); };
+// blocks["%1 - %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_subtract", "args":[{"type":"input_value","name":"NUM1"},{"type":"input_value","name":"NUM2"}],"shape":"reporterblock"} ); };
+// blocks["%1 * %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_multiply", "args":[{"type":"input_value","name":"NUM1"},{"type":"input_value","name":"NUM2"}],"shape":"reporterblock"} ); };
+// blocks["%1 / %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_divide", "args":[{"type":"input_value","name":"NUM1"},{"type":"input_value","name":"NUM2"}],"shape":"reporterblock"} ); };
+// blocks["pick random %1 to %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_random", "args":[{"type":"input_value","name":"FROM"},{"type":"input_value","name":"TO"}],"shape":"reporterblock"} ); };
+// blocks["%1 \\< %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_lt", "args":[{"type":"input_value","name":"OPERAND1"},{"type":"input_value","name":"OPERAND2"}],"shape":"booleanblock"} ); };
+// blocks["%1 = %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_equals", "args":[{"type":"input_value","name":"OPERAND1"},{"type":"input_value","name":"OPERAND2"}],"shape":"booleanblock"} ); };
+// blocks["%1 \\> %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_gt", "args":[{"type":"input_value","name":"OPERAND1"},{"type":"input_value","name":"OPERAND2"}],"shape":"booleanblock"} ); };
+// blocks["%1 and %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_and", "args":[{"type":"input_value","name":"OPERAND1","check":"Boolean"},{"type":"input_value","name":"OPERAND2","check":"Boolean"}],"shape":"booleanblock"} ); };
+// blocks["%1 or %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_or", "args":[{"type":"input_value","name":"OPERAND1","check":"Boolean"},{"type":"input_value","name":"OPERAND2","check":"Boolean"}],"shape":"booleanblock"} ); };
+// //blocks["not %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_not", "args":[{"type":"input_value","name":"OPERAND","check":"Boolean"}],"shape":"booleanblock"} ); };
+// blocks["join %1 %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_join", "args":[{"type":"input_value","name":"STRING1"},{"type":"input_value","name":"STRING2"}],"shape":"reporterblock"} ); };
+// blocks["letter %1 of %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_letter_of", "args":[{"type":"input_value","name":"LETTER"},{"type":"input_value","name":"STRING"}],"shape":"reporterblock"} ); };
+//
+//
+// blocks["%1 mod %2"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_mod", "args":[{"type":"input_value","name":"NUM1"},{"type":"input_value","name":"NUM2"}],"shape":"reporterblock"} ); };
+// blocks["round %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_round", "args":[{"type":"input_value","name":"NUM"}],"shape":"reporterblock"} ); };
 
 blocks["wait %1 seconds"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"control_wait", "args":[{"type":"input_value","name":"DURATION"}],"shape":"statement"} ); };
 blocks["wait until %1"]=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"control_wait_until", "args":[{"type":"input_value","name":"CONDITION","check":"Boolean"}],"shape":"statement"} ); };

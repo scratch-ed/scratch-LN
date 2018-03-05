@@ -132,7 +132,6 @@ ScratchBlocks.text['control_if_else'] = function (block) {
     let statements2 = ScratchBlocks.text.statementToCode(block, 'SUBSTACK2'); //todo: this automaticly intendents, is this a problem?
     let nr = ScratchBlocks.text.valueToCode(block, 'CONDITION', ScratchBlocks.text.ORDER_NONE);
     return 'if ' + nr + '\n' + statements +'else\n'+ statements2 +'end\n' + ScratchBlocks.text.getNextCode(block);
-
 };
 
 //========================================
@@ -142,7 +141,6 @@ ScratchBlocks.text['procedures_call'] = function (block) {
     let procCode = block.getProcCode();
     //todo
     return procCode;
-
 };
 
 //========================================
