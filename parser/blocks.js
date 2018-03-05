@@ -68,7 +68,7 @@ blocks["item %1 of %2"]=function(ctx,visitor){return listBlockConverter(ctx, vis
 blocks["show list %1"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_showlist", "args":[{"type":"field_variable","name":"LIST","variabletypes":["list"]}],"shape":"statement"} ); };
 blocks["hide list %1"]=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_hidelist", "args":[{"type":"field_variable","name":"LIST","variabletypes":["list"]}],"shape":"statement"} ); };
 
-function variableBlockConverter(ctx, visitor, structure) {
+export function variableBlockConverter(ctx, visitor, structure) {
     visitor.xml = visitor.xml.ele('block', {
         'id': visitor.getNextId(),
     });
@@ -85,7 +85,7 @@ function variableBlockConverter(ctx, visitor, structure) {
     visitor.xml = visitor.xml.up();
 }
 
-function listBlockConverter(ctx, visitor, structure) {
+export function listBlockConverter(ctx, visitor, structure) {
     visitor.xml = visitor.xml.ele('block', {
         'id': visitor.getNextId(),
         'type': structure.type
@@ -119,7 +119,7 @@ blocks["when I receive %1"]=function(ctx,visitor){return messageBlockconverter(c
 blocks["broadcast %1"]=function(ctx,visitor){return messageShadowBlockconverter(ctx, visitor, { "type":"event_broadcast", "args":[{"type":"input_value","name":"BROADCAST_INPUT"}],"shape":"statement"} ); };
 blocks["broadcast %1 and wait"]=function(ctx,visitor){return messageShadowBlockconverter(ctx, visitor, { "type":"event_broadcastandwait", "args":[{"type":"input_value","name":"BROADCAST_INPUT"}],"shape":"statement"} ); };
 
-function messageShadowBlockconverter(ctx, visitor,structure) {
+export function messageShadowBlockconverter(ctx, visitor,structure) {
     visitor.xml = visitor.xml.ele('block', {
         'id': visitor.getNextId(),
         'type': structure.type
@@ -142,7 +142,7 @@ function messageShadowBlockconverter(ctx, visitor,structure) {
     visitor.xml = visitor.xml.up();
 }
 
-function messageBlockconverter(ctx, visitor,structure) {
+export function messageBlockconverter(ctx, visitor,structure) {
     visitor.xml = visitor.xml.ele('block', {
         'id': visitor.getNextId(),
         'type': structure.type
@@ -160,65 +160,6 @@ function messageBlockconverter(ctx, visitor,structure) {
 
 }
 
-//=======================================================================================================================================
-// if the same text on the block: do smart
-//=======================================================================================================================================
 
 
-
-
-let operatorOf=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_mathop", "args":[{"type":"field_dropdown","name":"OPERATOR","options":[["abs","abs"],["floor","floor"],["ceiling","ceiling"],["sqrt","sqrt"],["sin","sin"],["cos","cos"],["tan","tan"],["asin","asin"],["acos","acos"],["atan","atan"],["ln","ln"],["log","log"],["e ^","e ^"],["10 ^","10 ^"]]},{"type":"input_value","name":"NUM"}],"shape":"reporterblock"} ); };
-let sensingOf = function (ctx, visitor) {
-    //return universalBlockConverter(ctx, visitor, { "type":"sensing_of", "args":[{"type":"field_dropdown","name":"PROPERTY","options":[["x position","x position"],["y position","y position"],["direction","direction"],["costume #","costume #"],["costume name","costume name"],["size","size"],["volume","volume"],["backdrop #","backdrop #"],["backdrop name","backdrop name"]],'menu':'sensing_of_object_menu'},{"type":"input_value","name":"OBJECT"}],"shape":"booleans"} ); 
-    //something was weird here...
-    visitor.xml = visitor.xml.ele('block', {
-        'id': visitor.getNextId(),
-        'type': 'sensing_of'
-    });
-    visitor.xml = visitor.xml.ele('field', {
-        'name': 'PROPERTY'
-    }, visitor.visit(ctx.argument[0])); //'all around' //this is ugly because 'option' is the only one that returns something... and there is no check whether the option is existing and valid
-    visitor.xml = visitor.xml.up().ele('value', {
-        'name': 'OBJECT'
-    });
-    //no assignement bcs of visist
-    visitor.xml.ele('shadow', {
-        'type': 'sensing_of_object_menu' //this was added to the json and was not default.
-    }).ele('field', {
-        'name': 'OBJECT'
-    }, visitor.visit(ctx.argument[1])); // '_mouse_'
-    visitor.xml = visitor.xml.up();
-};
-
-blocks["%1 of %2"] = function(ctx, visitor) {
-    let argType = visitor.getType(ctx.argument[1]);
-    if (argType === 'choice') {
-        return sensingOf(ctx, visitor);
-    }
-    return operatorOf(ctx, visitor);
-};
-
-let operatorContains=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_contains", "args":[{"type":"input_value","name":"STRING1"},{"type":"input_value","name":"STRING2"}],"shape":"booleanblock"} ); };
-let listContains=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_listcontainsitem", "args":[{"type":"field_variable","name":"LIST","variabletypes":["list"]},{"type":"input_value","name":"ITEM"}],"shape":"booleanblock"} ); };
-blocks["%1 contains %2?"] = function (ctx, visitor) {
-    let argType = visitor.getType(ctx.argument[0]);
-    if (argType === 'choice') {
-        return listContains(ctx, visitor);
-    }
-    return operatorContains(ctx, visitor);
-
-};
-
-
-let operatorLengthOf=function(ctx,visitor){return universalBlockConverter(ctx, visitor, { "type":"operator_length", "args":[{"type":"input_value","name":"STRING"}],"shape":"reporterblock"} ); };
-let listLengthOf=function(ctx,visitor){return listBlockConverter(ctx, visitor, { "type":"data_lengthoflist", "args":[{"type":"field_variable","name":"LIST","variabletypes":["list"]}],"shape":"reporterblock"} ); };
-
-blocks["length of %1"] = function(ctx, visitor) {
-    let argType = visitor.getType(ctx.argument[0]);
-    if (argType === 'choice') {
-        return listLengthOf(ctx, visitor);
-    }
-    return operatorLengthOf(ctx, visitor);
-
-};
 

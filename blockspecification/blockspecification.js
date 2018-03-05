@@ -6,7 +6,7 @@
  * @file   This files defines the blockspecifications const.
  * @author Ellen Vanhove.
  */
-import {universalBlockConverter} from "../parser/blocks";
+import {universalBlockConverter, listBlockConverter} from "../parser/blocks";
 
 /*
  {"template":"",
@@ -19,6 +19,11 @@ let looksSoundPredicate = function (ctx, visitor) {
     let opt = visitor.getString(ctx.option[0]);
     let label = visitor.getString(ctx.argument[0]);
     return (opt === 'sound') || (label === "pan left/right" || label === 'pitch');
+};
+
+let listOperatorPredicate = function (ctx, visitor) {
+    let argType = visitor.getType(ctx.argument[0]);
+    return (argType === 'choice');
 };
 
 export const blockspecifications = [
@@ -1004,6 +1009,100 @@ export const blockspecifications = [
             },
             "converter": universalBlockConverter
         },
+        {
+            "template": "length of %1",
+            "description": {
+                "type": "data_lengthoflist",
+                "args": [{"type": "field_variable", "name": "LIST", "variabletypes": ["list"]}],
+                "shape": "reporterblock"
+            },
+            "converter": listBlockConverter,
+            "predicate": listOperatorPredicate
+        }, {
+            "template": "length of %1",
+            "description": {
+                "type": "operator_length",
+                "args": [{"type": "input_value", "name": "STRING"}],
+                "shape": "reporterblock"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "%1 contains %2?",
+            "description": {
+                "type": "data_listcontainsitem",
+                "args": [{"type": "field_variable", "name": "LIST", "variabletypes": ["list"]}, {
+                    "type": "input_value",
+                    "name": "ITEM"
+                }],
+                "shape": "booleanblock"
+            },
+            "converter": listBlockConverter,
+            "predicate": listOperatorPredicate
+        },
+        {
+            "template": "%1 contains %2?",
+            "description": {
+                "type": "operator_contains",
+                "args": [{"type": "input_value", "name": "STRING1"}, {"type": "input_value", "name": "STRING2"}],
+                "shape": "booleanblock"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "%1 of %2",
+            "description": {
+                "type": "sensing_of",
+                "args": [{
+                    "type": "field_dropdown",
+                    "name": "PROPERTY",
+                    "options": [["x position", "x position"], ["y position", "y position"], ["direction", "direction"], ["costume #", "costume #"], ["costume name", "costume name"], ["size", "size"], ["volume", "volume"], ["backdrop #", "backdrop #"], ["backdrop name", "backdrop name"]],
+                    'menu': 'sensing_of_object_menu'
+                }, {"type": "input_value", "name": "OBJECT"}],
+                "shape": "booleans"
+            },
+            "converter": function (ctx, visitor) {
+                //something was weird here...
+                visitor.xml = visitor.xml.ele('block', {
+                    'id': visitor.getNextId(),
+                    'type': 'sensing_of'
+                });
+                visitor.xml = visitor.xml.ele('field', {
+                    'name': 'PROPERTY'
+                }, visitor.visit(ctx.argument[0])); //'all around' //this is ugly because 'option' is the only one that returns something... and there is no check whether the option is existing and valid
+                visitor.xml = visitor.xml.up().ele('value', {
+                    'name': 'OBJECT'
+                });
+                //no assignement bcs of visist
+                visitor.xml.ele('shadow', {
+                    'type': 'sensing_of_object_menu' //this was added to the json and was not default.
+                }).ele('field', {
+                    'name': 'OBJECT'
+                }, visitor.visit(ctx.argument[1])); // '_mouse_'
+                visitor.xml = visitor.xml.up();
+            },
+            "predicate": function(ctx,visitor) {
+                let argType = visitor.getType(ctx.argument[1]);
+                return (argType === 'choice');
+            }
+
+        },
+        {
+            "template": "%1 of %2",
+            "description": {
+                "type": "operator_mathop",
+                "args": [{
+                    "type": "field_dropdown",
+                    "name": "OPERATOR",
+                    "options": [["abs", "abs"], ["floor", "floor"], ["ceiling", "ceiling"], ["sqrt", "sqrt"], ["sin", "sin"], ["cos", "cos"], ["tan", "tan"], ["asin", "asin"], ["acos", "acos"], ["atan", "atan"], ["ln", "ln"], ["log", "log"], ["e ^", "e ^"], ["10 ^", "10 ^"]]
+                }, {"type": "input_value", "name": "NUM"}],
+                "shape": "reporterblock"
+            },
+            "converter": universalBlockConverter
+        },
+
+
+
     ]
 ;
 
