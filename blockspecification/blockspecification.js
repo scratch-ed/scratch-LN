@@ -428,7 +428,7 @@ export const blockspecifications = [
             "converter": universalBlockConverter
         },
         {
-            "template": ["turn cw %1 degrees","turn right %1 degrees"],
+            "template": ["turn cw %1 degrees", "turn right %1 degrees"],
             "description": {
                 "type": "motion_turnright",
                 "args": [{"type": "input_value", "name": "DEGREES"}],
@@ -437,7 +437,7 @@ export const blockspecifications = [
             "converter": universalBlockConverter
         },
         {
-            "template": ["turn ccw %1 degrees","turn left %1 degrees"],
+            "template": ["turn ccw %1 degrees", "turn left %1 degrees"],
             "description": {
                 "type": "motion_turnleft",
                 "args": [{"type": "input_value", "name": "DEGREES"}],
@@ -535,6 +535,388 @@ export const blockspecifications = [
             "template": "direction",
             "description": {"type": "motion_direction", "shape": "reporterblock"},
             "converter": universalBlockConverter
+        },
+//=== looks ======================================
+        {
+            "template": "say %1 for %2 seconds",
+            "description": {
+                "type": "looks_sayforsecs",
+                "args": [{"type": "input_value", "name": "MESSAGE"}, {"type": "input_value", "name": "SECS"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "think %1 for %2 seconds",
+            "description": {
+                "type": "looks_thinkforsecs",
+                "args": [{"type": "input_value", "name": "MESSAGE"}, {"type": "input_value", "name": "SECS"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "think %1",
+            "description": {
+                "type": "looks_think",
+                "args": [{"type": "input_value", "name": "MESSAGE"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "show",
+            "description": {"type": "looks_show", "shape": "statement"},
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "hide",
+            "description": {"type": "looks_hide", "shape": "statement"},
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "clear graphic effects",
+            "description": {"type": "looks_cleargraphiceffects", "shape": "statement"},
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "change size by %1",
+            "description": {
+                "type": "looks_changesizeby",
+                "args": [{"type": "input_value", "name": "CHANGE"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "set size to %1 %",
+            "description": {
+                "type": "looks_setsizeto",
+                "args": [{"type": "input_value", "name": "SIZE"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "size",
+            "description": {"type": "looks_size", "shape": "reporterblock"},
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "switch costume to %1",
+            "description": {
+                "type": "looks_switchcostumeto",
+                "args": [{"type": "input_value", "name": "COSTUME", "menu": "looks_costume"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "next costume",
+            "description": {"type": "looks_nextcostume", "shape": "statement"},
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "switch backdrop to %1",
+            "description": {
+                "type": "looks_switchbackdropto",
+                "args": [{"type": "input_value", "name": "BACKDROP", "menu": "looks_backdrops"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "go %1 %2 layers",
+            "description": {
+                "type": "looks_goforwardbackwardlayers",
+                "args": [{
+                    "type": "field_dropdown",
+                    "name": "FORWARD_BACKWARD",
+                    "options": [["forward", "forward"], ["backward", "backward"]]
+                }, {"type": "input_value", "name": "NUM"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "backdrop %1",
+            "description": {
+                "type": "looks_backdropnumbername",
+                "args": [{
+                    "type": "field_dropdown",
+                    "name": "NUMBER_NAME",
+                    "options": [["number", "number"], ["name", "name"]]
+                }],
+                "shape": "reporterblock"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "costume %1",
+            "description": {
+                "type": "looks_costumenumbername",
+                "args": [{
+                    "type": "field_dropdown",
+                    "name": "NUMBER_NAME",
+                    "options": [["number", "number"], ["name", "name"]]
+                }],
+                "shape": "reporterblock"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "switch backdrop to %1 and wait",
+            "description": {
+                "type": "looks_switchbackdroptoandwait",
+                "args": [{"type": "input_value", "name": "BACKDROP", "menu": "looks_backdrops"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "next backdrop",
+            "description": {"type": "looks_nextbackdrop", "shape": "statement"},
+            "converter": universalBlockConverter
+        },
+        //=== pen
+
+        {
+            "template": "clear",
+            "description": {"type": "pen_clear", "shape": "statement"},
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "stamp",
+            "description": {"type": "pen_stamp", "shape": "statement"},
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "pen up",
+            "description": {"type": "pen_penup", "shape": "statement"},
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "set pen color to %1",
+            "description": {
+                "type": "pen_setpencolortocolor",
+                "args": [{"type": "input_value", "name": "COLOR"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter,
+            "predicate": (ctx, visitor) => {
+                let argType = visitor.getType(ctx.argument[0]);
+                return (argType === 'color');
+            }
+        },
+        {//todo
+            "template": "set pen color to %1",
+            "description": {
+                "type": "pen_setpencolortonum",
+                "args": [{"type": "input_value", "name": "COLOR"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+
+        },
+        {
+            "template": "change pen color by %1",
+            "description": {
+                "type": "pen_changepencolorby",
+                "args": [{"type": "input_value", "name": "COLOR"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "change pen shade by %1",
+            "description": {
+                "type": "pen_changepenshadeby",
+                "args": [{"type": "input_value", "name": "SHADE"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "set pen shade to %1",
+            "description": {
+                "type": "pen_setpenshadeto",
+                "args": [{"type": "input_value", "name": "SHADE"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "change pen size by %1",
+            "description": {
+                "type": "pen_changepensizeby",
+                "args": [{"type": "input_value", "name": "SIZE"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "set pen size to %1",
+            "description": {
+                "type": "pen_setpensizeto",
+                "args": [{"type": "input_value", "name": "SIZE"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "change pen transparency by %1",
+            "description": {
+                "type": "pen_changepentransparencyby",
+                "args": [{"type": "input_value", "name": "TRANSPARENCY"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "set pen transparency to %1",
+            "description": {
+                "type": "pen_setpentransparencyto",
+                "args": [{"type": "input_value", "name": "TRANSPARENCY"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+        },
+        //=== sounds =======================================================
+        {
+            "template": "start sound %1",
+            "description": {
+                "type": "sound_play",
+                "args": [{"type": "input_value", "name": "SOUND_MENU", "menu": "sound_sounds_menu"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "play sound %1 until done",
+            "description": {
+                "type": "sound_playuntildone",
+                "args": [{"type": "input_value", "name": "SOUND_MENU", "menu": "sound_sounds_menu"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "stop all sounds",
+            "description": {"type": "sound_stopallsounds", "shape": "statement"},
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "play drum %1 for %2 beats",
+            "description": {
+                "type": "sound_playdrumforbeats",
+                "args": [{"type": "input_value", "name": "DRUM", "menu": "sound_drums_menu"}, {
+                    "type": "input_value",
+                    "name": "BEATS"
+                }],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "rest for %1 beats",
+            "description": {
+                "type": "sound_restforbeats",
+                "args": [{"type": "input_value", "name": "BEATS"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "play note %1 for %2 beats",
+            "description": {
+                "type": "sound_playnoteforbeats",
+                "args": [{"type": "input_value", "name": "NOTE"}, {"type": "input_value", "name": "BEATS"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "clear sound effects",
+            "description": {"type": "sound_cleareffects", "shape": "statement"},
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "set instrument to %1",
+            "description": {
+                "type": "sound_setinstrumentto",
+                "args": [{"type": "input_value", "name": "INSTRUMENT", "menu": "sound_instruments_menu"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "change volume by %1",
+            "description": {
+                "type": "sound_changevolumeby",
+                "args": [{"type": "input_value", "name": "VOLUME"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "set volume to %1 %",
+            "description": {
+                "type": "sound_setvolumeto",
+                "args": [{"type": "input_value", "name": "VOLUME"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "volume",
+            "description": {"type": "sound_volume", "shape": "reporterblock"},
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "change tempo by %1",
+            "description": {
+                "type": "sound_changetempoby",
+                "args": [{"type": "input_value", "name": "TEMPO"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "set tempo to %1 bpm",
+            "description": {
+                "type": "sound_settempotobpm",
+                "args": [{"type": "input_value", "name": "TEMPO"}],
+                "shape": "statement"
+            },
+            "converter": universalBlockConverter
+        },
+        {
+            "template": "tempo",
+            "description": {"type": "sound_tempo", "shape": "reporterblock"},
+            "converter": universalBlockConverter
+        },
+    //=== events =============================================================
+        {"template":["when gf clicked","when greenflag clicked"],
+            "description":{ "type":"event_whenflagclicked", "args":[],"shape":"hatblock"} ,
+            "converter": universalBlockConverter
+        },
+        {"template":"when this sprite clicked",
+            "description":{ "type":"event_whenthisspriteclicked","shape":"hatblock"} ,
+            "converter": universalBlockConverter
+        },
+        {"template":"when backdrop switches to %1",
+            "description":{ "type":"event_whenbackdropswitchesto", "args":[{"type":"field_dropdown","name":"BACKDROP","options":[["backdrop1","BACKDROP1"]]}],"shape":"hatblock"} ,
+            "converter": universalBlockConverter
+        },
+        {"template":"when %1 \\> %2",
+            "description":{ "type":"event_whengreaterthan", "args":[{"type":"field_dropdown","name":"WHENGREATERTHANMENU","options":[["timer","TIMER"]]},{"type":"input_value","name":"VALUE"}],"shape":"hatblock"} ,
+            "converter": universalBlockConverter
+        },
+        {"template":"when %1 key pressed",
+            "description":{ "type":"event_whenkeypressed", "args":[{"type":"field_dropdown","name":"KEY_OPTION","options":[["space","space"],["left arrow","left arrow"],["right arrow","right arrow"],["down arrow","down arrow"],["up arrow","up arrow"],["any","any"],["a","a"],["b","b"],["c","c"],["d","d"],["e","e"],["f","f"],["g","g"],["h","h"],["i","i"],["j","j"],["k","k"],["l","l"],["m","m"],["n","n"],["o","o"],["p","p"],["q","q"],["r","r"],["s","s"],["t","t"],["u","u"],["v","v"],["w","w"],["x","x"],["y","y"],["z","z"],["0","0"],["1","1"],["2","2"],["3","3"],["4","4"],["5","5"],["6","6"],["7","7"],["8","8"],["9","9"]]}],"shape":"hatblock"} ,
+            "converter": universalBlockConverter
         }
+
+
     ]
 ;

@@ -69,7 +69,7 @@ describe('pen', function() {
                 '                  <block id="4" type="pen_setpencolortonum">\n' +
                 '                    <value name="COLOR"/>\n' +
                 '                    <next>\n' +
-                '                      <block id="5" type="pen_setpencolortonum">\n' +
+                '                      <block id="5" type="pen_setpencolortocolor">\n' +
                 '                        <value name="COLOR">\n' +
                 '                          <shadow type="colour_picker" id="6">\n' +
                 '                            <field name="COLOUR">#123456</field>\n' +
