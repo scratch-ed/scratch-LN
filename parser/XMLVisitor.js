@@ -165,7 +165,7 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
             'name': 'SUBSTACK'
         }, ' ');
         this.visitSubStack(ctx.stack);
-        this.xml = this.xml.up()
+        this.xml = this.xml.up();
     }
 
 

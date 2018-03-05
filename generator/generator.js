@@ -52,7 +52,7 @@ ScratchBlocks.text.getNextCode = function (block) {
 
 /**
  * arguments list where the first one is not an array -> args are replaced in order of occurrence
- * or 1 array -> content of this array is used to replace
+ * or one array -> content of this array is used to replace
  * @returns {string}
  */
 String.prototype.format = function () {
@@ -119,6 +119,7 @@ export function init_generator(){
         }
         let type = b['description']['type'];
         let args = b['description']['args'];
+        let shape = b['description']['shape'];
         ScratchBlocks.text[type] = function (block) {
             let values = [];
             for(let i=0; args && i<args.length; i++){
@@ -130,11 +131,20 @@ export function init_generator(){
                         break;
                     default:
                         v = ScratchBlocks.text.valueToCode(block, args[i].name, ScratchBlocks.text.ORDER_NONE); //returns undefined if empty
-                        v = '{' +  v + '}'; //results is {} if empty
+                        v = '{' +  v +'}'; //results is {} if empty
                 }
                 values.push(v);
             }
-            return template.format(values)+'\n' + ScratchBlocks.text.getNextCode(block);
+            switch (shape){ // ({}+{({}+{})})
+                case 'reporterblock':
+                    return ['('+template.format(values)+')' + ScratchBlocks.text.getNextCode(block),ScratchBlocks.text.ORDER_NONE];
+                case 'booleanblock':
+                    return ['<'+template.format(values)+'>' + ScratchBlocks.text.getNextCode(block),ScratchBlocks.text.ORDER_NONE];
+                default:
+                    return template.format(values)+'\n' + ScratchBlocks.text.getNextCode(block);
+            }
+
+
         };
     }
 }
