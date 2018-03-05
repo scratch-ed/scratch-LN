@@ -99,7 +99,33 @@ ScratchBlocks.text['data_listcontents'] = function (block) {
     //variables are a bit different... getfieldvalue returns the id
     return ['('+block.getField('LIST').getText()+'::list)', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
+//========================================
 
+//========= controls =====================
+
+ScratchBlocks.text['control_forever'] = function (block) {
+    let statements = ScratchBlocks.text.statementToCode(block, 'SUBSTACK'); //todo: this automaticly intendents, is this a problem?
+    return 'forever\n' + statements;
+
+};
+
+ScratchBlocks.text['control_repeat'] = function (block) {
+    let statements = ScratchBlocks.text.statementToCode(block, 'SUBSTACK'); //todo: this automaticly intendents, is this a problem?
+    let nr = ScratchBlocks.text.valueToCode(block, 'TIMES', ScratchBlocks.text.ORDER_NONE);
+    return 'repeat ' + nr + '\n' + statements + 'end\n' + ScratchBlocks.text.getNextCode(block);
+};
+
+ScratchBlocks.text['control_repeat_until'] = function (block) {
+    //todo
+};
+
+ScratchBlocks.text['control_if'] = function (block) {
+    //todo
+};
+
+ScratchBlocks.text['control_if_else'] = function (block) {
+    //todo
+};
 
 //========================================
 
