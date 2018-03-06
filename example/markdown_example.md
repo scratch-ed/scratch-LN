@@ -12,9 +12,9 @@ when greenflag clicked
 set [teller] to {4}
 go to x: {0} y: {0}
 pen down
-repeat (teller)
+repeat (counter)
 move {100} steps
-turn cw {({360}/{(teller)})} degrees
+turn cw {({360}/{(counter)})} degrees
 end
 pen up
 ```

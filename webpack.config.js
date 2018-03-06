@@ -71,6 +71,10 @@ module.exports = [
                 to: 'example/simple.html'
             }]),
             new CopyWebpackPlugin([{
+                from: 'examples/simple_en.html',
+                to: 'example/simple_en.html'
+            }]),
+            new CopyWebpackPlugin([{
                 from: 'examples/documentation.html',
                 to: 'example/documentation.html'
             }]),/*

@@ -2,44 +2,40 @@
    <head>
       <meta charset="utf-8">
       <style>
-         .scratch {
-         display: none;
-         }
          .container {
          display: inline-block;
          margin-left: 40px;
          margin-right: 40px;
          }
          #workspace_teller1{
-            display: inline-block;
-            float:left;
+             display: inline-block;
+             float:left;
          }
       </style>
         <script type="text/javascript" src="run.js" charset="utf-8"></script>
    </head>
    <body>
-      <h1>Teken figuren</h1>
-      <p>   In onderstaande voorbeelden gebruiken we de variabele</p>
+      <h1>Draw figures</h1>
+      <p> In the example below we use the variable</p>
       <div>
-          <code class='scratch' id='teller1'> (teller) </code>
+          <code class='scratch' id='teller1'> (counter) </code>
       </div>
-      <p>om veelhoeken met een variabel aantal zijden te tekenen.</p>
-
+      <p>to draw  a polygon with different number of sides.</p>
       <div class='container'>
-         <h2>Teken veelhoek </h2>
+         <h2>Teken polygon </h2>
          <code class='scratch' id='x'>
             when greenflag clicked
             go to x: {0} y: {0}
             pen down
-            repeat (teller)
+            repeat (counter)
             move {100} steps
-            turn cw {({360}/{(teller)})} degrees
+            turn cw {({360}/{(counter)})} degrees
             end
             pen up
          </code>
       </div>
       <div class='container'>
-         <h2>Teken driehoek </h2>
+         <h2>Draw triangle </h2>
          <code class='scratch'>
             when greenflag clicked
             go to x: {0} y: {0}
@@ -52,7 +48,7 @@
          </code>
       </div>
       <div class='container'>
-         <h2>Teken vierhoek </h2>
+         <h2>Draw square </h2>
          <code class='scratch'>
             when greenflag clicked
             go to x: {0} y: {0}
@@ -65,7 +61,7 @@
          </code>
       </div>
       <div class='container'>
-         <h2>Teken vijfhoek </h2>
+         <h2>Draw pentagon </h2>
          <code class='scratch'>
             when greenflag clicked
             go to x: {0} y: {0}
