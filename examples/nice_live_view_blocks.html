@@ -1,0 +1,94 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <script type="text/javascript" src="nice_live_view_blocks.js" charset="utf-8"></script>
+        <link rel="stylesheet" type="text/css" media="screen" href="https://scratch4d.github.io/scratch-LN/assets/css/style.css?v=d68aed45b03457b0f1b368aced7ef7a77e028874">
+        <style type="text/css">
+        #editor{
+            width: 45%;
+            height: 80%;
+            font-size: 25px; 
+            resize: none; 
+            border: 1px solid;
+            padding: 10px;
+            display: block;
+        }
+        #editor:focus {
+            border: 1px solid #51DFE3;
+        }
+        #control{
+            
+            overflow: left;
+        }    
+        #blocklyDiv{
+            float: left;
+            margin-right: 2%;
+        }
+        mark {
+              border-radius: 3px;
+              /*color: transparent;*/
+              background-color: #b1d5e5;
+            }
+        .highlights {
+            /*color: transparent;*/
+            /*position: absolute;*/
+
+            /*width: 45%;
+            height: 80%;
+            font-size: 25px; 
+            resize: none; 
+            padding: 10px;*/
+            display: block;
+        }
+        .container {
+              /*display: block;
+              margin: 0 auto;
+              transform: translateZ(0);
+              -webkit-text-size-adjust: none;*/
+            }
+        </style>
+        
+    </head>
+    <body>
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+            <a id="forkme_banner" href="https://github.com/scratch4d/scratch-LN">View on GitHub</a>
+            <h1 id="project_title">scratch-LN</h1>
+            <h2 id="project_tagline">https://scratch4d.github.io/scratch-LN/</h2>
+        </header>
+    </div>
+
+    <div id="main_content_wrap" class="outer">
+        <section id="main_content" class="inner">
+            Drag Scratch-blocks into the workspace and the Scratch-LN text is generated in the editor on the right.
+            Not behaving as expected, report it <a href="https://github.com/scratch4d/scratch-LN/issues">here</a> .
+        </section>
+
+        <div id="view">
+            <div id="blocklyDiv"></div>
+        </div>
+
+        <div id="control">
+            <p>
+                <!--<input id="blockid"/>-->
+                <!--<button id="example">example</button>-->
+                <!--<button id="glowoff">glow off</button>-->
+                <!--<button id="stackglowon">stack glow on</button> -->
+                <!--<button id="stackglowoff">stack glow off</button>-->
+                <!--<button id="report">report</button>-->
+            </p>
+
+            <button id="generator">to text!</button>
+            <!--<button id="showexample">example</button>-->
+
+            <!-- <button id="insertxml">insert xml</button>  -->
+            <div class = "container">
+                <textarea id="editor"></textarea>
+            </div>
+        </div>
+
+    </div>
+
+
+    </body>
+</html>

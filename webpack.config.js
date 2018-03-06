@@ -32,12 +32,11 @@ module.exports = [
     defaultsDeep({}, base, {
         target: 'web',
         entry: {
-            'live_view':'./live_view/live_view.js',
-            'live_view_blocks':'./live_view/live_view_blocks.js',
             'test':'./testWebpage/test.js',
             'run':'./webtools/run.js',
             'example':'./examples/example.js',
             'nice_live_view':'./examples/nice_live_view.js',
+            'nice_live_view_blocks':'./examples/nice_live_view_blocks.js',
             'run_markdown':'./webtools/markdown_scratch.js',
             'run_keepText':'./webtools/run_keepText.js',
         },
@@ -55,6 +54,9 @@ module.exports = [
             }]),new CopyWebpackPlugin([{
                 from: './examples/nice_live_view.html',
                 to: 'example/index.html'
+            }]),new CopyWebpackPlugin([{
+                from: './examples/nice_live_view_blocks.html',
+                to: 'example/reverse.html'
             }]),
             new CopyWebpackPlugin([{
                 from: 'examples/example.html',

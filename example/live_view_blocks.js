@@ -17604,4 +17604,4 @@ function generateTextWorkspace() {
 
 /***/ })
 /******/ ]);
-//# sourceMappingURL=live_view_blocks.js.map
+//# sourceMappingURL=nice_live_view_blocks.js.map
