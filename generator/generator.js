@@ -200,9 +200,10 @@ export function init_generator() {
                         v = '[' + v + ']';
                         break;
                     default:
-                        console.log('get value ' + args[i].name);
                         v = ScratchBlocks.text.valueToCode(block, args[i].name, ScratchBlocks.text.ORDER_NONE); //returns undefined if empty
-                        v = '{' + v + '}'; //results is {} if empty
+                        if (!args[i].menu) {
+                            v = '{' + v + '}'; //results is {} if empty
+                        }
                 }
                 values.push(v);
             }
@@ -222,7 +223,7 @@ export function init_generator() {
         for (let i = 0; args && i < args.length; i++) {
             if (args[i].menu) {
                 ScratchBlocks.text[args[i].menu] = function (block) {
-                    return [block.getFieldValue(args[i].name), ScratchBlocks.text.ORDER_NONE];
+                    return ['['+block.getFieldValue(args[i].name)+']', ScratchBlocks.text.ORDER_NONE];
                 };
             }
         }
