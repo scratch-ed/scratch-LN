@@ -6,7 +6,10 @@
  * @file   This files defines the blockspecifications const.
  * @author Ellen Vanhove.
  */
-import {universalBlockConverter, listBlockConverter} from "../parser/blocks";
+import {
+    universalBlockConverter, listBlockConverter, messageBlockconverter,
+    messageShadowBlockconverter, variableBlockConverter,
+} from "../parser/blocks";
 
 /*
  {"template":"",
@@ -15,6 +18,9 @@ import {universalBlockConverter, listBlockConverter} from "../parser/blocks";
         }
 
  */
+// ===============================================================================
+// some frequently used predicates
+
 let looksSoundPredicate = function (ctx, visitor) {
     let opt = visitor.getString(ctx.option[0]);
     let label = visitor.getString(ctx.argument[0]);
@@ -25,6 +31,8 @@ let listOperatorPredicate = function (ctx, visitor) {
     let argType = visitor.getType(ctx.argument[0]);
     return (argType === 'choice');
 };
+// ===============================================================================
+
 
 export const blockspecifications = [
         {
@@ -1081,7 +1089,7 @@ export const blockspecifications = [
                 }, visitor.visit(ctx.argument[1])); // '_mouse_'
                 visitor.xml = visitor.xml.up();
             },
-            "predicate": function(ctx,visitor) {
+            "predicate": function (ctx, visitor) {
                 let argType = visitor.getType(ctx.argument[1]);
                 return (argType === 'choice');
             }
@@ -1100,7 +1108,139 @@ export const blockspecifications = [
             },
             "converter": universalBlockConverter
         },
+        {
+            "template": "when I receive %1",
+            "description": {
+                "type": "event_whenbroadcastreceived",
+                "args": [{
+                    "type": "field_variable",
+                    "name": "BROADCAST_OPTION",
+                    "variabletypes": ["broadcast_msg"],
+                    "variable": "message1"
+                }],
+                "shape": "hatblock"
+            },
+            "converter": messageBlockconverter
+        },
+        {
+            "template": "broadcast %1",
+            "description": {
+                "type": "event_broadcast",
+                "args": [{"type": "input_value", "name": "BROADCAST_INPUT"}],
+                "shape": "statement"
+            },
+            "converter": messageShadowBlockconverter
+        },
+        {
+            "template": "broadcast %1 and wait",
+            "description": {
+                "type": "event_broadcastandwait",
+                "args": [{"type": "input_value", "name": "BROADCAST_INPUT"}],
+                "shape": "statement"
+            },
+            "converter": messageShadowBlockconverter
+        },
+        {
+            "template": "set %1 to %2",
+            "description": {
+                "type": "data_setvariableto",
+                "args": [{"type": "field_variable", "name": "variable"}, {"type": "input_value", "name": "VALUE"}],
+                "shape": "statement"
+            },
+            "converter": variableBlockConverter
+        },
+        {
+            "template": "change %1 by %2",
+            "description": {
+                "type": "data_changevariableby",
+                "args": [{"type": "field_variable", "name": "variable"}, {"type": "input_value", "name": "VALUE"}],
+                "shape": "statement"
+            },
+            "converter": variableBlockConverter
+        },
 
+        {
+            "template": "add %1 to %2",
+            "description": {
+                "type": "data_addtolist",
+                "args": [{"type": "input_value", "name": "ITEM"}, {
+                    "type": "field_variable",
+                    "name": "LIST",
+                    "variabletypes": ["list"]
+                }],
+                "shape": "statement"
+            },
+            "converter": listBlockConverter
+        },
+        {
+            "template": "delete %1 of %2",
+            "description": {
+                "type": "data_deleteoflist",
+                "args": [{"type": "input_value", "name": "INDEX"}, {
+                    "type": "field_variable",
+                    "name": "LIST",
+                    "variabletypes": ["list"]
+                }],
+                "shape": "statement"
+            },
+            "converter": listBlockConverter
+        },
+        {
+            "template": "insert %1 at %2 of %3",
+            "description": {
+                "type": "data_insertatlist",
+                "args": [{"type": "input_value", "name": "ITEM"}, {
+                    "type": "input_value",
+                    "name": "INDEX"
+                }, {"type": "field_variable", "name": "LIST", "variabletypes": ["list"]}],
+                "shape": "statement"
+            },
+            "converter": listBlockConverter
+        },
+        {
+            "template": "replace item %1 of %2 with %3",
+            "description": {
+                "type": "data_replaceitemoflist",
+                "args": [{"type": "input_value", "name": "INDEX"}, {
+                    "type": "field_variable",
+                    "name": "LIST",
+                    "variabletypes": ["list"]
+                }, {"type": "input_value", "name": "ITEM"}],
+                "shape": "statement"
+            },
+            "converter": listBlockConverter
+        },
+        {
+            "template": "item %1 of %2",
+            "description": {
+                "type": "data_itemoflist",
+                "args": [{"type": "input_value", "name": "INDEX"}, {
+                    "type": "field_variable",
+                    "name": "LIST",
+                    "variabletypes": ["list"]
+                }],
+                "shape": "booleans"
+            },
+            "converter": listBlockConverter
+        },
+        {
+            "template": "show list %1",
+            "description": {
+                "type": "data_showlist",
+                "args": [{"type": "field_variable", "name": "LIST", "variabletypes": ["list"]}],
+                "shape": "statement"
+            },
+            "converter": listBlockConverter
+        },
+        {
+            "template": "hide list %1",
+            "description": {
+                "type": "data_hidelist",
+                "args": [{"type": "field_variable", "name": "LIST", "variabletypes": ["list"]}],
+                "shape": "statement"
+            },
+            "converter": listBlockConverter
+        },
 
 
     ]
