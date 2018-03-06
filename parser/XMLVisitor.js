@@ -39,6 +39,8 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
         this.xmlRoot = null;
         //first block in this xml
         this.firstBlock = null;
+        //placeholder in the beginning for variables
+        this.variablesTag = null;
 
         //location of the blocks
         this.location = coordinate;
@@ -99,14 +101,10 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
         //reset
         this.modus = 'stackblock';
         this.xml = builder.begin().ele('xml').att('xmlns', 'http://www.w3.org/1999/xhtml');
+        this.variablesTag = this.xml.ele('variables');
         this.xmlRoot = this.xml;
         this.visit(cst);
-        //insert variables
-        if (this.firstBlock) {
-            this.xml = this.firstBlock.insertBefore('variables');
-        } else {
-            this.xml = this.xmlRoot.ele('variables');
-        }
+        this.xml = this.variablesTag;
         for (let key in this.varMap) {
             if (this.varMap.hasOwnProperty(key)) {
                 this.xml.ele('variable', {
@@ -167,7 +165,7 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
             'name': 'SUBSTACK'
         }, ' ');
         this.visitSubStack(ctx.stack);
-        this.xml = this.xml.up()
+        this.xml = this.xml.up();
     }
 
 
@@ -222,7 +220,9 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
         this.xml = this.xml.up().ele('statement ', {
             'name': 'SUBSTACK'
         });
-        this.visitSubStack(ctx.stack); //when no index is given it is always 0
+        if(ctx.stack.length>0) {
+            this.visitSubStack(ctx.stack); //when no index is given it is always 0
+        }
         this.xml = this.xml.up();
         if (ctx.else.length !== 0) {
             this.visit(ctx.else);
@@ -233,7 +233,9 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
         this.xml = this.xml.ele('statement ', {
             'name': 'SUBSTACK2'
         });
-        this.visitSubStack(ctx.stack[0]);
+        if(ctx.stack.length>0) {
+            this.visitSubStack(ctx.stack[0]);
+        }
         this.xml = this.xml.up();
     }
 
@@ -269,7 +271,6 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
     }*/
 
     stackline$forever(ctx) {
-        console.log('here');
         this.visit(ctx.forever);
         if (!this.firstBlock) {
             this.firstBlock = this.xml;
@@ -448,6 +449,10 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
                 if (this.isTop) {
                     this.addLocationBelow(this.xml)
                 }
+                if (!this.firstBlock) {
+                    this.firstBlock = this.xml;
+                }
+                this.blockCounter++;
                 this.xml = this.xml.up();
             }
         } else { //what should be done if the block is unknown
@@ -476,6 +481,7 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
                 this.xml = this.xml.up();
             }
         }
+
         this.isTop = false
     }
 

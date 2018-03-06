@@ -31,7 +31,7 @@ window.onload = function () {
     //text
     let editor = document.getElementById('editor');
     editor.addEventListener('input', updateWorkspace);
-    editor.value = ' when greenflag clicked;move {456} steps;pen up;'//go to x: {0} y: {0};pen down;repeat (zijde);move {100} steps;turn cw {({360} /{(zijde)})} degrees;end;pen up'//'when gf clicked;repeat 10;pen up;' //'define BLUB {(d)} {<f>}'
+    editor.value = 'mimi {}';//' when greenflag clicked;move {456} steps;pen up;'//go to x: {0} y: {0};pen down;repeat (zijde);move {100} steps;turn cw {({360} /{(zijde)})} degrees;end;pen up'//'when gf clicked;repeat 10;pen up;' //'define BLUB {(d)} {<f>}'
     updateWorkspace();
 
     //button options
@@ -103,32 +103,21 @@ function addBlock(prototypeName, id, x, y) {
 }
 
 function insertSomeCodeFromXML() {
-    let xml = [
-        '<xml id="main_ws_blocks" style="display:none">',
-        '<block id="]){{Y!7N9ezN+j@Vr`8p" type="procedures_definition" x="25" y="25">',
-        '<statement name="custom_block">',
-        '<shadow type="procedures_prototype" id="caller_internal">',
-        '<mutation proccode="say %s %n times if %b" argumentnames="[&quot;something&quot;,&quot;this many&quot;,&quot;this is true&quot;]" argumentdefaults="[&quot;&quot;,1,false]" warp="false" argumentids="[&quot;a42&quot;, &quot;b23&quot;, &quot;c99&quot;]"/>',
-        '</shadow>',
-        '</statement>',
-        '<next>',
-        '<block id="caller_external" type="procedures_call">',
-        '<mutation proccode="say %s %n times if %b" argumentnames="[&quot;something&quot;,&quot;this many&quot;,&quot;this is true&quot;]" argumentdefaults="[&quot;&quot;,1,false]" warp="false" argumentids="[&quot;a42&quot;, &quot;b23&quot;, &quot;c99&quot;]"/>',
-        '<value name="something">',
-        '<shadow id="V0~M:TxRk0Ua%osjGzh," type="text">',
-        '<field name="TEXT">"tttt"</field>',
-        '</shadow>',
-        '</value>',
-        '<value name="input1">',
-        '<shadow id="uPx3si(KkbL1)-XpbXoQ" type="math_number">',
-        '<field name="NUM">20</field>',
-        '</shadow>',
-        '</value>',
-        '</block>',
-        '</next>',
-        '</block>',
+
+    let xml = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
+        '  <variables> \n' +
+        '    <variable type="arg" id="var08">a</variable>\n' +
+        '  </variables>\n' +
+        '  <block id="0" type="procedures_call" x="10" y="10">\n' +
+        '    <mutation proccode="sayaas %s" argumentnames="[&quot;a&quot;]" warp="false" argumentids="[&quot;var0&quot;]"/>\n' +
+        '    <value name="a">\n' +
+        '      <block type="data_variable" id="1" x="10" y="10">\n' +
+        '        <field name="VARIABLE" id="var0">a</field>\n' +
+        '      </block>\n' +
+        '    </value>\n' +
+        '    <next/>\n' +
+        '  </block>\n' +
         '</xml>'
-    ].join('\n');
     //console.log(xml);
     let dom = Blockly.Xml.textToDom(xml);
     Blockly.Xml.domToWorkspace(dom, workspace);
