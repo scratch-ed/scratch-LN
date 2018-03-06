@@ -1,8 +1,7 @@
 let blocks = {};
 export default blocks;
 
-//todo
-blocks["stop %1"] = function (ctx, visitor) {
+/*blocks["stop %1"] = function (ctx, visitor) {
     visitor.xml = visitor.xml.ele('block', {
         'id': visitor.getNextId(),
         'type': "control_stop"
@@ -13,7 +12,7 @@ blocks["stop %1"] = function (ctx, visitor) {
     }, visitor.visit(ctx.argument));
 
     visitor.xml = visitor.xml.up();
-};
+};*/
 
 
 

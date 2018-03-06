@@ -1065,8 +1065,8 @@ export const blockspecifications = [
                     "type": "field_dropdown",
                     "name": "PROPERTY",
                     "options": [["x position", "x position"], ["y position", "y position"], ["direction", "direction"], ["costume #", "costume #"], ["costume name", "costume name"], ["size", "size"], ["volume", "volume"], ["backdrop #", "backdrop #"], ["backdrop name", "backdrop name"]],
-                    'menu': 'sensing_of_object_menu'
-                }, {"type": "input_value", "name": "OBJECT"}],
+
+                }, {"type": "input_value", "name": "OBJECT",'menu': 'sensing_of_object_menu'}],
                 "shape": "booleans"
             },
             "converter": function (ctx, visitor) {
@@ -1241,7 +1241,31 @@ export const blockspecifications = [
             },
             "converter": listBlockConverter
         },
+// special case:stop
+        {
+            "template": "stop %1",
+            "description": {
+                "type": "control_stop",
+                "args": [
+                    {
+                        "type": "field_dropdown",
+                        "name": "STOP_OPTION",
+                    }],
+                "shape": "capblock",
+            },
+            "converter": function (ctx, visitor) {
+                visitor.xml = visitor.xml.ele('block', {
+                    'id': visitor.getNextId(),
+                    'type': "control_stop"
+                });
 
+                visitor.xml = visitor.xml.ele('field', {
+                    'name': "STOP_OPTION"
+                }, visitor.visit(ctx.argument));
+
+                visitor.xml = visitor.xml.up();
+            }
+        },
 
     ]
 ;
