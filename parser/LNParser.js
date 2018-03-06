@@ -180,11 +180,11 @@ export default class LNParser extends Parser {
                 $.SUBRULE($.stack);
             });
             $.OPTION4(() => {
-                $.SUBRULE($.else);
-            });
-            $.OPTION5(() => {
                 $.SUBRULE($.end);
             })
+            $.OPTION5(() => {
+                $.SUBRULE($.else);
+            });
         });
         $.RULE("else", () => {
             $.CONSUME(Else);
@@ -193,6 +193,9 @@ export default class LNParser extends Parser {
             });
             $.OPTION2(() => {
                 $.SUBRULE($.stack);
+            })
+            $.OPTION5(() => {
+                $.SUBRULE($.end);
             })
         });
 
