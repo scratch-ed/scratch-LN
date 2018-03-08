@@ -14,6 +14,7 @@ import AudioEngine from 'scratch-audio'
 import ScratchBlocks from 'scratch-blocks';
 import exampleJSON from './example'
 import parseTextToXML from "../parser/parserUtils";
+import generateText from './../generator/generator.js'
 
 const Scratch = {};
 
@@ -22,6 +23,7 @@ const loadProjectFromID = function () {
     if (id.length < 1 || !isFinite(id)) {
         //id = '187598405'; //cdjlogo
         id = '119615668'; //dino
+        //id = '194801841'; //memory
     }
     Scratch.vm.downloadProjectId(id);
 };
@@ -87,6 +89,84 @@ window.onload = function () {
         toJson();
     });
 
+    // Feed mouse events as VM I/O events.
+    document.addEventListener('mousemove', e => {
+        const rect = canvas.getBoundingClientRect();
+        const coordinates = {
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top,
+            canvasWidth: rect.width,
+            canvasHeight: rect.height
+        };
+        Scratch.vm.postIOData('mouse', coordinates);
+    });
+    canvas.addEventListener('mousedown', e => {
+        const rect = canvas.getBoundingClientRect();
+        const data = {
+            isDown: true,
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top,
+            canvasWidth: rect.width,
+            canvasHeight: rect.height
+        };
+        Scratch.vm.postIOData('mouse', data);
+        e.preventDefault();
+    });
+    canvas.addEventListener('mouseup', e => {
+        const rect = canvas.getBoundingClientRect();
+        const data = {
+            isDown: false,
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top,
+            canvasWidth: rect.width,
+            canvasHeight: rect.height
+        };
+        Scratch.vm.postIOData('mouse', data);
+        e.preventDefault();
+    });
+
+    // Receipt of new block XML for the selected target.
+    vm.on('workspaceUpdate', data => {
+        workspace.clear();
+        const dom = ScratchBlocks.Xml.textToDom(data.xml);
+        ScratchBlocks.Xml.domToWorkspace(dom, workspace);
+    });
+    document.getElementById('toxml').addEventListener('click', () => {
+        let dom = ScratchBlocks.Xml.workspaceToDom(workspace);
+        let text = new XMLSerializer().serializeToString(dom);
+        let editor = document.getElementById('editor_xml');
+        editor.value = text;
+    });
+    document.getElementById('totext').addEventListener('click', () => {
+        let text = generateText(workspace);
+        let editor = document.getElementById('editor_text');
+        editor.value = text;
+    });
+
+    // Receipt of new list of targets, selected target update.
+    const selectedTarget = document.getElementById('selectedTarget');
+    vm.on('targetsUpdate', data => {
+        // Clear select box.
+        while (selectedTarget.firstChild) {
+            selectedTarget.removeChild(selectedTarget.firstChild);
+        }
+        // Generate new select box.
+        for (let i = 0; i < data.targetList.length; i++) {
+            const targetOption = document.createElement('option');
+            targetOption.setAttribute('value', data.targetList[i].id);
+            // If target id matches editingTarget id, select it.
+            if (data.targetList[i].id === data.editingTarget) {
+                targetOption.setAttribute('selected', 'selected');
+            }
+            targetOption.appendChild(
+                document.createTextNode(data.targetList[i].name)
+            );
+            selectedTarget.appendChild(targetOption);
+        }
+    });
+    selectedTarget.onchange = function () {
+        vm.setEditingTarget(this.value);
+    };
     //start the vm: important
     vm.start();
 

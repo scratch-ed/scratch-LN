@@ -3,10 +3,11 @@
     <meta charset="utf-8">
     <style>
         #scratch-stage {
-            float:right;
+            float: right;
         }
-        #e{
-            float:left;
+
+        #e {
+            float: left;
             width: 500px
         }
     </style>
@@ -23,7 +24,16 @@
     </div>
     <div id="e">
         <div id="blocklyDiv"></div>
+        <select id="selectedTarget" multiple></select>
         <textarea id="editor"></textarea>
+        <div>
+            <button id="toxml">to xml</button>
+            <textarea id="editor_xml"></textarea>
+        </div>
+        <div>
+            <button id="totext">to text</button>
+            <textarea id="editor_text"></textarea>
+        </div>
     </div>
     <div>
         <canvas id="scratch-stage" style="width: 480px; height: 360px;"></canvas>

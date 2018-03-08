@@ -170,6 +170,12 @@ ScratchBlocks.text['procedures_call'] = function (block) {
     return procCode;
 };
 
+
+ScratchBlocks.text['procedures_definition'] = function (block) {
+    //let procCode = block.getProcCode();
+    //todo
+    return 'define ';//+procCode;
+};
 //========================================
 
 /**
