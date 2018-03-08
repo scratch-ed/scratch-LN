@@ -11,7 +11,9 @@ import VM from 'scratch-vm';
 import RenderWebGL from 'scratch-render'
 import Storage from 'scratch-storage'
 import AudioEngine from 'scratch-audio'
+import ScratchBlocks from 'scratch-blocks';
 import exampleJSON from './example'
+import parseTextToXML from "../parser/parserUtils";
 
 const Scratch = {};
 
@@ -30,12 +32,19 @@ const loadProjectFromJson = function(json){
 
 function toJson() {
     let json = Scratch.vm.toJSON();
-    editor=document.getElementById('editor');
+    let editor=document.getElementById('editor_json');
     editor.value=json;
 }
 
 window.onload = function () {
     const vm = new VM();
+
+    createEditor();
+    Scratch.workspace.addChangeListener(vm.blockListener);
+    Scratch.workspace.addChangeListener(vm.variableListener);
+    const flyoutWorkspace = Scratch.workspace.getFlyout().getWorkspace();
+    flyoutWorkspace.addChangeListener(vm.flyoutBlockListener);
+    flyoutWorkspace.addChangeListener(vm.monitorBlockListener);
 
     //init renderer
     const canvas = document.getElementById('scratch-stage');
@@ -52,6 +61,8 @@ window.onload = function () {
     //init audio
     const audioEngine = new AudioEngine();
     vm.attachAudioEngine(audioEngine);
+
+
 
     //store this objects because thats how they did it in the playground
     Scratch.vm = vm;
@@ -115,3 +126,49 @@ const getAssetUrl = function (asset) {
     return assetUrlParts.join('');
 };
 
+
+let workspace = null;
+
+const createEditor = function () {
+    workspace = ScratchBlocks.inject('blocklyDiv', {
+        toolbox: '<xml></xml>',
+        'scrollbars': true,
+        'trashcan': false,
+        'readOnly': false,
+        media: '/static/blocks-media/', //flag
+        colours: {
+            workspace: '#E0FFFF', //'#e0ffe9',
+        },
+        zoom: {
+            controls: true,
+            wheel: true,
+            startScale: 0.75,
+            maxScale: 4,
+            minScale: 0.25,
+            scaleSpeed: 1.1
+        }
+    });
+
+    Scratch.workspace = workspace;
+
+    ScratchBlocks.mainWorkspace.getFlyout().hide();
+    let blocklyDiv = document.getElementById('blocklyDiv');
+    blocklyDiv.style.width = '100%';
+    blocklyDiv.style.height = '50%';
+    ScratchBlocks.svgResize(workspace);
+
+    let editor = document.getElementById('editor');
+    editor.addEventListener('input', updateWorkspace);
+};
+
+function updateWorkspace() {
+    //make xml
+    let text = editor.value;
+    let xml = parseTextToXML(text);
+    if (xml) { //clear workspace
+        workspace.clear();
+        //add to workspace
+        let dom = Blockly.Xml.textToDom(xml);
+        Blockly.Xml.domToWorkspace(dom, workspace)
+    }
+}

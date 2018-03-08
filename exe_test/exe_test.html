@@ -1,18 +1,29 @@
-<!doctype html>
-
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <style>
+        #scratch-stage {
+            float:right;
+        }
+        #e{
+            float:left;
+            width: 500px
+        }
+    </style>
 </head>
 <body>
 <script src="./exe_test.js"></script>
 
 <div id="vm-devtools">
-    <textarea id="editor"></textarea>
+    <textarea id="editor_json"></textarea>
     <div id="projectButtons">
         <button id="greenflag">Green flag</button>
         <button id="stopall">Stop</button>
         <button id="toJson">toJson</button>
+    </div>
+    <div id="e">
+        <div id="blocklyDiv"></div>
+        <textarea id="editor"></textarea>
     </div>
     <div>
         <canvas id="scratch-stage" style="width: 480px; height: 360px;"></canvas>
