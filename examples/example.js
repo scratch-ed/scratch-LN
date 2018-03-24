@@ -2,6 +2,7 @@ import $ from "jquery";
 import {stackGlow,glowBlock,report,changeValue} from "./../webtools/scratchify.js"
 import scratchify from './../webtools/scratchify.js';
 
+
 $(document).ready(function() {
     scratchify();
 });
@@ -27,18 +28,25 @@ $(document).ready(function() {
             $target.show();
         }
     });
-    
+    $('#activate-step-A').click(function(e)
+    {
+        e.preventDefault();
+    });
+    $('#activate-step-A').on('click', function(e) {
+        //$('ul.setup-panel li:eq(1)').removeClass('disabled');
+        $('ul.setup-panel li a[href="#step-A"]').trigger('click');
+        //$(this).remove();
+    });
     //$('ul.setup-panel li.active a').trigger('click');
     $('#activate-step-1').click(function(e)
     {
         e.preventDefault();
-    })
+    });
     $('#activate-step-1').on('click', function(e) {
         //$('ul.setup-panel li:eq(1)').removeClass('disabled');
         $('ul.setup-panel li a[href="#step-1"]').trigger('click');
         //$(this).remove();
-    })
-
+    });
     $('#activate-step-2').click(function(e)
     {
         e.preventDefault();

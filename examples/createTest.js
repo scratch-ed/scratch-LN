@@ -1,22 +1,21 @@
 /**
- * Tests reandering a scratch project.
+ * Summary.
  *
- * This is mostly copy paste from scratch-vm playground test
- * http://localhost:8008/exe_test.html
+ * Description.
  *
- * @file   This files tests creation of a vm and renderer and reading a project from JSON.
+ * @file   This files defines the MyClass class.
  * @author Ellen Vanhove.
  */
+
 import VM from 'scratch-vm';
 import RenderWebGL from 'scratch-render'
 import Storage from 'scratch-storage'
 import AudioEngine from 'scratch-audio'
 import ScratchBlocks from 'scratch-blocks';
-import exampleJSON from './example'
-import parseTextToXML from "../parser/parserUtils";
-import generateText from './../generator/generator.js'
+
 
 const Scratch = {};
+
 
 const loadProjectFromID = function () {
     let id = location.hash.substring(1);
@@ -80,15 +79,12 @@ window.onload = function () {
 
 
     //buttons
-    document.getElementById('greenflag').addEventListener('click', () => {
-        vm.greenFlag();
-    });
-    document.getElementById('stopall').addEventListener('click', () => {
-        vm.stopAll();
-    });
-    document.getElementById('toJson').addEventListener('click', () => {
-        toJson();
-    });
+    // document.getElementById('greenflag').addEventListener('click', () => {
+    //     vm.greenFlag();
+    // });
+    // document.getElementById('stopall').addEventListener('click', () => {
+    //     vm.stopAll();
+    // });
 
     // Feed mouse events as VM I/O events.
     document.addEventListener('mousemove', e => {
@@ -126,48 +122,12 @@ window.onload = function () {
         e.preventDefault();
     });
 
-    // Receipt of new block XML for the selected target.
     vm.on('workspaceUpdate', data => {
         workspace.clear();
         const dom = ScratchBlocks.Xml.textToDom(data.xml);
         ScratchBlocks.Xml.domToWorkspace(dom, workspace);
     });
-    document.getElementById('toxml').addEventListener('click', () => {
-        let dom = ScratchBlocks.Xml.workspaceToDom(workspace);
-        let text = new XMLSerializer().serializeToString(dom);
-        let editor = document.getElementById('editor_xml');
-        editor.value = text;
-    });
-    document.getElementById('totext').addEventListener('click', () => {
-        let text = generateText(workspace);
-        let editor = document.getElementById('editor_text');
-        editor.value = text;
-    });
 
-    // Receipt of new list of targets, selected target update.
-    const selectedTarget = document.getElementById('selectedTarget');
-    vm.on('targetsUpdate', data => {
-        // Clear select box.
-        while (selectedTarget.firstChild) {
-            selectedTarget.removeChild(selectedTarget.firstChild);
-        }
-        // Generate new select box.
-        for (let i = 0; i < data.targetList.length; i++) {
-            const targetOption = document.createElement('option');
-            targetOption.setAttribute('value', data.targetList[i].id);
-            // If target id matches editingTarget id, select it.
-            if (data.targetList[i].id === data.editingTarget) {
-                targetOption.setAttribute('selected', 'selected');
-            }
-            targetOption.appendChild(
-                document.createTextNode(data.targetList[i].name)
-            );
-            selectedTarget.appendChild(targetOption);
-        }
-    });
-    selectedTarget.onchange = function () {
-        vm.setEditingTarget(this.value);
-    };
     //start the vm: important
     vm.start();
 
@@ -218,7 +178,7 @@ const createEditor = function () {
         'readOnly': false,
         media: '/static/blocks-media/', //flag
         colours: {
-            workspace: '#E0FFFF', //'#e0ffe9',
+            //workspace: '#E0FFFF', //'#e0ffe9',
         },
         zoom: {
             controls: true,
@@ -234,22 +194,8 @@ const createEditor = function () {
 
     ScratchBlocks.mainWorkspace.getFlyout().hide();
     let blocklyDiv = document.getElementById('blocklyDiv');
-    blocklyDiv.style.width = '100%';
-    blocklyDiv.style.height = '50%';
+    blocklyDiv.style.width = '30%';
+    blocklyDiv.style.height = '360px';
     ScratchBlocks.svgResize(workspace);
 
-    let editor = document.getElementById('editor');
-    editor.addEventListener('input', updateWorkspace);
 };
-
-function updateWorkspace() {
-    //make xml
-    let text = editor.value;
-    let xml = parseTextToXML(text);
-    if (xml) { //clear workspace
-        workspace.clear();
-        //add to workspace
-        let dom = Blockly.Xml.textToDom(xml);
-        Blockly.Xml.domToWorkspace(dom, workspace)
-    }
-}
