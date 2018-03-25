@@ -10,6 +10,7 @@ import {tokenMatcher} from 'chevrotain'
 import builder from 'xmlbuilder';
 import blocks from './blocks';
 import {lnparser} from "./LNParser";
+
 const lntokens = require("./LNLexer");
 let NumberLiteral = lntokens.NumberLiteral;
 let ColorLiteral = lntokens.ColorLiteral;
@@ -125,26 +126,8 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
         this.xml = head;
     }
 
-    scripts(ctx) {
-        for (let i = 0; i < ctx.multipleStacks.length; i++) {
-            this.visit(ctx.multipleStacks[i])
-        }
-        for (let i = 0; i < ctx.reporterblock.length; i++) {
-            this.isTop = true;
-            this.visit(ctx.reporterblock[i]);
-            this.addLocationBelow(this.xml);
-            this.scriptCounter++;
-        }
-        for (let i = 0; i < ctx.booleanblock.length; i++) {
-            this.isTop = true;
-            this.visit(ctx.booleanblock[i]);
-            this.addLocationBelow(this.xml);
-            this.scriptCounter++;
-        }
-    }
-
     multipleStacks(ctx) {
-        for (let i = 0; i < ctx.stack.length; i++) {
+        for (let i = 0; ctx.stack && i < ctx.stack.length; i++) {
             this.isTop = true;
             this.visit(ctx.stack[i]);
             this.addLocationBelow(this.xml);
@@ -200,7 +183,7 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
     }
 
     ifelse(ctx) {
-        if (ctx.else.length === 0) {
+        if (!ctx.else || ctx.else.length === 0) {
             this.xml = this.xml.ele('block', {
                 'type': 'control_if',
                 'id': this.getNextId(),
@@ -220,11 +203,11 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
         this.xml = this.xml.up().ele('statement ', {
             'name': 'SUBSTACK'
         });
-        if(ctx.stack.length>0) {
+        if (ctx.stack && ctx.stack.length > 0) {
             this.visitSubStack(ctx.stack); //when no index is given it is always 0
         }
         this.xml = this.xml.up();
-        if (ctx.else.length !== 0) {
+        if (ctx.else && ctx.else.length !== 0) {
             this.visit(ctx.else);
         }
     }
@@ -233,18 +216,18 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
         this.xml = this.xml.ele('statement ', {
             'name': 'SUBSTACK2'
         });
-        if(ctx.stack.length>0) {
+        if (ctx.stack && ctx.stack.length > 0) {
             this.visitSubStack(ctx.stack[0]);
         }
         this.xml = this.xml.up();
     }
 
     stack(ctx) {
-        for (let i = 0; i < ctx.stackline.length; i++) {
+        for (let i = 0; ctx.stackline && i < ctx.stackline.length; i++) {
             this.visit(ctx.stackline[i]);
             this.xml = this.xml.ele('next');
         }
-        for (let i = 0; i < ctx.stackline.length - 1; i++) {
+        for (let i = 0;ctx.stackline && i <  ctx.stackline.length - 1; i++) {
             this.xml = this.xml.up().up();
         }
         this.xml = this.xml.up(); //End with blocks open so that insertbefore works #hacky
@@ -272,41 +255,26 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
 
     stackline$forever(ctx) {
         this.visit(ctx.forever);
-        if (!this.firstBlock) {
-            this.firstBlock = this.xml;
-        }
         this.blockCounter++;
     }
 
     stackline$repeat(ctx) {
         this.visit(ctx.repeat);
-        if (!this.firstBlock) {
-            this.firstBlock = this.xml;
-        }
         this.blockCounter++;
     }
 
     stackline$repeatuntil(ctx) {
         this.visit(ctx.repeatuntil);
-        if (!this.firstBlock) {
-            this.firstBlock = this.xml;
-        }
         this.blockCounter++;
     }
 
     stackline$ifelse(ctx) {
         this.visit(ctx.ifelse);
-        if (!this.firstBlock) {
-            this.firstBlock = this.xml;
-        }
         this.blockCounter++;
     }
 
     stackline$block(ctx) {
         this.visit(ctx.block);
-        if (!this.firstBlock) {
-            this.firstBlock = this.xml;
-        }
         this.blockCounter++;
     }
 
@@ -314,16 +282,16 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
     makeMatchString(ctx) {
         let matchString = '';
         let a = 0;
-        for (let i = 0; i < ctx.Label.length; i++) {
-            if (a < ctx.argument.length) {
-                while (a < ctx.argument.length && this.getOffsetArgument(ctx.argument[a]) < ctx.Label[i].startOffset) {
+        for (let i = 0; ctx.Identifier && i < ctx.Identifier.length; i++) {
+            if (ctx.argument && a < ctx.argument.length) {
+                while (a < ctx.argument.length && this.getOffsetArgument(ctx.argument[a]) < ctx.Identifier[i].startOffset) {
                     matchString += ' %' + (a + 1) + ' ';
                     ++a;
                 }
             }
-            matchString += ' ' + ctx.Label[i].image + ' ';
+            matchString += ' ' + ctx.Identifier[i].image + ' ';
         }
-        for (a; a < ctx.argument.length; a++) {
+        for (a; ctx.argument && a < ctx.argument.length; a++) {
             matchString += ' %' + (a + 1) + ' ';
         }
         return this.cleanupText(matchString)
@@ -351,7 +319,7 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
             let index = m[1] - 1;
             return thisVisitor.getPlaceholder(ctx.argument[index])
         });
-        for (let i = 0; i < ctx.argument.length; i++) {
+        for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
             //make names
             //hier was iets raar...
             let name = this.getString(ctx.argument[i])
@@ -401,7 +369,7 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
 
     generateReporterBlock(ctx, matchString) {
         let varID = this.getVariableID(matchString);
-        if (this.getString(ctx.option[0]) === 'list') {
+        if (ctx.option && this.getString(ctx.option[0]) === 'list') {
             this.xml = this.xml.ele('block', {
                 'type': 'data_listcontents',
                 'id': this.getNextId(),
@@ -486,13 +454,13 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
     }
 
     argument(ctx) { //return is necessary for menu..
-        if (ctx.primitive.length > 0) {
+        if (ctx.primitive && ctx.primitive.length > 0) {
             return this.visit(ctx.primitive)
-        } else if (ctx.reporterblock.length > 0) {
+        } else if (ctx.reporterblock && ctx.reporterblock.length > 0) {
             return this.visit(ctx.reporterblock)
-        } else if (ctx.booleanblock.length > 0) {
+        } else if (ctx.booleanblock && ctx.booleanblock.length > 0) {
             return this.visit(ctx.booleanblock)
-        } else if (ctx.choice.length > 0) {
+        } else if (ctx.choice && ctx.choice.length > 0) {
             return this.visit(ctx.choice)
         } else {
             //empty
@@ -501,7 +469,7 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
 
     getString(ctx) {
         if (ctx) {
-            let o = this.infoVisitor.visit(ctx)
+            let o = this.infoVisitor.visit(ctx);
             return o.text
         } else {
             return ''
@@ -536,21 +504,25 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
             console.log('This should not happen');
             return Number.MAX_SAFE_INTEGER; //avoid infinite loop
         }
-        let child = this.infoVisitor.visit(arg)
+        let child = this.infoVisitor.visit(arg);
         return child.offset
     }
 
     choice(ctx) {
         //todo: try to remove this because it is inconsistent that here is the only return...
         //console.log('nah')
-        if (ctx.Label[0]) {
-            return ctx.Label[0].image;
+        if (ctx.Identifier[0]) {
+            return ctx.Identifier[0].image;
         } else {
             return ""
         }
     }
 
     option(ctx) {
+
+    }
+
+    id(ctx) {
 
     }
 
@@ -562,21 +534,21 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
                 'id': this.getNextId(),
             }).ele('field', {
                 'name': 'NUM',
-            }, ctx.Literal[0].image)
+            }, ctx.Literal[0].image);
         } else if (tokenMatcher(ctx.Literal[0], ColorLiteral)) {
             this.xml.ele('shadow', {
                 'type': 'colour_picker',
                 'id': this.getNextId(),
             }).ele('field', {
                 'name': 'COLOUR',
-            }, ctx.Literal[0].image)
+            }, ctx.Literal[0].image);
         } else {
             this.xml.ele('shadow', {
                 'type': 'text',
                 'id': this.getNextId(),
             }).ele('field', {
                 'name': 'TEXT',
-            }, ctx.Literal[0].image)
+            }, ctx.Literal[0].image);
 
         }
         return ctx.Literal[0].image;

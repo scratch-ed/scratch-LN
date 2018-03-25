@@ -65,7 +65,7 @@ describe('variables int', function() {
 
     describe('build in vars', function() {
         it('should return valid xml', function() {
-            let parsed = parseTextToXML('(costume [number])(backdrop [number])(size)');
+            let parsed = parseTextToXML('(costume [number]);(backdrop [number]);(size)');
             let expected = '<xml xmlns="http://www.w3.org/1999/xhtml" x="10" y="210">\n' +
                 '  <variables/>\n' +
                 '  <block id="0" type="looks_costumenumbername" x="10" y="10">\n' +

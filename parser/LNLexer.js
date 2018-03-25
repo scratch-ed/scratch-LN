@@ -8,13 +8,13 @@
  */
 import { Token, Lexer, createToken } from "chevrotain"
 
-export const Label = createToken({
-    name: "Label",
+export const Identifier = createToken({
+    name: "Identifier",
     pattern:
     //not [] {} () " :: ; \n # unless escaped
     // : followed by not : or in the end
     //    /(:?[^\{\(\)\}\<\>\[\]:;\\"\n#]|\\[\{\(\)\}\<\>\[\]:;\\"\n#])+:?/,
-        /(:?[^\{\(\)\}\<\>\[\]:;\\"\n#]|\\[\{\(\)\}\<\>\[\]:;\\"\n#])+/,
+        /(:?[^\{\(\)\}\<\>\[\]:;\\"\n#@]|\\[\{\(\)\}\<\>\[\]:;\\"\n#@])+/,
     line_breaks: true
 });
 
@@ -63,6 +63,11 @@ export const DoubleColon = createToken({
     pattern: /::/
 });
 
+export const ID = createToken({
+    name: "ID",
+    pattern: /@[a-zA-Z0-9_]*/
+});
+
 export const Literal = createToken({
     name: "Literal",
     pattern: Lexer.NA
@@ -77,7 +82,7 @@ export const StringLiteral = createToken({
 export const NumberLiteral = createToken({
     name: "NumberLiteral",
     pattern: /-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?/,
-    categories: [Literal, Label]
+    categories: [Literal, Identifier]
 });
 
 export const ColorLiteral = createToken({
@@ -88,38 +93,38 @@ export const ColorLiteral = createToken({
 
 export const Forever = createToken({
     name: "Forever",
-    pattern: /forever/,
+    pattern: / *forever */,
 });
 
 export const End = createToken({
     name: "End",
-    pattern: /end/,
+    pattern: / *end */,
 });
 
 export const Then = createToken({
     name: "Then",
-    pattern: /then/,
+    pattern: / *then */,
 });
 
 export const Repeat = createToken({
     name: "Repeat",
-    pattern: /repeat/,
+    pattern: / *repeat */,
 });
 
 export const If = createToken({
     name: "If",
-    pattern: /if/
+    pattern: / *if */
 });
 
 export const Else = createToken({
     name: "Else",
-    pattern: /else/,
+    pattern: / *else */,
 });
 
-export const Until = createToken({
-    name: "Until",
-    pattern: /until/,
-    categories: Label //because this word occurs in 'until done', should not be a problem as it is never first
+export const RepeatUntil = createToken({
+    name: "RepeatUntil",
+    pattern: / *repeat *until */,
+    //categories: Label //because this word occurs in 'until done', should not be a problem as it is never first
 });
 
 // marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
@@ -139,14 +144,14 @@ export const StatementTerminator = createToken({
 export const allTokens = [
     WhiteSpace,
     Literal, StringLiteral, NumberLiteral, ColorLiteral,
-    Forever, End, Until, Repeat, If, Else, Then,
+    Forever, End, RepeatUntil, Repeat, If, Else, Then,
     StatementTerminator,
-    Label,
+    Identifier,
     LCurlyBracket, RCurlyBracket,
     LRoundBracket, RRoundBracket,
     RAngleBracket, LAngleBracket,
     LSquareBracket, RSquareBracket,
-    DoubleColon,
+    DoubleColon,ID
 ];
 
 export const LNLexer = new Lexer(allTokens);
