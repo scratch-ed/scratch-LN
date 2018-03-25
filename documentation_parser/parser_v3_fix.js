@@ -13,7 +13,7 @@
         //not [] {} () " :: ; \n # unless escaped
         // : followed by not : or in the end
         //    /(:?[^\{\(\)\}\<\>\[\]:;\\"\n#]|\\[\{\(\)\}\<\>\[\]:;\\"\n#])+:?/,
-            /(:?[^\{\(\)\}\<\>\[\]:;\\"\n#]|\\[\{\(\)\}\<\>\[\]:;\\"\n#])+/,
+            /(:?[^\{\(\)\}\<\>\[\]:;\\"\n#@]|\\[\{\(\)\}\<\>\[\]:;\\"\n#@])+/,
         line_breaks: true
     });
 
@@ -64,7 +64,7 @@
 
     const ID = createToken({
         name: "ID",
-        pattern: /#[a-zA-Z0-9_]*/
+        pattern: /@[a-zA-Z0-9_]*/
     });
 
     const Literal = createToken({
@@ -87,7 +87,7 @@
     const ColorLiteral = createToken({
         name: "ColorLiteral",
         pattern: /#[0-9a-z]{6}/,
-        categories: [Literal,ID]
+        categories: [Literal]
     });
 
     const Forever = createToken({
