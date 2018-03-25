@@ -25,10 +25,12 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
                     x: 0,
                     y: 1
                 },
+                addLocation = true,
                 increase = {
                     x: 75,
                     y: 100
-                }) {
+                }
+                ) {
         super();
         // This helper will detect any missing or redundant methods on this visitor
         this.validateVisitor();
@@ -46,6 +48,7 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
         //location of the blocks
         this.location = coordinate;
         this.increase = increase;
+        this.addLocation = addLocation;
 
         //what kind of blocks should we build now? top, reporter, stack or boolean?
         //top = the first block in a stack, can be a stack or hat block
@@ -88,13 +91,15 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
 
 
     addLocationBelow(xmlElement) {
-        xmlElement.att('x', this.location.x);
-        if (this.prevBlockCounter === 0) {
-            xmlElement.att('y', this.location.y);
-            this.prevBlockCounter = this.blockCounter;
-        } else {
-            xmlElement.att('y', this.location.y + this.increase.y * this.prevBlockCounter);
-            this.prevBlockCounter = this.blockCounter;
+        if (this.addLocation) {
+            xmlElement.att('x', this.location.x);
+            if (this.prevBlockCounter === 0) {
+                xmlElement.att('y', this.location.y);
+                this.prevBlockCounter = this.blockCounter;
+            } else {
+                xmlElement.att('y', this.location.y + this.increase.y * this.prevBlockCounter);
+                this.prevBlockCounter = this.blockCounter;
+            }
         }
     }
 

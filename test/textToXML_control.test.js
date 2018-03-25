@@ -45,27 +45,27 @@ describe('control blocks', function() {
                 '\n' +
                 'broadcast [message1];\n' +
                 '\n' +
-                'broadcast [message1] and wait');
+                'broadcast [message1] and wait',false);
 
             let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
                 '  <variables>\n' +
                 '    <variable type="broadcast_msg" id="var0">message1</variable>\n' +
                 '  </variables>\n' +
-                '  <block id="0" type="event_whenflagclicked" x="10" y="10">\n' +
+                '  <block id="0" type="event_whenflagclicked">\n' +
                 '    <next/>\n' +
                 '  </block>\n' +
-                '  <block id="1" type="event_whenkeypressed" x="10" y="110">\n' +
+                '  <block id="1" type="event_whenkeypressed">\n' +
                 '    <field name="KEY_OPTION">space</field>\n' +
                 '    <next/>\n' +
                 '  </block>\n' +
-                '  <block id="2" type="event_whenthisspriteclicked" x="10" y="210">\n' +
+                '  <block id="2" type="event_whenthisspriteclicked">\n' +
                 '    <next/>\n' +
                 '  </block>\n' +
-                '  <block id="3" type="event_whenbackdropswitchesto" x="10" y="310">\n' +
+                '  <block id="3" type="event_whenbackdropswitchesto">\n' +
                 '    <field name="BACKDROP">backdrop 1</field>\n' +
                 '    <next/>\n' +
                 '  </block>\n' +
-                '  <block id="4" type="event_whengreaterthan" x="10" y="410">\n' +
+                '  <block id="4" type="event_whengreaterthan" >\n' +
                 '    <field name="WHENGREATERTHANMENU">timer</field>\n' +
                 '    <value name="VALUE">\n' +
                 '      <shadow type="math_number" id="5">\n' +
@@ -74,11 +74,11 @@ describe('control blocks', function() {
                 '    </value>\n' +
                 '    <next/>\n' +
                 '  </block>\n' +
-                '  <block id="6" type="event_whenbroadcastreceived" x="10" y="510">\n' +
+                '  <block id="6" type="event_whenbroadcastreceived">\n' +
                 '    <field name="BROADCAST_OPTION" variabletype="broadcast_msg" id="var0">message1</field>\n' +
                 '    <next/>\n' +
                 '  </block>\n' +
-                '  <block id="7" type="event_broadcast" x="10" y="610">\n' +
+                '  <block id="7" type="event_broadcast">\n' +
                 '    <value name="BROADCAST_INPUT">\n' +
                 '      <shadow type="event_broadcast_menu">\n' +
                 '        <field name="BROADCAST_OPTION" variabletype="broadcast_msg" id="var0">message1</field>\n' +
@@ -86,7 +86,7 @@ describe('control blocks', function() {
                 '    </value>\n' +
                 '    <next/>\n' +
                 '  </block>\n' +
-                '  <block id="8" type="event_broadcastandwait" x="10" y="710">\n' +
+                '  <block id="8" type="event_broadcastandwait">\n' +
                 '    <value name="BROADCAST_INPUT">\n' +
                 '      <shadow type="event_broadcast_menu">\n' +
                 '        <field name="BROADCAST_OPTION" variabletype="broadcast_msg" id="var0">message1</field>\n' +
@@ -112,22 +112,11 @@ describe('control blocks', function() {
                 '\n' +
                 'create clone of [myself]\n' +
                 '\n' +
-                'delete this clone');
-            console.log('\n' +
-                'wait {1} seconds\n' +
-                '\n' +
-                'wait until {<aa>}\n' +
-                '\n' +
-                'stop [all]\n' +
-                '\n' +
-                'when I start as a clone\n' +
-                '\n' +
-                'create clone of [myself]\n' +
-                '\n' +
-                'delete this clone')
+                'delete this clone',false);
+
             let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
                 '  <variables/>\n' +
-                '  <block id="0" type="control_wait" x="10" y="10">\n' +
+                '  <block id="0" type="control_wait">\n' +
                 '    <value name="DURATION">\n' +
                 '      <shadow type="math_number" id="1">\n' +
                 '        <field name="NUM">1</field>\n' +
@@ -135,20 +124,20 @@ describe('control blocks', function() {
                 '    </value>\n' +
                 '    <next/>\n' +
                 '  </block>\n' +
-                '  <block id="2" type="control_wait_until" x="10" y="110">\n' +
+                '  <block id="2" type="control_wait_until">\n' +
                 '    <value name="CONDITION">\n' +
-                '      <block type="extension_wedo_boolean" id="3" x="10" y="110"/>\n' +
+                '      <block type="extension_wedo_boolean" id="3"/>\n' +
                 '    </value>\n' +
                 '    <next/>\n' +
                 '  </block>\n' +
-                '  <block id="4" type="control_stop" x="10" y="310">\n' +
+                '  <block id="4" type="control_stop">\n' +
                 '    <field name="STOP_OPTION">all</field>\n' +
                 '    <next/>\n' +
                 '  </block>\n' +
-                '  <block id="5" type="control_start_as_clone" x="10" y="410">\n' +
+                '  <block id="5" type="control_start_as_clone">\n' +
                 '    <next/>\n' +
                 '  </block>\n' +
-                '  <block id="6" type="control_create_clone_of" x="10" y="510">\n' +
+                '  <block id="6" type="control_create_clone_of">\n' +
                 '    <value name="CLONE_OPTION">\n' +
                 '      <shadow type="control_create_clone_of_menu">\n' +
                 '        <field name="CLONE_OPTION">myself</field>\n' +
@@ -156,7 +145,7 @@ describe('control blocks', function() {
                 '    </value>\n' +
                 '    <next/>\n' +
                 '  </block>\n' +
-                '  <block id="7" type="control_delete_this_clone" x="10" y="610">\n' +
+                '  <block id="7" type="control_delete_this_clone">\n' +
                 '    <next/>\n' +
                 '  </block>\n' +
                 '</xml>';

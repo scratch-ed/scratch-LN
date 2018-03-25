@@ -33,12 +33,12 @@ describe('variables int', function() {
     it('should return valid xml', function() {
         let parsed = parseTextToXML(
             'change [a] by {1};\n' +
-            'change [a] by {(a)}');
+            'change [a] by {(a)}',false);
         let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
             '  <variables>\n' +
             '    <variable type="" id="var0">a</variable>\n' +
             '  </variables>\n' +
-            '  <block id="0" type="data_changevariableby" x="10" y="10">\n' +
+            '  <block id="0" type="data_changevariableby">\n' +
             '    <field name="VARIABLE">a</field>\n' +
             '    <value name="VALUE">\n' +
             '      <shadow type="math_number" id="1">\n' +

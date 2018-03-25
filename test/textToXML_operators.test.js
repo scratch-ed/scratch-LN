@@ -65,10 +65,10 @@ describe('operators', function() {
             '\n' +
             'round {2.22}\n' +
             '\n' +
-            ' [abs] of {-1}');
+            ' [abs] of {-1}',false);
         let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
             '  <variables/>\n' +
-            '  <block id="0" type="operator_add" x="10" y="10">\n' +
+            '  <block id="0" type="operator_add">\n' +
             '    <value name="NUM1">\n' +
             '      <shadow type="math_number" id="1">\n' +
             '        <field name="NUM">1</field>\n' +
@@ -81,7 +81,7 @@ describe('operators', function() {
             '    </value>\n' +
             '    <next/>\n' +
             '  </block>\n' +
-            '  <block id="3" type="operator_subtract" x="10" y="110">\n' +
+            '  <block id="3" type="operator_subtract">\n' +
             '    <value name="NUM1">\n' +
             '      <shadow type="math_number" id="4">\n' +
             '        <field name="NUM">1</field>\n' +
@@ -94,7 +94,7 @@ describe('operators', function() {
             '    </value>\n' +
             '    <next/>\n' +
             '  </block>\n' +
-            '  <block id="6" type="operator_multiply" x="10" y="210">\n' +
+            '  <block id="6" type="operator_multiply" >\n' +
             '    <value name="NUM1">\n' +
             '      <shadow type="math_number" id="7">\n' +
             '        <field name="NUM">1</field>\n' +
@@ -107,7 +107,7 @@ describe('operators', function() {
             '    </value>\n' +
             '    <next/>\n' +
             '  </block>\n' +
-            '  <block id="9" type="operator_divide" x="10" y="310">\n' +
+            '  <block id="9" type="operator_divide" >\n' +
             '    <value name="NUM1">\n' +
             '      <shadow type="math_number" id="10">\n' +
             '        <field name="NUM">1</field>\n' +
@@ -120,7 +120,7 @@ describe('operators', function() {
             '    </value>\n' +
             '    <next/>\n' +
             '  </block>\n' +
-            '  <block id="12" type="operator_random" x="10" y="410">\n' +
+            '  <block id="12" type="operator_random" >\n' +
             '    <value name="FROM">\n' +
             '      <shadow type="math_number" id="13">\n' +
             '        <field name="NUM">1</field>\n' +
@@ -133,7 +133,7 @@ describe('operators', function() {
             '    </value>\n' +
             '    <next/>\n' +
             '  </block>\n' +
-            '  <block id="15" type="operator_lt" x="10" y="510">\n' +
+            '  <block id="15" type="operator_lt">\n' +
             '    <value name="OPERAND1">\n' +
             '      <shadow type="math_number" id="16">\n' +
             '        <field name="NUM">1</field>\n' +
@@ -146,7 +146,7 @@ describe('operators', function() {
             '    </value>\n' +
             '    <next/>\n' +
             '  </block>\n' +
-            '  <block id="18" type="operator_gt" x="10" y="610">\n' +
+            '  <block id="18" type="operator_gt"> \n' +
             '    <value name="OPERAND1">\n' +
             '      <shadow type="math_number" id="19">\n' +
             '        <field name="NUM">1</field>\n' +
@@ -159,7 +159,7 @@ describe('operators', function() {
             '    </value>\n' +
             '    <next/>\n' +
             '  </block>\n' +
-            '  <block id="21" type="operator_equals" x="10" y="710">\n' +
+            '  <block id="21" type="operator_equals">\n' +
             '    <value name="OPERAND1">\n' +
             '      <shadow type="math_number" id="22">\n' +
             '        <field name="NUM">1</field>\n' +
@@ -172,21 +172,21 @@ describe('operators', function() {
             '    </value>\n' +
             '    <next/>\n' +
             '  </block>\n' +
-            '  <block id="24" type="operator_and" x="10" y="810">\n' +
+            '  <block id="24" type="operator_and">\n' +
             '    <value name="OPERAND1"/>\n' +
             '    <value name="OPERAND2"/>\n' +
             '    <next/>\n' +
             '  </block>\n' +
-            '  <block id="25" type="operator_or" x="10" y="910">\n' +
+            '  <block id="25" type="operator_or" >\n' +
             '    <value name="OPERAND1"/>\n' +
             '    <value name="OPERAND2"/>\n' +
             '    <next/>\n' +
             '  </block>\n' +
-            '  <block id="26" type="operator_not" x="10" y="1010">\n' +
+            '  <block id="26" type="operator_not" >\n' +
             '    <value name="OPERAND"/>\n' +
             '    <next/>\n' +
             '  </block>\n' +
-            '  <block id="27" type="operator_join" x="10" y="1110">\n' +
+            '  <block id="27" type="operator_join" >\n' +
             '    <value name="STRING1">\n' +
             '      <shadow type="text" id="28">\n' +
             '        <field name="TEXT">"hello"</field>\n' +
@@ -199,7 +199,7 @@ describe('operators', function() {
             '    </value>\n' +
             '    <next/>\n' +
             '  </block>\n' +
-            '  <block id="30" type="operator_letter_of" x="10" y="1210">\n' +
+            '  <block id="30" type="operator_letter_of">\n' +
             '    <value name="LETTER">\n' +
             '      <shadow type="math_number" id="31">\n' +
             '        <field name="NUM">1</field>\n' +
@@ -212,7 +212,7 @@ describe('operators', function() {
             '    </value>\n' +
             '    <next/>\n' +
             '  </block>\n' +
-            '  <block id="33" type="operator_length" x="10" y="1310">\n' +
+            '  <block id="33" type="operator_length">\n' +
             '    <value name="STRING">\n' +
             '      <shadow type="text" id="34">\n' +
             '        <field name="TEXT">"world"</field>\n' +
@@ -220,7 +220,7 @@ describe('operators', function() {
             '    </value>\n' +
             '    <next/>\n' +
             '  </block>\n' +
-            '  <block id="35" type="operator_contains" x="10" y="1410">\n' +
+            '  <block id="35" type="operator_contains">\n' +
             '    <value name="STRING1">\n' +
             '      <shadow type="text" id="36">\n' +
             '        <field name="TEXT">"hello"</field>\n' +
@@ -233,7 +233,7 @@ describe('operators', function() {
             '    </value>\n' +
             '    <next/>\n' +
             '  </block>\n' +
-            '  <block id="38" type="operator_mod" x="10" y="1510">\n' +
+            '  <block id="38" type="operator_mod" >\n' +
             '    <value name="NUM1">\n' +
             '      <shadow type="math_number" id="39">\n' +
             '        <field name="NUM">3</field>\n' +
@@ -246,7 +246,7 @@ describe('operators', function() {
             '    </value>\n' +
             '    <next/>\n' +
             '  </block>\n' +
-            '  <block id="41" type="operator_round" x="10" y="1610">\n' +
+            '  <block id="41" type="operator_round" >\n' +
             '    <value name="NUM">\n' +
             '      <shadow type="math_number" id="42">\n' +
             '        <field name="NUM">2.22</field>\n' +
@@ -254,7 +254,7 @@ describe('operators', function() {
             '    </value>\n' +
             '    <next/>\n' +
             '  </block>\n' +
-            '  <block id="43" type="operator_mathop" x="10" y="1710">\n' +
+            '  <block id="43" type="operator_mathop" >\n' +
             '    <field name="OPERATOR">abs</field>\n' +
             '    <value name="NUM">\n' +
             '      <shadow type="math_number" id="44">\n' +

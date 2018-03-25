@@ -31,7 +31,7 @@ describe('ifelse', function() {
 describe('looks', function() {
     describe('stack blocks', function() {
         it('should return valid xml', function() {
-            let parsed = parseTextToXML('\n' +
+            let parsed = parseTextToXML(
                 'show;\n' +
                 'hide;\n' +
                 'switch costume to [costume 1];\n' +

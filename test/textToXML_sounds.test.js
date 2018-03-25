@@ -47,10 +47,10 @@ describe('Sounds', function() {
                 '\n' +
                 'set instrument to [ikook];\n' +
                 '\n' +
-                'play drum [ikbenverzonnen] for {0.2} beats');
+                'play drum [ikbenverzonnen] for {0.2} beats',false);
             let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
                 '  <variables/>\n' +
-                '  <block id="0" type="sound_play" x="10" y="10">\n' +
+                '  <block id="0" type="sound_play" >\n' +
                 '    <value name="SOUND_MENU">\n' +
                 '      <shadow type="sound_sounds_menu">\n' +
                 '        <field name="SOUND_MENU">1</field>\n' +
@@ -154,7 +154,7 @@ describe('Sounds', function() {
                 '      </block>\n' +
                 '    </next>\n' +
                 '  </block>\n' +
-                '  <block id="21" type="sound_setinstrumentto" x="10" y="1210">\n' +
+                '  <block id="21" type="sound_setinstrumentto" >\n' +
                 '    <value name="INSTRUMENT">\n' +
                 '      <shadow type="sound_instruments_menu">\n' +
                 '        <field name="INSTRUMENT">ikook</field>\n' +
@@ -162,7 +162,7 @@ describe('Sounds', function() {
                 '    </value>\n' +
                 '    <next/>\n' +
                 '  </block>\n' +
-                '  <block id="22" type="sound_playdrumforbeats" x="10" y="1310">\n' +
+                '  <block id="22" type="sound_playdrumforbeats">\n' +
                 '    <value name="DRUM">\n' +
                 '      <shadow type="sound_drums_menu">\n' +
                 '        <field name="DRUM">ikbenverzonnen</field>\n' +
