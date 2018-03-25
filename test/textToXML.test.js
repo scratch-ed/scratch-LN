@@ -31,7 +31,7 @@ describe('ifelse', function() {
 
 describe('variables int', function() {
     it('should return valid xml', function() {
-        let parsed = parseTextToXML('\n' +
+        let parsed = parseTextToXML(
             'change [a] by {1};\n' +
             'change [a] by {(a)}');
         let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +

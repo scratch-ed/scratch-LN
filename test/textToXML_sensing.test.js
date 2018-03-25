@@ -30,7 +30,7 @@ describe('ifelse', function() {
 
 describe('sensing', function() {
     it('should return valid xml', function() {
-        let parsed = parseTextToXML('touching [mouse-pointer]?\n' +
+        let text = 'touching [mouse-pointer]?\n' +
             '\n' +
             'touching color {#123456} ?\n' +
             '\n' +
@@ -58,7 +58,9 @@ describe('sensing', function() {
             '\n' +
             'current [year]\n' +
             '\n' +
-            'days since 2000');
+            'days since 2000'
+        console.log(text)
+        let parsed = parseTextToXML(text);
         let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
             '  <variables/>\n' +
             '  <block id="0" type="sensing_touchingobject" x="10" y="10">\n' +

@@ -101,7 +101,7 @@ describe('control blocks', function() {
 
     describe('other', function() {
         it('should return valid xml', function() {
-            let parsed = parseTextToXML('\n' +
+            let parsed = parseTextToXML(
                 'wait {1} seconds\n' +
                 '\n' +
                 'wait until {<aa>}\n' +
@@ -199,7 +199,7 @@ describe('loops', function() {
     });
     describe('repeat ', function() {
         it('should return valid xml', function() {
-            let parsed = parseTextToXML('\n' +
+            let parsed = parseTextToXML(
                 'repeat {1}\n' +
                 'adsf\n' +
                 'end\n' +

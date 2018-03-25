@@ -29,9 +29,9 @@ describe('ifelse', function() {
  */
 
 describe('Sounds', function() {
-    describe('', function() {
+    describe('blocks', function() {
         it('should return valid xml', function() {
-            let parsed = parseTextToXML('\n' +
+            let parsed = parseTextToXML(
                 'start sound [1];\n' +
                 'play sound [1] until done;\n' +
                 'stop all sounds;\n' +

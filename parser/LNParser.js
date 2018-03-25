@@ -56,37 +56,12 @@ export default class LNParser extends Parser {
         const $ = this;
 
         $.RULE("multipleStacks", () => {
-            $.MANY(() => {
-                $.CONSUME(StatementTerminator);
-            })
-            $.SUBRULE($.stack);
-            $.OPTION(() => {
-                $.AT_LEAST_ONE({
-                    DEF: () => {
-                        $.CONSUME2(StatementTerminator);
-                    }
-                });
-
-                $.MANY2({
-                    //SEP: StatementTerminator,
-                    DEF: () => {
-                        $.SUBRULE2($.stack);
-                        $.AT_LEAST_ONE2({
-                            DEF: () => {
-                                $.CONSUME3(StatementTerminator);
-                            }
-                        });
-
-                    }
-                });
-                $.OPTION2(() => {
-                    $.SUBRULE3($.stack);
-                });
-                $.MANY3(() => {
-                    $.CONSUME4(StatementTerminator);
-                })
+            $.AT_LEAST_ONE_SEP({
+                SEP: StatementTerminator,
+                DEF: () => {
+                    $.SUBRULE($.stack);
+                }
             });
-
         });
 
 

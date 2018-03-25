@@ -453,7 +453,9 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
             this.xml = this.xml.up().up()
             this.addLocationBelow(this.xml)
         } else if (matchString in blocks) {
-            this.blockCounter++;
+            if (this.isTop) {
+                this.blockCounter++;
+            }
             let isTopBefore = this.isTop;
             this.isTop = false;
             blocks[matchString](ctx, this); //use blocks map to generate appropratie xml
@@ -487,7 +489,7 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
                     this.addLocationBelow(this.xml)
                 }
 
-                this.blockCounter++;
+                //this.blockCounter++;
 
                 this.xml = this.xml.up();
             }
