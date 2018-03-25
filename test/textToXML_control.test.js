@@ -45,7 +45,8 @@ describe('control blocks', function() {
                 '\n' +
                 'broadcast [message1];\n' +
                 '\n' +
-                'broadcast [message1] and wait;');
+                'broadcast [message1] and wait');
+
             let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
                 '  <variables>\n' +
                 '    <variable type="broadcast_msg" id="var0">message1</variable>\n' +
@@ -112,6 +113,18 @@ describe('control blocks', function() {
                 'create clone of [myself]\n' +
                 '\n' +
                 'delete this clone');
+            console.log('\n' +
+                'wait {1} seconds\n' +
+                '\n' +
+                'wait until {<aa>}\n' +
+                '\n' +
+                'stop [all]\n' +
+                '\n' +
+                'when I start as a clone\n' +
+                '\n' +
+                'create clone of [myself]\n' +
+                '\n' +
+                'delete this clone')
             let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
                 '  <variables/>\n' +
                 '  <block id="0" type="control_wait" x="10" y="10">\n' +
