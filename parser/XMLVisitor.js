@@ -130,8 +130,11 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
         for (let i = 0; ctx.stack && i < ctx.stack.length; i++) {
             this.isTop = true;
             this.visit(ctx.stack[i]);
-            this.addLocationBelow(this.xml);
-            this.xml = this.xml.up();
+
+            if (this.modus !== 'stand-alone variable') {
+                this.addLocationBelow(this.xml);
+                this.xml = this.xml.up();
+            }
             this.scriptCounter++;
         }
     }
@@ -225,12 +228,16 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
     stack(ctx) {
         for (let i = 0; ctx.stackline && i < ctx.stackline.length; i++) {
             this.visit(ctx.stackline[i]);
-            this.xml = this.xml.ele('next');
+            if (this.modus !== 'stand-alone variable') {
+                this.xml = this.xml.ele('next');
+            }
         }
-        for (let i = 0;ctx.stackline && i <  ctx.stackline.length - 1; i++) {
-            this.xml = this.xml.up().up();
+        if (this.modus !== 'stand-alone variable') {
+            for (let i = 0; ctx.stackline && i < ctx.stackline.length - 1; i++) {
+                this.xml = this.xml.up().up();
+            }
+            this.xml = this.xml.up(); //End with blocks open so that insertbefore works #hacky
         }
-        this.xml = this.xml.up(); //End with blocks open so that insertbefore works #hacky
     }
 
     //if using visitor with defaults, this can be removed
@@ -322,7 +329,7 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
         for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
             //make names
             //hier was iets raar...
-            let name = this.getString(ctx.argument[i])
+            let name = this.getString(ctx.argument[i]);
             if (!name) {
                 name = 'argumentname_' + blockid + '_' + i
             }
@@ -397,6 +404,16 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
 
     block(ctx) {
         let matchString = this.makeMatchString(ctx);
+        let LabelCount = ctx.Identifier ? ctx.Identifier.length : 0;
+        if (LabelCount === 0) { //no text => only variable => show as variabele
+            //todo
+            this.modus = 'stand-alone variable';
+            for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
+                this.isTop = true;
+                this.visit(ctx.argument[i]);
+            }
+            return;
+        }
         //console.log(matchString)
         if (matchString.startsWith("define")) {
             matchString = matchString.replace(/define/, '');
@@ -412,7 +429,9 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
             this.addMutation(ctx, matchString, blockid, false);
             this.xml = this.xml.up().up()
         } else if (matchString in blocks) {
+            this.blockCounter++;
             blocks[matchString](ctx, this);
+
             if (this.modus === 'reporterblock' || this.modus === 'booleanblock') {
                 if (this.isTop) {
                     this.addLocationBelow(this.xml)
@@ -420,7 +439,6 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
                 if (!this.firstBlock) {
                     this.firstBlock = this.xml;
                 }
-                this.blockCounter++;
                 this.xml = this.xml.up();
             }
         } else { //what should be done if the block is unknown
@@ -436,10 +454,6 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
                     break;
             }
             if (this.modus === 'reporterblock' || this.modus === 'booleanblock') {
-                if (!this.firstBlock) {
-                    this.firstBlock = this.xml
-                }
-
                 if (this.isTop) {
                     this.addLocationBelow(this.xml)
                 }
@@ -454,14 +468,24 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
     }
 
     argument(ctx) { //return is necessary for menu..
+        let previousModus = this.modus;
         if (ctx.primitive && ctx.primitive.length > 0) {
             return this.visit(ctx.primitive)
         } else if (ctx.reporterblock && ctx.reporterblock.length > 0) {
-            return this.visit(ctx.reporterblock)
+            this.modus = 'reporterblock';
+            let x = this.visit(ctx.reporterblock);
+            this.modus = previousModus;
+            return x;
         } else if (ctx.booleanblock && ctx.booleanblock.length > 0) {
-            return this.visit(ctx.booleanblock)
+            this.modus = 'booleanblock';
+            let x = this.visit(ctx.booleanblock);
+            this.modus = previousModus;
+            return x;
         } else if (ctx.choice && ctx.choice.length > 0) {
-            return this.visit(ctx.choice)
+            this.modus = 'choice';
+            let x = this.visit(ctx.choice);
+            this.modus = previousModus;
+            return x;
         } else {
             //empty
         }
