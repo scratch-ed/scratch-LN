@@ -150,8 +150,13 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
         }, ' ').ele('statement ', {
             'name': 'SUBSTACK'
         }, ' ');
+        if (this.isTop) {
+            this.addLocationBelow(this.xml.up());
+        }
+        this.isTop = false;
         this.visitSubStack(ctx.stack);
         this.xml = this.xml.up();
+
     }
 
 
@@ -162,6 +167,10 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
         }).ele('value', {
             'name': 'TIMES'
         });
+        if (this.isTop) {
+            this.addLocationBelow(this.xml.up());
+        }
+        this.isTop = false;
         this.visit(ctx.countableinput);
         this.xml = this.xml.up().ele('statement ', {
             'name': 'SUBSTACK'
@@ -177,12 +186,17 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
         }).ele('value', {
             'name': 'CONDITION'
         });
+        if (this.isTop) {
+            this.addLocationBelow(this.xml.up());
+        }
+        this.isTop = false;
         this.visit(ctx.booleanblock);
         this.xml = this.xml.up().ele('statement ', {
             'name': 'SUBSTACK'
         });
         this.visitSubStack(ctx.stack);
         this.xml = this.xml.up();
+
     }
 
     ifelse(ctx) {
@@ -191,12 +205,19 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
                 'type': 'control_if',
                 'id': this.getNextId(),
             });
+            if (this.isTop) {
+                this.addLocationBelow(this.xml);
+            }
         } else {
             this.xml = this.xml.ele('block', {
                 'type': 'control_if_else',
                 'id': this.getNextId(),
             });
+            if (this.isTop) {
+                this.addLocationBelow(this.xml);
+            }
         }
+        this.isTop = false;
         this.xml = this.xml.ele('value', {
             'name': 'CONDITION'
         });
@@ -213,6 +234,8 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
         if (ctx.else && ctx.else.length !== 0) {
             this.visit(ctx.else);
         }
+
+
     }
 
     else(ctx) {
@@ -228,7 +251,7 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
     stack(ctx) {
         for (let i = 0; ctx.stackline && i < ctx.stackline.length; i++) {
             this.visit(ctx.stackline[i]);
-            this.isTop=false;
+            this.isTop = false;
             if (this.modus !== 'stand-alone variable') {
                 this.xml = this.xml.ele('next');
             }
@@ -432,9 +455,9 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
         } else if (matchString in blocks) {
             this.blockCounter++;
             let isTopBefore = this.isTop;
-            this.isTop=false;
+            this.isTop = false;
             blocks[matchString](ctx, this); //use blocks map to generate appropratie xml
-            this.isTop=isTopBefore;
+            this.isTop = isTopBefore;
             if (this.isTop) {
                 this.addLocationBelow(this.xml)
             }

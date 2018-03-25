@@ -187,7 +187,7 @@ describe('loops', function() {
     describe('repeat ', function() {
         it('should return valid xml', function() {
             let parsed = parseTextToXML('\n' +
-                'repeat 1\n' +
+                'repeat {1}\n' +
                 'adsf\n' +
                 'end\n' +
                 'asdf');
@@ -439,7 +439,7 @@ describe('ifelse', function() {
                 '      </variables>\n' +
                 '  <block type="control_if" id="0" x="10" y="10">\n' +
                 '    <value name="CONDITION">\n' +
-                '      <block id="1" type="data_listcontainsitem" x="10" y="10">\n' +
+                '      <block id="1" type="data_listcontainsitem">\n' +
                 '        <field name="LIST" variabletype="list">lili</field>\n' +
                 '        <value name="ITEM">\n' +
                 '          <shadow type="text" id="2">\n' +

@@ -194,11 +194,11 @@ function LNParser(input) {
             $.SUBRULE($.stack);
         });
         $.OPTION4(() => {
-            $.SUBRULE($.end);
-        })
-        $.OPTION5(() => {
             $.SUBRULE($.else);
         });
+        $.OPTION5(() => {
+            $.SUBRULE($.end);
+        })
     });
     $.RULE("else", () => {
         $.CONSUME(Else);
@@ -207,9 +207,6 @@ function LNParser(input) {
         });
         $.OPTION2(() => {
             $.SUBRULE($.stack);
-        })
-        $.OPTION5(() => {
-            $.SUBRULE($.end);
         })
     });
 
