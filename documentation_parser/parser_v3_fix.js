@@ -7,8 +7,8 @@
     const Parser = chevrotain.Parser;
 
 
-    const Label = createToken({
-        name: "Label",
+    const Identifier = createToken({
+        name: "Identifier",
         pattern:
         //not [] {} () " :: ; \n # unless escaped
         // : followed by not : or in the end
@@ -81,7 +81,7 @@
     const NumberLiteral = createToken({
         name: "NumberLiteral",
         pattern: /-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?/,
-        categories: [Literal, Label]
+        categories: [Literal, Identifier]
     });
 
     const ColorLiteral = createToken({
@@ -93,42 +93,42 @@
     const Forever = createToken({
         name: "Forever",
         pattern: / *forever */,
-        longer_alt: Label
+        longer_alt: Identifier
     });
 
     const End = createToken({
         name: "End",
         pattern: / *end */,
-        longer_alt: Label
+        longer_alt: Identifier
     });
 
     const Then = createToken({
         name: "Then",
         pattern: / *then */,
-        longer_alt: Label
+        longer_alt: Identifier
     });
 
     const Repeat = createToken({
         name: "Repeat",
         pattern: / *repeat */,
-        longer_alt: Label
+        longer_alt: Identifier
     });
     const RepeatUntil = createToken({
         name: "RepeatUntil",
         pattern: / *repeat *until */,
-        longer_alt: Label
+        longer_alt: Identifier
     });
 
     const If = createToken({
         name: "If",
         pattern: /if */,
-        longer_alt: Label
+        longer_alt: Identifier
     });
 
     const Else = createToken({
         name: "Else",
         pattern: / *else */,
-        longer_alt: Label
+        longer_alt: Identifier
     });
 
 
@@ -151,7 +151,7 @@
         Literal, StringLiteral, NumberLiteral, ColorLiteral,
         Forever, End, Repeat, If, Else, Then, RepeatUntil,
         StatementTerminator,
-        Label,
+        Identifier,
         LCurlyBracket, RCurlyBracket,
         LRoundBracket, RRoundBracket,
         RAngleBracket, LAngleBracket,
@@ -337,7 +337,7 @@
             $.AT_LEAST_ONE(() => {
                 $.OR([{
                     ALT: () => {
-                        $.CONSUME1(Label);
+                        $.CONSUME1(Identifier);
                     }
                 }, {
                     ALT: () => {
@@ -360,7 +360,7 @@
 
         $.RULE("option", () => {
             $.CONSUME(DoubleColon);
-            $.CONSUME(Label);
+            $.CONSUME(Identifier);
         });
         $.RULE("id", () => {
             $.CONSUME(ID);
@@ -444,7 +444,7 @@
         $.RULE("choice", () => {
             $.CONSUME(LSquareBracket);
             $.OPTION(() => {
-                $.CONSUME(Label);
+                $.CONSUME(Identifier);
             });
             $.CONSUME(RSquareBracket);
         });
@@ -631,15 +631,15 @@
         block(ctx) {
             let text = '';
             let a = 0;
-            for (let i = 0; ctx.Label && i < ctx.Label.length; i++) {
+            for (let i = 0; ctx.Identifier && i < ctx.Identifier.length; i++) {
                 if (ctx.argument && a < ctx.argument.length) {
-                    while (a < ctx.argument.length && this.getOffsetArgument(ctx.argument[a]) < ctx.Label[i].startOffset) {
+                    while (a < ctx.argument.length && this.getOffsetArgument(ctx.argument[a]) < ctx.Identifier[i].startOffset) {
                         text += '{}';//this.getOffsetArgument(ctx.argument[a])
                         a++;
                     }
                 }
 
-                text += ctx.Label[i].image
+                text += ctx.Identifier[i].image
             }
             for (a; ctx.argument && a < ctx.argument.length; a++) {
                 text += '{}'
@@ -651,11 +651,11 @@
                 args.push(this.visit(ctx.argument[i]))
             }
             let ofs = 0;
-            if(ctx.Label){
+            if(ctx.Identifier){
                 if (ctx.argument && ctx.argument[0]) {
-                    ofs = this.getOffsetArgument(ctx.argument[0]) < ctx.Label[0].startOffset ? this.getOffsetArgument(ctx.argument[0]) : ctx.Label[0].startOffset
+                    ofs = this.getOffsetArgument(ctx.argument[0]) < ctx.Identifier[0].startOffset ? this.getOffsetArgument(ctx.argument[0]) : ctx.Identifier[0].startOffset
                 } else {
-                    ofs = ctx.Label[0].startOffset
+                    ofs = ctx.Identifier[0].startOffset
                 }
             }else{
                 ofs = this.getOffsetArgument(ctx.argument[0])
@@ -679,7 +679,7 @@
 
         option(ctx) {
             return {
-                'text': ctx.Label[0].image,
+                'text': ctx.Identifier[0].image,
                 'type': 'option',
                 'offset': ctx.DoubleColon[0].startOffset,
             }
@@ -758,9 +758,9 @@
         choice(ctx) {
             return {
                 'type': 'choice',
-                'value': ctx.Label[0].image,
+                'value': ctx.Identifier[0].image,
                 'offset': ctx.LSquareBracket[0].startOffset,
-                'text': ctx.Label[0].image,
+                'text': ctx.Identifier[0].image,
             };
         }
 
