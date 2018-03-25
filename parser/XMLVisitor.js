@@ -132,7 +132,7 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
             this.visit(ctx.stack[i]);
 
             if (this.modus !== 'stand-alone variable') {
-                this.addLocationBelow(this.xml);
+                //this.addLocationBelow(this.xml);
                 this.xml = this.xml.up();
             }
             this.scriptCounter++;
@@ -228,6 +228,7 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
     stack(ctx) {
         for (let i = 0; ctx.stackline && i < ctx.stackline.length; i++) {
             this.visit(ctx.stackline[i]);
+            this.isTop=false;
             if (this.modus !== 'stand-alone variable') {
                 this.xml = this.xml.ele('next');
             }
@@ -406,7 +407,6 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
         let matchString = this.makeMatchString(ctx);
         let LabelCount = ctx.Identifier ? ctx.Identifier.length : 0;
         if (LabelCount === 0) { //no text => only variable => show as variabele
-            //todo
             this.modus = 'stand-alone variable';
             for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
                 this.isTop = true;
@@ -428,14 +428,19 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
             });
             this.addMutation(ctx, matchString, blockid, false);
             this.xml = this.xml.up().up()
+            this.addLocationBelow(this.xml)
         } else if (matchString in blocks) {
             this.blockCounter++;
-            blocks[matchString](ctx, this);
+            let isTopBefore = this.isTop;
+            this.isTop=false;
+            blocks[matchString](ctx, this); //use blocks map to generate appropratie xml
+            this.isTop=isTopBefore;
+            if (this.isTop) {
+                this.addLocationBelow(this.xml)
+            }
+
 
             if (this.modus === 'reporterblock' || this.modus === 'booleanblock') {
-                if (this.isTop) {
-                    this.addLocationBelow(this.xml)
-                }
                 if (!this.firstBlock) {
                     this.firstBlock = this.xml;
                 }
@@ -455,6 +460,7 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
             }
             if (this.modus === 'reporterblock' || this.modus === 'booleanblock') {
                 if (this.isTop) {
+                    console.log('loc2')
                     this.addLocationBelow(this.xml)
                 }
 

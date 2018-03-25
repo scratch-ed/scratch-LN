@@ -182,7 +182,7 @@ describe('Sounds', function() {
     describe('variables', function() {
         it('should return valid xml', function() {
             let parsed = parseTextToXML('(volume)(tempo)');
-            let expected = '<xml xmlns="http://www.w3.org/1999/xhtml" x="10" y="110">\n' +
+            let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
                 '  <variables/>\n' +
                 '  <block id="0" type="sound_volume" x="10" y="10"/>\n' +
                 '  <block id="1" type="sound_tempo" x="10" y="110"/>\n' +
