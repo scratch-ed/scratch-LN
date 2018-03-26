@@ -29,8 +29,7 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
                 increase = {
                     x: 75,
                     y: 100
-                }
-                ) {
+                }) {
         super();
         // This helper will detect any missing or redundant methods on this visitor
         this.validateVisitor();
@@ -493,10 +492,6 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
                 this.addLocationBelow(this.xml);
             }
             if (this.modus === 'reporterblock' || this.modus === 'booleanblock') {
-
-
-                //this.blockCounter++;
-
                 this.xml = this.xml.up();
             }
         }

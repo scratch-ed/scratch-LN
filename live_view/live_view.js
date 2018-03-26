@@ -78,7 +78,8 @@ function updateWorkspace() {
         workspace.clear();
         //add to workspace
         let dom = Blockly.Xml.textToDom(xml);
-        Blockly.Xml.domToWorkspace(dom, workspace)
+        Blockly.Xml.domToWorkspace(dom, workspace);
+        workspace.cleanUp();
     }
 }
 
