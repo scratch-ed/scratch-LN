@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 71);
+/******/ 	return __webpack_require__(__webpack_require__.s = 75);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -465,12 +465,261 @@ exports.IDENTITY = IDENTITY;
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var utils_1 = __webpack_require__(0);
+var tokens_public_1 = __webpack_require__(3);
+var AbstractProduction = /** @class */ (function () {
+    function AbstractProduction(definition) {
+        this.definition = definition;
+    }
+    AbstractProduction.prototype.accept = function (visitor) {
+        visitor.visit(this);
+        utils_1.forEach(this.definition, function (prod) {
+            prod.accept(visitor);
+        });
+    };
+    return AbstractProduction;
+}());
+exports.AbstractProduction = AbstractProduction;
+var NonTerminal = /** @class */ (function (_super) {
+    __extends(NonTerminal, _super);
+    function NonTerminal(options) {
+        var _this = _super.call(this, []) || this;
+        _this.idx = 1;
+        utils_1.assign(_this, options);
+        return _this;
+    }
+    Object.defineProperty(NonTerminal.prototype, "definition", {
+        get: function () {
+            if (this.referencedRule !== undefined) {
+                return this.referencedRule.definition;
+            }
+            return [];
+        },
+        set: function (definition) {
+            // immutable
+        },
+        enumerable: true,
+        configurable: true
+    });
+    NonTerminal.prototype.accept = function (visitor) {
+        visitor.visit(this);
+        // don't visit children of a reference, we will get cyclic infinite loops if we do so
+    };
+    return NonTerminal;
+}(AbstractProduction));
+exports.NonTerminal = NonTerminal;
+var Rule = /** @class */ (function (_super) {
+    __extends(Rule, _super);
+    function Rule(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.orgText = "";
+        utils_1.assign(_this, options);
+        return _this;
+    }
+    return Rule;
+}(AbstractProduction));
+exports.Rule = Rule;
+var Flat = /** @class */ (function (_super) {
+    __extends(Flat, _super);
+    // A named Flat production is used to indicate a Nested Rule in an alternation
+    function Flat(options) {
+        var _this = _super.call(this, options.definition) || this;
+        utils_1.assign(_this, options);
+        return _this;
+    }
+    return Flat;
+}(AbstractProduction));
+exports.Flat = Flat;
+var Option = /** @class */ (function (_super) {
+    __extends(Option, _super);
+    function Option(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.idx = 1;
+        utils_1.assign(_this, options);
+        return _this;
+    }
+    return Option;
+}(AbstractProduction));
+exports.Option = Option;
+var RepetitionMandatory = /** @class */ (function (_super) {
+    __extends(RepetitionMandatory, _super);
+    function RepetitionMandatory(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.idx = 1;
+        utils_1.assign(_this, options);
+        return _this;
+    }
+    return RepetitionMandatory;
+}(AbstractProduction));
+exports.RepetitionMandatory = RepetitionMandatory;
+var RepetitionMandatoryWithSeparator = /** @class */ (function (_super) {
+    __extends(RepetitionMandatoryWithSeparator, _super);
+    function RepetitionMandatoryWithSeparator(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.idx = 1;
+        utils_1.assign(_this, options);
+        return _this;
+    }
+    return RepetitionMandatoryWithSeparator;
+}(AbstractProduction));
+exports.RepetitionMandatoryWithSeparator = RepetitionMandatoryWithSeparator;
+var Repetition = /** @class */ (function (_super) {
+    __extends(Repetition, _super);
+    function Repetition(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.idx = 1;
+        utils_1.assign(_this, options);
+        return _this;
+    }
+    return Repetition;
+}(AbstractProduction));
+exports.Repetition = Repetition;
+var RepetitionWithSeparator = /** @class */ (function (_super) {
+    __extends(RepetitionWithSeparator, _super);
+    function RepetitionWithSeparator(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.idx = 1;
+        utils_1.assign(_this, options);
+        return _this;
+    }
+    return RepetitionWithSeparator;
+}(AbstractProduction));
+exports.RepetitionWithSeparator = RepetitionWithSeparator;
+var Alternation = /** @class */ (function (_super) {
+    __extends(Alternation, _super);
+    function Alternation(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.idx = 1;
+        utils_1.assign(_this, options);
+        return _this;
+    }
+    return Alternation;
+}(AbstractProduction));
+exports.Alternation = Alternation;
+var Terminal = /** @class */ (function () {
+    function Terminal(options) {
+        this.idx = 1;
+        utils_1.assign(this, options);
+    }
+    Terminal.prototype.accept = function (visitor) {
+        visitor.visit(this);
+    };
+    return Terminal;
+}());
+exports.Terminal = Terminal;
+function serializeGrammar(topRules) {
+    return utils_1.map(topRules, serializeProduction);
+}
+exports.serializeGrammar = serializeGrammar;
+function serializeProduction(node) {
+    function convertDefinition(definition) {
+        return utils_1.map(definition, serializeProduction);
+    }
+    if (node instanceof NonTerminal) {
+        return {
+            type: "NonTerminal",
+            name: node.nonTerminalName,
+            idx: node.idx
+        };
+    }
+    else if (node instanceof Flat) {
+        return {
+            type: "Flat",
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof Option) {
+        return {
+            type: "Option",
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof RepetitionMandatory) {
+        return {
+            type: "RepetitionMandatory",
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof RepetitionMandatoryWithSeparator) {
+        return {
+            type: "RepetitionMandatoryWithSeparator",
+            separator: serializeProduction(new Terminal({ terminalType: node.separator })),
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof RepetitionWithSeparator) {
+        return {
+            type: "RepetitionWithSeparator",
+            separator: serializeProduction(new Terminal({ terminalType: node.separator })),
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof Repetition) {
+        return {
+            type: "Repetition",
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof Alternation) {
+        return {
+            type: "Alternation",
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof Terminal) {
+        var serializedTerminal = {
+            type: "Terminal",
+            name: tokens_public_1.tokenName(node.terminalType),
+            label: tokens_public_1.tokenLabel(node.terminalType),
+            idx: node.idx
+        };
+        var pattern = node.terminalType.PATTERN;
+        if (node.terminalType.PATTERN) {
+            serializedTerminal.pattern = utils_1.isRegExp(pattern)
+                ? pattern.source
+                : pattern;
+        }
+        return serializedTerminal;
+    }
+    else if (node instanceof Rule) {
+        // IGNORE ABOVE ELSE
+        return {
+            type: "Rule",
+            name: node.name,
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else {
+        /* istanbul ignore next */
+        throw Error("non exhaustive match");
+    }
+}
+exports.serializeProduction = serializeProduction;
+//# sourceMappingURL=gast_public.js.map
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
 // Generated by CoffeeScript 1.12.7
 (function() {
   var XMLCData, XMLComment, XMLDeclaration, XMLDocType, XMLElement, XMLNode, XMLProcessingInstruction, XMLRaw, XMLText, isEmpty, isFunction, isObject, ref,
     hasProp = {}.hasOwnProperty;
 
-  ref = __webpack_require__(4), isObject = ref.isObject, isFunction = ref.isFunction, isEmpty = ref.isEmpty;
+  ref = __webpack_require__(5), isObject = ref.isObject, isFunction = ref.isFunction, isEmpty = ref.isEmpty;
 
   XMLElement = null;
 
@@ -497,14 +746,14 @@ exports.IDENTITY = IDENTITY;
       }
       this.children = [];
       if (!XMLElement) {
-        XMLElement = __webpack_require__(17);
-        XMLCData = __webpack_require__(9);
-        XMLComment = __webpack_require__(10);
-        XMLDeclaration = __webpack_require__(15);
-        XMLDocType = __webpack_require__(16);
-        XMLRaw = __webpack_require__(19);
-        XMLText = __webpack_require__(20);
-        XMLProcessingInstruction = __webpack_require__(18);
+        XMLElement = __webpack_require__(20);
+        XMLCData = __webpack_require__(12);
+        XMLComment = __webpack_require__(13);
+        XMLDeclaration = __webpack_require__(18);
+        XMLDocType = __webpack_require__(19);
+        XMLRaw = __webpack_require__(22);
+        XMLText = __webpack_require__(23);
+        XMLProcessingInstruction = __webpack_require__(21);
       }
     }
 
@@ -900,339 +1149,6 @@ exports.IDENTITY = IDENTITY;
 
 
 /***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var utils_1 = __webpack_require__(0);
-var tokens_public_1 = __webpack_require__(3);
-var gast;
-(function (gast) {
-    var AbstractProduction = /** @class */ (function () {
-        function AbstractProduction(definition) {
-            this.definition = definition;
-        }
-        AbstractProduction.prototype.accept = function (visitor) {
-            visitor.visit(this);
-            utils_1.forEach(this.definition, function (prod) {
-                prod.accept(visitor);
-            });
-        };
-        return AbstractProduction;
-    }());
-    gast.AbstractProduction = AbstractProduction;
-    var NonTerminal = /** @class */ (function (_super) {
-        __extends(NonTerminal, _super);
-        function NonTerminal(nonTerminalName, referencedRule, occurrenceInParent, implicitOccurrenceIndex) {
-            if (referencedRule === void 0) { referencedRule = undefined; }
-            if (occurrenceInParent === void 0) { occurrenceInParent = 1; }
-            if (implicitOccurrenceIndex === void 0) { implicitOccurrenceIndex = false; }
-            var _this = _super.call(this, []) || this;
-            _this.nonTerminalName = nonTerminalName;
-            _this.referencedRule = referencedRule;
-            _this.occurrenceInParent = occurrenceInParent;
-            _this.implicitOccurrenceIndex = implicitOccurrenceIndex;
-            return _this;
-        }
-        Object.defineProperty(NonTerminal.prototype, "definition", {
-            get: function () {
-                if (this.referencedRule !== undefined) {
-                    return this.referencedRule.definition;
-                }
-                return [];
-            },
-            set: function (definition) {
-                // immutable
-            },
-            enumerable: true,
-            configurable: true
-        });
-        NonTerminal.prototype.accept = function (visitor) {
-            visitor.visit(this);
-            // don't visit children of a reference, we will get cyclic infinite loops if we do so
-        };
-        return NonTerminal;
-    }(AbstractProduction));
-    gast.NonTerminal = NonTerminal;
-    var Rule = /** @class */ (function (_super) {
-        __extends(Rule, _super);
-        function Rule(name, definition, orgText) {
-            if (orgText === void 0) { orgText = ""; }
-            var _this = _super.call(this, definition) || this;
-            _this.name = name;
-            _this.orgText = orgText;
-            return _this;
-        }
-        return Rule;
-    }(AbstractProduction));
-    gast.Rule = Rule;
-    var Flat = /** @class */ (function (_super) {
-        __extends(Flat, _super);
-        // A named Flat production is used to indicate a Nested Rule in an alternation
-        function Flat(definition, name) {
-            var _this = _super.call(this, definition) || this;
-            _this.name = name;
-            return _this;
-        }
-        return Flat;
-    }(AbstractProduction));
-    gast.Flat = Flat;
-    var Option = /** @class */ (function (_super) {
-        __extends(Option, _super);
-        function Option(definition, occurrenceInParent, name, implicitOccurrenceIndex) {
-            if (occurrenceInParent === void 0) { occurrenceInParent = 1; }
-            if (implicitOccurrenceIndex === void 0) { implicitOccurrenceIndex = false; }
-            var _this = _super.call(this, definition) || this;
-            _this.occurrenceInParent = occurrenceInParent;
-            _this.name = name;
-            _this.implicitOccurrenceIndex = implicitOccurrenceIndex;
-            return _this;
-        }
-        return Option;
-    }(AbstractProduction));
-    gast.Option = Option;
-    var RepetitionMandatory = /** @class */ (function (_super) {
-        __extends(RepetitionMandatory, _super);
-        function RepetitionMandatory(definition, occurrenceInParent, name, implicitOccurrenceIndex) {
-            if (occurrenceInParent === void 0) { occurrenceInParent = 1; }
-            if (implicitOccurrenceIndex === void 0) { implicitOccurrenceIndex = false; }
-            var _this = _super.call(this, definition) || this;
-            _this.occurrenceInParent = occurrenceInParent;
-            _this.name = name;
-            _this.implicitOccurrenceIndex = implicitOccurrenceIndex;
-            return _this;
-        }
-        return RepetitionMandatory;
-    }(AbstractProduction));
-    gast.RepetitionMandatory = RepetitionMandatory;
-    var RepetitionMandatoryWithSeparator = /** @class */ (function (_super) {
-        __extends(RepetitionMandatoryWithSeparator, _super);
-        function RepetitionMandatoryWithSeparator(definition, separator, occurrenceInParent, name, implicitOccurrenceIndex) {
-            if (occurrenceInParent === void 0) { occurrenceInParent = 1; }
-            if (implicitOccurrenceIndex === void 0) { implicitOccurrenceIndex = false; }
-            var _this = _super.call(this, definition) || this;
-            _this.separator = separator;
-            _this.occurrenceInParent = occurrenceInParent;
-            _this.name = name;
-            _this.implicitOccurrenceIndex = implicitOccurrenceIndex;
-            return _this;
-        }
-        return RepetitionMandatoryWithSeparator;
-    }(AbstractProduction));
-    gast.RepetitionMandatoryWithSeparator = RepetitionMandatoryWithSeparator;
-    var Repetition = /** @class */ (function (_super) {
-        __extends(Repetition, _super);
-        function Repetition(definition, occurrenceInParent, name, implicitOccurrenceIndex) {
-            if (occurrenceInParent === void 0) { occurrenceInParent = 1; }
-            if (implicitOccurrenceIndex === void 0) { implicitOccurrenceIndex = false; }
-            var _this = _super.call(this, definition) || this;
-            _this.occurrenceInParent = occurrenceInParent;
-            _this.name = name;
-            _this.implicitOccurrenceIndex = implicitOccurrenceIndex;
-            return _this;
-        }
-        return Repetition;
-    }(AbstractProduction));
-    gast.Repetition = Repetition;
-    var RepetitionWithSeparator = /** @class */ (function (_super) {
-        __extends(RepetitionWithSeparator, _super);
-        function RepetitionWithSeparator(definition, separator, occurrenceInParent, name, implicitOccurrenceIndex) {
-            if (occurrenceInParent === void 0) { occurrenceInParent = 1; }
-            if (implicitOccurrenceIndex === void 0) { implicitOccurrenceIndex = false; }
-            var _this = _super.call(this, definition) || this;
-            _this.separator = separator;
-            _this.occurrenceInParent = occurrenceInParent;
-            _this.name = name;
-            _this.implicitOccurrenceIndex = implicitOccurrenceIndex;
-            return _this;
-        }
-        return RepetitionWithSeparator;
-    }(AbstractProduction));
-    gast.RepetitionWithSeparator = RepetitionWithSeparator;
-    var Alternation = /** @class */ (function (_super) {
-        __extends(Alternation, _super);
-        function Alternation(definition, occurrenceInParent, name, implicitOccurrenceIndex) {
-            if (occurrenceInParent === void 0) { occurrenceInParent = 1; }
-            if (implicitOccurrenceIndex === void 0) { implicitOccurrenceIndex = false; }
-            var _this = _super.call(this, definition) || this;
-            _this.occurrenceInParent = occurrenceInParent;
-            _this.name = name;
-            _this.implicitOccurrenceIndex = implicitOccurrenceIndex;
-            return _this;
-        }
-        return Alternation;
-    }(AbstractProduction));
-    gast.Alternation = Alternation;
-    var Terminal = /** @class */ (function () {
-        function Terminal(terminalType, occurrenceInParent, implicitOccurrenceIndex) {
-            if (occurrenceInParent === void 0) { occurrenceInParent = 1; }
-            if (implicitOccurrenceIndex === void 0) { implicitOccurrenceIndex = false; }
-            this.terminalType = terminalType;
-            this.occurrenceInParent = occurrenceInParent;
-            this.implicitOccurrenceIndex = implicitOccurrenceIndex;
-        }
-        Terminal.prototype.accept = function (visitor) {
-            visitor.visit(this);
-        };
-        return Terminal;
-    }());
-    gast.Terminal = Terminal;
-    var GAstVisitor = /** @class */ (function () {
-        function GAstVisitor() {
-        }
-        GAstVisitor.prototype.visit = function (node) {
-            if (node instanceof NonTerminal) {
-                return this.visitNonTerminal(node);
-            }
-            else if (node instanceof Flat) {
-                return this.visitFlat(node);
-            }
-            else if (node instanceof Option) {
-                return this.visitOption(node);
-            }
-            else if (node instanceof RepetitionMandatory) {
-                return this.visitRepetitionMandatory(node);
-            }
-            else if (node instanceof RepetitionMandatoryWithSeparator) {
-                return this.visitRepetitionMandatoryWithSeparator(node);
-            }
-            else if (node instanceof RepetitionWithSeparator) {
-                return this.visitRepetitionWithSeparator(node);
-            }
-            else if (node instanceof Repetition) {
-                return this.visitRepetition(node);
-            }
-            else if (node instanceof Alternation) {
-                return this.visitAlternation(node);
-            }
-            else if (node instanceof Terminal) {
-                return this.visitTerminal(node);
-            }
-            else if (node instanceof Rule) {
-                return this.visitRule(node);
-            }
-            else {
-                /* istanbul ignore next */
-                throw Error("non exhaustive match");
-            }
-        };
-        GAstVisitor.prototype.visitNonTerminal = function (node) { };
-        GAstVisitor.prototype.visitFlat = function (node) { };
-        GAstVisitor.prototype.visitOption = function (node) { };
-        GAstVisitor.prototype.visitRepetition = function (node) { };
-        GAstVisitor.prototype.visitRepetitionMandatory = function (node) { };
-        GAstVisitor.prototype.visitRepetitionMandatoryWithSeparator = function (node) { };
-        GAstVisitor.prototype.visitRepetitionWithSeparator = function (node) { };
-        GAstVisitor.prototype.visitAlternation = function (node) { };
-        GAstVisitor.prototype.visitTerminal = function (node) { };
-        GAstVisitor.prototype.visitRule = function (node) { };
-        return GAstVisitor;
-    }());
-    gast.GAstVisitor = GAstVisitor;
-    function serializeGrammar(topRules) {
-        return utils_1.map(topRules, serializeProduction);
-    }
-    gast.serializeGrammar = serializeGrammar;
-    function serializeProduction(node) {
-        function convertDefinition(definition) {
-            return utils_1.map(definition, serializeProduction);
-        }
-        if (node instanceof NonTerminal) {
-            return {
-                type: "NonTerminal",
-                name: node.nonTerminalName,
-                occurrenceInParent: node.occurrenceInParent
-            };
-        }
-        else if (node instanceof Flat) {
-            return {
-                type: "Flat",
-                definition: convertDefinition(node.definition)
-            };
-        }
-        else if (node instanceof Option) {
-            return {
-                type: "Option",
-                definition: convertDefinition(node.definition)
-            };
-        }
-        else if (node instanceof RepetitionMandatory) {
-            return {
-                type: "RepetitionMandatory",
-                definition: convertDefinition(node.definition)
-            };
-        }
-        else if (node instanceof RepetitionMandatoryWithSeparator) {
-            return {
-                type: "RepetitionMandatoryWithSeparator",
-                separator: serializeProduction(new Terminal(node.separator)),
-                definition: convertDefinition(node.definition)
-            };
-        }
-        else if (node instanceof RepetitionWithSeparator) {
-            return {
-                type: "RepetitionWithSeparator",
-                separator: serializeProduction(new Terminal(node.separator)),
-                definition: convertDefinition(node.definition)
-            };
-        }
-        else if (node instanceof Repetition) {
-            return {
-                type: "Repetition",
-                definition: convertDefinition(node.definition)
-            };
-        }
-        else if (node instanceof Alternation) {
-            return {
-                type: "Alternation",
-                definition: convertDefinition(node.definition)
-            };
-        }
-        else if (node instanceof Terminal) {
-            var serializedTerminal = {
-                type: "Terminal",
-                name: tokens_public_1.tokenName(node.terminalType),
-                label: tokens_public_1.tokenLabel(node.terminalType),
-                occurrenceInParent: node.occurrenceInParent
-            };
-            var pattern = node.terminalType.PATTERN;
-            if (node.terminalType.PATTERN) {
-                serializedTerminal.pattern = utils_1.isRegExp(pattern)
-                    ? pattern.source
-                    : pattern;
-            }
-            return serializedTerminal;
-        }
-        else if (node instanceof Rule) {
-            // IGNORE ABOVE ELSE
-            return {
-                type: "Rule",
-                name: node.name,
-                definition: convertDefinition(node.definition)
-            };
-        }
-        else {
-            /* istanbul ignore next */
-            throw Error("non exhaustive match");
-        }
-    }
-    gast.serializeProduction = serializeProduction;
-})(gast = exports.gast || (exports.gast = {}));
-//# sourceMappingURL=gast_public.js.map
-
-/***/ }),
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1240,9 +1156,9 @@ var gast;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var utils_1 = __webpack_require__(0);
-var lang_extensions_1 = __webpack_require__(5);
-var lexer_public_1 = __webpack_require__(26);
-var tokens_1 = __webpack_require__(8);
+var lang_extensions_1 = __webpack_require__(4);
+var lexer_public_1 = __webpack_require__(29);
+var tokens_1 = __webpack_require__(11);
 /**
  *  This can be used to improve the quality/readability of error messages or syntax diagrams.
  *
@@ -1310,7 +1226,7 @@ function createTokenInternal(config) {
     }
     if (utils_1.has(config, PARENT)) {
         throw "The parent property is no longer supported.\n" +
-            "See: [TODO-add link] for details.";
+            "See: https://github.com/SAP/chevrotain/issues/564#issuecomment-349062346 for details.";
     }
     if (utils_1.has(config, CATEGORIES)) {
         tokenType.CATEGORIES = config[CATEGORIES];
@@ -1391,85 +1307,6 @@ exports.tokenMatcher = tokenMatcher;
 
 /***/ }),
 /* 4 */
-/***/ (function(module, exports) {
-
-// Generated by CoffeeScript 1.12.7
-(function() {
-  var assign, isArray, isEmpty, isFunction, isObject, isPlainObject,
-    slice = [].slice,
-    hasProp = {}.hasOwnProperty;
-
-  assign = function() {
-    var i, key, len, source, sources, target;
-    target = arguments[0], sources = 2 <= arguments.length ? slice.call(arguments, 1) : [];
-    if (isFunction(Object.assign)) {
-      Object.assign.apply(null, arguments);
-    } else {
-      for (i = 0, len = sources.length; i < len; i++) {
-        source = sources[i];
-        if (source != null) {
-          for (key in source) {
-            if (!hasProp.call(source, key)) continue;
-            target[key] = source[key];
-          }
-        }
-      }
-    }
-    return target;
-  };
-
-  isFunction = function(val) {
-    return !!val && Object.prototype.toString.call(val) === '[object Function]';
-  };
-
-  isObject = function(val) {
-    var ref;
-    return !!val && ((ref = typeof val) === 'function' || ref === 'object');
-  };
-
-  isArray = function(val) {
-    if (isFunction(Array.isArray)) {
-      return Array.isArray(val);
-    } else {
-      return Object.prototype.toString.call(val) === '[object Array]';
-    }
-  };
-
-  isEmpty = function(val) {
-    var key;
-    if (isArray(val)) {
-      return !val.length;
-    } else {
-      for (key in val) {
-        if (!hasProp.call(val, key)) continue;
-        return false;
-      }
-      return true;
-    }
-  };
-
-  isPlainObject = function(val) {
-    var ctor, proto;
-    return isObject(val) && (proto = Object.getPrototypeOf(val)) && (ctor = proto.constructor) && (typeof ctor === 'function') && (ctor instanceof ctor) && (Function.prototype.toString.call(ctor) === Function.prototype.toString.call(Object));
-  };
-
-  module.exports.assign = assign;
-
-  module.exports.isFunction = isFunction;
-
-  module.exports.isObject = isObject;
-
-  module.exports.isArray = isArray;
-
-  module.exports.isEmpty = isEmpty;
-
-  module.exports.isPlainObject = isPlainObject;
-
-}).call(this);
-
-
-/***/ }),
-/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1554,22 +1391,103 @@ exports.HashTable = HashTable;
 //# sourceMappingURL=lang_extensions.js.map
 
 /***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+// Generated by CoffeeScript 1.12.7
+(function() {
+  var assign, isArray, isEmpty, isFunction, isObject, isPlainObject,
+    slice = [].slice,
+    hasProp = {}.hasOwnProperty;
+
+  assign = function() {
+    var i, key, len, source, sources, target;
+    target = arguments[0], sources = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+    if (isFunction(Object.assign)) {
+      Object.assign.apply(null, arguments);
+    } else {
+      for (i = 0, len = sources.length; i < len; i++) {
+        source = sources[i];
+        if (source != null) {
+          for (key in source) {
+            if (!hasProp.call(source, key)) continue;
+            target[key] = source[key];
+          }
+        }
+      }
+    }
+    return target;
+  };
+
+  isFunction = function(val) {
+    return !!val && Object.prototype.toString.call(val) === '[object Function]';
+  };
+
+  isObject = function(val) {
+    var ref;
+    return !!val && ((ref = typeof val) === 'function' || ref === 'object');
+  };
+
+  isArray = function(val) {
+    if (isFunction(Array.isArray)) {
+      return Array.isArray(val);
+    } else {
+      return Object.prototype.toString.call(val) === '[object Array]';
+    }
+  };
+
+  isEmpty = function(val) {
+    var key;
+    if (isArray(val)) {
+      return !val.length;
+    } else {
+      for (key in val) {
+        if (!hasProp.call(val, key)) continue;
+        return false;
+      }
+      return true;
+    }
+  };
+
+  isPlainObject = function(val) {
+    var ctor, proto;
+    return isObject(val) && (proto = Object.getPrototypeOf(val)) && (ctor = proto.constructor) && (typeof ctor === 'function') && (ctor instanceof ctor) && (Function.prototype.toString.call(ctor) === Function.prototype.toString.call(Object));
+  };
+
+  module.exports.assign = assign;
+
+  module.exports.isFunction = isFunction;
+
+  module.exports.isObject = isObject;
+
+  module.exports.isArray = isArray;
+
+  module.exports.isEmpty = isEmpty;
+
+  module.exports.isPlainObject = isPlainObject;
+
+}).call(this);
+
+
+/***/ }),
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var parser_public_1 = __webpack_require__(25);
-var lexer_public_1 = __webpack_require__(26);
+var parser_public_1 = __webpack_require__(28);
+var lexer_public_1 = __webpack_require__(29);
 var tokens_public_1 = __webpack_require__(3);
-var exceptions_public_1 = __webpack_require__(34);
-var gast_public_1 = __webpack_require__(2);
-var cache_public_1 = __webpack_require__(49);
-var interpreter_1 = __webpack_require__(7);
-var version_1 = __webpack_require__(27);
-var errors_public_1 = __webpack_require__(33);
-var render_public_1 = __webpack_require__(48);
+var exceptions_public_1 = __webpack_require__(36);
+var cache_public_1 = __webpack_require__(53);
+var version_1 = __webpack_require__(30);
+var errors_public_1 = __webpack_require__(8);
+var render_public_1 = __webpack_require__(50);
+var gast_visitor_public_1 = __webpack_require__(7);
+var gast_public_1 = __webpack_require__(1);
+var gast_resolver_public_1 = __webpack_require__(38);
+var generate_public_1 = __webpack_require__(52);
 /**
  * defines the public API of
  * changes here may require major version change. (semVer)
@@ -1591,39 +1509,331 @@ API.createToken = tokens_public_1.createToken;
 API.createTokenInstance = tokens_public_1.createTokenInstance;
 // Other Utilities
 API.EMPTY_ALT = parser_public_1.EMPTY_ALT;
-API.defaultErrorProvider = errors_public_1.defaultErrorProvider;
-API.exceptions = {};
-API.exceptions.isRecognitionException = exceptions_public_1.exceptions.isRecognitionException;
-API.exceptions.EarlyExitException = exceptions_public_1.exceptions.EarlyExitException;
-API.exceptions.MismatchedTokenException = exceptions_public_1.exceptions.MismatchedTokenException;
-API.exceptions.NotAllInputParsedException =
-    exceptions_public_1.exceptions.NotAllInputParsedException;
-API.exceptions.NoViableAltException = exceptions_public_1.exceptions.NoViableAltException;
+// TODO: Breaking Change -> renamed property
+API.defaultParserErrorProvider = errors_public_1.defaultParserErrorProvider;
+API.isRecognitionException = exceptions_public_1.isRecognitionException;
+API.EarlyExitException = exceptions_public_1.EarlyExitException;
+API.MismatchedTokenException = exceptions_public_1.MismatchedTokenException;
+API.NotAllInputParsedException = exceptions_public_1.NotAllInputParsedException;
+API.NoViableAltException = exceptions_public_1.NoViableAltException;
 // grammar reflection API
 API.gast = {};
-API.gast.GAstVisitor = gast_public_1.gast.GAstVisitor;
-API.gast.Flat = gast_public_1.gast.Flat;
-API.gast.Repetition = gast_public_1.gast.Repetition;
-API.gast.RepetitionWithSeparator = gast_public_1.gast.RepetitionWithSeparator;
-API.gast.RepetitionMandatory = gast_public_1.gast.RepetitionMandatory;
-API.gast.RepetitionMandatoryWithSeparator =
-    gast_public_1.gast.RepetitionMandatoryWithSeparator;
-API.gast.Option = gast_public_1.gast.Option;
-API.gast.Alternation = gast_public_1.gast.Alternation;
-API.gast.NonTerminal = gast_public_1.gast.NonTerminal;
-API.gast.Terminal = gast_public_1.gast.Terminal;
-API.gast.Rule = gast_public_1.gast.Rule;
-API.gast.serializeGrammar = gast_public_1.gast.serializeGrammar;
-API.gast.serializeProduction = gast_public_1.gast.serializeProduction;
-API.interperter = {};
-API.interperter.NextAfterTokenWalker = interpreter_1.NextAfterTokenWalker;
+API.Flat = gast_public_1.Flat;
+API.Repetition = gast_public_1.Repetition;
+API.RepetitionWithSeparator = gast_public_1.RepetitionWithSeparator;
+API.RepetitionMandatory = gast_public_1.RepetitionMandatory;
+API.RepetitionMandatoryWithSeparator = gast_public_1.RepetitionMandatoryWithSeparator;
+API.Option = gast_public_1.Option;
+API.Alternation = gast_public_1.Alternation;
+API.NonTerminal = gast_public_1.NonTerminal;
+API.Terminal = gast_public_1.Terminal;
+API.Rule = gast_public_1.Rule;
+// GAST Utilities
+API.GAstVisitor = gast_visitor_public_1.GAstVisitor;
+API.serializeGrammar = gast_public_1.serializeGrammar;
+API.serializeProduction = gast_public_1.serializeProduction;
+API.resolveGrammar = gast_resolver_public_1.resolveGrammar;
+API.defaultGrammarResolverErrorProvider = errors_public_1.defaultGrammarResolverErrorProvider;
+API.validateGrammar = gast_resolver_public_1.validateGrammar;
+API.defaultGrammarValidatorErrorProvider = errors_public_1.defaultGrammarValidatorErrorProvider;
+API.assignOccurrenceIndices = gast_resolver_public_1.assignOccurrenceIndices;
 API.clearCache = cache_public_1.clearCache;
 API.createSyntaxDiagramsCode = render_public_1.createSyntaxDiagramsCode;
+API.generateParserFactory = generate_public_1.generateParserFactory;
+API.generateParserModule = generate_public_1.generateParserModule;
 module.exports = API;
 //# sourceMappingURL=api.js.map
 
 /***/ }),
 /* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var gast_public_1 = __webpack_require__(1);
+var GAstVisitor = /** @class */ (function () {
+    function GAstVisitor() {
+    }
+    GAstVisitor.prototype.visit = function (node) {
+        if (node instanceof gast_public_1.NonTerminal) {
+            return this.visitNonTerminal(node);
+        }
+        else if (node instanceof gast_public_1.Flat) {
+            return this.visitFlat(node);
+        }
+        else if (node instanceof gast_public_1.Option) {
+            return this.visitOption(node);
+        }
+        else if (node instanceof gast_public_1.RepetitionMandatory) {
+            return this.visitRepetitionMandatory(node);
+        }
+        else if (node instanceof gast_public_1.RepetitionMandatoryWithSeparator) {
+            return this.visitRepetitionMandatoryWithSeparator(node);
+        }
+        else if (node instanceof gast_public_1.RepetitionWithSeparator) {
+            return this.visitRepetitionWithSeparator(node);
+        }
+        else if (node instanceof gast_public_1.Repetition) {
+            return this.visitRepetition(node);
+        }
+        else if (node instanceof gast_public_1.Alternation) {
+            return this.visitAlternation(node);
+        }
+        else if (node instanceof gast_public_1.Terminal) {
+            return this.visitTerminal(node);
+        }
+        else if (node instanceof gast_public_1.Rule) {
+            return this.visitRule(node);
+        }
+        else {
+            /* istanbul ignore next */
+            throw Error("non exhaustive match");
+        }
+    };
+    GAstVisitor.prototype.visitNonTerminal = function (node) { };
+    GAstVisitor.prototype.visitFlat = function (node) { };
+    GAstVisitor.prototype.visitOption = function (node) { };
+    GAstVisitor.prototype.visitRepetition = function (node) { };
+    GAstVisitor.prototype.visitRepetitionMandatory = function (node) { };
+    GAstVisitor.prototype.visitRepetitionMandatoryWithSeparator = function (node) { };
+    GAstVisitor.prototype.visitRepetitionWithSeparator = function (node) { };
+    GAstVisitor.prototype.visitAlternation = function (node) { };
+    GAstVisitor.prototype.visitTerminal = function (node) { };
+    GAstVisitor.prototype.visitRule = function (node) { };
+    return GAstVisitor;
+}());
+exports.GAstVisitor = GAstVisitor;
+//# sourceMappingURL=gast_visitor_public.js.map
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var tokens_public_1 = __webpack_require__(3);
+var utils = __webpack_require__(0);
+var utils_1 = __webpack_require__(0);
+var gast_public_1 = __webpack_require__(1);
+var gast_1 = __webpack_require__(9);
+var checks_1 = __webpack_require__(10);
+var version_1 = __webpack_require__(30);
+/**
+ * This is the default logic Chevrotain uses to construct error messages.
+ * When constructing a custom error message provider it may be used as a reference
+ * or reused.
+ */
+exports.defaultParserErrorProvider = {
+    buildMismatchTokenMessage: function (_a) {
+        var expected = _a.expected, actual = _a.actual, ruleName = _a.ruleName;
+        var hasLabel = tokens_public_1.hasTokenLabel(expected);
+        var expectedMsg = hasLabel
+            ? "--> " + tokens_public_1.tokenLabel(expected) + " <--"
+            : "token of type --> " + tokens_public_1.tokenName(expected) + " <--";
+        var msg = "Expecting " + expectedMsg + " but found --> '" + actual.image + "' <--";
+        return msg;
+    },
+    buildNotAllInputParsedMessage: function (_a) {
+        var firstRedundant = _a.firstRedundant, ruleName = _a.ruleName;
+        return ("Redundant input, expecting EOF but found: " + firstRedundant.image);
+    },
+    buildNoViableAltMessage: function (_a) {
+        var expectedPathsPerAlt = _a.expectedPathsPerAlt, actual = _a.actual, customUserDescription = _a.customUserDescription, ruleName = _a.ruleName;
+        var errPrefix = "Expecting: ";
+        // TODO: issue: No Viable Alternative Error may have incomplete details. #502
+        var actualText = utils_1.first(actual).image;
+        var errSuffix = "\nbut found: '" + actualText + "'";
+        if (customUserDescription) {
+            return errPrefix + customUserDescription + errSuffix;
+        }
+        else {
+            var allLookAheadPaths = utils_1.reduce(expectedPathsPerAlt, function (result, currAltPaths) { return result.concat(currAltPaths); }, []);
+            var nextValidTokenSequences = utils_1.map(allLookAheadPaths, function (currPath) {
+                return "[" + utils_1.map(currPath, function (currTokenType) {
+                    return tokens_public_1.tokenLabel(currTokenType);
+                }).join(", ") + "]";
+            });
+            var nextValidSequenceItems = utils_1.map(nextValidTokenSequences, function (itemMsg, idx) { return "  " + (idx + 1) + ". " + itemMsg; });
+            var calculatedDescription = "one of these possible Token sequences:\n" + nextValidSequenceItems.join("\n");
+            return errPrefix + calculatedDescription + errSuffix;
+        }
+    },
+    buildEarlyExitMessage: function (_a) {
+        var expectedIterationPaths = _a.expectedIterationPaths, actual = _a.actual, customUserDescription = _a.customUserDescription, ruleName = _a.ruleName;
+        var errPrefix = "Expecting: ";
+        // TODO: issue: No Viable Alternative Error may have incomplete details. #502
+        var actualText = utils_1.first(actual).image;
+        var errSuffix = "\nbut found: '" + actualText + "'";
+        if (customUserDescription) {
+            return errPrefix + customUserDescription + errSuffix;
+        }
+        else {
+            var nextValidTokenSequences = utils_1.map(expectedIterationPaths, function (currPath) {
+                return "[" + utils_1.map(currPath, function (currTokenType) {
+                    return tokens_public_1.tokenLabel(currTokenType);
+                }).join(",") + "]";
+            });
+            var calculatedDescription = "expecting at least one iteration which starts with one of these possible Token sequences::\n  " +
+                ("<" + nextValidTokenSequences.join(" ,") + ">");
+            return errPrefix + calculatedDescription + errSuffix;
+        }
+    }
+};
+Object.freeze(exports.defaultParserErrorProvider);
+exports.defaultGrammarResolverErrorProvider = {
+    buildRuleNotFoundError: function (topLevelRule, undefinedRule) {
+        var msg = "Invalid grammar, reference to a rule which is not defined: ->" +
+            undefinedRule.nonTerminalName +
+            "<-\n" +
+            "inside top level rule: ->" +
+            topLevelRule.name +
+            "<-";
+        return msg;
+    }
+};
+exports.defaultGrammarValidatorErrorProvider = {
+    buildDuplicateFoundError: function (topLevelRule, duplicateProds) {
+        function getExtraProductionArgument(prod) {
+            if (prod instanceof gast_public_1.Terminal) {
+                return tokens_public_1.tokenName(prod.terminalType);
+            }
+            else if (prod instanceof gast_public_1.NonTerminal) {
+                return prod.nonTerminalName;
+            }
+            else {
+                return "";
+            }
+        }
+        var topLevelName = topLevelRule.name;
+        var duplicateProd = utils_1.first(duplicateProds);
+        var index = duplicateProd.idx;
+        var dslName = gast_1.getProductionDslName(duplicateProd);
+        var extraArgument = getExtraProductionArgument(duplicateProd);
+        var msg = "->" + dslName + "<- with numerical suffix: ->" + index + "<-\n                  " + (extraArgument ? "and argument: ->" + extraArgument + "<-" : "") + "\n                  appears more than once (" + duplicateProds.length + " times) in the top level rule: ->" + topLevelName + "<-.\n                  " + (index === 0
+            ? "Also note that numerical suffix 0 means " + dslName + " without any suffix."
+            : "") + "\n                  To fix this make sure each usage of " + dslName + " " + (extraArgument ? "with the argument: ->" + extraArgument + "<-" : "") + "\n                  in the rule ->" + topLevelName + "<- has a different occurrence index (0-5), as that combination acts as a unique\n                  position key in the grammar, which is needed by the parsing engine.\n                  \n                  For further details see: http://sap.github.io/chevrotain/website/FAQ.html#NUMERICAL_SUFFIXES \n                  ";
+        // white space trimming time! better to trim afterwards as it allows to use WELL formatted multi line template strings...
+        msg = msg.replace(/[ \t]+/g, " ");
+        msg = msg.replace(/\s\s+/g, "\n");
+        return msg;
+    },
+    buildInvalidNestedRuleNameError: function (topLevelRule, nestedProd) {
+        var msg = "Invalid nested rule name: ->" + nestedProd.name + "<- inside rule: ->" + topLevelRule.name + "<-\n" +
+            ("it must match the pattern: ->" + checks_1.validNestedRuleName.toString() + "<-.\n") +
+            "Note that this means a nested rule name must start with the '$'(dollar) sign.";
+        return msg;
+    },
+    buildDuplicateNestedRuleNameError: function (topLevelRule, nestedProd) {
+        var duplicateName = utils_1.first(nestedProd).name;
+        var errMsg = "Duplicate nested rule name: ->" + duplicateName + "<- inside rule: ->" + topLevelRule.name + "<-\n" +
+            "A nested name must be unique in the scope of a top level grammar rule.";
+        return errMsg;
+    },
+    buildNamespaceConflictError: function (rule) {
+        var errMsg = "Namespace conflict found in grammar.\n" +
+            ("The grammar has both a Terminal(Token) and a Non-Terminal(Rule) named: <" + rule.name + ">.\n") +
+            "To resolve this make sure each Terminal and Non-Terminal names are unique\n" +
+            "This is easy to accomplish by using the convention that Terminal names start with an uppercase letter\n" +
+            "and Non-Terminal names start with a lower case letter.";
+        return errMsg;
+    },
+    buildAlternationPrefixAmbiguityError: function (options) {
+        var pathMsg = utils_1.map(options.prefixPath, function (currTok) {
+            return tokens_public_1.tokenLabel(currTok);
+        }).join(", ");
+        var occurrence = options.alternation.idx === 0 ? "" : options.alternation.idx;
+        var errMsg = "Ambiguous alternatives: <" + options.ambiguityIndices.join(" ,") + "> due to common lookahead prefix\n" +
+            ("in <OR" + occurrence + "> inside <" + options.topLevelRule.name + "> Rule,\n") +
+            ("<" + pathMsg + "> may appears as a prefix path in all these alternatives.\n") +
+            "http://sap.github.io/chevrotain/website/Building_Grammars/resolving_grammar_errors.html#COMMON_PREFIX " +
+            "For farther details.";
+        return errMsg;
+    },
+    buildAlternationAmbiguityError: function (options) {
+        var pathMsg = utils_1.map(options.prefixPath, function (currtok) {
+            return tokens_public_1.tokenLabel(currtok);
+        }).join(", ");
+        var occurrence = options.alternation.idx === 0 ? "" : options.alternation.idx;
+        var currMessage = "Ambiguous alternatives: <" + options.ambiguityIndices.join(" ,") + "> in <OR" + occurrence + ">" +
+            (" inside <" + options.topLevelRule.name + "> Rule,\n") +
+            ("<" + pathMsg + "> may appears as a prefix path in all these alternatives.\n");
+        var docs_version = version_1.VERSION.replace(/\./g, "_");
+        // Should this information be on the error message or in some common errors docs?
+        currMessage =
+            currMessage +
+                "To Resolve this, try one of of the following: \n" +
+                "1. Refactor your grammar to be LL(K) for the current value of k (by default k=5)\n" +
+                "2. Increase the value of K for your grammar by providing a larger 'maxLookahead' value in the parser's config\n" +
+                "3. This issue can be ignored (if you know what you are doing...), see" +
+                " http://sap.github.io/chevrotain/documentation/" +
+                docs_version +
+                "/interfaces/iparserconfig.html#ignoredissues for more" +
+                " details\n";
+        return currMessage;
+    },
+    buildEmptyRepetitionError: function (options) {
+        var dslName = gast_1.getProductionDslName(options.repetition);
+        if (options.repetition.idx !== 0) {
+            dslName += options.repetition.idx;
+        }
+        var errMsg = "The repetition <" + dslName + "> within Rule <" + options.topLevelRule.name + "> can never consume any tokens.\n" +
+            "This could lead to an infinite loop.";
+        return errMsg;
+    },
+    buildTokenNameError: function (options) {
+        var tokTypeName = tokens_public_1.tokenName(options.tokenType);
+        var errMsg = "Invalid Grammar Token name: ->" + tokTypeName + "<- it must match the pattern: ->" + options.expectedPattern.toString() + "<-";
+        return errMsg;
+    },
+    buildEmptyAlternationError: function (options) {
+        var errMsg = "Ambiguous empty alternative: <" + (options.emptyChoiceIdx + 1) + ">" +
+            (" in <OR" + options.alternation.idx + "> inside <" + options.topLevelRule.name + "> Rule.\n") +
+            "Only the last alternative may be an empty alternative.";
+        return errMsg;
+    },
+    buildTooManyAlternativesError: function (options) {
+        var errMsg = "An Alternation cannot have more than 256 alternatives:\n" +
+            ("<OR" + options.alternation.idx + "> inside <" + options.topLevelRule.name + "> Rule.\n has " + (options.alternation.definition.length +
+                1) + " alternatives.");
+        return errMsg;
+    },
+    buildLeftRecursionError: function (options) {
+        var ruleName = options.topLevelRule.name;
+        var pathNames = utils.map(options.leftRecursionPath, function (currRule) { return currRule.name; });
+        var leftRecursivePath = ruleName + " --> " + pathNames
+            .concat([ruleName])
+            .join(" --> ");
+        var errMsg = "Left Recursion found in grammar.\n" +
+            ("rule: <" + ruleName + "> can be invoked from itself (directly or indirectly)\n") +
+            ("without consuming any Tokens. The grammar path that causes this is: \n " + leftRecursivePath + "\n") +
+            " To fix this refactor your grammar to remove the left recursion.\n" +
+            "see: https://en.wikipedia.org/wiki/LL_parser#Left_Factoring.";
+        return errMsg;
+    },
+    buildInvalidRuleNameError: function (options) {
+        var ruleName = options.topLevelRule.name;
+        var expectedPatternString = options.expectedPattern.toString();
+        var errMsg = "Invalid grammar rule name: ->" + ruleName + "<- it must match the pattern: ->" + expectedPatternString + "<-";
+        return errMsg;
+    },
+    buildDuplicateRuleNameError: function (options) {
+        var ruleName;
+        if (options.topLevelRule instanceof gast_public_1.Rule) {
+            ruleName = options.topLevelRule.name;
+        }
+        else {
+            ruleName = options.topLevelRule;
+        }
+        var errMsg = "Duplicate definition, rule: ->" + ruleName + "<- is already defined in the grammar: ->" + options.grammarName + "<-";
+        return errMsg;
+    }
+};
+//# sourceMappingURL=errors_public.js.map
+
+/***/ }),
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1639,517 +1849,831 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-/* tslint:disable:no-use-before-declare */
-var rest_1 = __webpack_require__(24);
-var gast_public_1 = __webpack_require__(2);
 var utils_1 = __webpack_require__(0);
+var gast_public_1 = __webpack_require__(1);
+var gast_visitor_public_1 = __webpack_require__(7);
 var tokens_public_1 = __webpack_require__(3);
-var first_1 = __webpack_require__(36);
-/* tslint:enable:no-use-before-declare */
-var AbstractNextPossibleTokensWalker = /** @class */ (function (_super) {
-    __extends(AbstractNextPossibleTokensWalker, _super);
-    function AbstractNextPossibleTokensWalker(topProd, path) {
-        var _this = _super.call(this) || this;
-        _this.topProd = topProd;
-        _this.path = path;
-        _this.possibleTokTypes = [];
-        _this.nextProductionName = "";
-        _this.nextProductionOccurrence = 0;
-        _this.found = false;
-        _this.isAtEndOfPath = false;
-        return _this;
+function isSequenceProd(prod) {
+    return (prod instanceof gast_public_1.Flat ||
+        prod instanceof gast_public_1.Option ||
+        prod instanceof gast_public_1.Repetition ||
+        prod instanceof gast_public_1.RepetitionMandatory ||
+        prod instanceof gast_public_1.RepetitionMandatoryWithSeparator ||
+        prod instanceof gast_public_1.RepetitionWithSeparator ||
+        prod instanceof gast_public_1.Terminal ||
+        prod instanceof gast_public_1.Rule);
+}
+exports.isSequenceProd = isSequenceProd;
+function isOptionalProd(prod, alreadyVisited) {
+    if (alreadyVisited === void 0) { alreadyVisited = []; }
+    var isDirectlyOptional = prod instanceof gast_public_1.Option ||
+        prod instanceof gast_public_1.Repetition ||
+        prod instanceof gast_public_1.RepetitionWithSeparator;
+    if (isDirectlyOptional) {
+        return true;
     }
-    AbstractNextPossibleTokensWalker.prototype.startWalking = function () {
-        this.found = false;
-        if (this.path.ruleStack[0] !== this.topProd.name) {
-            throw Error("The path does not start with the walker's top Rule!");
-        }
-        // immutable for the win
-        this.ruleStack = utils_1.cloneArr(this.path.ruleStack).reverse(); // intelij bug requires assertion
-        this.occurrenceStack = utils_1.cloneArr(this.path.occurrenceStack).reverse(); // intelij bug requires assertion
-        // already verified that the first production is valid, we now seek the 2nd production
-        this.ruleStack.pop();
-        this.occurrenceStack.pop();
-        this.updateExpectedNext();
-        this.walk(this.topProd);
-        return this.possibleTokTypes;
-    };
-    AbstractNextPossibleTokensWalker.prototype.walk = function (prod, prevRest) {
-        if (prevRest === void 0) { prevRest = []; }
-        // stop scanning once we found the path
-        if (!this.found) {
-            _super.prototype.walk.call(this, prod, prevRest);
-        }
-    };
-    AbstractNextPossibleTokensWalker.prototype.walkProdRef = function (refProd, currRest, prevRest) {
-        // found the next production, need to keep walking in it
-        if (refProd.referencedRule.name === this.nextProductionName &&
-            refProd.occurrenceInParent === this.nextProductionOccurrence) {
-            var fullRest = currRest.concat(prevRest);
-            this.updateExpectedNext();
-            this.walk(refProd.referencedRule, fullRest);
-        }
-    };
-    AbstractNextPossibleTokensWalker.prototype.updateExpectedNext = function () {
-        // need to consume the Terminal
-        if (utils_1.isEmpty(this.ruleStack)) {
-            // must reset nextProductionXXX to avoid walking down another Top Level production while what we are
-            // really seeking is the last Terminal...
-            this.nextProductionName = "";
-            this.nextProductionOccurrence = 0;
-            this.isAtEndOfPath = true;
-        }
-        else {
-            this.nextProductionName = this.ruleStack.pop();
-            this.nextProductionOccurrence = this.occurrenceStack.pop();
-        }
-    };
-    return AbstractNextPossibleTokensWalker;
-}(rest_1.RestWalker));
-exports.AbstractNextPossibleTokensWalker = AbstractNextPossibleTokensWalker;
-var NextAfterTokenWalker = /** @class */ (function (_super) {
-    __extends(NextAfterTokenWalker, _super);
-    function NextAfterTokenWalker(topProd, path) {
-        var _this = _super.call(this, topProd, path) || this;
-        _this.path = path;
-        _this.nextTerminalName = "";
-        _this.nextTerminalOccurrence = 0;
-        _this.nextTerminalName = tokens_public_1.tokenName(_this.path.lastTok);
-        _this.nextTerminalOccurrence = _this.path.lastTokOccurrence;
-        return _this;
+    // note that this can cause infinite loop if one optional empty TOP production has a cyclic dependency with another
+    // empty optional top rule
+    // may be indirectly optional ((A?B?C?) | (D?E?F?))
+    if (prod instanceof gast_public_1.Alternation) {
+        // for OR its enough for just one of the alternatives to be optional
+        return utils_1.some(prod.definition, function (subProd) {
+            return isOptionalProd(subProd, alreadyVisited);
+        });
     }
-    NextAfterTokenWalker.prototype.walkTerminal = function (terminal, currRest, prevRest) {
-        if (this.isAtEndOfPath &&
-            tokens_public_1.tokenName(terminal.terminalType) === this.nextTerminalName &&
-            terminal.occurrenceInParent === this.nextTerminalOccurrence &&
-            !this.found) {
-            var fullRest = currRest.concat(prevRest);
-            var restProd = new gast_public_1.gast.Flat(fullRest);
-            this.possibleTokTypes = first_1.first(restProd);
-            this.found = true;
+    else if (prod instanceof gast_public_1.NonTerminal && utils_1.contains(alreadyVisited, prod)) {
+        // avoiding stack overflow due to infinite recursion
+        return false;
+    }
+    else if (prod instanceof gast_public_1.AbstractProduction) {
+        if (prod instanceof gast_public_1.NonTerminal) {
+            alreadyVisited.push(prod);
         }
+        return utils_1.every(prod.definition, function (subProd) {
+            return isOptionalProd(subProd, alreadyVisited);
+        });
+    }
+    else {
+        return false;
+    }
+}
+exports.isOptionalProd = isOptionalProd;
+function isBranchingProd(prod) {
+    return prod instanceof gast_public_1.Alternation;
+}
+exports.isBranchingProd = isBranchingProd;
+function getProductionDslName(prod) {
+    if (prod instanceof gast_public_1.NonTerminal) {
+        return "SUBRULE";
+    }
+    else if (prod instanceof gast_public_1.Option) {
+        return "OPTION";
+    }
+    else if (prod instanceof gast_public_1.Alternation) {
+        return "OR";
+    }
+    else if (prod instanceof gast_public_1.RepetitionMandatory) {
+        return "AT_LEAST_ONE";
+    }
+    else if (prod instanceof gast_public_1.RepetitionMandatoryWithSeparator) {
+        return "AT_LEAST_ONE_SEP";
+    }
+    else if (prod instanceof gast_public_1.RepetitionWithSeparator) {
+        return "MANY_SEP";
+    }
+    else if (prod instanceof gast_public_1.Repetition) {
+        return "MANY";
+    }
+    else if (prod instanceof gast_public_1.Terminal) {
+        return "CONSUME";
+    }
+    else {
+        /* istanbul ignore next */
+        throw Error("non exhaustive match");
+    }
+}
+exports.getProductionDslName = getProductionDslName;
+var GastCloneVisitor = /** @class */ (function (_super) {
+    __extends(GastCloneVisitor, _super);
+    function GastCloneVisitor() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    GastCloneVisitor.prototype.visitNonTerminal = function (node) {
+        return new gast_public_1.NonTerminal({
+            nonTerminalName: node.nonTerminalName,
+            idx: node.idx
+        });
     };
-    return NextAfterTokenWalker;
-}(AbstractNextPossibleTokensWalker));
-exports.NextAfterTokenWalker = NextAfterTokenWalker;
-/**
- * This walker only "walks" a single "TOP" level in the Grammar Ast, this means
- * it never "follows" production refs
- */
-var AbstractNextTerminalAfterProductionWalker = /** @class */ (function (_super) {
-    __extends(AbstractNextTerminalAfterProductionWalker, _super);
-    function AbstractNextTerminalAfterProductionWalker(topRule, occurrence) {
-        var _this = _super.call(this) || this;
-        _this.topRule = topRule;
-        _this.occurrence = occurrence;
-        _this.result = {
-            token: undefined,
-            occurrence: undefined,
-            isEndOfRule: undefined
+    GastCloneVisitor.prototype.visitFlat = function (node) {
+        var _this = this;
+        var definition = utils_1.map(node.definition, function (currSubDef) {
+            return _this.visit(currSubDef);
+        });
+        return new gast_public_1.Flat({ definition: definition, name: node.name });
+    };
+    GastCloneVisitor.prototype.visitOption = function (node) {
+        var _this = this;
+        var definition = utils_1.map(node.definition, function (currSubDef) {
+            return _this.visit(currSubDef);
+        });
+        return new gast_public_1.Option({
+            definition: definition,
+            idx: node.idx,
+            name: node.name
+        });
+    };
+    GastCloneVisitor.prototype.visitRepetition = function (node) {
+        var _this = this;
+        var definition = utils_1.map(node.definition, function (currSubDef) {
+            return _this.visit(currSubDef);
+        });
+        return new gast_public_1.Repetition({
+            definition: definition,
+            idx: node.idx,
+            name: node.name
+        });
+    };
+    GastCloneVisitor.prototype.visitRepetitionMandatory = function (node) {
+        var _this = this;
+        var definition = utils_1.map(node.definition, function (currSubDef) {
+            return _this.visit(currSubDef);
+        });
+        return new gast_public_1.RepetitionMandatory({
+            definition: definition,
+            idx: node.idx,
+            name: node.name
+        });
+    };
+    GastCloneVisitor.prototype.visitRepetitionMandatoryWithSeparator = function (node) {
+        var _this = this;
+        var definition = utils_1.map(node.definition, function (currSubDef) {
+            return _this.visit(currSubDef);
+        });
+        return new gast_public_1.RepetitionMandatoryWithSeparator({
+            definition: definition,
+            separator: node.separator,
+            idx: node.idx,
+            name: node.name
+        });
+    };
+    GastCloneVisitor.prototype.visitRepetitionWithSeparator = function (node) {
+        var _this = this;
+        var definition = utils_1.map(node.definition, function (currSubDef) {
+            return _this.visit(currSubDef);
+        });
+        return new gast_public_1.RepetitionWithSeparator({
+            definition: definition,
+            separator: node.separator,
+            idx: node.idx,
+            name: node.name
+        });
+    };
+    GastCloneVisitor.prototype.visitAlternation = function (node) {
+        var _this = this;
+        var definition = utils_1.map(node.definition, function (currSubDef) {
+            return _this.visit(currSubDef);
+        });
+        return new gast_public_1.Alternation({
+            definition: definition,
+            idx: node.idx,
+            name: node.name
+        });
+    };
+    GastCloneVisitor.prototype.visitTerminal = function (node) {
+        return new gast_public_1.Terminal({
+            terminalType: node.terminalType,
+            idx: node.idx
+        });
+    };
+    GastCloneVisitor.prototype.visitRule = function (node) {
+        var _this = this;
+        var definition = utils_1.map(node.definition, function (currSubDef) {
+            return _this.visit(currSubDef);
+        });
+        return new gast_public_1.Rule({
+            name: node.name,
+            definition: definition,
+            orgText: node.orgText
+        });
+    };
+    return GastCloneVisitor;
+}(gast_visitor_public_1.GAstVisitor));
+function cloneProduction(prod) {
+    var cloningVisitor = new GastCloneVisitor();
+    return cloningVisitor.visit(prod);
+}
+exports.cloneProduction = cloneProduction;
+var DslMethodsCollectorVisitor = /** @class */ (function (_super) {
+    __extends(DslMethodsCollectorVisitor, _super);
+    function DslMethodsCollectorVisitor() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        // A minus is never valid in an identifier name
+        _this.separator = "-";
+        _this.dslMethods = {
+            option: [],
+            alternation: [],
+            repetition: [],
+            repetitionWithSeparator: [],
+            repetitionMandatory: [],
+            repetitionMandatoryWithSeparator: []
         };
         return _this;
     }
-    AbstractNextTerminalAfterProductionWalker.prototype.startWalking = function () {
-        this.walk(this.topRule);
-        return this.result;
+    DslMethodsCollectorVisitor.prototype.visitTerminal = function (terminal) {
+        var key = tokens_public_1.tokenName(terminal.terminalType) + this.separator + "Terminal";
+        if (!utils_1.has(this.dslMethods, key)) {
+            this.dslMethods[key] = [];
+        }
+        this.dslMethods[key].push(terminal);
     };
-    return AbstractNextTerminalAfterProductionWalker;
-}(rest_1.RestWalker));
-exports.AbstractNextTerminalAfterProductionWalker = AbstractNextTerminalAfterProductionWalker;
-var NextTerminalAfterManyWalker = /** @class */ (function (_super) {
-    __extends(NextTerminalAfterManyWalker, _super);
-    function NextTerminalAfterManyWalker() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    NextTerminalAfterManyWalker.prototype.walkMany = function (manyProd, currRest, prevRest) {
-        if (manyProd.occurrenceInParent === this.occurrence) {
-            var firstAfterMany = utils_1.first(currRest.concat(prevRest));
-            this.result.isEndOfRule = firstAfterMany === undefined;
-            if (firstAfterMany instanceof gast_public_1.gast.Terminal) {
-                this.result.token = firstAfterMany.terminalType;
-                this.result.occurrence = firstAfterMany.occurrenceInParent;
-            }
+    DslMethodsCollectorVisitor.prototype.visitNonTerminal = function (subrule) {
+        var key = subrule.nonTerminalName + this.separator + "Terminal";
+        if (!utils_1.has(this.dslMethods, key)) {
+            this.dslMethods[key] = [];
         }
-        else {
-            _super.prototype.walkMany.call(this, manyProd, currRest, prevRest);
-        }
+        this.dslMethods[key].push(subrule);
     };
-    return NextTerminalAfterManyWalker;
-}(AbstractNextTerminalAfterProductionWalker));
-exports.NextTerminalAfterManyWalker = NextTerminalAfterManyWalker;
-var NextTerminalAfterManySepWalker = /** @class */ (function (_super) {
-    __extends(NextTerminalAfterManySepWalker, _super);
-    function NextTerminalAfterManySepWalker() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    NextTerminalAfterManySepWalker.prototype.walkManySep = function (manySepProd, currRest, prevRest) {
-        if (manySepProd.occurrenceInParent === this.occurrence) {
-            var firstAfterManySep = utils_1.first(currRest.concat(prevRest));
-            this.result.isEndOfRule = firstAfterManySep === undefined;
-            if (firstAfterManySep instanceof gast_public_1.gast.Terminal) {
-                this.result.token = firstAfterManySep.terminalType;
-                this.result.occurrence = firstAfterManySep.occurrenceInParent;
-            }
-        }
-        else {
-            _super.prototype.walkManySep.call(this, manySepProd, currRest, prevRest);
-        }
+    DslMethodsCollectorVisitor.prototype.visitOption = function (option) {
+        this.dslMethods.option.push(option);
     };
-    return NextTerminalAfterManySepWalker;
-}(AbstractNextTerminalAfterProductionWalker));
-exports.NextTerminalAfterManySepWalker = NextTerminalAfterManySepWalker;
-var NextTerminalAfterAtLeastOneWalker = /** @class */ (function (_super) {
-    __extends(NextTerminalAfterAtLeastOneWalker, _super);
-    function NextTerminalAfterAtLeastOneWalker() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    NextTerminalAfterAtLeastOneWalker.prototype.walkAtLeastOne = function (atLeastOneProd, currRest, prevRest) {
-        if (atLeastOneProd.occurrenceInParent === this.occurrence) {
-            var firstAfterAtLeastOne = utils_1.first(currRest.concat(prevRest));
-            this.result.isEndOfRule = firstAfterAtLeastOne === undefined;
-            if (firstAfterAtLeastOne instanceof gast_public_1.gast.Terminal) {
-                this.result.token = firstAfterAtLeastOne.terminalType;
-                this.result.occurrence = firstAfterAtLeastOne.occurrenceInParent;
-            }
-        }
-        else {
-            _super.prototype.walkAtLeastOne.call(this, atLeastOneProd, currRest, prevRest);
-        }
+    DslMethodsCollectorVisitor.prototype.visitRepetitionWithSeparator = function (manySep) {
+        this.dslMethods.repetitionWithSeparator.push(manySep);
     };
-    return NextTerminalAfterAtLeastOneWalker;
-}(AbstractNextTerminalAfterProductionWalker));
-exports.NextTerminalAfterAtLeastOneWalker = NextTerminalAfterAtLeastOneWalker;
-// TODO: reduce code duplication in the AfterWalkers
-var NextTerminalAfterAtLeastOneSepWalker = /** @class */ (function (_super) {
-    __extends(NextTerminalAfterAtLeastOneSepWalker, _super);
-    function NextTerminalAfterAtLeastOneSepWalker() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    NextTerminalAfterAtLeastOneSepWalker.prototype.walkAtLeastOneSep = function (atleastOneSepProd, currRest, prevRest) {
-        if (atleastOneSepProd.occurrenceInParent === this.occurrence) {
-            var firstAfterfirstAfterAtLeastOneSep = utils_1.first(currRest.concat(prevRest));
-            this.result.isEndOfRule =
-                firstAfterfirstAfterAtLeastOneSep === undefined;
-            if (firstAfterfirstAfterAtLeastOneSep instanceof gast_public_1.gast.Terminal) {
-                this.result.token =
-                    firstAfterfirstAfterAtLeastOneSep.terminalType;
-                this.result.occurrence =
-                    firstAfterfirstAfterAtLeastOneSep.occurrenceInParent;
-            }
-        }
-        else {
-            _super.prototype.walkAtLeastOneSep.call(this, atleastOneSepProd, currRest, prevRest);
-        }
+    DslMethodsCollectorVisitor.prototype.visitRepetitionMandatory = function (atLeastOne) {
+        this.dslMethods.repetitionMandatory.push(atLeastOne);
     };
-    return NextTerminalAfterAtLeastOneSepWalker;
-}(AbstractNextTerminalAfterProductionWalker));
-exports.NextTerminalAfterAtLeastOneSepWalker = NextTerminalAfterAtLeastOneSepWalker;
-function possiblePathsFrom(targetDef, maxLength, currPath) {
-    if (currPath === void 0) { currPath = []; }
-    // avoid side effects
-    currPath = utils_1.cloneArr(currPath);
-    var result = [];
-    var i = 0;
-    function remainingPathWith(nextDef) {
-        return nextDef.concat(utils_1.drop(targetDef, i + 1));
-    }
-    function getAlternativesForProd(definition) {
-        var alternatives = possiblePathsFrom(remainingPathWith(definition), maxLength, currPath);
-        return result.concat(alternatives);
-    }
-    /**
-     * Mandatory productions will halt the loop as the paths computed from their recursive calls will already contain the
-     * following (rest) of the targetDef.
-     *
-     * For optional productions (Option/Repetition/...) the loop will continue to represent the paths that do not include the
-     * the optional production.
-     */
-    while (currPath.length < maxLength && i < targetDef.length) {
-        var prod = targetDef[i];
-        if (prod instanceof gast_public_1.gast.Flat) {
-            return getAlternativesForProd(prod.definition);
-        }
-        else if (prod instanceof gast_public_1.gast.NonTerminal) {
-            return getAlternativesForProd(prod.definition);
-        }
-        else if (prod instanceof gast_public_1.gast.Option) {
-            result = getAlternativesForProd(prod.definition);
-        }
-        else if (prod instanceof gast_public_1.gast.RepetitionMandatory) {
-            return getAlternativesForProd(prod.definition);
-        }
-        else if (prod instanceof gast_public_1.gast.RepetitionMandatoryWithSeparator) {
-            var newDef = [
-                new gast_public_1.gast.Flat(prod.definition),
-                new gast_public_1.gast.Repetition([new gast_public_1.gast.Terminal(prod.separator)].concat(prod.definition))
-            ];
-            return getAlternativesForProd(newDef);
-        }
-        else if (prod instanceof gast_public_1.gast.RepetitionWithSeparator) {
-            var newDef = prod.definition.concat([
-                new gast_public_1.gast.Repetition([new gast_public_1.gast.Terminal(prod.separator)].concat(prod.definition))
-            ]);
-            result = getAlternativesForProd(newDef);
-        }
-        else if (prod instanceof gast_public_1.gast.Repetition) {
-            result = getAlternativesForProd(prod.definition);
-        }
-        else if (prod instanceof gast_public_1.gast.Alternation) {
-            utils_1.forEach(prod.definition, function (currAlt) {
-                result = getAlternativesForProd(currAlt.definition);
-            });
-            return result;
-        }
-        else if (prod instanceof gast_public_1.gast.Terminal) {
-            currPath.push(prod.terminalType);
-        }
-        else {
-            /* istanbul ignore next */
-            throw Error("non exhaustive match");
-        }
-        i++;
-    }
-    result.push({
-        partialPath: currPath,
-        suffixDef: utils_1.drop(targetDef, i)
-    });
-    return result;
-}
-exports.possiblePathsFrom = possiblePathsFrom;
-function nextPossibleTokensAfter(initialDef, tokenVector, tokMatcher, maxLookAhead) {
-    var EXIT_NON_TERMINAL = "EXIT_NONE_TERMINAL";
-    // to avoid creating a new Array each time.
-    var EXIT_NON_TERMINAL_ARR = [EXIT_NON_TERMINAL];
-    var EXIT_ALTERNATIVE = "EXIT_ALTERNATIVE";
-    var foundCompletePath = false;
-    var tokenVectorLength = tokenVector.length;
-    var minimalAlternativesIndex = tokenVectorLength - maxLookAhead - 1;
-    var result = [];
-    var possiblePaths = [];
-    possiblePaths.push({
-        idx: -1,
-        def: initialDef,
-        ruleStack: [],
-        occurrenceStack: []
-    });
-    while (!utils_1.isEmpty(possiblePaths)) {
-        var currPath = possiblePaths.pop();
-        // skip alternatives if no more results can be found (assuming deterministic grammar with fixed lookahead)
-        if (currPath === EXIT_ALTERNATIVE) {
-            if (foundCompletePath &&
-                utils_1.last(possiblePaths).idx <= minimalAlternativesIndex) {
-                // remove irrelevant alternative
-                possiblePaths.pop();
-            }
-            continue;
-        }
-        var currDef = currPath.def;
-        var currIdx = currPath.idx;
-        var currRuleStack = currPath.ruleStack;
-        var currOccurrenceStack = currPath.occurrenceStack;
-        // For Example: an empty path could exist in a valid grammar in the case of an EMPTY_ALT
-        if (utils_1.isEmpty(currDef)) {
-            continue;
-        }
-        var prod = currDef[0];
-        if (prod === EXIT_NON_TERMINAL) {
-            var nextPath = {
-                idx: currIdx,
-                def: utils_1.drop(currDef),
-                ruleStack: utils_1.dropRight(currRuleStack),
-                occurrenceStack: utils_1.dropRight(currOccurrenceStack)
-            };
-            possiblePaths.push(nextPath);
-        }
-        else if (prod instanceof gast_public_1.gast.Terminal) {
-            if (currIdx < tokenVectorLength - 1) {
-                var nextIdx = currIdx + 1;
-                var actualToken = tokenVector[nextIdx];
-                if (tokMatcher(actualToken, prod.terminalType)) {
-                    var nextPath = {
-                        idx: nextIdx,
-                        def: utils_1.drop(currDef),
-                        ruleStack: currRuleStack,
-                        occurrenceStack: currOccurrenceStack
-                    };
-                    possiblePaths.push(nextPath);
-                }
-                // end of the line
-            }
-            else if (currIdx === tokenVectorLength - 1) {
-                // IGNORE ABOVE ELSE
-                result.push({
-                    nextTokenType: prod.terminalType,
-                    nextTokenOccurrence: prod.occurrenceInParent,
-                    ruleStack: currRuleStack,
-                    occurrenceStack: currOccurrenceStack
-                });
-                foundCompletePath = true;
-            }
-            else {
-                /* istanbul ignore next */
-                throw Error("non exhaustive match");
-            }
-        }
-        else if (prod instanceof gast_public_1.gast.NonTerminal) {
-            var newRuleStack = utils_1.cloneArr(currRuleStack);
-            newRuleStack.push(prod.nonTerminalName);
-            var newOccurrenceStack = utils_1.cloneArr(currOccurrenceStack);
-            newOccurrenceStack.push(prod.occurrenceInParent);
-            var nextPath = {
-                idx: currIdx,
-                def: prod.definition.concat(EXIT_NON_TERMINAL_ARR, utils_1.drop(currDef)),
-                ruleStack: newRuleStack,
-                occurrenceStack: newOccurrenceStack
-            };
-            possiblePaths.push(nextPath);
-        }
-        else if (prod instanceof gast_public_1.gast.Option) {
-            // the order of alternatives is meaningful, FILO (Last path will be traversed first).
-            var nextPathWithout = {
-                idx: currIdx,
-                def: utils_1.drop(currDef),
-                ruleStack: currRuleStack,
-                occurrenceStack: currOccurrenceStack
-            };
-            possiblePaths.push(nextPathWithout);
-            // required marker to avoid backtracking paths whose higher priority alternatives already matched
-            possiblePaths.push(EXIT_ALTERNATIVE);
-            var nextPathWith = {
-                idx: currIdx,
-                def: prod.definition.concat(utils_1.drop(currDef)),
-                ruleStack: currRuleStack,
-                occurrenceStack: currOccurrenceStack
-            };
-            possiblePaths.push(nextPathWith);
-        }
-        else if (prod instanceof gast_public_1.gast.RepetitionMandatory) {
-            // TODO:(THE NEW operators here take a while...) (convert once?)
-            var secondIteration = new gast_public_1.gast.Repetition(prod.definition, prod.occurrenceInParent);
-            var nextDef = prod.definition.concat([secondIteration], utils_1.drop(currDef));
-            var nextPath = {
-                idx: currIdx,
-                def: nextDef,
-                ruleStack: currRuleStack,
-                occurrenceStack: currOccurrenceStack
-            };
-            possiblePaths.push(nextPath);
-        }
-        else if (prod instanceof gast_public_1.gast.RepetitionMandatoryWithSeparator) {
-            // TODO:(THE NEW operators here take a while...) (convert once?)
-            var separatorGast = new gast_public_1.gast.Terminal(prod.separator);
-            var secondIteration = new gast_public_1.gast.Repetition([separatorGast].concat(prod.definition), prod.occurrenceInParent);
-            var nextDef = prod.definition.concat([secondIteration], utils_1.drop(currDef));
-            var nextPath = {
-                idx: currIdx,
-                def: nextDef,
-                ruleStack: currRuleStack,
-                occurrenceStack: currOccurrenceStack
-            };
-            possiblePaths.push(nextPath);
-        }
-        else if (prod instanceof gast_public_1.gast.RepetitionWithSeparator) {
-            // the order of alternatives is meaningful, FILO (Last path will be traversed first).
-            var nextPathWithout = {
-                idx: currIdx,
-                def: utils_1.drop(currDef),
-                ruleStack: currRuleStack,
-                occurrenceStack: currOccurrenceStack
-            };
-            possiblePaths.push(nextPathWithout);
-            // required marker to avoid backtracking paths whose higher priority alternatives already matched
-            possiblePaths.push(EXIT_ALTERNATIVE);
-            var separatorGast = new gast_public_1.gast.Terminal(prod.separator);
-            var nthRepetition = new gast_public_1.gast.Repetition([separatorGast].concat(prod.definition), prod.occurrenceInParent);
-            var nextDef = prod.definition.concat([nthRepetition], utils_1.drop(currDef));
-            var nextPathWith = {
-                idx: currIdx,
-                def: nextDef,
-                ruleStack: currRuleStack,
-                occurrenceStack: currOccurrenceStack
-            };
-            possiblePaths.push(nextPathWith);
-        }
-        else if (prod instanceof gast_public_1.gast.Repetition) {
-            // the order of alternatives is meaningful, FILO (Last path will be traversed first).
-            var nextPathWithout = {
-                idx: currIdx,
-                def: utils_1.drop(currDef),
-                ruleStack: currRuleStack,
-                occurrenceStack: currOccurrenceStack
-            };
-            possiblePaths.push(nextPathWithout);
-            // required marker to avoid backtracking paths whose higher priority alternatives already matched
-            possiblePaths.push(EXIT_ALTERNATIVE);
-            // TODO: an empty repetition will cause infinite loops here, will the parser detect this in selfAnalysis?
-            var nthRepetition = new gast_public_1.gast.Repetition(prod.definition, prod.occurrenceInParent);
-            var nextDef = prod.definition.concat([nthRepetition], utils_1.drop(currDef));
-            var nextPathWith = {
-                idx: currIdx,
-                def: nextDef,
-                ruleStack: currRuleStack,
-                occurrenceStack: currOccurrenceStack
-            };
-            possiblePaths.push(nextPathWith);
-        }
-        else if (prod instanceof gast_public_1.gast.Alternation) {
-            // the order of alternatives is meaningful, FILO (Last path will be traversed first).
-            for (var i = prod.definition.length - 1; i >= 0; i--) {
-                var currAlt = prod.definition[i];
-                var currAltPath = {
-                    idx: currIdx,
-                    def: currAlt.definition.concat(utils_1.drop(currDef)),
-                    ruleStack: currRuleStack,
-                    occurrenceStack: currOccurrenceStack
-                };
-                possiblePaths.push(currAltPath);
-                possiblePaths.push(EXIT_ALTERNATIVE);
-            }
-        }
-        else if (prod instanceof gast_public_1.gast.Flat) {
-            possiblePaths.push({
-                idx: currIdx,
-                def: prod.definition.concat(utils_1.drop(currDef)),
-                ruleStack: currRuleStack,
-                occurrenceStack: currOccurrenceStack
-            });
-        }
-        else if (prod instanceof gast_public_1.gast.Rule) {
-            // last because we should only encounter at most a single one of these per invocation.
-            possiblePaths.push(expandTopLevelRule(prod, currIdx, currRuleStack, currOccurrenceStack));
-        }
-        else {
-            /* istanbul ignore next */
-            throw Error("non exhaustive match");
-        }
-    }
-    return result;
-}
-exports.nextPossibleTokensAfter = nextPossibleTokensAfter;
-function expandTopLevelRule(topRule, currIdx, currRuleStack, currOccurrenceStack) {
-    var newRuleStack = utils_1.cloneArr(currRuleStack);
-    newRuleStack.push(topRule.name);
-    var newCurrOccurrenceStack = utils_1.cloneArr(currOccurrenceStack);
-    // top rule is always assumed to have been called with occurrence index 1
-    newCurrOccurrenceStack.push(1);
-    return {
-        idx: currIdx,
-        def: topRule.definition,
-        ruleStack: newRuleStack,
-        occurrenceStack: newCurrOccurrenceStack
+    DslMethodsCollectorVisitor.prototype.visitRepetitionMandatoryWithSeparator = function (atLeastOneSep) {
+        this.dslMethods.repetitionMandatoryWithSeparator.push(atLeastOneSep);
     };
-}
-//# sourceMappingURL=interpreter.js.map
+    DslMethodsCollectorVisitor.prototype.visitRepetition = function (many) {
+        this.dslMethods.repetition.push(many);
+    };
+    DslMethodsCollectorVisitor.prototype.visitAlternation = function (or) {
+        this.dslMethods.alternation.push(or);
+    };
+    return DslMethodsCollectorVisitor;
+}(gast_visitor_public_1.GAstVisitor));
+exports.DslMethodsCollectorVisitor = DslMethodsCollectorVisitor;
+//# sourceMappingURL=gast.js.map
 
 /***/ }),
-/* 8 */
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var utils = __webpack_require__(0);
+var utils_1 = __webpack_require__(0);
+var parser_public_1 = __webpack_require__(28);
+var gast_1 = __webpack_require__(9);
+var tokens_public_1 = __webpack_require__(3);
+var lookahead_1 = __webpack_require__(40);
+var cst_1 = __webpack_require__(35);
+var interpreter_1 = __webpack_require__(26);
+var gast_public_1 = __webpack_require__(1);
+var gast_visitor_public_1 = __webpack_require__(7);
+var errors_public_1 = __webpack_require__(8);
+function validateGrammar(topLevels, maxLookahead, tokenTypes, ignoredIssues, errMsgProvider, grammarName) {
+    if (ignoredIssues === void 0) { ignoredIssues = {}; }
+    if (errMsgProvider === void 0) { errMsgProvider = errors_public_1.defaultGrammarValidatorErrorProvider; }
+    var duplicateErrors = utils.map(topLevels, function (currTopLevel) {
+        return validateDuplicateProductions(currTopLevel, errMsgProvider);
+    });
+    var leftRecursionErrors = utils.map(topLevels, function (currTopRule) {
+        return validateNoLeftRecursion(currTopRule, currTopRule, errMsgProvider);
+    });
+    var emptyAltErrors = [];
+    var ambiguousAltsErrors = [];
+    // left recursion could cause infinite loops in the following validations.
+    // It is safest to first have the user fix the left recursion errors first and only then examine farther issues.
+    if (utils_1.every(leftRecursionErrors, utils_1.isEmpty)) {
+        emptyAltErrors = utils_1.map(topLevels, function (currTopRule) {
+            return validateEmptyOrAlternative(currTopRule, errMsgProvider);
+        });
+        ambiguousAltsErrors = utils_1.map(topLevels, function (currTopRule) {
+            return validateAmbiguousAlternationAlternatives(currTopRule, maxLookahead, ignoredIssues, errMsgProvider);
+        });
+    }
+    var termsNamespaceConflictErrors = checkTerminalAndNoneTerminalsNameSpace(topLevels, tokenTypes, errMsgProvider);
+    var tokenNameErrors = utils.map(tokenTypes, function (currTokType) {
+        return validateTokenName(currTokType, errMsgProvider);
+    });
+    var nestedRulesNameErrors = validateNestedRulesNames(topLevels, errMsgProvider);
+    var nestedRulesDuplicateErrors = validateDuplicateNestedRules(topLevels, errMsgProvider);
+    var emptyRepetitionErrors = validateSomeNonEmptyLookaheadPath(topLevels, maxLookahead, errMsgProvider);
+    var tooManyAltsErrors = utils_1.map(topLevels, function (curRule) {
+        return validateTooManyAlts(curRule, errMsgProvider);
+    });
+    var ruleNameErrors = utils_1.map(topLevels, function (curRule) {
+        return validateRuleName(curRule, errMsgProvider);
+    });
+    var duplicateRulesError = utils_1.map(topLevels, function (curRule) {
+        return validateRuleDoesNotAlreadyExist(curRule, topLevels, grammarName, errMsgProvider);
+    });
+    return utils.flatten(duplicateErrors.concat(tokenNameErrors, nestedRulesNameErrors, nestedRulesDuplicateErrors, emptyRepetitionErrors, leftRecursionErrors, emptyAltErrors, ambiguousAltsErrors, termsNamespaceConflictErrors, tooManyAltsErrors, ruleNameErrors, duplicateRulesError));
+}
+exports.validateGrammar = validateGrammar;
+function validateNestedRulesNames(topLevels, errMsgProvider) {
+    var result = [];
+    utils_1.forEach(topLevels, function (curTopLevel) {
+        var namedCollectorVisitor = new cst_1.NamedDSLMethodsCollectorVisitor("");
+        curTopLevel.accept(namedCollectorVisitor);
+        var nestedProds = utils_1.map(namedCollectorVisitor.result, function (currItem) { return currItem.orgProd; });
+        result.push(utils_1.map(nestedProds, function (currNestedProd) {
+            return validateNestedRuleName(curTopLevel, currNestedProd, errMsgProvider);
+        }));
+    });
+    return utils_1.flatten(result);
+}
+function validateDuplicateProductions(topLevelRule, errMsgProvider) {
+    var collectorVisitor = new OccurrenceValidationCollector();
+    topLevelRule.accept(collectorVisitor);
+    var allRuleProductions = collectorVisitor.allProductions;
+    var productionGroups = utils.groupBy(allRuleProductions, identifyProductionForDuplicates);
+    var duplicates = utils.pick(productionGroups, function (currGroup) {
+        return currGroup.length > 1;
+    });
+    var errors = utils.map(utils.values(duplicates), function (currDuplicates) {
+        var firstProd = utils.first(currDuplicates);
+        var msg = errMsgProvider.buildDuplicateFoundError(topLevelRule, currDuplicates);
+        var dslName = gast_1.getProductionDslName(firstProd);
+        var defError = {
+            message: msg,
+            type: parser_public_1.ParserDefinitionErrorType.DUPLICATE_PRODUCTIONS,
+            ruleName: topLevelRule.name,
+            dslName: dslName,
+            occurrence: firstProd.idx
+        };
+        var param = getExtraProductionArgument(firstProd);
+        if (param) {
+            defError.parameter = param;
+        }
+        return defError;
+    });
+    return errors;
+}
+function identifyProductionForDuplicates(prod) {
+    return gast_1.getProductionDslName(prod) + "_#_" + prod.idx + "_#_" + getExtraProductionArgument(prod);
+}
+exports.identifyProductionForDuplicates = identifyProductionForDuplicates;
+function getExtraProductionArgument(prod) {
+    if (prod instanceof gast_public_1.Terminal) {
+        return tokens_public_1.tokenName(prod.terminalType);
+    }
+    else if (prod instanceof gast_public_1.NonTerminal) {
+        return prod.nonTerminalName;
+    }
+    else {
+        return "";
+    }
+}
+var OccurrenceValidationCollector = /** @class */ (function (_super) {
+    __extends(OccurrenceValidationCollector, _super);
+    function OccurrenceValidationCollector() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.allProductions = [];
+        return _this;
+    }
+    OccurrenceValidationCollector.prototype.visitNonTerminal = function (subrule) {
+        this.allProductions.push(subrule);
+    };
+    OccurrenceValidationCollector.prototype.visitOption = function (option) {
+        this.allProductions.push(option);
+    };
+    OccurrenceValidationCollector.prototype.visitRepetitionWithSeparator = function (manySep) {
+        this.allProductions.push(manySep);
+    };
+    OccurrenceValidationCollector.prototype.visitRepetitionMandatory = function (atLeastOne) {
+        this.allProductions.push(atLeastOne);
+    };
+    OccurrenceValidationCollector.prototype.visitRepetitionMandatoryWithSeparator = function (atLeastOneSep) {
+        this.allProductions.push(atLeastOneSep);
+    };
+    OccurrenceValidationCollector.prototype.visitRepetition = function (many) {
+        this.allProductions.push(many);
+    };
+    OccurrenceValidationCollector.prototype.visitAlternation = function (or) {
+        this.allProductions.push(or);
+    };
+    OccurrenceValidationCollector.prototype.visitTerminal = function (terminal) {
+        this.allProductions.push(terminal);
+    };
+    return OccurrenceValidationCollector;
+}(gast_visitor_public_1.GAstVisitor));
+exports.OccurrenceValidationCollector = OccurrenceValidationCollector;
+exports.validTermsPattern = /^[a-zA-Z_]\w*$/;
+exports.validNestedRuleName = new RegExp(exports.validTermsPattern.source.replace("^", "^\\$"));
+function validateRuleName(rule, errMsgProvider) {
+    var errors = [];
+    var ruleName = rule.name;
+    if (!ruleName.match(exports.validTermsPattern)) {
+        errors.push({
+            message: errMsgProvider.buildInvalidRuleNameError({
+                topLevelRule: rule,
+                expectedPattern: exports.validTermsPattern
+            }),
+            type: parser_public_1.ParserDefinitionErrorType.INVALID_RULE_NAME,
+            ruleName: ruleName
+        });
+    }
+    return errors;
+}
+exports.validateRuleName = validateRuleName;
+function validateNestedRuleName(topLevel, nestedProd, errMsgProvider) {
+    var errors = [];
+    var errMsg;
+    if (!nestedProd.name.match(exports.validNestedRuleName)) {
+        errMsg = errMsgProvider.buildInvalidNestedRuleNameError(topLevel, nestedProd);
+        errors.push({
+            message: errMsg,
+            type: parser_public_1.ParserDefinitionErrorType.INVALID_NESTED_RULE_NAME,
+            ruleName: topLevel.name
+        });
+    }
+    return errors;
+}
+exports.validateNestedRuleName = validateNestedRuleName;
+function validateTokenName(tokenType, errMsgProvider) {
+    var errors = [];
+    var tokTypeName = tokens_public_1.tokenName(tokenType);
+    if (!tokTypeName.match(exports.validTermsPattern)) {
+        errors.push({
+            message: errMsgProvider.buildTokenNameError({
+                tokenType: tokenType,
+                expectedPattern: exports.validTermsPattern
+            }),
+            type: parser_public_1.ParserDefinitionErrorType.INVALID_TOKEN_NAME
+        });
+    }
+    return errors;
+}
+exports.validateTokenName = validateTokenName;
+function validateRuleDoesNotAlreadyExist(rule, allRules, className, errMsgProvider) {
+    var errors = [];
+    var occurrences = utils_1.reduce(allRules, function (result, curRule) {
+        if (curRule.name === rule.name) {
+            return result + 1;
+        }
+        return result;
+    }, 0);
+    if (occurrences > 1) {
+        var errMsg = errMsgProvider.buildDuplicateRuleNameError({
+            topLevelRule: rule,
+            grammarName: className
+        });
+        errors.push({
+            message: errMsg,
+            type: parser_public_1.ParserDefinitionErrorType.DUPLICATE_RULE_NAME,
+            ruleName: rule.name
+        });
+    }
+    return errors;
+}
+exports.validateRuleDoesNotAlreadyExist = validateRuleDoesNotAlreadyExist;
+// TODO: is there anyway to get only the rule names of rules inherited from the super grammars?
+// This is not part of the IGrammarErrorProvider because the validation cannot be performed on
+// The grammar structure, only at runtime.
+function validateRuleIsOverridden(ruleName, definedRulesNames, className) {
+    var errors = [];
+    var errMsg;
+    if (!utils.contains(definedRulesNames, ruleName)) {
+        errMsg =
+            "Invalid rule override, rule: ->" + ruleName + "<- cannot be overridden in the grammar: ->" + className + "<-" +
+                "as it is not defined in any of the super grammars ";
+        errors.push({
+            message: errMsg,
+            type: parser_public_1.ParserDefinitionErrorType.INVALID_RULE_OVERRIDE,
+            ruleName: ruleName
+        });
+    }
+    return errors;
+}
+exports.validateRuleIsOverridden = validateRuleIsOverridden;
+function validateNoLeftRecursion(topRule, currRule, errMsgProvider, path) {
+    if (path === void 0) { path = []; }
+    var errors = [];
+    var nextNonTerminals = getFirstNoneTerminal(currRule.definition);
+    if (utils.isEmpty(nextNonTerminals)) {
+        return [];
+    }
+    else {
+        var ruleName = topRule.name;
+        var foundLeftRecursion = utils.contains(nextNonTerminals, topRule);
+        if (foundLeftRecursion) {
+            errors.push({
+                message: errMsgProvider.buildLeftRecursionError({
+                    topLevelRule: topRule,
+                    leftRecursionPath: path
+                }),
+                type: parser_public_1.ParserDefinitionErrorType.LEFT_RECURSION,
+                ruleName: ruleName
+            });
+        }
+        // we are only looking for cyclic paths leading back to the specific topRule
+        // other cyclic paths are ignored, we still need this difference to avoid infinite loops...
+        var validNextSteps = utils.difference(nextNonTerminals, path.concat([topRule]));
+        var errorsFromNextSteps = utils.map(validNextSteps, function (currRefRule) {
+            var newPath = utils.cloneArr(path);
+            newPath.push(currRefRule);
+            return validateNoLeftRecursion(topRule, currRefRule, errMsgProvider, newPath);
+        });
+        return errors.concat(utils.flatten(errorsFromNextSteps));
+    }
+}
+exports.validateNoLeftRecursion = validateNoLeftRecursion;
+function getFirstNoneTerminal(definition) {
+    var result = [];
+    if (utils.isEmpty(definition)) {
+        return result;
+    }
+    var firstProd = utils.first(definition);
+    if (firstProd instanceof gast_public_1.NonTerminal) {
+        result.push(firstProd.referencedRule);
+    }
+    else if (firstProd instanceof gast_public_1.Flat ||
+        firstProd instanceof gast_public_1.Option ||
+        firstProd instanceof gast_public_1.RepetitionMandatory ||
+        firstProd instanceof gast_public_1.RepetitionMandatoryWithSeparator ||
+        firstProd instanceof gast_public_1.RepetitionWithSeparator ||
+        firstProd instanceof gast_public_1.Repetition) {
+        result = result.concat(getFirstNoneTerminal(firstProd.definition));
+    }
+    else if (firstProd instanceof gast_public_1.Alternation) {
+        // each sub definition in alternation is a FLAT
+        result = utils.flatten(utils.map(firstProd.definition, function (currSubDef) {
+            return getFirstNoneTerminal(currSubDef.definition);
+        }));
+    }
+    else if (firstProd instanceof gast_public_1.Terminal) {
+        // nothing to see, move along
+    }
+    else {
+        /* istanbul ignore next */
+        throw Error("non exhaustive match");
+    }
+    var isFirstOptional = gast_1.isOptionalProd(firstProd);
+    var hasMore = definition.length > 1;
+    if (isFirstOptional && hasMore) {
+        var rest = utils.drop(definition);
+        return result.concat(getFirstNoneTerminal(rest));
+    }
+    else {
+        return result;
+    }
+}
+exports.getFirstNoneTerminal = getFirstNoneTerminal;
+var OrCollector = /** @class */ (function (_super) {
+    __extends(OrCollector, _super);
+    function OrCollector() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.alternations = [];
+        return _this;
+    }
+    OrCollector.prototype.visitAlternation = function (node) {
+        this.alternations.push(node);
+    };
+    return OrCollector;
+}(gast_visitor_public_1.GAstVisitor));
+function validateEmptyOrAlternative(topLevelRule, errMsgProvider) {
+    var orCollector = new OrCollector();
+    topLevelRule.accept(orCollector);
+    var ors = orCollector.alternations;
+    var errors = utils.reduce(ors, function (errors, currOr) {
+        var exceptLast = utils.dropRight(currOr.definition);
+        var currErrors = utils.map(exceptLast, function (currAlternative, currAltIdx) {
+            var possibleFirstInAlt = interpreter_1.nextPossibleTokensAfter([currAlternative], [], null, 1);
+            if (utils.isEmpty(possibleFirstInAlt)) {
+                return {
+                    message: errMsgProvider.buildEmptyAlternationError({
+                        topLevelRule: topLevelRule,
+                        alternation: currOr,
+                        emptyChoiceIdx: currAltIdx
+                    }),
+                    type: parser_public_1.ParserDefinitionErrorType.NONE_LAST_EMPTY_ALT,
+                    ruleName: topLevelRule.name,
+                    occurrence: currOr.idx,
+                    alternative: currAltIdx + 1
+                };
+            }
+            else {
+                return null;
+            }
+        });
+        return errors.concat(utils.compact(currErrors));
+    }, []);
+    return errors;
+}
+exports.validateEmptyOrAlternative = validateEmptyOrAlternative;
+function validateAmbiguousAlternationAlternatives(topLevelRule, maxLookahead, ignoredIssues, errMsgProvider) {
+    var orCollector = new OrCollector();
+    topLevelRule.accept(orCollector);
+    var ors = orCollector.alternations;
+    var ignoredIssuesForCurrentRule = ignoredIssues[topLevelRule.name];
+    if (ignoredIssuesForCurrentRule) {
+        ors = utils_1.reject(ors, function (currOr) {
+            return ignoredIssuesForCurrentRule[gast_1.getProductionDslName(currOr) +
+                (currOr.idx === 0 ? "" : currOr.idx)];
+        });
+    }
+    var errors = utils.reduce(ors, function (result, currOr) {
+        var currOccurrence = currOr.idx;
+        var alternatives = lookahead_1.getLookaheadPathsForOr(currOccurrence, topLevelRule, maxLookahead);
+        var altsAmbiguityErrors = checkAlternativesAmbiguities(alternatives, currOr, topLevelRule, errMsgProvider);
+        var altsPrefixAmbiguityErrors = checkPrefixAlternativesAmbiguities(alternatives, currOr, topLevelRule, errMsgProvider);
+        return result.concat(altsAmbiguityErrors, altsPrefixAmbiguityErrors);
+    }, []);
+    return errors;
+}
+exports.validateAmbiguousAlternationAlternatives = validateAmbiguousAlternationAlternatives;
+var RepetionCollector = /** @class */ (function (_super) {
+    __extends(RepetionCollector, _super);
+    function RepetionCollector() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.allProductions = [];
+        return _this;
+    }
+    RepetionCollector.prototype.visitRepetitionWithSeparator = function (manySep) {
+        this.allProductions.push(manySep);
+    };
+    RepetionCollector.prototype.visitRepetitionMandatory = function (atLeastOne) {
+        this.allProductions.push(atLeastOne);
+    };
+    RepetionCollector.prototype.visitRepetitionMandatoryWithSeparator = function (atLeastOneSep) {
+        this.allProductions.push(atLeastOneSep);
+    };
+    RepetionCollector.prototype.visitRepetition = function (many) {
+        this.allProductions.push(many);
+    };
+    return RepetionCollector;
+}(gast_visitor_public_1.GAstVisitor));
+exports.RepetionCollector = RepetionCollector;
+function validateTooManyAlts(topLevelRule, errMsgProvider) {
+    var orCollector = new OrCollector();
+    topLevelRule.accept(orCollector);
+    var ors = orCollector.alternations;
+    var errors = utils.reduce(ors, function (errors, currOr) {
+        if (currOr.definition.length > 255) {
+            errors.push({
+                message: errMsgProvider.buildTooManyAlternativesError({
+                    topLevelRule: topLevelRule,
+                    alternation: currOr
+                }),
+                type: parser_public_1.ParserDefinitionErrorType.TOO_MANY_ALTS,
+                ruleName: topLevelRule.name,
+                occurrence: currOr.idx
+            });
+        }
+        return errors;
+    }, []);
+    return errors;
+}
+exports.validateTooManyAlts = validateTooManyAlts;
+function validateSomeNonEmptyLookaheadPath(topLevelRules, maxLookahead, errMsgProvider) {
+    var errors = [];
+    utils_1.forEach(topLevelRules, function (currTopRule) {
+        var collectorVisitor = new RepetionCollector();
+        currTopRule.accept(collectorVisitor);
+        var allRuleProductions = collectorVisitor.allProductions;
+        utils_1.forEach(allRuleProductions, function (currProd) {
+            var prodType = lookahead_1.getProdType(currProd);
+            var currOccurrence = currProd.idx;
+            var paths = lookahead_1.getLookaheadPathsForOptionalProd(currOccurrence, currTopRule, prodType, maxLookahead);
+            var pathsInsideProduction = paths[0];
+            if (utils_1.isEmpty(utils_1.flatten(pathsInsideProduction))) {
+                var errMsg = errMsgProvider.buildEmptyRepetitionError({
+                    topLevelRule: currTopRule,
+                    repetition: currProd
+                });
+                errors.push({
+                    message: errMsg,
+                    type: parser_public_1.ParserDefinitionErrorType.NO_NON_EMPTY_LOOKAHEAD,
+                    ruleName: currTopRule.name
+                });
+            }
+        });
+    });
+    return errors;
+}
+exports.validateSomeNonEmptyLookaheadPath = validateSomeNonEmptyLookaheadPath;
+function checkAlternativesAmbiguities(alternatives, alternation, rule, errMsgProvider) {
+    var foundAmbiguousPaths = [];
+    var identicalAmbiguities = utils_1.reduce(alternatives, function (result, currAlt, currAltIdx) {
+        utils_1.forEach(currAlt, function (currPath) {
+            var altsCurrPathAppearsIn = [currAltIdx];
+            utils_1.forEach(alternatives, function (currOtherAlt, currOtherAltIdx) {
+                if (currAltIdx !== currOtherAltIdx &&
+                    lookahead_1.containsPath(currOtherAlt, currPath)) {
+                    altsCurrPathAppearsIn.push(currOtherAltIdx);
+                }
+            });
+            if (altsCurrPathAppearsIn.length > 1 &&
+                !lookahead_1.containsPath(foundAmbiguousPaths, currPath)) {
+                foundAmbiguousPaths.push(currPath);
+                result.push({
+                    alts: altsCurrPathAppearsIn,
+                    path: currPath
+                });
+            }
+        });
+        return result;
+    }, []);
+    var currErrors = utils.map(identicalAmbiguities, function (currAmbDescriptor) {
+        var ambgIndices = utils_1.map(currAmbDescriptor.alts, function (currAltIdx) { return currAltIdx + 1; });
+        var currMessage = errMsgProvider.buildAlternationAmbiguityError({
+            topLevelRule: rule,
+            alternation: alternation,
+            ambiguityIndices: ambgIndices,
+            prefixPath: currAmbDescriptor.path
+        });
+        return {
+            message: currMessage,
+            type: parser_public_1.ParserDefinitionErrorType.AMBIGUOUS_ALTS,
+            ruleName: rule.name,
+            occurrence: alternation.idx,
+            alternatives: [currAmbDescriptor.alts]
+        };
+    });
+    return currErrors;
+}
+function checkPrefixAlternativesAmbiguities(alternatives, alternation, rule, errMsgProvider) {
+    var errors = [];
+    // flatten
+    var pathsAndIndices = utils_1.reduce(alternatives, function (result, currAlt, idx) {
+        var currPathsAndIdx = utils_1.map(currAlt, function (currPath) {
+            return { idx: idx, path: currPath };
+        });
+        return result.concat(currPathsAndIdx);
+    }, []);
+    utils_1.forEach(pathsAndIndices, function (currPathAndIdx) {
+        var targetIdx = currPathAndIdx.idx;
+        var targetPath = currPathAndIdx.path;
+        var prefixAmbiguitiesPathsAndIndices = utils_1.findAll(pathsAndIndices, function (searchPathAndIdx) {
+            // prefix ambiguity can only be created from lower idx (higher priority) path
+            return (searchPathAndIdx.idx < targetIdx &&
+                // checking for strict prefix because identical lookaheads
+                // will be be detected using a different validation.
+                lookahead_1.isStrictPrefixOfPath(searchPathAndIdx.path, targetPath));
+        });
+        var currPathPrefixErrors = utils_1.map(prefixAmbiguitiesPathsAndIndices, function (currAmbPathAndIdx) {
+            var ambgIndices = [currAmbPathAndIdx.idx + 1, targetIdx + 1];
+            var occurrence = alternation.idx === 0 ? "" : alternation.idx;
+            var message = errMsgProvider.buildAlternationPrefixAmbiguityError({
+                topLevelRule: rule,
+                alternation: alternation,
+                ambiguityIndices: ambgIndices,
+                prefixPath: currAmbPathAndIdx.path
+            });
+            return {
+                message: message,
+                type: parser_public_1.ParserDefinitionErrorType.AMBIGUOUS_PREFIX_ALTS,
+                ruleName: rule.name,
+                occurrence: occurrence,
+                alternatives: ambgIndices
+            };
+        });
+        errors = errors.concat(currPathPrefixErrors);
+    });
+    return errors;
+}
+function checkTerminalAndNoneTerminalsNameSpace(topLevels, tokenTypes, errMsgProvider) {
+    var errors = [];
+    var tokenNames = utils_1.map(tokenTypes, function (currToken) { return tokens_public_1.tokenName(currToken); });
+    utils_1.forEach(topLevels, function (currRule) {
+        var currRuleName = currRule.name;
+        if (utils_1.contains(tokenNames, currRuleName)) {
+            var errMsg = errMsgProvider.buildNamespaceConflictError(currRule);
+            errors.push({
+                message: errMsg,
+                type: parser_public_1.ParserDefinitionErrorType.CONFLICT_TOKENS_RULES_NAMESPACE,
+                ruleName: currRuleName
+            });
+        }
+    });
+    return errors;
+}
+function validateDuplicateNestedRules(topLevelRules, errMsgProvider) {
+    var errors = [];
+    utils_1.forEach(topLevelRules, function (currTopRule) {
+        var namedCollectorVisitor = new cst_1.NamedDSLMethodsCollectorVisitor("");
+        currTopRule.accept(namedCollectorVisitor);
+        var prodsByGroup = utils_1.groupBy(namedCollectorVisitor.result, function (item) { return item.name; });
+        var duplicates = utils_1.pick(prodsByGroup, function (currGroup) {
+            return currGroup.length > 1;
+        });
+        utils_1.forEach(utils_1.values(duplicates), function (currDupGroup) {
+            var currDupProds = utils_1.map(currDupGroup, function (dupGroup) { return dupGroup.orgProd; });
+            var errMsg = errMsgProvider.buildDuplicateNestedRuleNameError(currTopRule, currDupProds);
+            errors.push({
+                message: errMsg,
+                type: parser_public_1.ParserDefinitionErrorType.DUPLICATE_NESTED_NAME,
+                ruleName: currTopRule.name
+            });
+        });
+    });
+    return errors;
+}
+//# sourceMappingURL=checks.js.map
+
+/***/ }),
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var utils_1 = __webpack_require__(0);
-var lang_extensions_1 = __webpack_require__(5);
+var lang_extensions_1 = __webpack_require__(4);
 var tokens_public_1 = __webpack_require__(3);
 function tokenStructuredMatcher(tokInstance, tokConstructor) {
     var instanceType = tokInstance.tokenTypeIdx;
@@ -2282,7 +2806,7 @@ exports.isTokenType = isTokenType;
 //# sourceMappingURL=tokens.js.map
 
 /***/ }),
-/* 9 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -2291,7 +2815,7 @@ exports.isTokenType = isTokenType;
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  XMLNode = __webpack_require__(1);
+  XMLNode = __webpack_require__(2);
 
   module.exports = XMLCData = (function(superClass) {
     extend(XMLCData, superClass);
@@ -2320,7 +2844,7 @@ exports.isTokenType = isTokenType;
 
 
 /***/ }),
-/* 10 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -2329,7 +2853,7 @@ exports.isTokenType = isTokenType;
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  XMLNode = __webpack_require__(1);
+  XMLNode = __webpack_require__(2);
 
   module.exports = XMLComment = (function(superClass) {
     extend(XMLComment, superClass);
@@ -2358,7 +2882,7 @@ exports.isTokenType = isTokenType;
 
 
 /***/ }),
-/* 11 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -2367,7 +2891,7 @@ exports.isTokenType = isTokenType;
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  XMLNode = __webpack_require__(1);
+  XMLNode = __webpack_require__(2);
 
   module.exports = XMLDTDAttList = (function(superClass) {
     extend(XMLDTDAttList, superClass);
@@ -2414,7 +2938,7 @@ exports.isTokenType = isTokenType;
 
 
 /***/ }),
-/* 12 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -2423,7 +2947,7 @@ exports.isTokenType = isTokenType;
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  XMLNode = __webpack_require__(1);
+  XMLNode = __webpack_require__(2);
 
   module.exports = XMLDTDElement = (function(superClass) {
     extend(XMLDTDElement, superClass);
@@ -2455,7 +2979,7 @@ exports.isTokenType = isTokenType;
 
 
 /***/ }),
-/* 13 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -2464,9 +2988,9 @@ exports.isTokenType = isTokenType;
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  isObject = __webpack_require__(4).isObject;
+  isObject = __webpack_require__(5).isObject;
 
-  XMLNode = __webpack_require__(1);
+  XMLNode = __webpack_require__(2);
 
   module.exports = XMLDTDEntity = (function(superClass) {
     extend(XMLDTDEntity, superClass);
@@ -2517,7 +3041,7 @@ exports.isTokenType = isTokenType;
 
 
 /***/ }),
-/* 14 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -2526,7 +3050,7 @@ exports.isTokenType = isTokenType;
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  XMLNode = __webpack_require__(1);
+  XMLNode = __webpack_require__(2);
 
   module.exports = XMLDTDNotation = (function(superClass) {
     extend(XMLDTDNotation, superClass);
@@ -2560,7 +3084,7 @@ exports.isTokenType = isTokenType;
 
 
 /***/ }),
-/* 15 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -2569,9 +3093,9 @@ exports.isTokenType = isTokenType;
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  isObject = __webpack_require__(4).isObject;
+  isObject = __webpack_require__(5).isObject;
 
-  XMLNode = __webpack_require__(1);
+  XMLNode = __webpack_require__(2);
 
   module.exports = XMLDeclaration = (function(superClass) {
     extend(XMLDeclaration, superClass);
@@ -2606,7 +3130,7 @@ exports.isTokenType = isTokenType;
 
 
 /***/ }),
-/* 16 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -2615,17 +3139,17 @@ exports.isTokenType = isTokenType;
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  isObject = __webpack_require__(4).isObject;
+  isObject = __webpack_require__(5).isObject;
 
-  XMLNode = __webpack_require__(1);
+  XMLNode = __webpack_require__(2);
 
-  XMLDTDAttList = __webpack_require__(11);
+  XMLDTDAttList = __webpack_require__(14);
 
-  XMLDTDEntity = __webpack_require__(13);
+  XMLDTDEntity = __webpack_require__(16);
 
-  XMLDTDElement = __webpack_require__(12);
+  XMLDTDElement = __webpack_require__(15);
 
-  XMLDTDNotation = __webpack_require__(14);
+  XMLDTDNotation = __webpack_require__(17);
 
   module.exports = XMLDocType = (function(superClass) {
     extend(XMLDocType, superClass);
@@ -2719,7 +3243,7 @@ exports.isTokenType = isTokenType;
 
 
 /***/ }),
-/* 17 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -2728,11 +3252,11 @@ exports.isTokenType = isTokenType;
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  ref = __webpack_require__(4), isObject = ref.isObject, isFunction = ref.isFunction;
+  ref = __webpack_require__(5), isObject = ref.isObject, isFunction = ref.isFunction;
 
-  XMLNode = __webpack_require__(1);
+  XMLNode = __webpack_require__(2);
 
-  XMLAttribute = __webpack_require__(39);
+  XMLAttribute = __webpack_require__(41);
 
   module.exports = XMLElement = (function(superClass) {
     extend(XMLElement, superClass);
@@ -2836,7 +3360,7 @@ exports.isTokenType = isTokenType;
 
 
 /***/ }),
-/* 18 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -2845,7 +3369,7 @@ exports.isTokenType = isTokenType;
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  XMLNode = __webpack_require__(1);
+  XMLNode = __webpack_require__(2);
 
   module.exports = XMLProcessingInstruction = (function(superClass) {
     extend(XMLProcessingInstruction, superClass);
@@ -2877,7 +3401,7 @@ exports.isTokenType = isTokenType;
 
 
 /***/ }),
-/* 19 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -2886,7 +3410,7 @@ exports.isTokenType = isTokenType;
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  XMLNode = __webpack_require__(1);
+  XMLNode = __webpack_require__(2);
 
   module.exports = XMLRaw = (function(superClass) {
     extend(XMLRaw, superClass);
@@ -2915,7 +3439,7 @@ exports.isTokenType = isTokenType;
 
 
 /***/ }),
-/* 20 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -2924,7 +3448,7 @@ exports.isTokenType = isTokenType;
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  XMLNode = __webpack_require__(1);
+  XMLNode = __webpack_require__(2);
 
   module.exports = XMLText = (function(superClass) {
     extend(XMLText, superClass);
@@ -2953,7 +3477,7 @@ exports.isTokenType = isTokenType;
 
 
 /***/ }),
-/* 21 */
+/* 24 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2970,16 +3494,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
  */
 
 
-const Label = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "Label",
+const Identifier = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "Identifier",
     pattern:
     //not [] {} () " :: ; \n # unless escaped
     // : followed by not : or in the end
     //    /(:?[^\{\(\)\}\<\>\[\]:;\\"\n#]|\\[\{\(\)\}\<\>\[\]:;\\"\n#])+:?/,
-        /(:?[^\{\(\)\}\<\>\[\]:;\\"\n#]|\\[\{\(\)\}\<\>\[\]:;\\"\n#])+/,
+        /(:?[^\{\(\)\}\<\>\[\]:;\\"\n#@]|\\[\{\(\)\}\<\>\[\]:;\\"\n#@])+/,
     line_breaks: true
 });
-/* harmony export (immutable) */ __webpack_exports__["Label"] = Label;
+/* harmony export (immutable) */ __webpack_exports__["Identifier"] = Identifier;
 
 
 const LCurlyBracket = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
@@ -3045,6 +3569,13 @@ const DoubleColon = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain
 /* harmony export (immutable) */ __webpack_exports__["DoubleColon"] = DoubleColon;
 
 
+const ID = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "ID",
+    pattern: /@[a-zA-Z0-9_]*/
+});
+/* harmony export (immutable) */ __webpack_exports__["ID"] = ID;
+
+
 const Literal = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
     name: "Literal",
     pattern: __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Lexer"].NA
@@ -3063,7 +3594,7 @@ const StringLiteral = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrota
 const NumberLiteral = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
     name: "NumberLiteral",
     pattern: /-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?/,
-    categories: [Literal, Label]
+    categories: [Literal, Identifier]
 });
 /* harmony export (immutable) */ __webpack_exports__["NumberLiteral"] = NumberLiteral;
 
@@ -3078,52 +3609,52 @@ const ColorLiteral = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotai
 
 const Forever = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
     name: "Forever",
-    pattern: /forever/,
+    pattern: / *forever */,
 });
 /* harmony export (immutable) */ __webpack_exports__["Forever"] = Forever;
 
 
 const End = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
     name: "End",
-    pattern: /end/,
+    pattern: / *end */,
 });
 /* harmony export (immutable) */ __webpack_exports__["End"] = End;
 
 
 const Then = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
     name: "Then",
-    pattern: /then/,
+    pattern: / *then */,
 });
 /* harmony export (immutable) */ __webpack_exports__["Then"] = Then;
 
 
 const Repeat = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
     name: "Repeat",
-    pattern: /repeat/,
+    pattern: / *repeat */,
 });
 /* harmony export (immutable) */ __webpack_exports__["Repeat"] = Repeat;
 
 
 const If = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
     name: "If",
-    pattern: /if/
+    pattern: / *if */
 });
 /* harmony export (immutable) */ __webpack_exports__["If"] = If;
 
 
 const Else = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
     name: "Else",
-    pattern: /else/,
+    pattern: / *else */,
 });
 /* harmony export (immutable) */ __webpack_exports__["Else"] = Else;
 
 
-const Until = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "Until",
-    pattern: /until/,
-    categories: Label //because this word occurs in 'until done', should not be a problem as it is never first
+const RepeatUntil = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "RepeatUntil",
+    pattern: / *repeat *until */,
+    //categories: Label //because this word occurs in 'until done', should not be a problem as it is never first
 });
-/* harmony export (immutable) */ __webpack_exports__["Until"] = Until;
+/* harmony export (immutable) */ __webpack_exports__["RepeatUntil"] = RepeatUntil;
 
 
 // marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
@@ -3147,14 +3678,14 @@ const StatementTerminator = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_ch
 const allTokens = [
     WhiteSpace,
     Literal, StringLiteral, NumberLiteral, ColorLiteral,
-    Forever, End, Until, Repeat, If, Else, Then,
+    Forever, End, RepeatUntil, Repeat, If, Else, Then,
     StatementTerminator,
-    Label,
+    Identifier,
     LCurlyBracket, RCurlyBracket,
     LRoundBracket, RRoundBracket,
     RAngleBracket, LAngleBracket,
     LSquareBracket, RSquareBracket,
-    DoubleColon,
+    DoubleColon,ID
 ];
 /* harmony export (immutable) */ __webpack_exports__["allTokens"] = allTokens;
 
@@ -3165,7 +3696,7 @@ const LNLexer = new __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Lexer"](allTokens)
 
 
 /***/ }),
-/* 22 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3174,7 +3705,7 @@ const LNLexer = new __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Lexer"](allTokens)
  * module used to cache static information about parsers,
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-var lang_extensions_1 = __webpack_require__(5);
+var lang_extensions_1 = __webpack_require__(4);
 var utils_1 = __webpack_require__(0);
 exports.CLASS_TO_DEFINITION_ERRORS = new lang_extensions_1.HashTable();
 exports.CLASS_TO_SELF_ANALYSIS_DONE = new lang_extensions_1.HashTable();
@@ -3208,15 +3739,9 @@ function getProductionOverriddenForClass(className) {
 }
 exports.getProductionOverriddenForClass = getProductionOverriddenForClass;
 exports.CLASS_TO_CST_DICT_DEF_PER_RULE = new lang_extensions_1.HashTable();
-function getCstDictDefPerRuleForClass(className) {
-    return getFromNestedHashTable(className, exports.CLASS_TO_CST_DICT_DEF_PER_RULE);
-}
-exports.getCstDictDefPerRuleForClass = getCstDictDefPerRuleForClass;
 exports.CLASS_TO_BASE_CST_VISITOR = new lang_extensions_1.HashTable();
 exports.CLASS_TO_BASE_CST_VISITOR_WITH_DEFAULTS = new lang_extensions_1.HashTable();
 exports.CLASS_TO_ALL_RULE_NAMES = new lang_extensions_1.HashTable();
-// TODO reflective test to verify this has not changed, for example (OPTION6 added)
-exports.MAX_OCCURRENCE_INDEX = 5;
 function getFromNestedHashTable(className, hashTable) {
     var result = hashTable.get(className);
     if (result === undefined) {
@@ -3233,7 +3758,7 @@ exports.clearCache = clearCache;
 //# sourceMappingURL=cache.js.map
 
 /***/ }),
-/* 23 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3249,174 +3774,540 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var gast_public_1 = __webpack_require__(2);
+/* tslint:disable:no-use-before-declare */
+var rest_1 = __webpack_require__(27);
 var utils_1 = __webpack_require__(0);
-function isSequenceProd(prod) {
-    return (prod instanceof gast_public_1.gast.Flat ||
-        prod instanceof gast_public_1.gast.Option ||
-        prod instanceof gast_public_1.gast.Repetition ||
-        prod instanceof gast_public_1.gast.RepetitionMandatory ||
-        prod instanceof gast_public_1.gast.RepetitionMandatoryWithSeparator ||
-        prod instanceof gast_public_1.gast.RepetitionWithSeparator ||
-        prod instanceof gast_public_1.gast.Terminal ||
-        prod instanceof gast_public_1.gast.Rule);
-}
-exports.isSequenceProd = isSequenceProd;
-function isOptionalProd(prod, alreadyVisited) {
-    if (alreadyVisited === void 0) { alreadyVisited = []; }
-    var isDirectlyOptional = prod instanceof gast_public_1.gast.Option ||
-        prod instanceof gast_public_1.gast.Repetition ||
-        prod instanceof gast_public_1.gast.RepetitionWithSeparator;
-    if (isDirectlyOptional) {
-        return true;
+var tokens_public_1 = __webpack_require__(3);
+var first_1 = __webpack_require__(37);
+var gast_public_1 = __webpack_require__(1);
+/* tslint:enable:no-use-before-declare */
+var AbstractNextPossibleTokensWalker = /** @class */ (function (_super) {
+    __extends(AbstractNextPossibleTokensWalker, _super);
+    function AbstractNextPossibleTokensWalker(topProd, path) {
+        var _this = _super.call(this) || this;
+        _this.topProd = topProd;
+        _this.path = path;
+        _this.possibleTokTypes = [];
+        _this.nextProductionName = "";
+        _this.nextProductionOccurrence = 0;
+        _this.found = false;
+        _this.isAtEndOfPath = false;
+        return _this;
     }
-    // note that this can cause infinite loop if one optional empty TOP production has a cyclic dependency with another
-    // empty optional top rule
-    // may be indirectly optional ((A?B?C?) | (D?E?F?))
-    if (prod instanceof gast_public_1.gast.Alternation) {
-        // for OR its enough for just one of the alternatives to be optional
-        return utils_1.some(prod.definition, function (subProd) {
-            return isOptionalProd(subProd, alreadyVisited);
-        });
-    }
-    else if (prod instanceof gast_public_1.gast.NonTerminal &&
-        utils_1.contains(alreadyVisited, prod)) {
-        // avoiding stack overflow due to infinite recursion
-        return false;
-    }
-    else if (prod instanceof gast_public_1.gast.AbstractProduction) {
-        if (prod instanceof gast_public_1.gast.NonTerminal) {
-            alreadyVisited.push(prod);
+    AbstractNextPossibleTokensWalker.prototype.startWalking = function () {
+        this.found = false;
+        if (this.path.ruleStack[0] !== this.topProd.name) {
+            throw Error("The path does not start with the walker's top Rule!");
         }
-        return utils_1.every(prod.definition, function (subProd) {
-            return isOptionalProd(subProd, alreadyVisited);
-        });
+        // immutable for the win
+        this.ruleStack = utils_1.cloneArr(this.path.ruleStack).reverse(); // intelij bug requires assertion
+        this.occurrenceStack = utils_1.cloneArr(this.path.occurrenceStack).reverse(); // intelij bug requires assertion
+        // already verified that the first production is valid, we now seek the 2nd production
+        this.ruleStack.pop();
+        this.occurrenceStack.pop();
+        this.updateExpectedNext();
+        this.walk(this.topProd);
+        return this.possibleTokTypes;
+    };
+    AbstractNextPossibleTokensWalker.prototype.walk = function (prod, prevRest) {
+        if (prevRest === void 0) { prevRest = []; }
+        // stop scanning once we found the path
+        if (!this.found) {
+            _super.prototype.walk.call(this, prod, prevRest);
+        }
+    };
+    AbstractNextPossibleTokensWalker.prototype.walkProdRef = function (refProd, currRest, prevRest) {
+        // found the next production, need to keep walking in it
+        if (refProd.referencedRule.name === this.nextProductionName &&
+            refProd.idx === this.nextProductionOccurrence) {
+            var fullRest = currRest.concat(prevRest);
+            this.updateExpectedNext();
+            this.walk(refProd.referencedRule, fullRest);
+        }
+    };
+    AbstractNextPossibleTokensWalker.prototype.updateExpectedNext = function () {
+        // need to consume the Terminal
+        if (utils_1.isEmpty(this.ruleStack)) {
+            // must reset nextProductionXXX to avoid walking down another Top Level production while what we are
+            // really seeking is the last Terminal...
+            this.nextProductionName = "";
+            this.nextProductionOccurrence = 0;
+            this.isAtEndOfPath = true;
+        }
+        else {
+            this.nextProductionName = this.ruleStack.pop();
+            this.nextProductionOccurrence = this.occurrenceStack.pop();
+        }
+    };
+    return AbstractNextPossibleTokensWalker;
+}(rest_1.RestWalker));
+exports.AbstractNextPossibleTokensWalker = AbstractNextPossibleTokensWalker;
+var NextAfterTokenWalker = /** @class */ (function (_super) {
+    __extends(NextAfterTokenWalker, _super);
+    function NextAfterTokenWalker(topProd, path) {
+        var _this = _super.call(this, topProd, path) || this;
+        _this.path = path;
+        _this.nextTerminalName = "";
+        _this.nextTerminalOccurrence = 0;
+        _this.nextTerminalName = tokens_public_1.tokenName(_this.path.lastTok);
+        _this.nextTerminalOccurrence = _this.path.lastTokOccurrence;
+        return _this;
     }
-    else {
-        return false;
+    NextAfterTokenWalker.prototype.walkTerminal = function (terminal, currRest, prevRest) {
+        if (this.isAtEndOfPath &&
+            tokens_public_1.tokenName(terminal.terminalType) === this.nextTerminalName &&
+            terminal.idx === this.nextTerminalOccurrence &&
+            !this.found) {
+            var fullRest = currRest.concat(prevRest);
+            var restProd = new gast_public_1.Flat({ definition: fullRest });
+            this.possibleTokTypes = first_1.first(restProd);
+            this.found = true;
+        }
+    };
+    return NextAfterTokenWalker;
+}(AbstractNextPossibleTokensWalker));
+exports.NextAfterTokenWalker = NextAfterTokenWalker;
+/**
+ * This walker only "walks" a single "TOP" level in the Grammar Ast, this means
+ * it never "follows" production refs
+ */
+var AbstractNextTerminalAfterProductionWalker = /** @class */ (function (_super) {
+    __extends(AbstractNextTerminalAfterProductionWalker, _super);
+    function AbstractNextTerminalAfterProductionWalker(topRule, occurrence) {
+        var _this = _super.call(this) || this;
+        _this.topRule = topRule;
+        _this.occurrence = occurrence;
+        _this.result = {
+            token: undefined,
+            occurrence: undefined,
+            isEndOfRule: undefined
+        };
+        return _this;
     }
-}
-exports.isOptionalProd = isOptionalProd;
-function isBranchingProd(prod) {
-    return prod instanceof gast_public_1.gast.Alternation;
-}
-exports.isBranchingProd = isBranchingProd;
-function getProductionDslName(prod) {
-    if (prod instanceof gast_public_1.gast.NonTerminal) {
-        return "SUBRULE";
-    }
-    else if (prod instanceof gast_public_1.gast.Option) {
-        return "OPTION";
-    }
-    else if (prod instanceof gast_public_1.gast.Alternation) {
-        return "OR";
-    }
-    else if (prod instanceof gast_public_1.gast.RepetitionMandatory) {
-        return "AT_LEAST_ONE";
-    }
-    else if (prod instanceof gast_public_1.gast.RepetitionMandatoryWithSeparator) {
-        return "AT_LEAST_ONE_SEP";
-    }
-    else if (prod instanceof gast_public_1.gast.RepetitionWithSeparator) {
-        return "MANY_SEP";
-    }
-    else if (prod instanceof gast_public_1.gast.Repetition) {
-        return "MANY";
-    }
-    else if (prod instanceof gast_public_1.gast.Terminal) {
-        return "CONSUME";
-    }
-    else {
-        /* istanbul ignore next */
-        throw Error("non exhaustive match");
-    }
-}
-exports.getProductionDslName = getProductionDslName;
-var GastCloneVisitor = /** @class */ (function (_super) {
-    __extends(GastCloneVisitor, _super);
-    function GastCloneVisitor() {
+    AbstractNextTerminalAfterProductionWalker.prototype.startWalking = function () {
+        this.walk(this.topRule);
+        return this.result;
+    };
+    return AbstractNextTerminalAfterProductionWalker;
+}(rest_1.RestWalker));
+exports.AbstractNextTerminalAfterProductionWalker = AbstractNextTerminalAfterProductionWalker;
+var NextTerminalAfterManyWalker = /** @class */ (function (_super) {
+    __extends(NextTerminalAfterManyWalker, _super);
+    function NextTerminalAfterManyWalker() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    GastCloneVisitor.prototype.visitNonTerminal = function (node) {
-        return new gast_public_1.gast.NonTerminal(node.nonTerminalName, undefined, node.occurrenceInParent, node.implicitOccurrenceIndex);
+    NextTerminalAfterManyWalker.prototype.walkMany = function (manyProd, currRest, prevRest) {
+        if (manyProd.idx === this.occurrence) {
+            var firstAfterMany = utils_1.first(currRest.concat(prevRest));
+            this.result.isEndOfRule = firstAfterMany === undefined;
+            if (firstAfterMany instanceof gast_public_1.Terminal) {
+                this.result.token = firstAfterMany.terminalType;
+                this.result.occurrence = firstAfterMany.idx;
+            }
+        }
+        else {
+            _super.prototype.walkMany.call(this, manyProd, currRest, prevRest);
+        }
     };
-    GastCloneVisitor.prototype.visitFlat = function (node) {
-        var _this = this;
-        var definition = utils_1.map(node.definition, function (currSubDef) {
-            return _this.visit(currSubDef);
-        });
-        return new gast_public_1.gast.Flat(definition, node.name);
+    return NextTerminalAfterManyWalker;
+}(AbstractNextTerminalAfterProductionWalker));
+exports.NextTerminalAfterManyWalker = NextTerminalAfterManyWalker;
+var NextTerminalAfterManySepWalker = /** @class */ (function (_super) {
+    __extends(NextTerminalAfterManySepWalker, _super);
+    function NextTerminalAfterManySepWalker() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    NextTerminalAfterManySepWalker.prototype.walkManySep = function (manySepProd, currRest, prevRest) {
+        if (manySepProd.idx === this.occurrence) {
+            var firstAfterManySep = utils_1.first(currRest.concat(prevRest));
+            this.result.isEndOfRule = firstAfterManySep === undefined;
+            if (firstAfterManySep instanceof gast_public_1.Terminal) {
+                this.result.token = firstAfterManySep.terminalType;
+                this.result.occurrence = firstAfterManySep.idx;
+            }
+        }
+        else {
+            _super.prototype.walkManySep.call(this, manySepProd, currRest, prevRest);
+        }
     };
-    GastCloneVisitor.prototype.visitOption = function (node) {
-        var _this = this;
-        var definition = utils_1.map(node.definition, function (currSubDef) {
-            return _this.visit(currSubDef);
-        });
-        return new gast_public_1.gast.Option(definition, node.occurrenceInParent, node.name, node.implicitOccurrenceIndex);
+    return NextTerminalAfterManySepWalker;
+}(AbstractNextTerminalAfterProductionWalker));
+exports.NextTerminalAfterManySepWalker = NextTerminalAfterManySepWalker;
+var NextTerminalAfterAtLeastOneWalker = /** @class */ (function (_super) {
+    __extends(NextTerminalAfterAtLeastOneWalker, _super);
+    function NextTerminalAfterAtLeastOneWalker() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    NextTerminalAfterAtLeastOneWalker.prototype.walkAtLeastOne = function (atLeastOneProd, currRest, prevRest) {
+        if (atLeastOneProd.idx === this.occurrence) {
+            var firstAfterAtLeastOne = utils_1.first(currRest.concat(prevRest));
+            this.result.isEndOfRule = firstAfterAtLeastOne === undefined;
+            if (firstAfterAtLeastOne instanceof gast_public_1.Terminal) {
+                this.result.token = firstAfterAtLeastOne.terminalType;
+                this.result.occurrence = firstAfterAtLeastOne.idx;
+            }
+        }
+        else {
+            _super.prototype.walkAtLeastOne.call(this, atLeastOneProd, currRest, prevRest);
+        }
     };
-    GastCloneVisitor.prototype.visitRepetition = function (node) {
-        var _this = this;
-        var definition = utils_1.map(node.definition, function (currSubDef) {
-            return _this.visit(currSubDef);
-        });
-        return new gast_public_1.gast.Repetition(definition, node.occurrenceInParent, node.name, node.implicitOccurrenceIndex);
+    return NextTerminalAfterAtLeastOneWalker;
+}(AbstractNextTerminalAfterProductionWalker));
+exports.NextTerminalAfterAtLeastOneWalker = NextTerminalAfterAtLeastOneWalker;
+// TODO: reduce code duplication in the AfterWalkers
+var NextTerminalAfterAtLeastOneSepWalker = /** @class */ (function (_super) {
+    __extends(NextTerminalAfterAtLeastOneSepWalker, _super);
+    function NextTerminalAfterAtLeastOneSepWalker() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    NextTerminalAfterAtLeastOneSepWalker.prototype.walkAtLeastOneSep = function (atleastOneSepProd, currRest, prevRest) {
+        if (atleastOneSepProd.idx === this.occurrence) {
+            var firstAfterfirstAfterAtLeastOneSep = utils_1.first(currRest.concat(prevRest));
+            this.result.isEndOfRule =
+                firstAfterfirstAfterAtLeastOneSep === undefined;
+            if (firstAfterfirstAfterAtLeastOneSep instanceof gast_public_1.Terminal) {
+                this.result.token =
+                    firstAfterfirstAfterAtLeastOneSep.terminalType;
+                this.result.occurrence = firstAfterfirstAfterAtLeastOneSep.idx;
+            }
+        }
+        else {
+            _super.prototype.walkAtLeastOneSep.call(this, atleastOneSepProd, currRest, prevRest);
+        }
     };
-    GastCloneVisitor.prototype.visitRepetitionMandatory = function (node) {
-        var _this = this;
-        var definition = utils_1.map(node.definition, function (currSubDef) {
-            return _this.visit(currSubDef);
-        });
-        return new gast_public_1.gast.RepetitionMandatory(definition, node.occurrenceInParent, node.name, node.implicitOccurrenceIndex);
-    };
-    GastCloneVisitor.prototype.visitRepetitionMandatoryWithSeparator = function (node) {
-        var _this = this;
-        var definition = utils_1.map(node.definition, function (currSubDef) {
-            return _this.visit(currSubDef);
-        });
-        return new gast_public_1.gast.RepetitionMandatoryWithSeparator(definition, node.separator, node.occurrenceInParent, node.name, node.implicitOccurrenceIndex);
-    };
-    GastCloneVisitor.prototype.visitRepetitionWithSeparator = function (node) {
-        var _this = this;
-        var definition = utils_1.map(node.definition, function (currSubDef) {
-            return _this.visit(currSubDef);
-        });
-        return new gast_public_1.gast.RepetitionWithSeparator(definition, node.separator, node.occurrenceInParent, node.name, node.implicitOccurrenceIndex);
-    };
-    GastCloneVisitor.prototype.visitAlternation = function (node) {
-        var _this = this;
-        var definition = utils_1.map(node.definition, function (currSubDef) {
-            return _this.visit(currSubDef);
-        });
-        return new gast_public_1.gast.Alternation(definition, node.occurrenceInParent, node.name, node.implicitOccurrenceIndex);
-    };
-    GastCloneVisitor.prototype.visitTerminal = function (node) {
-        return new gast_public_1.gast.Terminal(node.terminalType, node.occurrenceInParent, node.implicitOccurrenceIndex);
-    };
-    GastCloneVisitor.prototype.visitRule = function (node) {
-        var _this = this;
-        var definition = utils_1.map(node.definition, function (currSubDef) {
-            return _this.visit(currSubDef);
-        });
-        return new gast_public_1.gast.Rule(node.name, definition, node.orgText);
-    };
-    return GastCloneVisitor;
-}(gast_public_1.gast.GAstVisitor));
-function cloneProduction(prod) {
-    var cloningVisitor = new GastCloneVisitor();
-    return cloningVisitor.visit(prod);
+    return NextTerminalAfterAtLeastOneSepWalker;
+}(AbstractNextTerminalAfterProductionWalker));
+exports.NextTerminalAfterAtLeastOneSepWalker = NextTerminalAfterAtLeastOneSepWalker;
+function possiblePathsFrom(targetDef, maxLength, currPath) {
+    if (currPath === void 0) { currPath = []; }
+    // avoid side effects
+    currPath = utils_1.cloneArr(currPath);
+    var result = [];
+    var i = 0;
+    function remainingPathWith(nextDef) {
+        return nextDef.concat(utils_1.drop(targetDef, i + 1));
+    }
+    function getAlternativesForProd(definition) {
+        var alternatives = possiblePathsFrom(remainingPathWith(definition), maxLength, currPath);
+        return result.concat(alternatives);
+    }
+    /**
+     * Mandatory productions will halt the loop as the paths computed from their recursive calls will already contain the
+     * following (rest) of the targetDef.
+     *
+     * For optional productions (Option/Repetition/...) the loop will continue to represent the paths that do not include the
+     * the optional production.
+     */
+    while (currPath.length < maxLength && i < targetDef.length) {
+        var prod = targetDef[i];
+        if (prod instanceof gast_public_1.Flat) {
+            return getAlternativesForProd(prod.definition);
+        }
+        else if (prod instanceof gast_public_1.NonTerminal) {
+            return getAlternativesForProd(prod.definition);
+        }
+        else if (prod instanceof gast_public_1.Option) {
+            result = getAlternativesForProd(prod.definition);
+        }
+        else if (prod instanceof gast_public_1.RepetitionMandatory) {
+            return getAlternativesForProd(prod.definition);
+        }
+        else if (prod instanceof gast_public_1.RepetitionMandatoryWithSeparator) {
+            var newDef = [
+                new gast_public_1.Flat({ definition: prod.definition }),
+                new gast_public_1.Repetition({
+                    definition: [
+                        new gast_public_1.Terminal({ terminalType: prod.separator })
+                    ].concat(prod.definition)
+                })
+            ];
+            return getAlternativesForProd(newDef);
+        }
+        else if (prod instanceof gast_public_1.RepetitionWithSeparator) {
+            var newDef = prod.definition.concat([
+                new gast_public_1.Repetition({
+                    definition: [
+                        new gast_public_1.Terminal({ terminalType: prod.separator })
+                    ].concat(prod.definition)
+                })
+            ]);
+            result = getAlternativesForProd(newDef);
+        }
+        else if (prod instanceof gast_public_1.Repetition) {
+            result = getAlternativesForProd(prod.definition);
+        }
+        else if (prod instanceof gast_public_1.Alternation) {
+            utils_1.forEach(prod.definition, function (currAlt) {
+                result = getAlternativesForProd(currAlt.definition);
+            });
+            return result;
+        }
+        else if (prod instanceof gast_public_1.Terminal) {
+            currPath.push(prod.terminalType);
+        }
+        else {
+            /* istanbul ignore next */
+            throw Error("non exhaustive match");
+        }
+        i++;
+    }
+    result.push({
+        partialPath: currPath,
+        suffixDef: utils_1.drop(targetDef, i)
+    });
+    return result;
 }
-exports.cloneProduction = cloneProduction;
-//# sourceMappingURL=gast.js.map
+exports.possiblePathsFrom = possiblePathsFrom;
+function nextPossibleTokensAfter(initialDef, tokenVector, tokMatcher, maxLookAhead) {
+    var EXIT_NON_TERMINAL = "EXIT_NONE_TERMINAL";
+    // to avoid creating a new Array each time.
+    var EXIT_NON_TERMINAL_ARR = [EXIT_NON_TERMINAL];
+    var EXIT_ALTERNATIVE = "EXIT_ALTERNATIVE";
+    var foundCompletePath = false;
+    var tokenVectorLength = tokenVector.length;
+    var minimalAlternativesIndex = tokenVectorLength - maxLookAhead - 1;
+    var result = [];
+    var possiblePaths = [];
+    possiblePaths.push({
+        idx: -1,
+        def: initialDef,
+        ruleStack: [],
+        occurrenceStack: []
+    });
+    while (!utils_1.isEmpty(possiblePaths)) {
+        var currPath = possiblePaths.pop();
+        // skip alternatives if no more results can be found (assuming deterministic grammar with fixed lookahead)
+        if (currPath === EXIT_ALTERNATIVE) {
+            if (foundCompletePath &&
+                utils_1.last(possiblePaths).idx <= minimalAlternativesIndex) {
+                // remove irrelevant alternative
+                possiblePaths.pop();
+            }
+            continue;
+        }
+        var currDef = currPath.def;
+        var currIdx = currPath.idx;
+        var currRuleStack = currPath.ruleStack;
+        var currOccurrenceStack = currPath.occurrenceStack;
+        // For Example: an empty path could exist in a valid grammar in the case of an EMPTY_ALT
+        if (utils_1.isEmpty(currDef)) {
+            continue;
+        }
+        var prod = currDef[0];
+        if (prod === EXIT_NON_TERMINAL) {
+            var nextPath = {
+                idx: currIdx,
+                def: utils_1.drop(currDef),
+                ruleStack: utils_1.dropRight(currRuleStack),
+                occurrenceStack: utils_1.dropRight(currOccurrenceStack)
+            };
+            possiblePaths.push(nextPath);
+        }
+        else if (prod instanceof gast_public_1.Terminal) {
+            if (currIdx < tokenVectorLength - 1) {
+                var nextIdx = currIdx + 1;
+                var actualToken = tokenVector[nextIdx];
+                if (tokMatcher(actualToken, prod.terminalType)) {
+                    var nextPath = {
+                        idx: nextIdx,
+                        def: utils_1.drop(currDef),
+                        ruleStack: currRuleStack,
+                        occurrenceStack: currOccurrenceStack
+                    };
+                    possiblePaths.push(nextPath);
+                }
+                // end of the line
+            }
+            else if (currIdx === tokenVectorLength - 1) {
+                // IGNORE ABOVE ELSE
+                result.push({
+                    nextTokenType: prod.terminalType,
+                    nextTokenOccurrence: prod.idx,
+                    ruleStack: currRuleStack,
+                    occurrenceStack: currOccurrenceStack
+                });
+                foundCompletePath = true;
+            }
+            else {
+                /* istanbul ignore next */
+                throw Error("non exhaustive match");
+            }
+        }
+        else if (prod instanceof gast_public_1.NonTerminal) {
+            var newRuleStack = utils_1.cloneArr(currRuleStack);
+            newRuleStack.push(prod.nonTerminalName);
+            var newOccurrenceStack = utils_1.cloneArr(currOccurrenceStack);
+            newOccurrenceStack.push(prod.idx);
+            var nextPath = {
+                idx: currIdx,
+                def: prod.definition.concat(EXIT_NON_TERMINAL_ARR, utils_1.drop(currDef)),
+                ruleStack: newRuleStack,
+                occurrenceStack: newOccurrenceStack
+            };
+            possiblePaths.push(nextPath);
+        }
+        else if (prod instanceof gast_public_1.Option) {
+            // the order of alternatives is meaningful, FILO (Last path will be traversed first).
+            var nextPathWithout = {
+                idx: currIdx,
+                def: utils_1.drop(currDef),
+                ruleStack: currRuleStack,
+                occurrenceStack: currOccurrenceStack
+            };
+            possiblePaths.push(nextPathWithout);
+            // required marker to avoid backtracking paths whose higher priority alternatives already matched
+            possiblePaths.push(EXIT_ALTERNATIVE);
+            var nextPathWith = {
+                idx: currIdx,
+                def: prod.definition.concat(utils_1.drop(currDef)),
+                ruleStack: currRuleStack,
+                occurrenceStack: currOccurrenceStack
+            };
+            possiblePaths.push(nextPathWith);
+        }
+        else if (prod instanceof gast_public_1.RepetitionMandatory) {
+            // TODO:(THE NEW operators here take a while...) (convert once?)
+            var secondIteration = new gast_public_1.Repetition({
+                definition: prod.definition,
+                idx: prod.idx
+            });
+            var nextDef = prod.definition.concat([secondIteration], utils_1.drop(currDef));
+            var nextPath = {
+                idx: currIdx,
+                def: nextDef,
+                ruleStack: currRuleStack,
+                occurrenceStack: currOccurrenceStack
+            };
+            possiblePaths.push(nextPath);
+        }
+        else if (prod instanceof gast_public_1.RepetitionMandatoryWithSeparator) {
+            // TODO:(THE NEW operators here take a while...) (convert once?)
+            var separatorGast = new gast_public_1.Terminal({
+                terminalType: prod.separator
+            });
+            var secondIteration = new gast_public_1.Repetition({
+                definition: [separatorGast].concat(prod.definition),
+                idx: prod.idx
+            });
+            var nextDef = prod.definition.concat([secondIteration], utils_1.drop(currDef));
+            var nextPath = {
+                idx: currIdx,
+                def: nextDef,
+                ruleStack: currRuleStack,
+                occurrenceStack: currOccurrenceStack
+            };
+            possiblePaths.push(nextPath);
+        }
+        else if (prod instanceof gast_public_1.RepetitionWithSeparator) {
+            // the order of alternatives is meaningful, FILO (Last path will be traversed first).
+            var nextPathWithout = {
+                idx: currIdx,
+                def: utils_1.drop(currDef),
+                ruleStack: currRuleStack,
+                occurrenceStack: currOccurrenceStack
+            };
+            possiblePaths.push(nextPathWithout);
+            // required marker to avoid backtracking paths whose higher priority alternatives already matched
+            possiblePaths.push(EXIT_ALTERNATIVE);
+            var separatorGast = new gast_public_1.Terminal({
+                terminalType: prod.separator
+            });
+            var nthRepetition = new gast_public_1.Repetition({
+                definition: [separatorGast].concat(prod.definition),
+                idx: prod.idx
+            });
+            var nextDef = prod.definition.concat([nthRepetition], utils_1.drop(currDef));
+            var nextPathWith = {
+                idx: currIdx,
+                def: nextDef,
+                ruleStack: currRuleStack,
+                occurrenceStack: currOccurrenceStack
+            };
+            possiblePaths.push(nextPathWith);
+        }
+        else if (prod instanceof gast_public_1.Repetition) {
+            // the order of alternatives is meaningful, FILO (Last path will be traversed first).
+            var nextPathWithout = {
+                idx: currIdx,
+                def: utils_1.drop(currDef),
+                ruleStack: currRuleStack,
+                occurrenceStack: currOccurrenceStack
+            };
+            possiblePaths.push(nextPathWithout);
+            // required marker to avoid backtracking paths whose higher priority alternatives already matched
+            possiblePaths.push(EXIT_ALTERNATIVE);
+            // TODO: an empty repetition will cause infinite loops here, will the parser detect this in selfAnalysis?
+            var nthRepetition = new gast_public_1.Repetition({
+                definition: prod.definition,
+                idx: prod.idx
+            });
+            var nextDef = prod.definition.concat([nthRepetition], utils_1.drop(currDef));
+            var nextPathWith = {
+                idx: currIdx,
+                def: nextDef,
+                ruleStack: currRuleStack,
+                occurrenceStack: currOccurrenceStack
+            };
+            possiblePaths.push(nextPathWith);
+        }
+        else if (prod instanceof gast_public_1.Alternation) {
+            // the order of alternatives is meaningful, FILO (Last path will be traversed first).
+            for (var i = prod.definition.length - 1; i >= 0; i--) {
+                var currAlt = prod.definition[i];
+                var currAltPath = {
+                    idx: currIdx,
+                    def: currAlt.definition.concat(utils_1.drop(currDef)),
+                    ruleStack: currRuleStack,
+                    occurrenceStack: currOccurrenceStack
+                };
+                possiblePaths.push(currAltPath);
+                possiblePaths.push(EXIT_ALTERNATIVE);
+            }
+        }
+        else if (prod instanceof gast_public_1.Flat) {
+            possiblePaths.push({
+                idx: currIdx,
+                def: prod.definition.concat(utils_1.drop(currDef)),
+                ruleStack: currRuleStack,
+                occurrenceStack: currOccurrenceStack
+            });
+        }
+        else if (prod instanceof gast_public_1.Rule) {
+            // last because we should only encounter at most a single one of these per invocation.
+            possiblePaths.push(expandTopLevelRule(prod, currIdx, currRuleStack, currOccurrenceStack));
+        }
+        else {
+            /* istanbul ignore next */
+            throw Error("non exhaustive match");
+        }
+    }
+    return result;
+}
+exports.nextPossibleTokensAfter = nextPossibleTokensAfter;
+function expandTopLevelRule(topRule, currIdx, currRuleStack, currOccurrenceStack) {
+    var newRuleStack = utils_1.cloneArr(currRuleStack);
+    newRuleStack.push(topRule.name);
+    var newCurrOccurrenceStack = utils_1.cloneArr(currOccurrenceStack);
+    // top rule is always assumed to have been called with occurrence index 1
+    newCurrOccurrenceStack.push(1);
+    return {
+        idx: currIdx,
+        def: topRule.definition,
+        ruleStack: newRuleStack,
+        occurrenceStack: newCurrOccurrenceStack
+    };
+}
+//# sourceMappingURL=interpreter.js.map
 
 /***/ }),
-/* 24 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var gast_public_1 = __webpack_require__(2);
 var utils_1 = __webpack_require__(0);
+var gast_public_1 = __webpack_require__(1);
 /**
  *  A Grammar Walker that computes the "remaining" grammar "after" a productions in the grammar.
  */
@@ -3428,31 +4319,31 @@ var RestWalker = /** @class */ (function () {
         if (prevRest === void 0) { prevRest = []; }
         utils_1.forEach(prod.definition, function (subProd, index) {
             var currRest = utils_1.drop(prod.definition, index + 1);
-            if (subProd instanceof gast_public_1.gast.NonTerminal) {
+            if (subProd instanceof gast_public_1.NonTerminal) {
                 _this.walkProdRef(subProd, currRest, prevRest);
             }
-            else if (subProd instanceof gast_public_1.gast.Terminal) {
+            else if (subProd instanceof gast_public_1.Terminal) {
                 _this.walkTerminal(subProd, currRest, prevRest);
             }
-            else if (subProd instanceof gast_public_1.gast.Flat) {
+            else if (subProd instanceof gast_public_1.Flat) {
                 _this.walkFlat(subProd, currRest, prevRest);
             }
-            else if (subProd instanceof gast_public_1.gast.Option) {
+            else if (subProd instanceof gast_public_1.Option) {
                 _this.walkOption(subProd, currRest, prevRest);
             }
-            else if (subProd instanceof gast_public_1.gast.RepetitionMandatory) {
+            else if (subProd instanceof gast_public_1.RepetitionMandatory) {
                 _this.walkAtLeastOne(subProd, currRest, prevRest);
             }
-            else if (subProd instanceof gast_public_1.gast.RepetitionMandatoryWithSeparator) {
+            else if (subProd instanceof gast_public_1.RepetitionMandatoryWithSeparator) {
                 _this.walkAtLeastOneSep(subProd, currRest, prevRest);
             }
-            else if (subProd instanceof gast_public_1.gast.RepetitionWithSeparator) {
+            else if (subProd instanceof gast_public_1.RepetitionWithSeparator) {
                 _this.walkManySep(subProd, currRest, prevRest);
             }
-            else if (subProd instanceof gast_public_1.gast.Repetition) {
+            else if (subProd instanceof gast_public_1.Repetition) {
                 _this.walkMany(subProd, currRest, prevRest);
             }
-            else if (subProd instanceof gast_public_1.gast.Alternation) {
+            else if (subProd instanceof gast_public_1.Alternation) {
                 _this.walkOr(subProd, currRest, prevRest);
             }
             else {
@@ -3476,7 +4367,7 @@ var RestWalker = /** @class */ (function () {
     RestWalker.prototype.walkAtLeastOne = function (atLeastOneProd, currRest, prevRest) {
         // ABC(DE)+F => after the (DE)+ the rest is (DE)?F
         var fullAtLeastOneRest = [
-            new gast_public_1.gast.Option(atLeastOneProd.definition)
+            new gast_public_1.Option({ definition: atLeastOneProd.definition })
         ].concat(currRest, prevRest);
         this.walk(atLeastOneProd, fullAtLeastOneRest);
     };
@@ -3488,7 +4379,7 @@ var RestWalker = /** @class */ (function () {
     RestWalker.prototype.walkMany = function (manyProd, currRest, prevRest) {
         // ABC(DE)*F => after the (DE)* the rest is (DE)?F
         var fullManyRest = [
-            new gast_public_1.gast.Option(manyProd.definition)
+            new gast_public_1.Option({ definition: manyProd.definition })
         ].concat(currRest, prevRest);
         this.walk(manyProd, fullManyRest);
     };
@@ -3506,7 +4397,7 @@ var RestWalker = /** @class */ (function () {
             // wrapping each alternative in a single definition wrapper
             // to avoid errors in computing the rest of that alternative in the invocation to computeInProdFollows
             // (otherwise for OR([alt1,alt2]) alt2 will be considered in 'rest' of alt1
-            var prodWrapper = new gast_public_1.gast.Flat([alt]);
+            var prodWrapper = new gast_public_1.Flat({ definition: [alt] });
             _this.walk(prodWrapper, fullOrRest);
         });
     };
@@ -3515,7 +4406,11 @@ var RestWalker = /** @class */ (function () {
 exports.RestWalker = RestWalker;
 function restForRepetitionWithSeparator(repSepProd, currRest, prevRest) {
     var repSepRest = [
-        new gast_public_1.gast.Option([new gast_public_1.gast.Terminal(repSepProd.separator)].concat(repSepProd.definition))
+        new gast_public_1.Option({
+            definition: [
+                new gast_public_1.Terminal({ terminalType: repSepProd.separator })
+            ].concat(repSepProd.definition)
+        })
     ];
     var fullRepSepRest = repSepRest.concat(currRest, prevRest);
     return fullRepSepRest;
@@ -3523,33 +4418,32 @@ function restForRepetitionWithSeparator(repSepProd, currRest, prevRest) {
 //# sourceMappingURL=rest.js.map
 
 /***/ }),
-/* 25 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var cache = __webpack_require__(22);
-var cache_1 = __webpack_require__(22);
-var exceptions_public_1 = __webpack_require__(34);
-var lang_extensions_1 = __webpack_require__(5);
-var resolver_1 = __webpack_require__(53);
-var checks_1 = __webpack_require__(35);
+var cache = __webpack_require__(25);
+var cache_1 = __webpack_require__(25);
+var exceptions_public_1 = __webpack_require__(36);
+var lang_extensions_1 = __webpack_require__(4);
+var checks_1 = __webpack_require__(10);
 var utils_1 = __webpack_require__(0);
-var follow_1 = __webpack_require__(52);
+var follow_1 = __webpack_require__(56);
 var tokens_public_1 = __webpack_require__(3);
-var lookahead_1 = __webpack_require__(38);
-var gast_builder_1 = __webpack_require__(51);
-var interpreter_1 = __webpack_require__(7);
-var constants_1 = __webpack_require__(31);
-var gast_public_1 = __webpack_require__(2);
-var gast_1 = __webpack_require__(23);
-var tokens_1 = __webpack_require__(8);
-var cst_1 = __webpack_require__(32);
-var keys_1 = __webpack_require__(37);
-var cst_visitor_1 = __webpack_require__(50);
-var errors_public_1 = __webpack_require__(33);
-var serializeGrammar = gast_public_1.gast.serializeGrammar;
+var lookahead_1 = __webpack_require__(40);
+var gast_builder_1 = __webpack_require__(55);
+var interpreter_1 = __webpack_require__(26);
+var constants_1 = __webpack_require__(34);
+var gast_1 = __webpack_require__(9);
+var tokens_1 = __webpack_require__(11);
+var cst_1 = __webpack_require__(35);
+var keys_1 = __webpack_require__(39);
+var cst_visitor_1 = __webpack_require__(54);
+var errors_public_1 = __webpack_require__(8);
+var gast_public_1 = __webpack_require__(1);
+var gast_resolver_public_1 = __webpack_require__(38);
 var ParserDefinitionErrorType;
 (function (ParserDefinitionErrorType) {
     ParserDefinitionErrorType[ParserDefinitionErrorType["INVALID_RULE_NAME"] = 0] = "INVALID_RULE_NAME";
@@ -3579,7 +4473,7 @@ var DEFAULT_PARSER_CONFIG = Object.freeze({
     // TODO: Document this breaking change, can it be mitigated?
     // TODO: change to true
     outputCst: false,
-    errorMessageProvider: errors_public_1.defaultErrorProvider
+    errorMessageProvider: errors_public_1.defaultParserErrorProvider
 });
 var DEFAULT_RULE_CONFIG = Object.freeze({
     recoveryValueFunc: function () { return undefined; },
@@ -3637,7 +4531,7 @@ var EOF_FOLLOW_KEY = {};
  * For example: Error Recovery, Automatic lookahead calculation.
  */
 var Parser = /** @class */ (function () {
-    function Parser(input, tokensDictionary, config) {
+    function Parser(input, tokenVocabulary, config) {
         if (config === void 0) { config = DEFAULT_PARSER_CONFIG; }
         this._errors = [];
         this.isBackTrackingStack = [];
@@ -3689,7 +4583,7 @@ var Parser = /** @class */ (function () {
             this.cstPostNonTerminal = utils_1.NOOP;
             this.getLastExplicitRuleShortName = this.getLastExplicitRuleShortNameNoCst;
             this.getPreviousExplicitRuleShortName = this.getPreviousExplicitRuleShortNameNoCst;
-            this.getPreviousExplicitRuleOccurenceIndex = this.getPreviousExplicitRuleOccurenceIndexNoCst;
+            this.getLastExplicitRuleOccurrenceIndex = this.getLastExplicitRuleOccurrenceIndexNoCst;
             this.manyInternal = this.manyInternalNoCst;
             this.orInternal = this.orInternalNoCst;
             this.optionInternal = this.optionInternalNoCst;
@@ -3700,7 +4594,6 @@ var Parser = /** @class */ (function () {
         this.className = lang_extensions_1.classNameFromInstance(this);
         this.firstAfterRepMap = cache.getFirstAfterRepForClass(this.className);
         this.classLAFuncs = cache.getLookaheadFuncsForClass(this.className);
-        this.cstDictDefForRule = cache.getCstDictDefPerRuleForClass(this.className);
         if (!cache.CLASS_TO_DEFINITION_ERRORS.containsKey(this.className)) {
             this.definitionErrors = [];
             cache.CLASS_TO_DEFINITION_ERRORS.put(this.className, this.definitionErrors);
@@ -3708,29 +4601,29 @@ var Parser = /** @class */ (function () {
         else {
             this.definitionErrors = cache.CLASS_TO_DEFINITION_ERRORS.get(this.className);
         }
-        if (utils_1.isArray(tokensDictionary)) {
-            this.tokensMap = utils_1.reduce(tokensDictionary, function (acc, tokenClazz) {
+        if (utils_1.isArray(tokenVocabulary)) {
+            this.tokensMap = utils_1.reduce(tokenVocabulary, function (acc, tokenClazz) {
                 acc[tokens_public_1.tokenName(tokenClazz)] = tokenClazz;
                 return acc;
             }, {});
         }
-        else if (utils_1.has(tokensDictionary, "modes") &&
-            utils_1.every(utils_1.flatten(utils_1.values(tokensDictionary.modes)), tokens_1.isTokenType)) {
-            var allTokenTypes = utils_1.flatten(utils_1.values(tokensDictionary.modes));
+        else if (utils_1.has(tokenVocabulary, "modes") &&
+            utils_1.every(utils_1.flatten(utils_1.values(tokenVocabulary.modes)), tokens_1.isTokenType)) {
+            var allTokenTypes = utils_1.flatten(utils_1.values(tokenVocabulary.modes));
             var uniqueTokens = utils_1.uniq(allTokenTypes);
             this.tokensMap = utils_1.reduce(uniqueTokens, function (acc, tokenClazz) {
                 acc[tokens_public_1.tokenName(tokenClazz)] = tokenClazz;
                 return acc;
             }, {});
         }
-        else if (utils_1.isObject(tokensDictionary)) {
-            this.tokensMap = utils_1.cloneObj(tokensDictionary);
+        else if (utils_1.isObject(tokenVocabulary)) {
+            this.tokensMap = utils_1.cloneObj(tokenVocabulary);
         }
         else {
             throw new Error("<tokensDictionary> argument must be An Array of Token constructors" +
                 " A dictionary of Token constructors or an IMultiModeLexerDefinition");
         }
-        var noTokenCategoriesUsed = utils_1.every(utils_1.values(tokensDictionary), function (tokenConstructor) { return utils_1.isEmpty(tokenConstructor.categoryMatches); });
+        var noTokenCategoriesUsed = utils_1.every(utils_1.values(tokenVocabulary), function (tokenConstructor) { return utils_1.isEmpty(tokenConstructor.categoryMatches); });
         this.tokenMatcher = noTokenCategoriesUsed
             ? tokens_1.tokenStructuredMatcherNoCategories
             : tokens_1.tokenStructuredMatcher;
@@ -3777,18 +4670,27 @@ var Parser = /** @class */ (function () {
             // TODO: consider making the self analysis a member method to resolve this.
             // that way it won't be callable before the constructor has been invoked...
             definitionErrors = cache.CLASS_TO_DEFINITION_ERRORS.get(className);
-            var resolverErrors = resolver_1.resolveGrammar(clonedProductions_1);
+            var resolverErrors = gast_resolver_public_1.resolveGrammar({
+                rules: clonedProductions_1.values()
+            });
             definitionErrors.push.apply(definitionErrors, resolverErrors); // mutability for the win?
             // only perform additional grammar validations IFF no resolving errors have occurred.
             // as unresolved grammar may lead to unhandled runtime exceptions in the follow up validations.
             if (utils_1.isEmpty(resolverErrors)) {
-                var validationErrors = checks_1.validateGrammar(clonedProductions_1.values(), parserInstance.maxLookahead, utils_1.values(parserInstance.tokensMap), parserInstance.ignoredIssues);
+                var validationErrors = gast_resolver_public_1.validateGrammar({
+                    rules: clonedProductions_1.values(),
+                    maxLookahead: parserInstance.maxLookahead,
+                    tokenTypes: utils_1.values(parserInstance.tokensMap),
+                    ignoredIssues: parserInstance.ignoredIssues,
+                    errMsgProvider: errors_public_1.defaultGrammarValidatorErrorProvider,
+                    grammarName: className
+                });
                 definitionErrors.push.apply(definitionErrors, validationErrors); // mutability for the win?
             }
             if (!utils_1.isEmpty(definitionErrors) &&
                 !Parser.DEFER_DEFINITION_ERRORS_HANDLING) {
                 defErrorsMsgs = utils_1.map(definitionErrors, function (defError) { return defError.message; });
-                throw new Error("Parser Definition Errors detected\n: " + defErrorsMsgs.join("\n-------------------------------\n"));
+                throw new Error("Parser Definition Errors detected:\n " + defErrorsMsgs.join("\n-------------------------------\n"));
             }
             if (utils_1.isEmpty(definitionErrors)) {
                 // this analysis may fail if the grammar is not perfectly valid
@@ -3796,16 +4698,13 @@ var Parser = /** @class */ (function () {
                 cache.setResyncFollowsForClass(className, allFollows);
             }
             var cstAnalysisResult = cst_1.analyzeCst(clonedProductions_1.values(), parserInstance.fullRuleNameToShort);
-            cache
-                .getCstDictDefPerRuleForClass(className)
-                .putAll(cstAnalysisResult.dictDef);
             cache.CLASS_TO_ALL_RULE_NAMES.put(className, cstAnalysisResult.allRuleNames);
         }
         // reThrow the validation errors each time an erroneous parser is instantiated
         if (!utils_1.isEmpty(cache.CLASS_TO_DEFINITION_ERRORS.get(className)) &&
             !Parser.DEFER_DEFINITION_ERRORS_HANDLING) {
             defErrorsMsgs = utils_1.map(cache.CLASS_TO_DEFINITION_ERRORS.get(className), function (defError) { return defError.message; });
-            throw new Error("Parser Definition Errors detected\n: " + defErrorsMsgs.join("\n-------------------------------\n"));
+            throw new Error("Parser Definition Errors detected:\n " + defErrorsMsgs.join("\n-------------------------------\n"));
         }
     };
     Object.defineProperty(Parser.prototype, "errors", {
@@ -3861,7 +4760,7 @@ var Parser = /** @class */ (function () {
     // can avoid certain situations in which the serialization logic would fail due to multiple versions of chevrotain
     // bundled (due to multiple prototype chains and "instanceof" usage).
     Parser.prototype.getSerializedGastProductions = function () {
-        return serializeGrammar(cache.getProductionsForClass(this.className).values());
+        return gast_public_1.serializeGrammar(cache.getProductionsForClass(this.className).values());
     };
     /**
      * @param startRuleName {string}
@@ -3901,7 +4800,7 @@ var Parser = /** @class */ (function () {
         }
     };
     Parser.prototype.SAVE_ERROR = function (error) {
-        if (exceptions_public_1.exceptions.isRecognitionException(error)) {
+        if (exceptions_public_1.isRecognitionException(error)) {
             error.context = {
                 ruleStack: this.getHumanReadableRuleStack(),
                 ruleOccurrenceStack: utils_1.cloneArr(this.RULE_OCCURRENCE_STACK)
@@ -3930,7 +4829,7 @@ var Parser = /** @class */ (function () {
                 return true;
             }
             catch (e) {
-                if (exceptions_public_1.exceptions.isRecognitionException(e)) {
+                if (exceptions_public_1.isRecognitionException(e)) {
                     return false;
                 }
                 else {
@@ -3949,7 +4848,7 @@ var Parser = /** @class */ (function () {
      * @see CONSUME1
      */
     Parser.prototype.CONSUME = function (tokType, options) {
-        return this.CONSUME1(tokType, options);
+        return this.consumeInternal(tokType, 0, options);
     };
     /**
      *
@@ -3972,7 +4871,7 @@ var Parser = /** @class */ (function () {
      *                                  //     the rule 'parseQualifiedName'
      * }
      *
-     * @param {TokenType} tokType - The Type of the token to be consumed.
+     * @param tokType - The Type of the token to be consumed.
      * @param options - optional properties to modify the behavior of CONSUME.
      */
     Parser.prototype.CONSUME1 = function (tokType, options) {
@@ -4003,12 +4902,35 @@ var Parser = /** @class */ (function () {
         return this.consumeInternal(tokType, 5, options);
     };
     /**
+     * @see CONSUME1
+     */
+    Parser.prototype.CONSUME6 = function (tokType, options) {
+        return this.consumeInternal(tokType, 6, options);
+    };
+    /**
+     * @see CONSUME1
+     */
+    Parser.prototype.CONSUME7 = function (tokType, options) {
+        return this.consumeInternal(tokType, 7, options);
+    };
+    /**
+     * @see CONSUME1
+     */
+    Parser.prototype.CONSUME8 = function (tokType, options) {
+        return this.consumeInternal(tokType, 8, options);
+    };
+    /**
+     * @see CONSUME1
+     */
+    Parser.prototype.CONSUME9 = function (tokType, options) {
+        return this.consumeInternal(tokType, 9, options);
+    };
+    /**
      * Convenience method equivalent to SUBRULE1
      * @see SUBRULE1
      */
-    Parser.prototype.SUBRULE = function (ruleToCall, args) {
-        if (args === void 0) { args = undefined; }
-        return this.subruleInternal(ruleToCall, 1, args);
+    Parser.prototype.SUBRULE = function (ruleToCall, options) {
+        return this.subruleInternal(ruleToCall, 0, options);
     };
     /**
      * The Parsing DSL Method is used by one rule to call another.
@@ -4028,44 +4950,63 @@ var Parser = /** @class */ (function () {
      * @param {*[]} args - The arguments to pass to the invoked subrule.
      * @returns {*} - The result of invoking ruleToCall.
      */
-    Parser.prototype.SUBRULE1 = function (ruleToCall, args) {
-        if (args === void 0) { args = undefined; }
-        return this.subruleInternal(ruleToCall, 1, args);
+    Parser.prototype.SUBRULE1 = function (ruleToCall, options) {
+        return this.subruleInternal(ruleToCall, 1, options);
     };
     /**
      * @see SUBRULE1
      */
-    Parser.prototype.SUBRULE2 = function (ruleToCall, args) {
-        if (args === void 0) { args = undefined; }
-        return this.subruleInternal(ruleToCall, 2, args);
+    Parser.prototype.SUBRULE2 = function (ruleToCall, options) {
+        return this.subruleInternal(ruleToCall, 2, options);
     };
     /**
      * @see SUBRULE1
      */
-    Parser.prototype.SUBRULE3 = function (ruleToCall, args) {
-        if (args === void 0) { args = undefined; }
-        return this.subruleInternal(ruleToCall, 3, args);
+    Parser.prototype.SUBRULE3 = function (ruleToCall, options) {
+        return this.subruleInternal(ruleToCall, 3, options);
     };
     /**
      * @see SUBRULE1
      */
-    Parser.prototype.SUBRULE4 = function (ruleToCall, args) {
-        if (args === void 0) { args = undefined; }
-        return this.subruleInternal(ruleToCall, 4, args);
+    Parser.prototype.SUBRULE4 = function (ruleToCall, options) {
+        return this.subruleInternal(ruleToCall, 4, options);
     };
     /**
      * @see SUBRULE1
      */
-    Parser.prototype.SUBRULE5 = function (ruleToCall, args) {
-        if (args === void 0) { args = undefined; }
-        return this.subruleInternal(ruleToCall, 5, args);
+    Parser.prototype.SUBRULE5 = function (ruleToCall, options) {
+        return this.subruleInternal(ruleToCall, 5, options);
+    };
+    /**
+     * @see SUBRULE1
+     */
+    Parser.prototype.SUBRULE6 = function (ruleToCall, options) {
+        return this.subruleInternal(ruleToCall, 6, options);
+    };
+    /**
+     * @see SUBRULE1
+     */
+    Parser.prototype.SUBRULE7 = function (ruleToCall, options) {
+        return this.subruleInternal(ruleToCall, 7, options);
+    };
+    /**
+     * @see SUBRULE1
+     */
+    Parser.prototype.SUBRULE8 = function (ruleToCall, options) {
+        return this.subruleInternal(ruleToCall, 8, options);
+    };
+    /**
+     * @see SUBRULE1
+     */
+    Parser.prototype.SUBRULE9 = function (ruleToCall, options) {
+        return this.subruleInternal(ruleToCall, 9, options);
     };
     /**
      * Convenience method equivalent to OPTION1.
      * @see OPTION1
      */
     Parser.prototype.OPTION = function (actionORMethodDef) {
-        return this.OPTION1(actionORMethodDef);
+        return this.optionInternal(actionORMethodDef, 0);
     };
     /**
      * Parsing DSL Method that Indicates an Optional production
@@ -4123,11 +5064,35 @@ var Parser = /** @class */ (function () {
         return this.optionInternal(actionORMethodDef, 5);
     };
     /**
+     * @see OPTION1
+     */
+    Parser.prototype.OPTION6 = function (actionORMethodDef) {
+        return this.optionInternal(actionORMethodDef, 6);
+    };
+    /**
+     * @see OPTION1
+     */
+    Parser.prototype.OPTION7 = function (actionORMethodDef) {
+        return this.optionInternal(actionORMethodDef, 7);
+    };
+    /**
+     * @see OPTION1
+     */
+    Parser.prototype.OPTION8 = function (actionORMethodDef) {
+        return this.optionInternal(actionORMethodDef, 8);
+    };
+    /**
+     * @see OPTION1
+     */
+    Parser.prototype.OPTION9 = function (actionORMethodDef) {
+        return this.optionInternal(actionORMethodDef, 9);
+    };
+    /**
      * Convenience method equivalent to OR1.
      * @see OR1
      */
     Parser.prototype.OR = function (altsOrOpts) {
-        return this.OR1(altsOrOpts);
+        return this.orInternal(altsOrOpts, 0);
     };
     /**
      * Parsing DSL method that indicates a choice between a set of alternatives must be made.
@@ -4204,11 +5169,35 @@ var Parser = /** @class */ (function () {
         return this.orInternal(altsOrOpts, 5);
     };
     /**
+     * @see OR1
+     */
+    Parser.prototype.OR6 = function (altsOrOpts) {
+        return this.orInternal(altsOrOpts, 6);
+    };
+    /**
+     * @see OR1
+     */
+    Parser.prototype.OR7 = function (altsOrOpts) {
+        return this.orInternal(altsOrOpts, 7);
+    };
+    /**
+     * @see OR1
+     */
+    Parser.prototype.OR8 = function (altsOrOpts) {
+        return this.orInternal(altsOrOpts, 8);
+    };
+    /**
+     * @see OR1
+     */
+    Parser.prototype.OR9 = function (altsOrOpts) {
+        return this.orInternal(altsOrOpts, 9);
+    };
+    /**
      * Convenience method equivalent to MANY1.
      * @see MANY1
      */
     Parser.prototype.MANY = function (actionORMethodDef) {
-        return this.MANY1(actionORMethodDef);
+        return this.manyInternal(0, actionORMethodDef, []);
     };
     /**
      * Parsing DSL method, that indicates a repetition of zero or more.
@@ -4269,11 +5258,38 @@ var Parser = /** @class */ (function () {
         return this.manyInternal(5, actionORMethodDef, []);
     };
     /**
+     * @see MANY1
+     */
+    Parser.prototype.MANY6 = function (actionORMethodDef) {
+        return this.manyInternal(6, actionORMethodDef, []);
+    };
+    /**
+     * @see MANY1
+     */
+    Parser.prototype.MANY7 = function (actionORMethodDef) {
+        return this.manyInternal(7, actionORMethodDef, []);
+    };
+    /**
+     * @see MANY1
+     */
+    Parser.prototype.MANY8 = function (actionORMethodDef) {
+        return this.manyInternal(8, actionORMethodDef, []);
+    };
+    /**
+     * @see MANY1
+     */
+    Parser.prototype.MANY9 = function (actionORMethodDef) {
+        return this.manyInternal(9, actionORMethodDef, []);
+    };
+    /**
      * Convenience method equivalent to MANY_SEP1.
      * @see MANY_SEP1
      */
     Parser.prototype.MANY_SEP = function (options) {
-        return this.MANY_SEP1(options);
+        return this.manySepFirstInternal(0, options, {
+            values: [],
+            separators: []
+        });
     };
     /**
      * Parsing DSL method, that indicates a repetition of zero or more with a separator
@@ -4349,11 +5365,47 @@ var Parser = /** @class */ (function () {
         });
     };
     /**
+     * @see MANY_SEP1
+     */
+    Parser.prototype.MANY_SEP6 = function (options) {
+        return this.manySepFirstInternal(6, options, {
+            values: [],
+            separators: []
+        });
+    };
+    /**
+     * @see MANY_SEP1
+     */
+    Parser.prototype.MANY_SEP7 = function (options) {
+        return this.manySepFirstInternal(7, options, {
+            values: [],
+            separators: []
+        });
+    };
+    /**
+     * @see MANY_SEP1
+     */
+    Parser.prototype.MANY_SEP8 = function (options) {
+        return this.manySepFirstInternal(8, options, {
+            values: [],
+            separators: []
+        });
+    };
+    /**
+     * @see MANY_SEP1
+     */
+    Parser.prototype.MANY_SEP9 = function (options) {
+        return this.manySepFirstInternal(9, options, {
+            values: [],
+            separators: []
+        });
+    };
+    /**
      * Convenience method equivalent to AT_LEAST_ONE1.
      * @see AT_LEAST_ONE1
      */
     Parser.prototype.AT_LEAST_ONE = function (actionORMethodDef) {
-        return this.AT_LEAST_ONE1(actionORMethodDef);
+        return this.atLeastOneInternal(0, actionORMethodDef, []);
     };
     /**
      * Convenience method, same as MANY but the repetition is of one or more.
@@ -4395,11 +5447,38 @@ var Parser = /** @class */ (function () {
         return this.atLeastOneInternal(5, actionORMethodDef, []);
     };
     /**
+     * @see AT_LEAST_ONE1
+     */
+    Parser.prototype.AT_LEAST_ONE6 = function (actionORMethodDef) {
+        return this.atLeastOneInternal(6, actionORMethodDef, []);
+    };
+    /**
+     * @see AT_LEAST_ONE1
+     */
+    Parser.prototype.AT_LEAST_ONE7 = function (actionORMethodDef) {
+        return this.atLeastOneInternal(7, actionORMethodDef, []);
+    };
+    /**
+     * @see AT_LEAST_ONE1
+     */
+    Parser.prototype.AT_LEAST_ONE8 = function (actionORMethodDef) {
+        return this.atLeastOneInternal(8, actionORMethodDef, []);
+    };
+    /**
+     * @see AT_LEAST_ONE1
+     */
+    Parser.prototype.AT_LEAST_ONE9 = function (actionORMethodDef) {
+        return this.atLeastOneInternal(9, actionORMethodDef, []);
+    };
+    /**
      * Convenience method equivalent to AT_LEAST_ONE_SEP1.
      * @see AT_LEAST_ONE1
      */
     Parser.prototype.AT_LEAST_ONE_SEP = function (options) {
-        return this.AT_LEAST_ONE_SEP1(options);
+        return this.atLeastOneSepFirstInternal(0, options, {
+            values: [],
+            separators: []
+        });
     };
     /**
      * Convenience method, same as MANY_SEP but the repetition is of one or more.
@@ -4457,6 +5536,42 @@ var Parser = /** @class */ (function () {
         });
     };
     /**
+     * @see AT_LEAST_ONE_SEP1
+     */
+    Parser.prototype.AT_LEAST_ONE_SEP6 = function (options) {
+        return this.atLeastOneSepFirstInternal(6, options, {
+            values: [],
+            separators: []
+        });
+    };
+    /**
+     * @see AT_LEAST_ONE_SEP1
+     */
+    Parser.prototype.AT_LEAST_ONE_SEP7 = function (options) {
+        return this.atLeastOneSepFirstInternal(7, options, {
+            values: [],
+            separators: []
+        });
+    };
+    /**
+     * @see AT_LEAST_ONE_SEP1
+     */
+    Parser.prototype.AT_LEAST_ONE_SEP8 = function (options) {
+        return this.atLeastOneSepFirstInternal(8, options, {
+            values: [],
+            separators: []
+        });
+    };
+    /**
+     * @see AT_LEAST_ONE_SEP1
+     */
+    Parser.prototype.AT_LEAST_ONE_SEP9 = function (options) {
+        return this.atLeastOneSepFirstInternal(9, options, {
+            values: [],
+            separators: []
+        });
+    };
+    /**
      *
      * @param {string} name - The name of the rule.
      * @param {TokenType} implementation - The implementation of the rule.
@@ -4472,10 +5587,19 @@ var Parser = /** @class */ (function () {
         // TODO: how to describe the optional return type of CSTNode? T|CstNode is not good because it is not backward
         // compatible, T|any is very general...
         if (config === void 0) { config = DEFAULT_RULE_CONFIG; }
-        var ruleErrors = checks_1.validateRuleName(name);
-        ruleErrors = ruleErrors.concat(checks_1.validateRuleDoesNotAlreadyExist(name, this.definedRulesNames, this.className));
+        if (utils_1.contains(this.definedRulesNames, name)) {
+            var errMsg = errors_public_1.defaultGrammarValidatorErrorProvider.buildDuplicateRuleNameError({
+                topLevelRule: name,
+                grammarName: this.className
+            });
+            var error = {
+                message: errMsg,
+                type: ParserDefinitionErrorType.DUPLICATE_RULE_NAME,
+                ruleName: name
+            };
+            this.definitionErrors.push(error);
+        }
         this.definedRulesNames.push(name);
-        this.definitionErrors.push.apply(this.definitionErrors, ruleErrors); // mutability for the win
         // only build the gast representation once.
         if (!this._productions.containsKey(name)) {
             var gastProduction = gast_builder_1.buildTopProduction(implementation.toString(), name, this.tokensMap);
@@ -4502,7 +5626,7 @@ var Parser = /** @class */ (function () {
      */
     Parser.prototype.OVERRIDE_RULE = function (name, impl, config) {
         if (config === void 0) { config = DEFAULT_RULE_CONFIG; }
-        var ruleErrors = checks_1.validateRuleName(name);
+        var ruleErrors = [];
         ruleErrors = ruleErrors.concat(checks_1.validateRuleIsOverridden(name, this.definedRulesNames, this.className));
         this.definitionErrors.push.apply(this.definitionErrors, ruleErrors); // mutability for the win
         var alreadyOverridden = cache.getProductionOverriddenForClass(this.className);
@@ -4537,7 +5661,7 @@ var Parser = /** @class */ (function () {
                 firstRedundant: firstRedundantTok,
                 ruleName: this.getCurrRuleFullName()
             });
-            this.SAVE_ERROR(new exceptions_public_1.exceptions.NotAllInputParsedException(errMsg, firstRedundantTok));
+            this.SAVE_ERROR(new exceptions_public_1.NotAllInputParsedException(errMsg, firstRedundantTok));
         }
     };
     Parser.prototype.nestedRuleInvocationStateUpdate = function (nestedRuleName, shortNameKey) {
@@ -4591,9 +5715,12 @@ var Parser = /** @class */ (function () {
         var nextPossibleTokenTypes = new interpreter_1.NextAfterTokenWalker(topProduction, grammarPath).startWalking();
         return nextPossibleTokenTypes;
     };
-    Parser.prototype.subruleInternal = function (ruleToCall, idx, args) {
+    Parser.prototype.subruleInternal = function (ruleToCall, idx, options) {
+        var args = options !== undefined ? options.ARGS : undefined;
         var ruleResult = ruleToCall.call(this, idx, args);
-        this.cstPostNonTerminal(ruleResult, ruleToCall.ruleName);
+        this.cstPostNonTerminal(ruleResult, options !== undefined && options.LABEL !== undefined
+            ? options.LABEL
+            : ruleToCall.ruleName);
         return ruleResult;
     };
     /**
@@ -4629,7 +5756,7 @@ var Parser = /** @class */ (function () {
                         ruleName: this.getCurrRuleFullName()
                     });
                 }
-                throw this.SAVE_ERROR(new exceptions_public_1.exceptions.MismatchedTokenException(msg, nextToken));
+                throw this.SAVE_ERROR(new exceptions_public_1.MismatchedTokenException(msg, nextToken));
             }
         }
         catch (eFromConsumption) {
@@ -4658,7 +5785,9 @@ var Parser = /** @class */ (function () {
                 throw eFromConsumption;
             }
         }
-        this.cstPostTerminal(tokType, consumedToken);
+        this.cstPostTerminal(options !== undefined && options.LABEL !== undefined
+            ? options.LABEL
+            : tokType.tokenName, consumedToken);
         return consumedToken;
     };
     // other functionality
@@ -4719,7 +5848,7 @@ var Parser = /** @class */ (function () {
                 var reSyncEnabled = resyncEnabled &&
                     !this.isBackTracking() &&
                     this.recoveryEnabled;
-                if (exceptions_public_1.exceptions.isRecognitionException(e)) {
+                if (exceptions_public_1.isRecognitionException(e)) {
                     if (reSyncEnabled) {
                         var reSyncTokType = this.findReSyncTokenType();
                         if (this.isInCurrentRuleReSyncSet(reSyncTokType)) {
@@ -4769,7 +5898,7 @@ var Parser = /** @class */ (function () {
         }
         var wrappedGrammarRule;
         wrappedGrammarRule = function (idxInCallingRule, args) {
-            if (idxInCallingRule === void 0) { idxInCallingRule = 1; }
+            if (idxInCallingRule === void 0) { idxInCallingRule = 0; }
             this.ruleInvocationStateUpdate(shortName, ruleName, idxInCallingRule);
             return invokeRuleWithTry.call(this, args);
         };
@@ -4794,7 +5923,7 @@ var Parser = /** @class */ (function () {
                 actual: nextTokenWithoutResync,
                 ruleName: _this.getCurrRuleFullName()
             });
-            var error = new exceptions_public_1.exceptions.MismatchedTokenException(msg, nextTokenWithoutResync);
+            var error = new exceptions_public_1.MismatchedTokenException(msg, nextTokenWithoutResync);
             // the first token here will be the original cause of the error, this is not part of the resyncedTokens property.
             error.resyncedTokens = utils_1.dropRight(resyncedTokens);
             _this.SAVE_ERROR(error);
@@ -4913,11 +6042,11 @@ var Parser = /** @class */ (function () {
             return EOF_FOLLOW_KEY;
         }
         var currRuleShortName = this.getLastExplicitRuleShortName();
+        var currRuleIdx = this.getLastExplicitRuleOccurrenceIndex();
         var prevRuleShortName = this.getPreviousExplicitRuleShortName();
-        var prevRuleIdx = this.getPreviousExplicitRuleOccurenceIndex();
         return {
             ruleName: this.shortRuleNameToFullName(currRuleShortName),
-            idxInCallingRule: prevRuleIdx,
+            idxInCallingRule: currRuleIdx,
             inRule: this.shortRuleNameToFullName(prevRuleShortName)
         };
     };
@@ -5005,19 +6134,17 @@ var Parser = /** @class */ (function () {
         }
     };
     Parser.prototype.cstNestedInvocationStateUpdate = function (nestedName, shortName) {
-        var initDef = this.cstDictDefForRule.get(shortName);
         this.CST_STACK.push({
             name: nestedName,
             fullName: this.shortRuleNameToFull.get(this.getLastExplicitRuleShortName()) + nestedName,
-            children: initDef()
+            children: {}
         });
     };
     Parser.prototype.cstInvocationStateUpdate = function (fullRuleName, shortName) {
         this.LAST_EXPLICIT_RULE_STACK.push(this.RULE_STACK.length - 1);
-        var initDef = this.cstDictDefForRule.get(shortName);
         this.CST_STACK.push({
             name: fullRuleName,
-            children: initDef()
+            children: {}
         });
     };
     Parser.prototype.cstFinallyStateUpdate = function () {
@@ -5380,7 +6507,7 @@ var Parser = /** @class */ (function () {
             customUserDescription: errMsgTypes,
             ruleName: this.getCurrRuleFullName()
         });
-        throw this.SAVE_ERROR(new exceptions_public_1.exceptions.NoViableAltException(errMsg, this.LA(1)));
+        throw this.SAVE_ERROR(new exceptions_public_1.NoViableAltException(errMsg, this.LA(1)));
     };
     Parser.prototype.getLookaheadFuncFor = function (key, occurrence, maxLookahead, prodType) {
         var laFunc = this.classLAFuncs.get(key);
@@ -5412,7 +6539,7 @@ var Parser = /** @class */ (function () {
             customUserDescription: userDefinedErrMsg,
             ruleName: ruleName
         });
-        throw this.SAVE_ERROR(new exceptions_public_1.exceptions.EarlyExitException(msg, this.LA(1), this.LA(0)));
+        throw this.SAVE_ERROR(new exceptions_public_1.EarlyExitException(msg, this.LA(1), this.LA(0)));
     };
     Parser.prototype.getLastExplicitRuleShortName = function () {
         var lastExplictIndex = this.LAST_EXPLICIT_RULE_STACK[this.LAST_EXPLICIT_RULE_STACK.length - 1];
@@ -5430,13 +6557,13 @@ var Parser = /** @class */ (function () {
         var ruleStack = this.RULE_STACK;
         return ruleStack[ruleStack.length - 2];
     };
-    Parser.prototype.getPreviousExplicitRuleOccurenceIndex = function () {
-        var lastExplicitIndex = this.LAST_EXPLICIT_RULE_STACK[this.LAST_EXPLICIT_RULE_STACK.length - 2];
+    Parser.prototype.getLastExplicitRuleOccurrenceIndex = function () {
+        var lastExplicitIndex = this.LAST_EXPLICIT_RULE_STACK[this.LAST_EXPLICIT_RULE_STACK.length - 1];
         return this.RULE_OCCURRENCE_STACK[lastExplicitIndex];
     };
-    Parser.prototype.getPreviousExplicitRuleOccurenceIndexNoCst = function () {
+    Parser.prototype.getLastExplicitRuleOccurrenceIndexNoCst = function () {
         var occurrenceStack = this.RULE_OCCURRENCE_STACK;
-        return occurrenceStack[occurrenceStack.length - 2];
+        return occurrenceStack[occurrenceStack.length - 1];
     };
     Parser.prototype.nestedRuleBeforeClause = function (methodOpts, laKey) {
         var nestedName;
@@ -5473,10 +6600,10 @@ var Parser = /** @class */ (function () {
         var parentCstNode = cstStack[cstStack.length - 1];
         cst_1.addNoneTerminalToCst(parentCstNode, nestedName, nestedRuleCst);
     };
-    Parser.prototype.cstPostTerminal = function (tokType, consumedToken) {
-        var currTokTypeName = tokType.tokenName;
+    Parser.prototype.cstPostTerminal = function (key, consumedToken) {
+        // TODO: would save the "current rootCST be faster than locating it for each terminal?
         var rootCst = this.CST_STACK[this.CST_STACK.length - 1];
-        cst_1.addTerminalToCst(rootCst, consumedToken, currTokTypeName);
+        cst_1.addTerminalToCst(rootCst, consumedToken, key);
     };
     Parser.prototype.cstPostNonTerminal = function (ruleCstResult, ruleName) {
         cst_1.addNoneTerminalToCst(this.CST_STACK[this.CST_STACK.length - 1], ruleName, ruleCstResult);
@@ -5560,15 +6687,15 @@ InRuleRecoveryException.prototype = Error.prototype;
 //# sourceMappingURL=parser_public.js.map
 
 /***/ }),
-/* 26 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var lexer_1 = __webpack_require__(54);
+var lexer_1 = __webpack_require__(58);
 var utils_1 = __webpack_require__(0);
-var tokens_1 = __webpack_require__(8);
+var tokens_1 = __webpack_require__(11);
 var LexerDefinitionErrorType;
 (function (LexerDefinitionErrorType) {
     LexerDefinitionErrorType[LexerDefinitionErrorType["MISSING_PATTERN"] = 0] = "MISSING_PATTERN";
@@ -6153,7 +7280,7 @@ exports.Lexer = Lexer;
 //# sourceMappingURL=lexer_public.js.map
 
 /***/ }),
-/* 27 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6162,11 +7289,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // needs a separate module as this is required inside chevrotain productive code
 // and also in the entry point for webpack(api.ts).
 // A separate file avoids cyclic dependencies and webpack errors.
-exports.VERSION = "1.0.1";
+exports.VERSION = "3.0.1";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
-/* 28 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -6175,31 +7302,31 @@ exports.VERSION = "1.0.1";
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  XMLDeclaration = __webpack_require__(15);
+  XMLDeclaration = __webpack_require__(18);
 
-  XMLDocType = __webpack_require__(16);
+  XMLDocType = __webpack_require__(19);
 
-  XMLCData = __webpack_require__(9);
+  XMLCData = __webpack_require__(12);
 
-  XMLComment = __webpack_require__(10);
+  XMLComment = __webpack_require__(13);
 
-  XMLElement = __webpack_require__(17);
+  XMLElement = __webpack_require__(20);
 
-  XMLRaw = __webpack_require__(19);
+  XMLRaw = __webpack_require__(22);
 
-  XMLText = __webpack_require__(20);
+  XMLText = __webpack_require__(23);
 
-  XMLProcessingInstruction = __webpack_require__(18);
+  XMLProcessingInstruction = __webpack_require__(21);
 
-  XMLDTDAttList = __webpack_require__(11);
+  XMLDTDAttList = __webpack_require__(14);
 
-  XMLDTDElement = __webpack_require__(12);
+  XMLDTDElement = __webpack_require__(15);
 
-  XMLDTDEntity = __webpack_require__(13);
+  XMLDTDEntity = __webpack_require__(16);
 
-  XMLDTDNotation = __webpack_require__(14);
+  XMLDTDNotation = __webpack_require__(17);
 
-  XMLWriterBase = __webpack_require__(41);
+  XMLWriterBase = __webpack_require__(43);
 
   module.exports = XMLStringWriter = (function(superClass) {
     extend(XMLStringWriter, superClass);
@@ -6506,7 +7633,7 @@ exports.VERSION = "1.0.1";
 
 
 /***/ }),
-/* 29 */
+/* 32 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6538,7 +7665,7 @@ function universalBlockConverter(ctx, visitor, structure) {
         'id': visitor.getNextId(),
         'type': structure.type
     });
-    for (let i = 0; i < ctx.argument.length; i++) {
+    for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
         let arg = structure.args[i];
         if (arg.menu) {
 
@@ -6669,7 +7796,7 @@ function messageBlockconverter(ctx, visitor,structure) {
 
 
 /***/ }),
-/* 30 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -17040,7 +18167,7 @@ return jQuery;
 
 
 /***/ }),
-/* 31 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17049,379 +18176,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // TODO: can this be removed? where is it used?
 exports.IN = "_~IN~_";
 //# sourceMappingURL=constants.js.map
-
-/***/ }),
-/* 32 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var tokens_public_1 = __webpack_require__(3);
-var gast_public_1 = __webpack_require__(2);
-var utils_1 = __webpack_require__(0);
-var lang_extensions_1 = __webpack_require__(5);
-var keys_1 = __webpack_require__(37);
-var GAstVisitor = gast_public_1.gast.GAstVisitor;
-function addTerminalToCst(node, token, tokenTypeName) {
-    ;
-    node.children[tokenTypeName].push(token);
-}
-exports.addTerminalToCst = addTerminalToCst;
-function addNoneTerminalToCst(node, ruleName, ruleResult) {
-    ;
-    node.children[ruleName].push(ruleResult);
-}
-exports.addNoneTerminalToCst = addNoneTerminalToCst;
-var NamedDSLMethodsCollectorVisitor = /** @class */ (function (_super) {
-    __extends(NamedDSLMethodsCollectorVisitor, _super);
-    function NamedDSLMethodsCollectorVisitor(ruleIdx) {
-        var _this = _super.call(this) || this;
-        _this.result = [];
-        _this.ruleIdx = ruleIdx;
-        return _this;
-    }
-    NamedDSLMethodsCollectorVisitor.prototype.collectNamedDSLMethod = function (node, newNodeConstructor, methodIdx) {
-        if (!utils_1.isUndefined(node.name)) {
-            // copy without name so this will indeed be processed later.
-            var nameLessNode = void 0;
-            if (utils_1.has(node, "separator")) {
-                // hack to avoid code duplication and refactoring the Gast type declaration / constructors arguments order.
-                nameLessNode = new newNodeConstructor(node.definition, node.separator, node.occurrenceInParent);
-            }
-            else {
-                nameLessNode = new newNodeConstructor(node.definition, node.occurrenceInParent);
-            }
-            var def = [nameLessNode];
-            var key = keys_1.getKeyForAutomaticLookahead(this.ruleIdx, methodIdx, node.occurrenceInParent);
-            this.result.push({ def: def, key: key, name: node.name });
-        }
-    };
-    NamedDSLMethodsCollectorVisitor.prototype.visitOption = function (node) {
-        this.collectNamedDSLMethod(node, gast_public_1.gast.Option, keys_1.OPTION_IDX);
-    };
-    NamedDSLMethodsCollectorVisitor.prototype.visitRepetition = function (node) {
-        this.collectNamedDSLMethod(node, gast_public_1.gast.Repetition, keys_1.MANY_IDX);
-    };
-    NamedDSLMethodsCollectorVisitor.prototype.visitRepetitionMandatory = function (node) {
-        this.collectNamedDSLMethod(node, gast_public_1.gast.RepetitionMandatory, keys_1.AT_LEAST_ONE_IDX);
-    };
-    NamedDSLMethodsCollectorVisitor.prototype.visitRepetitionMandatoryWithSeparator = function (node) {
-        this.collectNamedDSLMethod(node, gast_public_1.gast.RepetitionMandatoryWithSeparator, keys_1.AT_LEAST_ONE_SEP_IDX);
-    };
-    NamedDSLMethodsCollectorVisitor.prototype.visitRepetitionWithSeparator = function (node) {
-        this.collectNamedDSLMethod(node, gast_public_1.gast.RepetitionWithSeparator, keys_1.MANY_SEP_IDX);
-    };
-    NamedDSLMethodsCollectorVisitor.prototype.visitAlternation = function (node) {
-        var _this = this;
-        this.collectNamedDSLMethod(node, gast_public_1.gast.Alternation, keys_1.OR_IDX);
-        var hasMoreThanOneAlternative = node.definition.length > 1;
-        utils_1.forEach(node.definition, function (currFlatAlt, altIdx) {
-            if (!utils_1.isUndefined(currFlatAlt.name)) {
-                var def = currFlatAlt.definition;
-                if (hasMoreThanOneAlternative) {
-                    def = [new gast_public_1.gast.Option(currFlatAlt.definition)];
-                }
-                else {
-                    // mandatory
-                    def = currFlatAlt.definition;
-                }
-                var key = keys_1.getKeyForAltIndex(_this.ruleIdx, keys_1.OR_IDX, node.occurrenceInParent, altIdx);
-                _this.result.push({
-                    def: def,
-                    key: key,
-                    name: currFlatAlt.name
-                });
-            }
-        });
-    };
-    return NamedDSLMethodsCollectorVisitor;
-}(GAstVisitor));
-exports.NamedDSLMethodsCollectorVisitor = NamedDSLMethodsCollectorVisitor;
-function analyzeCst(topRules, fullToShortName) {
-    var result = { dictDef: new lang_extensions_1.HashTable(), allRuleNames: [] };
-    utils_1.forEach(topRules, function (currTopRule) {
-        var currChildrenNames = buildChildDictionaryDef(currTopRule.definition);
-        var currTopRuleShortName = fullToShortName.get(currTopRule.name);
-        result.dictDef.put(currTopRuleShortName, buildInitDefFunc(currChildrenNames));
-        result.allRuleNames.push(currTopRule.name);
-        var namedCollectorVisitor = new NamedDSLMethodsCollectorVisitor(currTopRuleShortName);
-        currTopRule.accept(namedCollectorVisitor);
-        utils_1.forEach(namedCollectorVisitor.result, function (_a) {
-            var def = _a.def, key = _a.key, name = _a.name;
-            var currNestedChildrenNames = buildChildDictionaryDef(def);
-            result.dictDef.put(key, buildInitDefFunc(currNestedChildrenNames));
-            result.allRuleNames.push(currTopRule.name + name);
-        });
-    });
-    return result;
-}
-exports.analyzeCst = analyzeCst;
-function buildInitDefFunc(childrenNames) {
-    var funcString = "return {\n";
-    funcString += utils_1.map(childrenNames, function (currName) { return "\"" + currName + "\" : []"; }).join(",\n");
-    funcString += "}";
-    // major performance optimization, faster to create the children dictionary this way
-    // versus iterating over the childrenNames each time.
-    return Function(funcString);
-}
-function buildChildDictionaryDef(initialDef) {
-    var result = [];
-    var possiblePaths = [];
-    possiblePaths.push({ def: initialDef });
-    var currDef;
-    var currInIteration;
-    var currInOption;
-    var currResult;
-    function addSingleItemToResult(itemName) {
-        result.push(itemName);
-        var nextPath = {
-            def: utils_1.drop(currDef),
-            inIteration: currInIteration,
-            inOption: currInOption,
-            currResult: utils_1.cloneObj(currResult)
-        };
-        possiblePaths.push(nextPath);
-    }
-    while (!utils_1.isEmpty(possiblePaths)) {
-        var currPath = possiblePaths.pop();
-        currDef = currPath.def;
-        currInIteration = currPath.inIteration;
-        currInOption = currPath.inOption;
-        currResult = currPath.currResult;
-        // For Example: an empty path could exist in a valid grammar in the case of an EMPTY_ALT
-        if (utils_1.isEmpty(currDef)) {
-            continue;
-        }
-        var prod = currDef[0];
-        if (prod instanceof gast_public_1.gast.Terminal) {
-            var terminalName = tokens_public_1.tokenName(prod.terminalType);
-            addSingleItemToResult(terminalName);
-        }
-        else if (prod instanceof gast_public_1.gast.NonTerminal) {
-            var nonTerminalName = prod.nonTerminalName;
-            addSingleItemToResult(nonTerminalName);
-        }
-        else if (prod instanceof gast_public_1.gast.Option) {
-            if (!utils_1.isUndefined(prod.name)) {
-                addSingleItemToResult(prod.name);
-            }
-            else {
-                var nextPathWith = {
-                    def: prod.definition.concat(utils_1.drop(currDef))
-                };
-                possiblePaths.push(nextPathWith);
-            }
-        }
-        else if (prod instanceof gast_public_1.gast.RepetitionMandatory ||
-            prod instanceof gast_public_1.gast.Repetition) {
-            if (!utils_1.isUndefined(prod.name)) {
-                addSingleItemToResult(prod.name);
-            }
-            else {
-                var nextDef = prod.definition.concat(utils_1.drop(currDef));
-                var nextPath = {
-                    def: nextDef
-                };
-                possiblePaths.push(nextPath);
-            }
-        }
-        else if (prod instanceof gast_public_1.gast.RepetitionMandatoryWithSeparator ||
-            prod instanceof gast_public_1.gast.RepetitionWithSeparator) {
-            if (!utils_1.isUndefined(prod.name)) {
-                addSingleItemToResult(prod.name);
-            }
-            else {
-                var separatorGast = new gast_public_1.gast.Terminal(prod.separator);
-                var secondIteration = new gast_public_1.gast.Repetition([separatorGast].concat(prod.definition), prod.occurrenceInParent);
-                // Hack: X (, X)* --> (, X) because it is identical in terms of identifying "isCollection?"
-                var nextDef = [secondIteration].concat(utils_1.drop(currDef));
-                var nextPath = {
-                    def: nextDef
-                };
-                possiblePaths.push(nextPath);
-            }
-        }
-        else if (prod instanceof gast_public_1.gast.Alternation) {
-            /* istanbul ignore else */
-            // IGNORE ABOVE ELSE
-            if (!utils_1.isUndefined(prod.name)) {
-                addSingleItemToResult(prod.name);
-            }
-            else {
-                // the order of alternatives is meaningful, FILO (Last path will be traversed first).
-                for (var i = prod.definition.length - 1; i >= 0; i--) {
-                    var currAlt = prod.definition[i];
-                    // named alternatives
-                    if (!utils_1.isUndefined(currAlt.name)) {
-                        addSingleItemToResult(currAlt.name);
-                    }
-                    else {
-                        var newDef = currAlt.definition.concat(utils_1.drop(currDef));
-                        var currAltPath = {
-                            def: newDef
-                        };
-                        possiblePaths.push(currAltPath);
-                    }
-                }
-            }
-        }
-        else {
-            /* istanbul ignore next */ throw Error("non exhaustive match");
-        }
-    }
-    return result;
-}
-exports.buildChildDictionaryDef = buildChildDictionaryDef;
-//# sourceMappingURL=cst.js.map
-
-/***/ }),
-/* 33 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var tokens_public_1 = __webpack_require__(3);
-var utils_1 = __webpack_require__(0);
-/**
- * This is the default logic Chevrotain uses to construct error messages.
- * When constructing a custom error message provider it may be used as a reference
- * or reused.
- */
-exports.defaultErrorProvider = {
-    buildMismatchTokenMessage: function (_a) {
-        var expected = _a.expected, actual = _a.actual, ruleName = _a.ruleName;
-        var hasLabel = tokens_public_1.hasTokenLabel(expected);
-        var expectedMsg = hasLabel
-            ? "--> " + tokens_public_1.tokenLabel(expected) + " <--"
-            : "token of type --> " + tokens_public_1.tokenName(expected) + " <--";
-        var msg = "Expecting " + expectedMsg + " but found --> '" + actual.image + "' <--";
-        return msg;
-    },
-    buildNotAllInputParsedMessage: function (_a) {
-        var firstRedundant = _a.firstRedundant, ruleName = _a.ruleName;
-        return ("Redundant input, expecting EOF but found: " + firstRedundant.image);
-    },
-    buildNoViableAltMessage: function (_a) {
-        var expectedPathsPerAlt = _a.expectedPathsPerAlt, actual = _a.actual, customUserDescription = _a.customUserDescription, ruleName = _a.ruleName;
-        var errPrefix = "Expecting: ";
-        // TODO: issue: No Viable Alternative Error may have incomplete details. #502
-        var actualText = utils_1.first(actual).image;
-        var errSuffix = "\nbut found: '" + actualText + "'";
-        if (customUserDescription) {
-            return errPrefix + customUserDescription + errSuffix;
-        }
-        else {
-            var allLookAheadPaths = utils_1.reduce(expectedPathsPerAlt, function (result, currAltPaths) { return result.concat(currAltPaths); }, []);
-            var nextValidTokenSequences = utils_1.map(allLookAheadPaths, function (currPath) {
-                return "[" + utils_1.map(currPath, function (currTokenType) {
-                    return tokens_public_1.tokenLabel(currTokenType);
-                }).join(", ") + "]";
-            });
-            var nextValidSequenceItems = utils_1.map(nextValidTokenSequences, function (itemMsg, idx) { return "  " + (idx + 1) + ". " + itemMsg; });
-            var calculatedDescription = "one of these possible Token sequences:\n" + nextValidSequenceItems.join("\n");
-            return errPrefix + calculatedDescription + errSuffix;
-        }
-    },
-    buildEarlyExitMessage: function (_a) {
-        var expectedIterationPaths = _a.expectedIterationPaths, actual = _a.actual, customUserDescription = _a.customUserDescription, ruleName = _a.ruleName;
-        var errPrefix = "Expecting: ";
-        // TODO: issue: No Viable Alternative Error may have incomplete details. #502
-        var actualText = utils_1.first(actual).image;
-        var errSuffix = "\nbut found: '" + actualText + "'";
-        if (customUserDescription) {
-            return errPrefix + customUserDescription + errSuffix;
-        }
-        else {
-            var nextValidTokenSequences = utils_1.map(expectedIterationPaths, function (currPath) {
-                return "[" + utils_1.map(currPath, function (currTokenType) {
-                    return tokens_public_1.tokenLabel(currTokenType);
-                }).join(",") + "]";
-            });
-            var calculatedDescription = "expecting at least one iteration which starts with one of these possible Token sequences::\n  " +
-                ("<" + nextValidTokenSequences.join(" ,") + ">");
-            return errPrefix + calculatedDescription + errSuffix;
-        }
-    }
-};
-Object.freeze(exports.defaultErrorProvider);
-//# sourceMappingURL=errors_public.js.map
-
-/***/ }),
-/* 34 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var utils_1 = __webpack_require__(0);
-var exceptions;
-(function (exceptions) {
-    var MISMATCHED_TOKEN_EXCEPTION = "MismatchedTokenException";
-    var NO_VIABLE_ALT_EXCEPTION = "NoViableAltException";
-    var EARLY_EXIT_EXCEPTION = "EarlyExitException";
-    var NOT_ALL_INPUT_PARSED_EXCEPTION = "NotAllInputParsedException";
-    var RECOGNITION_EXCEPTION_NAMES = [
-        MISMATCHED_TOKEN_EXCEPTION,
-        NO_VIABLE_ALT_EXCEPTION,
-        EARLY_EXIT_EXCEPTION,
-        NOT_ALL_INPUT_PARSED_EXCEPTION
-    ];
-    Object.freeze(RECOGNITION_EXCEPTION_NAMES);
-    // hacks to bypass no support for custom Errors in javascript/typescript
-    function isRecognitionException(error) {
-        // can't do instanceof on hacked custom js exceptions
-        return utils_1.contains(RECOGNITION_EXCEPTION_NAMES, error.name);
-    }
-    exceptions.isRecognitionException = isRecognitionException;
-    function MismatchedTokenException(message, token) {
-        this.name = MISMATCHED_TOKEN_EXCEPTION;
-        this.message = message;
-        this.token = token;
-        this.resyncedTokens = [];
-    }
-    exceptions.MismatchedTokenException = MismatchedTokenException;
-    // must use the "Error.prototype" instead of "new Error"
-    // because the stack trace points to where "new Error" was invoked"
-    MismatchedTokenException.prototype = Error.prototype;
-    function NoViableAltException(message, token) {
-        this.name = NO_VIABLE_ALT_EXCEPTION;
-        this.message = message;
-        this.token = token;
-        this.resyncedTokens = [];
-    }
-    exceptions.NoViableAltException = NoViableAltException;
-    NoViableAltException.prototype = Error.prototype;
-    function NotAllInputParsedException(message, token) {
-        this.name = NOT_ALL_INPUT_PARSED_EXCEPTION;
-        this.message = message;
-        this.token = token;
-        this.resyncedTokens = [];
-    }
-    exceptions.NotAllInputParsedException = NotAllInputParsedException;
-    NotAllInputParsedException.prototype = Error.prototype;
-    function EarlyExitException(message, token, previousToken) {
-        this.name = EARLY_EXIT_EXCEPTION;
-        this.message = message;
-        this.token = token;
-        this.previousToken = previousToken;
-        this.resyncedTokens = [];
-    }
-    exceptions.EarlyExitException = EarlyExitException;
-    EarlyExitException.prototype = Error.prototype;
-})(exceptions = exports.exceptions || (exports.exceptions = {}));
-//# sourceMappingURL=exceptions_public.js.map
 
 /***/ }),
 /* 35 */
@@ -17440,574 +18194,129 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var utils = __webpack_require__(0);
 var utils_1 = __webpack_require__(0);
-var parser_public_1 = __webpack_require__(25);
-var gast_public_1 = __webpack_require__(2);
-var gast_1 = __webpack_require__(23);
-var tokens_public_1 = __webpack_require__(3);
-var lookahead_1 = __webpack_require__(38);
-var version_1 = __webpack_require__(27);
-var cst_1 = __webpack_require__(32);
-var interpreter_1 = __webpack_require__(7);
-function validateGrammar(topLevels, maxLookahead, tokens, ignoredIssues) {
-    var duplicateErrors = utils.map(topLevels, validateDuplicateProductions);
-    var leftRecursionErrors = utils.map(topLevels, function (currTopRule) {
-        return validateNoLeftRecursion(currTopRule, currTopRule);
-    });
-    var emptyAltErrors = [];
-    var ambiguousAltsErrors = [];
-    // left recursion could cause infinite loops in the following validations.
-    // It is safest to first have the user fix the left recursion errors first and only then examine farther issues.
-    if (utils_1.every(leftRecursionErrors, utils_1.isEmpty)) {
-        emptyAltErrors = utils_1.map(topLevels, validateEmptyOrAlternative);
-        ambiguousAltsErrors = utils_1.map(topLevels, function (currTopRule) {
-            return validateAmbiguousAlternationAlternatives(currTopRule, maxLookahead, ignoredIssues);
-        });
-    }
-    var ruleNames = utils_1.map(topLevels, function (currTopLevel) { return currTopLevel.name; });
-    var tokenNames = utils_1.map(tokens, function (currToken) { return tokens_public_1.tokenName(currToken); });
-    var termsNamespaceConflictErrors = checkTerminalAndNoneTerminalsNameSpace(ruleNames, tokenNames);
-    var tokenNameErrors = utils.map(tokenNames, validateTokenName);
-    var nestedRulesNameErrors = validateNestedRulesNames(topLevels);
-    var nestedRulesDuplicateErrors = validateDuplicateNestedRules(topLevels);
-    var emptyRepetitionErrors = validateSomeNonEmptyLookaheadPath(topLevels, maxLookahead);
-    var tooManyAltsErrors = utils.map(topLevels, validateTooManyAlts);
-    return utils.flatten(duplicateErrors.concat(tokenNameErrors, nestedRulesNameErrors, nestedRulesDuplicateErrors, emptyRepetitionErrors, leftRecursionErrors, emptyAltErrors, ambiguousAltsErrors, termsNamespaceConflictErrors, tooManyAltsErrors));
-}
-exports.validateGrammar = validateGrammar;
-function validateNestedRulesNames(topLevels) {
-    var result = [];
-    utils_1.forEach(topLevels, function (curTopLevel) {
-        var namedCollectorVisitor = new cst_1.NamedDSLMethodsCollectorVisitor("");
-        curTopLevel.accept(namedCollectorVisitor);
-        var nestedNamesPerRule = utils_1.map(namedCollectorVisitor.result, function (currItem) { return currItem.name; });
-        var currTopRuleName = curTopLevel.name;
-        result.push(utils_1.map(nestedNamesPerRule, function (currNestedName) {
-            return validateNestedRuleName(currNestedName, currTopRuleName);
-        }));
-    });
-    return utils_1.flatten(result);
-}
-function validateDuplicateProductions(topLevelRule) {
-    var collectorVisitor = new OccurrenceValidationCollector();
-    topLevelRule.accept(collectorVisitor);
-    var allRuleProductions = collectorVisitor.allProductions;
-    var productionGroups = utils.groupBy(allRuleProductions, identifyProductionForDuplicates);
-    var duplicates = utils.pick(productionGroups, function (currGroup) {
-        return currGroup.length > 1;
-    });
-    var errors = utils.map(utils.values(duplicates), function (currDuplicates) {
-        var firstProd = utils.first(currDuplicates);
-        var msg = createDuplicatesErrorMessage(currDuplicates, topLevelRule.name);
-        var dslName = gast_1.getProductionDslName(firstProd);
-        var defError = {
-            message: msg,
-            type: parser_public_1.ParserDefinitionErrorType.DUPLICATE_PRODUCTIONS,
-            ruleName: topLevelRule.name,
-            dslName: dslName,
-            occurrence: firstProd.occurrenceInParent
-        };
-        var param = getExtraProductionArgument(firstProd);
-        if (param) {
-            defError.parameter = param;
-        }
-        return defError;
-    });
-    return errors;
-}
-function createDuplicatesErrorMessage(duplicateProds, topLevelName) {
-    var firstProd = utils.first(duplicateProds);
-    var index = firstProd.occurrenceInParent;
-    var dslName = gast_1.getProductionDslName(firstProd);
-    var extraArgument = getExtraProductionArgument(firstProd);
-    var msg = "->" + dslName + "<- with occurrence index: ->" + index + "<-\n                  " + (extraArgument ? "and argument: " + extraArgument : "") + "\n                  appears more than once (" + duplicateProds.length + " times) in the top level rule: " + topLevelName + ".\n                  " + (index === 1
-        ? "note that " + dslName + " and " + dslName + "1 both have the same occurrence index 1}"
-        : "") + "}\n                  to fix this make sure each usage of " + dslName + " " + (extraArgument ? "with the argument: " + extraArgument : "") + "\n                  in the rule " + topLevelName + " has a different occurrence index (1-5), as that combination acts as a unique\n                  position key in the grammar, which is needed by the parsing engine.";
-    // white space trimming time! better to trim afterwards as it allows to use WELL formatted multi line template strings...
-    msg = msg.replace(/[ \t]+/g, " ");
-    msg = msg.replace(/\s\s+/g, "\n");
-    return msg;
-}
-function identifyProductionForDuplicates(prod) {
-    return gast_1.getProductionDslName(prod) + "_#_" + prod.occurrenceInParent + "_#_" + getExtraProductionArgument(prod);
-}
-exports.identifyProductionForDuplicates = identifyProductionForDuplicates;
-function getExtraProductionArgument(prod) {
-    if (prod instanceof gast_public_1.gast.Terminal) {
-        return tokens_public_1.tokenName(prod.terminalType);
-    }
-    else if (prod instanceof gast_public_1.gast.NonTerminal) {
-        return prod.nonTerminalName;
+var lang_extensions_1 = __webpack_require__(4);
+var keys_1 = __webpack_require__(39);
+var gast_public_1 = __webpack_require__(1);
+var gast_visitor_public_1 = __webpack_require__(7);
+function addTerminalToCst(node, token, tokenTypeName) {
+    if (node.children[tokenTypeName] === undefined) {
+        node.children[tokenTypeName] = [token];
     }
     else {
-        return "";
+        node.children[tokenTypeName].push(token);
     }
 }
-var OccurrenceValidationCollector = /** @class */ (function (_super) {
-    __extends(OccurrenceValidationCollector, _super);
-    function OccurrenceValidationCollector() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.allProductions = [];
+exports.addTerminalToCst = addTerminalToCst;
+function addNoneTerminalToCst(node, ruleName, ruleResult) {
+    if (node.children[ruleName] === undefined) {
+        node.children[ruleName] = [ruleResult];
+    }
+    else {
+        node.children[ruleName].push(ruleResult);
+    }
+}
+exports.addNoneTerminalToCst = addNoneTerminalToCst;
+var NamedDSLMethodsCollectorVisitor = /** @class */ (function (_super) {
+    __extends(NamedDSLMethodsCollectorVisitor, _super);
+    function NamedDSLMethodsCollectorVisitor(ruleIdx) {
+        var _this = _super.call(this) || this;
+        _this.result = [];
+        _this.ruleIdx = ruleIdx;
         return _this;
     }
-    OccurrenceValidationCollector.prototype.visitNonTerminal = function (subrule) {
-        this.allProductions.push(subrule);
-    };
-    OccurrenceValidationCollector.prototype.visitOption = function (option) {
-        this.allProductions.push(option);
-    };
-    OccurrenceValidationCollector.prototype.visitRepetitionWithSeparator = function (manySep) {
-        this.allProductions.push(manySep);
-    };
-    OccurrenceValidationCollector.prototype.visitRepetitionMandatory = function (atLeastOne) {
-        this.allProductions.push(atLeastOne);
-    };
-    OccurrenceValidationCollector.prototype.visitRepetitionMandatoryWithSeparator = function (atLeastOneSep) {
-        this.allProductions.push(atLeastOneSep);
-    };
-    OccurrenceValidationCollector.prototype.visitRepetition = function (many) {
-        this.allProductions.push(many);
-    };
-    OccurrenceValidationCollector.prototype.visitAlternation = function (or) {
-        this.allProductions.push(or);
-    };
-    OccurrenceValidationCollector.prototype.visitTerminal = function (terminal) {
-        this.allProductions.push(terminal);
-    };
-    return OccurrenceValidationCollector;
-}(gast_public_1.gast.GAstVisitor));
-exports.OccurrenceValidationCollector = OccurrenceValidationCollector;
-exports.validTermsPattern = /^[a-zA-Z_]\w*$/;
-exports.validNestedRuleName = new RegExp(exports.validTermsPattern.source.replace("^", "^\\$"));
-function validateRuleName(ruleName) {
-    var errors = [];
-    var errMsg;
-    if (!ruleName.match(exports.validTermsPattern)) {
-        errMsg = "Invalid Grammar rule name: ->" + ruleName + "<- it must match the pattern: ->" + exports.validTermsPattern.toString() + "<-";
-        errors.push({
-            message: errMsg,
-            type: parser_public_1.ParserDefinitionErrorType.INVALID_RULE_NAME,
-            ruleName: ruleName
-        });
-    }
-    return errors;
-}
-exports.validateRuleName = validateRuleName;
-function validateNestedRuleName(nestedRuleName, containingRuleName) {
-    var errors = [];
-    var errMsg;
-    if (!nestedRuleName.match(exports.validNestedRuleName)) {
-        errMsg =
-            "Invalid nested rule name: ->" + nestedRuleName + "<- inside rule: ->" + containingRuleName + "<-\n" +
-                ("it must match the pattern: ->" + exports.validNestedRuleName.toString() + "<-.\n") +
-                "Note that this means a nested rule name must start with the '$'(dollar) sign.";
-        errors.push({
-            message: errMsg,
-            type: parser_public_1.ParserDefinitionErrorType.INVALID_NESTED_RULE_NAME,
-            ruleName: nestedRuleName
-        });
-    }
-    return errors;
-}
-exports.validateNestedRuleName = validateNestedRuleName;
-function validateTokenName(tokenNAme) {
-    var errors = [];
-    var errMsg;
-    if (!tokenNAme.match(exports.validTermsPattern)) {
-        errMsg = "Invalid Grammar Token name: ->" + tokenNAme + "<- it must match the pattern: ->" + exports.validTermsPattern.toString() + "<-";
-        errors.push({
-            message: errMsg,
-            type: parser_public_1.ParserDefinitionErrorType.INVALID_TOKEN_NAME
-        });
-    }
-    return errors;
-}
-exports.validateTokenName = validateTokenName;
-function validateRuleDoesNotAlreadyExist(ruleName, definedRulesNames, className) {
-    var errors = [];
-    var errMsg;
-    if (utils.contains(definedRulesNames, ruleName)) {
-        errMsg = "Duplicate definition, rule: ->" + ruleName + "<- is already defined in the grammar: ->" + className + "<-";
-        errors.push({
-            message: errMsg,
-            type: parser_public_1.ParserDefinitionErrorType.DUPLICATE_RULE_NAME,
-            ruleName: ruleName
-        });
-    }
-    return errors;
-}
-exports.validateRuleDoesNotAlreadyExist = validateRuleDoesNotAlreadyExist;
-// TODO: is there anyway to get only the rule names of rules inherited from the super grammars?
-function validateRuleIsOverridden(ruleName, definedRulesNames, className) {
-    var errors = [];
-    var errMsg;
-    if (!utils.contains(definedRulesNames, ruleName)) {
-        errMsg =
-            "Invalid rule override, rule: ->" + ruleName + "<- cannot be overridden in the grammar: ->" + className + "<-" +
-                "as it is not defined in any of the super grammars ";
-        errors.push({
-            message: errMsg,
-            type: parser_public_1.ParserDefinitionErrorType.INVALID_RULE_OVERRIDE,
-            ruleName: ruleName
-        });
-    }
-    return errors;
-}
-exports.validateRuleIsOverridden = validateRuleIsOverridden;
-function validateNoLeftRecursion(topRule, currRule, path) {
-    if (path === void 0) { path = []; }
-    var errors = [];
-    var nextNonTerminals = getFirstNoneTerminal(currRule.definition);
-    if (utils.isEmpty(nextNonTerminals)) {
-        return [];
-    }
-    else {
-        var ruleName = topRule.name;
-        var foundLeftRecursion = utils.contains(nextNonTerminals, topRule);
-        var pathNames = utils.map(path, function (currRule) { return currRule.name; });
-        var leftRecursivePath = ruleName + " --> " + pathNames
-            .concat([ruleName])
-            .join(" --> ");
-        if (foundLeftRecursion) {
-            var errMsg = "Left Recursion found in grammar.\n" +
-                ("rule: <" + ruleName + "> can be invoked from itself (directly or indirectly)\n") +
-                ("without consuming any Tokens. The grammar path that causes this is: \n " + leftRecursivePath + "\n") +
-                " To fix this refactor your grammar to remove the left recursion.\n" +
-                "see: https://en.wikipedia.org/wiki/LL_parser#Left_Factoring.";
-            errors.push({
-                message: errMsg,
-                type: parser_public_1.ParserDefinitionErrorType.LEFT_RECURSION,
-                ruleName: ruleName
-            });
-        }
-        // we are only looking for cyclic paths leading back to the specific topRule
-        // other cyclic paths are ignored, we still need this difference to avoid infinite loops...
-        var validNextSteps = utils.difference(nextNonTerminals, path.concat([topRule]));
-        var errorsFromNextSteps = utils.map(validNextSteps, function (currRefRule) {
-            var newPath = utils.cloneArr(path);
-            newPath.push(currRefRule);
-            return validateNoLeftRecursion(topRule, currRefRule, newPath);
-        });
-        return errors.concat(utils.flatten(errorsFromNextSteps));
-    }
-}
-exports.validateNoLeftRecursion = validateNoLeftRecursion;
-function getFirstNoneTerminal(definition) {
-    var result = [];
-    if (utils.isEmpty(definition)) {
-        return result;
-    }
-    var firstProd = utils.first(definition);
-    if (firstProd instanceof gast_public_1.gast.NonTerminal) {
-        result.push(firstProd.referencedRule);
-    }
-    else if (firstProd instanceof gast_public_1.gast.Flat ||
-        firstProd instanceof gast_public_1.gast.Option ||
-        firstProd instanceof gast_public_1.gast.RepetitionMandatory ||
-        firstProd instanceof gast_public_1.gast.RepetitionMandatoryWithSeparator ||
-        firstProd instanceof gast_public_1.gast.RepetitionWithSeparator ||
-        firstProd instanceof gast_public_1.gast.Repetition) {
-        result = result.concat(getFirstNoneTerminal(firstProd.definition));
-    }
-    else if (firstProd instanceof gast_public_1.gast.Alternation) {
-        // each sub definition in alternation is a FLAT
-        result = utils.flatten(utils.map(firstProd.definition, function (currSubDef) {
-            return getFirstNoneTerminal(currSubDef.definition);
-        }));
-    }
-    else if (firstProd instanceof gast_public_1.gast.Terminal) {
-        // nothing to see, move along
-    }
-    else {
-        /* istanbul ignore next */
-        throw Error("non exhaustive match");
-    }
-    var isFirstOptional = gast_1.isOptionalProd(firstProd);
-    var hasMore = definition.length > 1;
-    if (isFirstOptional && hasMore) {
-        var rest = utils.drop(definition);
-        return result.concat(getFirstNoneTerminal(rest));
-    }
-    else {
-        return result;
-    }
-}
-exports.getFirstNoneTerminal = getFirstNoneTerminal;
-var OrCollector = /** @class */ (function (_super) {
-    __extends(OrCollector, _super);
-    function OrCollector() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.alternations = [];
-        return _this;
-    }
-    OrCollector.prototype.visitAlternation = function (node) {
-        this.alternations.push(node);
-    };
-    return OrCollector;
-}(gast_public_1.gast.GAstVisitor));
-function validateEmptyOrAlternative(topLevelRule) {
-    var orCollector = new OrCollector();
-    topLevelRule.accept(orCollector);
-    var ors = orCollector.alternations;
-    var errors = utils.reduce(ors, function (errors, currOr) {
-        var exceptLast = utils.dropRight(currOr.definition);
-        var currErrors = utils.map(exceptLast, function (currAlternative, currAltIdx) {
-            var possibleFirstInAlt = interpreter_1.nextPossibleTokensAfter([currAlternative], [], null, 1);
-            if (utils.isEmpty(possibleFirstInAlt)) {
-                return {
-                    message: "Ambiguous empty alternative: <" + (currAltIdx +
-                        1) + ">" +
-                        (" in <OR" + currOr.occurrenceInParent + "> inside <" + topLevelRule.name + "> Rule.\n") +
-                        "Only the last alternative may be an empty alternative.",
-                    type: parser_public_1.ParserDefinitionErrorType.NONE_LAST_EMPTY_ALT,
-                    ruleName: topLevelRule.name,
-                    occurrence: currOr.occurrenceInParent,
-                    alternative: currAltIdx + 1
-                };
+    NamedDSLMethodsCollectorVisitor.prototype.collectNamedDSLMethod = function (node, newNodeConstructor, methodIdx) {
+        // TODO: better hack to copy what we need here...
+        if (!utils_1.isUndefined(node.name)) {
+            // copy without name so this will indeed be processed later.
+            var nameLessNode = void 0;
+            if (node instanceof gast_public_1.Option ||
+                node instanceof gast_public_1.Repetition ||
+                node instanceof gast_public_1.RepetitionMandatory ||
+                node instanceof gast_public_1.Alternation) {
+                nameLessNode = new newNodeConstructor({
+                    definition: node.definition,
+                    idx: node.idx
+                });
+            }
+            else if (node instanceof gast_public_1.RepetitionMandatoryWithSeparator ||
+                node instanceof gast_public_1.RepetitionWithSeparator) {
+                nameLessNode = new newNodeConstructor({
+                    definition: node.definition,
+                    idx: node.idx,
+                    separator: node.separator
+                });
             }
             else {
-                return null;
+                /* istanbul ignore next */
+                throw Error("non exhaustive match");
             }
-        });
-        return errors.concat(utils.compact(currErrors));
-    }, []);
-    return errors;
-}
-exports.validateEmptyOrAlternative = validateEmptyOrAlternative;
-function validateAmbiguousAlternationAlternatives(topLevelRule, maxLookahead, ignoredIssues) {
-    var orCollector = new OrCollector();
-    topLevelRule.accept(orCollector);
-    var ors = orCollector.alternations;
-    var ignoredIssuesForCurrentRule = ignoredIssues[topLevelRule.name];
-    if (ignoredIssuesForCurrentRule) {
-        ors = utils_1.reject(ors, function (currOr) {
-            return ignoredIssuesForCurrentRule[gast_1.getProductionDslName(currOr) + currOr.occurrenceInParent];
-        });
-    }
-    var errors = utils.reduce(ors, function (result, currOr) {
-        var currOccurrence = currOr.occurrenceInParent;
-        var alternatives = lookahead_1.getLookaheadPathsForOr(currOccurrence, topLevelRule, maxLookahead);
-        var altsAmbiguityErrors = checkAlternativesAmbiguities(alternatives, currOr, topLevelRule.name);
-        var altsPrefixAmbiguityErrors = checkPrefixAlternativesAmbiguities(alternatives, currOr, topLevelRule.name);
-        return result.concat(altsAmbiguityErrors, altsPrefixAmbiguityErrors);
-    }, []);
-    return errors;
-}
-exports.validateAmbiguousAlternationAlternatives = validateAmbiguousAlternationAlternatives;
-var RepetionCollector = /** @class */ (function (_super) {
-    __extends(RepetionCollector, _super);
-    function RepetionCollector() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.allProductions = [];
-        return _this;
-    }
-    RepetionCollector.prototype.visitRepetitionWithSeparator = function (manySep) {
-        this.allProductions.push(manySep);
-    };
-    RepetionCollector.prototype.visitRepetitionMandatory = function (atLeastOne) {
-        this.allProductions.push(atLeastOne);
-    };
-    RepetionCollector.prototype.visitRepetitionMandatoryWithSeparator = function (atLeastOneSep) {
-        this.allProductions.push(atLeastOneSep);
-    };
-    RepetionCollector.prototype.visitRepetition = function (many) {
-        this.allProductions.push(many);
-    };
-    return RepetionCollector;
-}(gast_public_1.gast.GAstVisitor));
-exports.RepetionCollector = RepetionCollector;
-function validateTooManyAlts(topLevelRule) {
-    var orCollector = new OrCollector();
-    topLevelRule.accept(orCollector);
-    var ors = orCollector.alternations;
-    var errors = utils.reduce(ors, function (errors, currOr) {
-        if (currOr.definition.length > 255) {
-            errors.push({
-                message: "An Alternation cannot have more than 256 alternatives:\n" +
-                    ("<OR" + currOr.occurrenceInParent + "> inside <" + topLevelRule.name + "> Rule.\n has " + (currOr.definition.length +
-                        1) + " alternatives."),
-                type: parser_public_1.ParserDefinitionErrorType.TOO_MANY_ALTS,
-                ruleName: topLevelRule.name,
-                occurrence: currOr.occurrenceInParent
-            });
+            var def = [nameLessNode];
+            var key = keys_1.getKeyForAutomaticLookahead(this.ruleIdx, methodIdx, node.idx);
+            this.result.push({ def: def, key: key, name: node.name, orgProd: node });
         }
-        return errors;
-    }, []);
-    return errors;
-}
-exports.validateTooManyAlts = validateTooManyAlts;
-function validateSomeNonEmptyLookaheadPath(topLevelRules, maxLookahead) {
-    var errors = [];
-    utils_1.forEach(topLevelRules, function (currTopRule) {
-        var collectorVisitor = new RepetionCollector();
-        currTopRule.accept(collectorVisitor);
-        var allRuleProductions = collectorVisitor.allProductions;
-        utils_1.forEach(allRuleProductions, function (currProd) {
-            var prodType = lookahead_1.getProdType(currProd);
-            var currOccurrence = currProd.occurrenceInParent;
-            var paths = lookahead_1.getLookaheadPathsForOptionalProd(currOccurrence, currTopRule, prodType, maxLookahead);
-            var pathsInsideProduction = paths[0];
-            if (utils_1.isEmpty(utils_1.flatten(pathsInsideProduction))) {
-                var implicitOccurrence = currProd.implicitOccurrenceIndex;
-                var dslName = gast_1.getProductionDslName(currProd);
-                if (!implicitOccurrence) {
-                    dslName += currOccurrence;
+    };
+    NamedDSLMethodsCollectorVisitor.prototype.visitOption = function (node) {
+        this.collectNamedDSLMethod(node, gast_public_1.Option, keys_1.OPTION_IDX);
+    };
+    NamedDSLMethodsCollectorVisitor.prototype.visitRepetition = function (node) {
+        this.collectNamedDSLMethod(node, gast_public_1.Repetition, keys_1.MANY_IDX);
+    };
+    NamedDSLMethodsCollectorVisitor.prototype.visitRepetitionMandatory = function (node) {
+        this.collectNamedDSLMethod(node, gast_public_1.RepetitionMandatory, keys_1.AT_LEAST_ONE_IDX);
+    };
+    NamedDSLMethodsCollectorVisitor.prototype.visitRepetitionMandatoryWithSeparator = function (node) {
+        this.collectNamedDSLMethod(node, gast_public_1.RepetitionMandatoryWithSeparator, keys_1.AT_LEAST_ONE_SEP_IDX);
+    };
+    NamedDSLMethodsCollectorVisitor.prototype.visitRepetitionWithSeparator = function (node) {
+        this.collectNamedDSLMethod(node, gast_public_1.RepetitionWithSeparator, keys_1.MANY_SEP_IDX);
+    };
+    NamedDSLMethodsCollectorVisitor.prototype.visitAlternation = function (node) {
+        var _this = this;
+        this.collectNamedDSLMethod(node, gast_public_1.Alternation, keys_1.OR_IDX);
+        var hasMoreThanOneAlternative = node.definition.length > 1;
+        utils_1.forEach(node.definition, function (currFlatAlt, altIdx) {
+            if (!utils_1.isUndefined(currFlatAlt.name)) {
+                var def = currFlatAlt.definition;
+                if (hasMoreThanOneAlternative) {
+                    def = [new gast_public_1.Option({ definition: currFlatAlt.definition })];
                 }
-                var errMsg = "The repetition <" + dslName + "> within Rule <" + currTopRule.name + "> can never consume any tokens.\n" +
-                    "This could lead to an infinite loop.";
-                errors.push({
-                    message: errMsg,
-                    type: parser_public_1.ParserDefinitionErrorType.NO_NON_EMPTY_LOOKAHEAD,
-                    ruleName: currTopRule.name
+                else {
+                    // mandatory
+                    def = currFlatAlt.definition;
+                }
+                var key = keys_1.getKeyForAltIndex(_this.ruleIdx, keys_1.OR_IDX, node.idx, altIdx);
+                _this.result.push({
+                    def: def,
+                    key: key,
+                    name: currFlatAlt.name,
+                    orgProd: currFlatAlt
                 });
             }
         });
-    });
-    return errors;
-}
-exports.validateSomeNonEmptyLookaheadPath = validateSomeNonEmptyLookaheadPath;
-function checkAlternativesAmbiguities(alternatives, alternation, topRuleName) {
-    var foundAmbiguousPaths = [];
-    var identicalAmbiguities = utils_1.reduce(alternatives, function (result, currAlt, currAltIdx) {
-        utils_1.forEach(currAlt, function (currPath) {
-            var altsCurrPathAppearsIn = [currAltIdx];
-            utils_1.forEach(alternatives, function (currOtherAlt, currOtherAltIdx) {
-                if (currAltIdx !== currOtherAltIdx &&
-                    lookahead_1.containsPath(currOtherAlt, currPath)) {
-                    altsCurrPathAppearsIn.push(currOtherAltIdx);
-                }
-            });
-            if (altsCurrPathAppearsIn.length > 1 &&
-                !lookahead_1.containsPath(foundAmbiguousPaths, currPath)) {
-                foundAmbiguousPaths.push(currPath);
-                result.push({
-                    alts: altsCurrPathAppearsIn,
-                    path: currPath
-                });
-            }
-        });
-        return result;
-    }, []);
-    var currErrors = utils.map(identicalAmbiguities, function (currAmbDescriptor) {
-        var ambgIndices = utils_1.map(currAmbDescriptor.alts, function (currAltIdx) { return currAltIdx + 1; });
-        var pathMsg = utils_1.map(currAmbDescriptor.path, function (currtok) {
-            return tokens_public_1.tokenLabel(currtok);
-        }).join(", ");
-        var occurrence = alternation.implicitOccurrenceIndex
-            ? ""
-            : alternation.occurrenceInParent;
-        var currMessage = "Ambiguous alternatives: <" + ambgIndices.join(" ,") + "> in <OR" + occurrence + ">" +
-            (" inside <" + topRuleName + "> Rule,\n") +
-            ("<" + pathMsg + "> may appears as a prefix path in all these alternatives.\n");
-        var docs_version = version_1.VERSION.replace(/\./g, "_");
-        // Should this information be on the error message or in some common errors docs?
-        currMessage =
-            currMessage +
-                "To Resolve this, try one of of the following: \n" +
-                "1. Refactor your grammar to be LL(K) for the current value of k (by default k=5)\n" +
-                "2. Increase the value of K for your grammar by providing a larger 'maxLookahead' value in the parser's config\n" +
-                "3. This issue can be ignored (if you know what you are doing...), see" +
-                " http://sap.github.io/chevrotain/documentation/" +
-                docs_version +
-                "/interfaces/_chevrotain_d_.iparserconfig.html#ignoredissues for more" +
-                " details\n";
-        return {
-            message: currMessage,
-            type: parser_public_1.ParserDefinitionErrorType.AMBIGUOUS_ALTS,
-            ruleName: topRuleName,
-            occurrence: alternation.occurrenceInParent,
-            alternatives: [currAmbDescriptor.alts]
-        };
-    });
-    return currErrors;
-}
-function checkPrefixAlternativesAmbiguities(alternatives, alternation, ruleName) {
-    var errors = [];
-    // flatten
-    var pathsAndIndices = utils_1.reduce(alternatives, function (result, currAlt, idx) {
-        var currPathsAndIdx = utils_1.map(currAlt, function (currPath) {
-            return { idx: idx, path: currPath };
-        });
-        return result.concat(currPathsAndIdx);
-    }, []);
-    utils_1.forEach(pathsAndIndices, function (currPathAndIdx) {
-        var targetIdx = currPathAndIdx.idx;
-        var targetPath = currPathAndIdx.path;
-        var prefixAmbiguitiesPathsAndIndices = utils_1.findAll(pathsAndIndices, function (searchPathAndIdx) {
-            // prefix ambiguity can only be created from lower idx (higher priority) path
-            return (searchPathAndIdx.idx < targetIdx &&
-                // checking for strict prefix because identical lookaheads
-                // will be be detected using a different validation.
-                lookahead_1.isStrictPrefixOfPath(searchPathAndIdx.path, targetPath));
-        });
-        var currPathPrefixErrors = utils_1.map(prefixAmbiguitiesPathsAndIndices, function (currAmbPathAndIdx) {
-            var ambgIndices = [currAmbPathAndIdx.idx + 1, targetIdx + 1];
-            var pathMsg = utils_1.map(currAmbPathAndIdx.path, function (currTok) {
-                return tokens_public_1.tokenLabel(currTok);
-            }).join(", ");
-            var occurrence = alternation.implicitOccurrenceIndex
-                ? ""
-                : alternation.occurrenceInParent;
-            var currMessage = "Ambiguous alternatives: <" + ambgIndices.join(" ,") + "> due to common lookahead prefix\n" +
-                ("in <OR" + occurrence + "> inside <" + ruleName + "> Rule,\n") +
-                ("<" + pathMsg + "> may appears as a prefix path in all these alternatives.\n") +
-                "http://sap.github.io/chevrotain/website/Building_Grammars/resolving_grammar_errors.html#COMMON_PREFIX " +
-                "For farther details.";
-            return {
-                message: currMessage,
-                type: parser_public_1.ParserDefinitionErrorType.AMBIGUOUS_PREFIX_ALTS,
-                ruleName: ruleName,
-                occurrence: occurrence,
-                alternatives: ambgIndices
-            };
-        });
-        errors = errors.concat(currPathPrefixErrors);
-    });
-    return errors;
-}
-function checkTerminalAndNoneTerminalsNameSpace(ruleNames, terminalNames) {
-    var errors = [];
-    utils_1.forEach(ruleNames, function (currRuleName) {
-        if (utils_1.contains(terminalNames, currRuleName)) {
-            var errMsg = "Namespace conflict found in grammar.\n" +
-                ("The grammar has both a Terminal(Token) and a Non-Terminal(Rule) named: <" + currRuleName + ">.\n") +
-                "To resolve this make sure each Terminal and Non-Terminal names are unique\n" +
-                "This is easy to accomplish by using the convention that Terminal names start with an uppercase letter\n" +
-                "and Non-Terminal names start with a lower case letter.";
-            errors.push({
-                message: errMsg,
-                type: parser_public_1.ParserDefinitionErrorType.CONFLICT_TOKENS_RULES_NAMESPACE,
-                ruleName: currRuleName
-            });
-        }
-    });
-    return errors;
-}
-function validateDuplicateNestedRules(topLevelRules) {
-    var errors = [];
-    utils_1.forEach(topLevelRules, function (currTopRule) {
-        var namedCollectorVisitor = new cst_1.NamedDSLMethodsCollectorVisitor("");
+    };
+    return NamedDSLMethodsCollectorVisitor;
+}(gast_visitor_public_1.GAstVisitor));
+exports.NamedDSLMethodsCollectorVisitor = NamedDSLMethodsCollectorVisitor;
+function analyzeCst(topRules, fullToShortName) {
+    var result = {
+        dictDef: new lang_extensions_1.HashTable(),
+        allRuleNames: []
+    };
+    utils_1.forEach(topRules, function (currTopRule) {
+        var currTopRuleShortName = fullToShortName.get(currTopRule.name);
+        result.allRuleNames.push(currTopRule.name);
+        var namedCollectorVisitor = new NamedDSLMethodsCollectorVisitor(currTopRuleShortName);
         currTopRule.accept(namedCollectorVisitor);
-        var nestedNames = utils_1.map(namedCollectorVisitor.result, function (currItem) { return currItem.name; });
-        var namesGroups = utils_1.groupBy(nestedNames, function (item) { return item; });
-        var duplicates = utils_1.pick(namesGroups, function (currGroup) {
-            return currGroup.length > 1;
-        });
-        utils_1.forEach(utils_1.values(duplicates), function (currDuplicates) {
-            var duplicateName = utils.first(currDuplicates);
-            var errMsg = "Duplicate nested rule name: ->" + duplicateName + "<- inside rule: ->" + currTopRule.name + "<-\n" +
-                "A nested name must be unique in the scope of a top level grammar rule.";
-            errors.push({
-                message: errMsg,
-                type: parser_public_1.ParserDefinitionErrorType.DUPLICATE_NESTED_NAME,
-                ruleName: currTopRule.name
-            });
+        utils_1.forEach(namedCollectorVisitor.result, function (_a) {
+            var def = _a.def, key = _a.key, name = _a.name;
+            result.allRuleNames.push(currTopRule.name + name);
         });
     });
-    return errors;
+    return result;
 }
-//# sourceMappingURL=checks.js.map
+exports.analyzeCst = analyzeCst;
+//# sourceMappingURL=cst.js.map
 
 /***/ }),
 /* 36 */
@@ -18016,11 +18325,73 @@ function validateDuplicateNestedRules(topLevelRules) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var gast_public_1 = __webpack_require__(2);
-var gast_1 = __webpack_require__(23);
 var utils_1 = __webpack_require__(0);
+var MISMATCHED_TOKEN_EXCEPTION = "MismatchedTokenException";
+var NO_VIABLE_ALT_EXCEPTION = "NoViableAltException";
+var EARLY_EXIT_EXCEPTION = "EarlyExitException";
+var NOT_ALL_INPUT_PARSED_EXCEPTION = "NotAllInputParsedException";
+var RECOGNITION_EXCEPTION_NAMES = [
+    MISMATCHED_TOKEN_EXCEPTION,
+    NO_VIABLE_ALT_EXCEPTION,
+    EARLY_EXIT_EXCEPTION,
+    NOT_ALL_INPUT_PARSED_EXCEPTION
+];
+Object.freeze(RECOGNITION_EXCEPTION_NAMES);
+// hacks to bypass no support for custom Errors in javascript/typescript
+function isRecognitionException(error) {
+    // can't do instanceof on hacked custom js exceptions
+    return utils_1.contains(RECOGNITION_EXCEPTION_NAMES, error.name);
+}
+exports.isRecognitionException = isRecognitionException;
+function MismatchedTokenException(message, token) {
+    this.name = MISMATCHED_TOKEN_EXCEPTION;
+    this.message = message;
+    this.token = token;
+    this.resyncedTokens = [];
+}
+exports.MismatchedTokenException = MismatchedTokenException;
+// must use the "Error.prototype" instead of "new Error"
+// because the stack trace points to where "new Error" was invoked"
+MismatchedTokenException.prototype = Error.prototype;
+function NoViableAltException(message, token) {
+    this.name = NO_VIABLE_ALT_EXCEPTION;
+    this.message = message;
+    this.token = token;
+    this.resyncedTokens = [];
+}
+exports.NoViableAltException = NoViableAltException;
+NoViableAltException.prototype = Error.prototype;
+function NotAllInputParsedException(message, token) {
+    this.name = NOT_ALL_INPUT_PARSED_EXCEPTION;
+    this.message = message;
+    this.token = token;
+    this.resyncedTokens = [];
+}
+exports.NotAllInputParsedException = NotAllInputParsedException;
+NotAllInputParsedException.prototype = Error.prototype;
+function EarlyExitException(message, token, previousToken) {
+    this.name = EARLY_EXIT_EXCEPTION;
+    this.message = message;
+    this.token = token;
+    this.previousToken = previousToken;
+    this.resyncedTokens = [];
+}
+exports.EarlyExitException = EarlyExitException;
+EarlyExitException.prototype = Error.prototype;
+//# sourceMappingURL=exceptions_public.js.map
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var utils_1 = __webpack_require__(0);
+var gast_public_1 = __webpack_require__(1);
+var gast_1 = __webpack_require__(9);
 function first(prod) {
-    if (prod instanceof gast_public_1.gast.NonTerminal) {
+    if (prod instanceof gast_public_1.NonTerminal) {
         // this could in theory cause infinite loops if
         // (1) prod A refs prod B.
         // (2) prod B refs prod A
@@ -18031,7 +18402,7 @@ function first(prod) {
         // (1) not sure a grammar in which this can happen is useful for anything (productive)
         return first(prod.referencedRule);
     }
-    else if (prod instanceof gast_public_1.gast.Terminal) {
+    else if (prod instanceof gast_public_1.Terminal) {
         return firstForTerminal(prod);
     }
     else if (gast_1.isSequenceProd(prod)) {
@@ -18079,7 +18450,48 @@ exports.firstForTerminal = firstForTerminal;
 //# sourceMappingURL=first.js.map
 
 /***/ }),
-/* 37 */
+/* 38 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var utils_1 = __webpack_require__(0);
+var lang_extensions_1 = __webpack_require__(4);
+var resolver_1 = __webpack_require__(57);
+var checks_1 = __webpack_require__(10);
+var errors_public_1 = __webpack_require__(8);
+var gast_1 = __webpack_require__(9);
+function resolveGrammar(options) {
+    var topRulesTable = new lang_extensions_1.HashTable();
+    utils_1.forEach(options.rules, function (rule) {
+        topRulesTable.put(rule.name, rule);
+    });
+    return resolver_1.resolveGrammar(topRulesTable);
+}
+exports.resolveGrammar = resolveGrammar;
+function validateGrammar(options) {
+    return checks_1.validateGrammar(options.rules, options.maxLookahead, options.tokenTypes, options.ignoredIssues, options.errMsgProvider
+        ? options.errMsgProvider
+        : errors_public_1.defaultGrammarValidatorErrorProvider, options.grammarName);
+}
+exports.validateGrammar = validateGrammar;
+function assignOccurrenceIndices(options) {
+    utils_1.forEach(options.rules, function (currRule) {
+        var methodsCollector = new gast_1.DslMethodsCollectorVisitor();
+        currRule.accept(methodsCollector);
+        utils_1.forEach(methodsCollector.dslMethods, function (methods) {
+            utils_1.forEach(methods, function (currMethod, arrIdx) {
+                currMethod.idx = arrIdx + 1;
+            });
+        });
+    });
+}
+exports.assignOccurrenceIndices = assignOccurrenceIndices;
+//# sourceMappingURL=gast_resolver_public.js.map
+
+/***/ }),
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18127,7 +18539,7 @@ exports.getKeyForAltIndex = getKeyForAltIndex;
 //# sourceMappingURL=keys.js.map
 
 /***/ }),
-/* 38 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18144,10 +18556,11 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var utils_1 = __webpack_require__(0);
-var gast_public_1 = __webpack_require__(2);
-var interpreter_1 = __webpack_require__(7);
-var rest_1 = __webpack_require__(24);
-var tokens_1 = __webpack_require__(8);
+var interpreter_1 = __webpack_require__(26);
+var rest_1 = __webpack_require__(27);
+var tokens_1 = __webpack_require__(11);
+var gast_public_1 = __webpack_require__(1);
+var gast_visitor_public_1 = __webpack_require__(7);
 var PROD_TYPE;
 (function (PROD_TYPE) {
     PROD_TYPE[PROD_TYPE["OPTION"] = 0] = "OPTION";
@@ -18158,22 +18571,22 @@ var PROD_TYPE;
     PROD_TYPE[PROD_TYPE["ALTERNATION"] = 5] = "ALTERNATION";
 })(PROD_TYPE = exports.PROD_TYPE || (exports.PROD_TYPE = {}));
 function getProdType(prod) {
-    if (prod instanceof gast_public_1.gast.Option) {
+    if (prod instanceof gast_public_1.Option) {
         return PROD_TYPE.OPTION;
     }
-    else if (prod instanceof gast_public_1.gast.Repetition) {
+    else if (prod instanceof gast_public_1.Repetition) {
         return PROD_TYPE.REPETITION;
     }
-    else if (prod instanceof gast_public_1.gast.RepetitionMandatory) {
+    else if (prod instanceof gast_public_1.RepetitionMandatory) {
         return PROD_TYPE.REPETITION_MANDATORY;
     }
-    else if (prod instanceof gast_public_1.gast.RepetitionMandatoryWithSeparator) {
+    else if (prod instanceof gast_public_1.RepetitionMandatoryWithSeparator) {
         return PROD_TYPE.REPETITION_MANDATORY_WITH_SEPARATOR;
     }
-    else if (prod instanceof gast_public_1.gast.RepetitionWithSeparator) {
+    else if (prod instanceof gast_public_1.RepetitionWithSeparator) {
         return PROD_TYPE.REPETITION_WITH_SEPARATOR;
     }
-    else if (prod instanceof gast_public_1.gast.Alternation) {
+    else if (prod instanceof gast_public_1.Alternation) {
         return PROD_TYPE.ALTERNATION;
     }
     else {
@@ -18385,7 +18798,7 @@ var RestDefinitionFinderWalker = /** @class */ (function (_super) {
         return this.restDef;
     };
     RestDefinitionFinderWalker.prototype.checkIsTarget = function (node, expectedProdType, currRest, prevRest) {
-        if (node.occurrenceInParent === this.targetOccurrence &&
+        if (node.idx === this.targetOccurrence &&
             this.targetProdType === expectedProdType) {
             this.restDef = currRest.concat(prevRest);
             return true;
@@ -18433,7 +18846,7 @@ var InsideDefinitionFinderVisitor = /** @class */ (function (_super) {
         return _this;
     }
     InsideDefinitionFinderVisitor.prototype.checkIsTarget = function (node, expectedProdName) {
-        if (node.occurrenceInParent === this.targetOccurrence &&
+        if (node.idx === this.targetOccurrence &&
             this.targetProdType === expectedProdName) {
             this.result = node.definition;
         }
@@ -18457,7 +18870,7 @@ var InsideDefinitionFinderVisitor = /** @class */ (function (_super) {
         this.checkIsTarget(node, PROD_TYPE.ALTERNATION);
     };
     return InsideDefinitionFinderVisitor;
-}(gast_public_1.gast.GAstVisitor));
+}(gast_visitor_public_1.GAstVisitor));
 function lookAheadSequenceFromAlternatives(altsDefs, k) {
     function getOtherPaths(pathsAndSuffixes, filterIdx) {
         return utils_1.reduce(pathsAndSuffixes, function (result, currPathsAndSuffixes, currIdx) {
@@ -18528,8 +18941,8 @@ function getLookaheadPathsForOptionalProd(occurrence, ruleGrammar, prodType, k) 
     var insideDef = insideDefVisitor.result;
     var afterDefWalker = new RestDefinitionFinderWalker(ruleGrammar, occurrence, prodType);
     var afterDef = afterDefWalker.startWalking();
-    var insideFlat = new gast_public_1.gast.Flat(insideDef);
-    var afterFlat = new gast_public_1.gast.Flat(afterDef);
+    var insideFlat = new gast_public_1.Flat({ definition: insideDef });
+    var afterFlat = new gast_public_1.Flat({ definition: afterDef });
     return lookAheadSequenceFromAlternatives([insideFlat, afterFlat], k);
 }
 exports.getLookaheadPathsForOptionalProd = getLookaheadPathsForOptionalProd;
@@ -18561,7 +18974,7 @@ exports.areTokenCategoriesNotUsed = areTokenCategoriesNotUsed;
 //# sourceMappingURL=lookahead.js.map
 
 /***/ }),
-/* 39 */
+/* 41 */
 /***/ (function(module, exports) {
 
 // Generated by CoffeeScript 1.12.7
@@ -18598,7 +19011,7 @@ exports.areTokenCategoriesNotUsed = areTokenCategoriesNotUsed;
 
 
 /***/ }),
-/* 40 */
+/* 42 */
 /***/ (function(module, exports) {
 
 // Generated by CoffeeScript 1.12.7
@@ -18767,7 +19180,7 @@ exports.areTokenCategoriesNotUsed = areTokenCategoriesNotUsed;
 
 
 /***/ }),
-/* 41 */
+/* 43 */
 /***/ (function(module, exports) {
 
 // Generated by CoffeeScript 1.12.7
@@ -18863,7 +19276,7 @@ exports.areTokenCategoriesNotUsed = areTokenCategoriesNotUsed;
 
 
 /***/ }),
-/* 42 */
+/* 44 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -18896,20 +19309,20 @@ exports.areTokenCategoriesNotUsed = areTokenCategoriesNotUsed;
     DoubleColon,
 } from "./LNLexer" */
 
-const lntokens = __webpack_require__(21)
+const lntokens = __webpack_require__(24)
 
     let LNLexer = lntokens.LNLexer;
     let allTokens = lntokens.allTokens;
     let Literal = lntokens.Literal;
     let Forever = lntokens.Forever;
     let End = lntokens.End;
-    let Until = lntokens.Until;
+    let RepeatUntil = lntokens.RepeatUntil;
     let Repeat = lntokens.Repeat;
     let If = lntokens.If;
     let Else = lntokens.Else;
     let Then = lntokens.Then;
     let StatementTerminator = lntokens.StatementTerminator;
-    let Label = lntokens.Label;
+    let Identifier = lntokens.Identifier;
     let LCurlyBracket = lntokens.LCurlyBracket;
     let RCurlyBracket = lntokens.RCurlyBracket;
     let LRoundBracket = lntokens.LRoundBracket;
@@ -18919,6 +19332,7 @@ const lntokens = __webpack_require__(21)
     let LSquareBracket = lntokens.LSquareBracket;
     let RSquareBracket = lntokens.RSquareBracket;
     let DoubleColon = lntokens.DoubleColon;
+    let ID = lntokens.ID;
 
 class LNParser extends __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Parser"] {
     constructor(input) {
@@ -18926,30 +19340,6 @@ class LNParser extends __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Parser"] {
 
         const $ = this;
 
-        $.RULE("scripts", () => {
-            $.MANY(() => {
-                $.CONSUME(StatementTerminator);
-            });
-            $.AT_LEAST_ONE(() => {
-                $.OR([{
-                    ALT: () => {
-                        $.SUBRULE($.multipleStacks);
-                    }
-                }, {
-                    ALT: () => {
-                        $.SUBRULE($.reporterblock);
-                    }
-                }, {
-                    ALT: () => {
-                        $.SUBRULE($.booleanblock);
-                    }
-                }]);
-            });
-            $.MANY2(() => {
-                $.CONSUME2(StatementTerminator);
-            })
-
-        });
         $.RULE("multipleStacks", () => {
             $.AT_LEAST_ONE_SEP({
                 SEP: StatementTerminator,
@@ -18999,12 +19389,15 @@ class LNParser extends __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Parser"] {
         $.RULE("forever", () => {
             $.CONSUME(Forever);
             $.OPTION(() => {
-                $.CONSUME(StatementTerminator);
+                $.SUBRULE($.id)
             });
             $.OPTION2(() => {
-                $.SUBRULE($.stack);
+                $.CONSUME(StatementTerminator);
             });
             $.OPTION3(() => {
+                $.SUBRULE($.stack);
+            });
+            $.OPTION4(() => {
                 $.SUBRULE($.end);
             })
         });
@@ -19013,28 +19406,33 @@ class LNParser extends __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Parser"] {
             $.CONSUME(Repeat);
             $.SUBRULE($.countableinput);
             $.OPTION(() => {
-                $.CONSUME(StatementTerminator);
+                $.SUBRULE($.id)
             });
             $.OPTION2(() => {
-                $.SUBRULE($.stack);
+                $.CONSUME(StatementTerminator);
             });
             $.OPTION3(() => {
+                $.SUBRULE($.stack);
+            });
+            $.OPTION4(() => {
                 $.SUBRULE($.end);
             })
 
         });
 
         $.RULE("repeatuntil", () => {
-            $.CONSUME(Repeat);
-            $.CONSUME(Until);
+            $.CONSUME(RepeatUntil);
             $.SUBRULE($.booleanblock);
             $.OPTION(() => {
-                $.CONSUME(StatementTerminator);
+                $.SUBRULE($.id)
             });
             $.OPTION2(() => {
-                $.SUBRULE($.stack);
+                $.CONSUME(StatementTerminator);
             });
             $.OPTION3(() => {
+                $.SUBRULE($.stack);
+            });
+            $.OPTION4(() => {
                 $.SUBRULE($.end);
             })
         });
@@ -19052,11 +19450,11 @@ class LNParser extends __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Parser"] {
                 $.SUBRULE($.stack);
             });
             $.OPTION4(() => {
-                $.SUBRULE($.end);
-            })
-            $.OPTION5(() => {
                 $.SUBRULE($.else);
             });
+            $.OPTION5(() => {
+                $.SUBRULE($.end);
+            })
         });
         $.RULE("else", () => {
             $.CONSUME(Else);
@@ -19065,9 +19463,6 @@ class LNParser extends __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Parser"] {
             });
             $.OPTION2(() => {
                 $.SUBRULE($.stack);
-            })
-            $.OPTION5(() => {
-                $.SUBRULE($.end);
             })
         });
 
@@ -19082,7 +19477,7 @@ class LNParser extends __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Parser"] {
             $.AT_LEAST_ONE(() => {
                 $.OR([{
                     ALT: () => {
-                        $.CONSUME1(Label);
+                        $.CONSUME1(Identifier);
                     }
                 }, {
                     ALT: () => {
@@ -19092,9 +19487,12 @@ class LNParser extends __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Parser"] {
 
             });
             $.OPTION(() => {
-                $.SUBRULE($.option);
+                $.SUBRULE($.option)
             });
             $.OPTION2(() => {
+                $.SUBRULE($.id)
+            });
+            $.OPTION3(() => {
                 $.CONSUME(StatementTerminator);
             })
 
@@ -19102,9 +19500,11 @@ class LNParser extends __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Parser"] {
 
         $.RULE("option", () => {
             $.CONSUME(DoubleColon);
-            $.CONSUME(Label);
+            $.CONSUME(Identifier);
         });
-
+        $.RULE("id", () => {
+            $.CONSUME(ID);
+        });
         $.RULE("argument", () => {
             $.OR([{
                 ALT: () => {
@@ -19130,6 +19530,22 @@ class LNParser extends __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Parser"] {
                 ALT: () => {
                     $.SUBRULE($.choice);
                 }
+            }, {
+                ALT: () => {
+                    $.SUBRULE2($.reporterblock);
+                }
+            }, {
+                ALT: () => {
+                    $.SUBRULE2($.booleanblock);
+                }
+            }, {
+                ALT: () => {
+                    $.CONSUME(StringLiteral);
+                }
+            }, {
+                ALT: () => {
+                    $.CONSUME(ColorLiteral);
+                }
             }])
 
         });
@@ -19139,9 +19555,11 @@ class LNParser extends __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Parser"] {
 
             $.OR([{
                 ALT: () => {
+                    $.CONSUME(LCurlyBracket);
                     $.SUBRULE($.primitive);
+                    $.CONSUME(RCurlyBracket);
                 }
-            }, {
+            },  {
                 ALT: () => {
                     $.SUBRULE($.reporterblock);
                 }
@@ -19166,7 +19584,7 @@ class LNParser extends __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Parser"] {
         $.RULE("choice", () => {
             $.CONSUME(LSquareBracket);
             $.OPTION(() => {
-                $.CONSUME(Label);
+                $.CONSUME(Identifier);
             });
             $.CONSUME(RSquareBracket);
         });
@@ -19206,7 +19624,7 @@ function parse(text) {
     // setting a new input will RESET the parser instance's state.
     lnparser.input = lexResult.tokens;
     // any top level rule may be used as an entry point
-    const value = lnparser.scripts(); //TOP RULE
+    const value = lnparser.multipleStacks(); //TOP RULE
     console.log(value);
     console.log(lexResult.errors);
     console.log(lnparser.errors);
@@ -19220,7 +19638,7 @@ function parse(text) {
 
 
 /***/ }),
-/* 43 */
+/* 45 */
 /***/ (function(module, exports) {
 
 module.exports =
@@ -20573,12 +20991,12 @@ module.exports =
 	*/
 	Blockly.Colours={motion:{primary:"#4C97FF",secondary:"#4280D7",tertiary:"#3373CC"},looks:{primary:"#9966FF",secondary:"#855CD6",tertiary:"#774DCB"},sounds:{primary:"#CF63CF",secondary:"#C94FC9",tertiary:"#BD42BD"},control:{primary:"#FFAB19",secondary:"#EC9C13",tertiary:"#CF8B17"},event:{primary:"#FFBF00",secondary:"#E6AC00",tertiary:"#CC9900"},sensing:{primary:"#5CB1D6",secondary:"#47A8D1",tertiary:"#2E8EB8"},pen:{primary:"#0fBD8C",secondary:"#0DA57A",tertiary:"#0B8E69"},operators:{primary:"#59C059",
 	secondary:"#46B946",tertiary:"#389438"},data:{primary:"#FF8C1A",secondary:"#FF8000",tertiary:"#DB6E00"},data_lists:{primary:"#FF661A",secondary:"#FF5500",tertiary:"#E64D00"},more:{primary:"#FF6680",secondary:"#FF4D6A",tertiary:"#FF3355"},text:"#575E75",workspace:"#F9F9F9",toolboxHover:"#4C97FF",toolboxSelected:"#e9eef2",toolboxText:"#575E75",toolbox:"#FFFFFF",flyout:"#F9F9F9",scrollbar:"#CECDCE",scrollbarHover:"#CECDCE",textField:"#FFFFFF",insertionMarker:"#000000",insertionMarkerOpacity:.2,dragShadowOpacity:.3,
-	stackGlow:"#FFF200",stackGlowOpacity:1,replacementGlow:"#FFFFFF",replacementGlowOpacity:1,colourPickerStroke:"#FFFFFF",fieldShadow:"rgba(0,0,0,0.1)",dropDownShadow:"rgba(0, 0, 0, .3)",numPadBackground:"#547AB2",numPadBorder:"#435F91",numPadActiveBackground:"#435F91",numPadText:"#FFFFFF",valueReportBackground:"#FFFFFF",valueReportBorder:"#AAAAAA"};
+	stackGlow:"#FFF200",stackGlowSize:4,stackGlowOpacity:1,replacementGlow:"#FFFFFF",replacementGlowSize:2,replacementGlowOpacity:1,colourPickerStroke:"#FFFFFF",fieldShadow:"rgba(0,0,0,0.1)",dropDownShadow:"rgba(0, 0, 0, .3)",numPadBackground:"#547AB2",numPadBorder:"#435F91",numPadActiveBackground:"#435F91",numPadText:"#FFFFFF",valueReportBackground:"#FFFFFF",valueReportBorder:"#AAAAAA"};
 	Blockly.constants={};Blockly.DRAG_RADIUS=3;Blockly.FLYOUT_DRAG_RADIUS=10;Blockly.SNAP_RADIUS=48;Blockly.CONNECTING_SNAP_RADIUS=68;Blockly.CURRENT_CONNECTION_PREFERENCE=20;Blockly.BUMP_DELAY=0;Blockly.COLLAPSE_CHARS=30;Blockly.LONGPRESS=750;Blockly.SOUND_LIMIT=100;Blockly.DRAG_STACK=!0;Blockly.HSV_SATURATION=.45;Blockly.HSV_VALUE=.65;Blockly.SPRITE={width:96,height:124,url:"sprites.png"};Blockly.SVG_NS="http://www.w3.org/2000/svg";Blockly.HTML_NS="http://www.w3.org/1999/xhtml";
 	Blockly.INPUT_VALUE=1;Blockly.OUTPUT_VALUE=2;Blockly.NEXT_STATEMENT=3;Blockly.PREVIOUS_STATEMENT=4;Blockly.DUMMY_INPUT=5;Blockly.ALIGN_LEFT=-1;Blockly.ALIGN_CENTRE=0;Blockly.ALIGN_RIGHT=1;Blockly.DRAG_NONE=0;Blockly.DRAG_STICKY=1;Blockly.DRAG_BEGIN=1;Blockly.DRAG_FREE=2;Blockly.OPPOSITE_TYPE=[];Blockly.OPPOSITE_TYPE[Blockly.INPUT_VALUE]=Blockly.OUTPUT_VALUE;Blockly.OPPOSITE_TYPE[Blockly.OUTPUT_VALUE]=Blockly.INPUT_VALUE;Blockly.OPPOSITE_TYPE[Blockly.NEXT_STATEMENT]=Blockly.PREVIOUS_STATEMENT;
-	Blockly.OPPOSITE_TYPE[Blockly.PREVIOUS_STATEMENT]=Blockly.NEXT_STATEMENT;Blockly.TOOLBOX_AT_TOP=0;Blockly.TOOLBOX_AT_BOTTOM=1;Blockly.TOOLBOX_AT_LEFT=2;Blockly.TOOLBOX_AT_RIGHT=3;Blockly.OUTPUT_SHAPE_HEXAGONAL=1;Blockly.OUTPUT_SHAPE_ROUND=2;Blockly.OUTPUT_SHAPE_SQUARE=3;Blockly.STACK_GLOW_RADIUS=1.3;Blockly.REPLACEMENT_GLOW_RADIUS=2;
-	Blockly.Categories={motion:"motion",looks:"looks",sound:"sounds",pen:"pen",data:"data",dataLists:"data-lists",event:"events",control:"control",sensing:"sensing",operators:"operators",more:"more"};Blockly.DELETE_AREA_NONE=null;Blockly.DELETE_AREA_TRASH=1;Blockly.DELETE_AREA_TOOLBOX=2;Blockly.VARIABLE_CATEGORY_NAME="VARIABLE";Blockly.PROCEDURE_CATEGORY_NAME="PROCEDURE";Blockly.RENAME_VARIABLE_ID="RENAME_VARIABLE_ID";Blockly.DELETE_VARIABLE_ID="DELETE_VARIABLE_ID";Blockly.NEW_BROADCAST_MESSAGE_ID="NEW_BROADCAST_MESSAGE_ID";
-	Blockly.BROADCAST_MESSAGE_VARIABLE_TYPE="broadcast_msg";Blockly.LIST_VARIABLE_TYPE="list";Blockly.SCALAR_VARIABLE_TYPE="";Blockly.PROCEDURES_DEFINITION_BLOCK_TYPE="procedures_definition";Blockly.PROCEDURES_PROTOTYPE_BLOCK_TYPE="procedures_prototype";Blockly.PROCEDURES_CALL_BLOCK_TYPE="procedures_call";
+	Blockly.OPPOSITE_TYPE[Blockly.PREVIOUS_STATEMENT]=Blockly.NEXT_STATEMENT;Blockly.TOOLBOX_AT_TOP=0;Blockly.TOOLBOX_AT_BOTTOM=1;Blockly.TOOLBOX_AT_LEFT=2;Blockly.TOOLBOX_AT_RIGHT=3;Blockly.OUTPUT_SHAPE_HEXAGONAL=1;Blockly.OUTPUT_SHAPE_ROUND=2;Blockly.OUTPUT_SHAPE_SQUARE=3;Blockly.Categories={motion:"motion",looks:"looks",sound:"sounds",pen:"pen",data:"data",dataLists:"data-lists",event:"events",control:"control",sensing:"sensing",operators:"operators",more:"more"};Blockly.DELETE_AREA_NONE=null;
+	Blockly.DELETE_AREA_TRASH=1;Blockly.DELETE_AREA_TOOLBOX=2;Blockly.VARIABLE_CATEGORY_NAME="VARIABLE";Blockly.PROCEDURE_CATEGORY_NAME="PROCEDURE";Blockly.RENAME_VARIABLE_ID="RENAME_VARIABLE_ID";Blockly.DELETE_VARIABLE_ID="DELETE_VARIABLE_ID";Blockly.NEW_BROADCAST_MESSAGE_ID="NEW_BROADCAST_MESSAGE_ID";Blockly.BROADCAST_MESSAGE_VARIABLE_TYPE="broadcast_msg";Blockly.LIST_VARIABLE_TYPE="list";Blockly.SCALAR_VARIABLE_TYPE="";Blockly.PROCEDURES_DEFINITION_BLOCK_TYPE="procedures_definition";
+	Blockly.PROCEDURES_PROTOTYPE_BLOCK_TYPE="procedures_prototype";Blockly.PROCEDURES_CALL_BLOCK_TYPE="procedures_call";
 	Blockly.ScratchBlocks={};Blockly.ScratchBlocks.VerticalExtensions={};Blockly.ScratchBlocks.VerticalExtensions.colourHelper=function(a){var b=Blockly.Colours[a];if(!(b&&b.primary&&b.secondary&&b.tertiary))throw Error('Could not find colours for category "'+a+'"');return function(){this.setColourFromRawValues_(b.primary,b.secondary,b.tertiary)}};Blockly.ScratchBlocks.VerticalExtensions.COLOUR_TEXTFIELD=function(){this.setColourFromRawValues_(Blockly.Colours.textField,Blockly.Colours.textField,Blockly.Colours.textField)};
 	Blockly.ScratchBlocks.VerticalExtensions.SHAPE_STATEMENT=function(){this.setInputsInline(!0);this.setPreviousStatement(!0,null);this.setNextStatement(!0,null)};Blockly.ScratchBlocks.VerticalExtensions.SHAPE_HAT=function(){this.setInputsInline(!0);this.setNextStatement(!0,null)};Blockly.ScratchBlocks.VerticalExtensions.SHAPE_END=function(){this.setInputsInline(!0);this.setPreviousStatement(!0,null)};
 	Blockly.ScratchBlocks.VerticalExtensions.OUTPUT_NUMBER=function(){this.setInputsInline(!0);this.setOutputShape(Blockly.OUTPUT_SHAPE_ROUND);this.setOutput(!0,"Number")};Blockly.ScratchBlocks.VerticalExtensions.OUTPUT_STRING=function(){this.setInputsInline(!0);this.setOutputShape(Blockly.OUTPUT_SHAPE_ROUND);this.setOutput(!0,"String")};Blockly.ScratchBlocks.VerticalExtensions.OUTPUT_BOOLEAN=function(){this.setInputsInline(!0);this.setOutputShape(Blockly.OUTPUT_SHAPE_HEXAGONAL);this.setOutput(!0,"Boolean")};
@@ -20641,8 +21059,9 @@ module.exports =
 	Blockly.Blocks.sensing_touchingcolor={init:function(){this.jsonInit({message0:"touching color %1?",args0:[{type:"input_value",name:"COLOR"}],category:Blockly.Categories.sensing,extensions:["colours_sensing","output_boolean"]})}};Blockly.Blocks.sensing_coloristouchingcolor={init:function(){this.jsonInit({message0:"color %1 is touching %2?",args0:[{type:"input_value",name:"COLOR"},{type:"input_value",name:"COLOR2"}],category:Blockly.Categories.sensing,extensions:["colours_sensing","output_boolean"]})}};
 	Blockly.Blocks.sensing_distanceto={init:function(){this.jsonInit({message0:"distance to %1",args0:[{type:"input_value",name:"DISTANCETOMENU"}],category:Blockly.Categories.sensing,extensions:["colours_sensing","output_number"]})}};Blockly.Blocks.sensing_distancetomenu={init:function(){this.jsonInit({message0:"%1",args0:[{type:"field_dropdown",name:"DISTANCETOMENU",options:[["mouse-pointer","_mouse_"]]}],extensions:["colours_sensing","output_string"]})}};
 	Blockly.Blocks.sensing_askandwait={init:function(){this.jsonInit({message0:"ask %1 and wait",args0:[{type:"input_value",name:"QUESTION"}],category:Blockly.Categories.sensing,extensions:["colours_sensing","shape_statement"]})}};Blockly.Blocks.sensing_answer={init:function(){this.jsonInit({message0:"answer",category:Blockly.Categories.sensing,checkboxInFlyout:!0,extensions:["colours_sensing","output_number"]})}};
-	Blockly.Blocks.sensing_keypressed={init:function(){this.jsonInit({message0:"key %1 pressed?",args0:[{type:"field_dropdown",name:"KEY_OPTION",options:[["space","space"],["left arrow","left arrow"],["right arrow","right arrow"],["down arrow","down arrow"],["up arrow","up arrow"],["any","any"],["a","a"],["b","b"],["c","c"],["d","d"],["e","e"],["f","f"],["g","g"],["h","h"],["i","i"],["j","j"],["k","k"],["l","l"],["m","m"],["n","n"],["o","o"],["p","p"],["q","q"],["r","r"],["s","s"],["t","t"],["u","u"],
-	["v","v"],["w","w"],["x","x"],["y","y"],["z","z"],["0","0"],["1","1"],["2","2"],["3","3"],["4","4"],["5","5"],["6","6"],["7","7"],["8","8"],["9","9"]]}],category:Blockly.Categories.sensing,extensions:["colours_sensing","output_boolean"]})}};Blockly.Blocks.sensing_mousedown={init:function(){this.jsonInit({message0:"mouse down?",category:Blockly.Categories.sensing,extensions:["colours_sensing","output_boolean"]})}};
+	Blockly.Blocks.sensing_keypressed={init:function(){this.jsonInit({message0:"key %1 pressed?",args0:[{type:"input_value",name:"KEY_OPTION"}],category:Blockly.Categories.sensing,extensions:["colours_sensing","output_boolean"]})}};
+	Blockly.Blocks.sensing_keyoptions={init:function(){this.jsonInit({message0:"%1",args0:[{type:"field_dropdown",name:"KEY_OPTION",options:[["space","space"],["left arrow","left arrow"],["right arrow","right arrow"],["down arrow","down arrow"],["up arrow","up arrow"],["any","any"],["a","a"],["b","b"],["c","c"],["d","d"],["e","e"],["f","f"],["g","g"],["h","h"],["i","i"],["j","j"],["k","k"],["l","l"],["m","m"],["n","n"],["o","o"],["p","p"],["q","q"],["r","r"],["s","s"],["t","t"],["u","u"],["v","v"],["w",
+	"w"],["x","x"],["y","y"],["z","z"],["0","0"],["1","1"],["2","2"],["3","3"],["4","4"],["5","5"],["6","6"],["7","7"],["8","8"],["9","9"]]}],extensions:["colours_sensing","output_string"]})}};Blockly.Blocks.sensing_mousedown={init:function(){this.jsonInit({message0:"mouse down?",category:Blockly.Categories.sensing,extensions:["colours_sensing","output_boolean"]})}};
 	Blockly.Blocks.sensing_mousex={init:function(){this.jsonInit({message0:"mouse x",category:Blockly.Categories.sensing,extensions:["colours_sensing","output_number"]})}};Blockly.Blocks.sensing_mousey={init:function(){this.jsonInit({message0:"mouse y",category:Blockly.Categories.sensing,extensions:["colours_sensing","output_number"]})}};
 	Blockly.Blocks.sensing_setdragmode={init:function(){this.jsonInit({message0:"set drag mode %1",args0:[{type:"field_dropdown",name:"DRAG_MODE",options:[["draggable","draggable"],["not draggable","not draggable"]]}],category:Blockly.Categories.sensing,extensions:["colours_sensing","shape_statement"]})}};Blockly.Blocks.sensing_loudness={init:function(){this.jsonInit({message0:"loudness",category:Blockly.Categories.sensing,checkboxInFlyout:!0,extensions:["colours_sensing","output_number"]})}};
 	Blockly.Blocks.sensing_videoon={init:function(){this.jsonInit({message0:"video %1 on %2",args0:[{type:"input_value",name:"VIDEOONMENU1"},{type:"input_value",name:"VIDEOONMENU2"}],category:Blockly.Categories.sensing,checkboxInFlyout:!0,extensions:["colours_sensing","output_number"]})}};
@@ -20652,7 +21071,7 @@ module.exports =
 	Blockly.Blocks.sensing_resettimer={init:function(){this.jsonInit({message0:"reset timer",category:Blockly.Categories.sensing,extensions:["colours_sensing","shape_statement"]})}};Blockly.Blocks.sensing_of_object_menu={init:function(){this.jsonInit({message0:"%1",args0:[{type:"field_dropdown",name:"OBJECT",options:[["Sprite1","Sprite1"],["Stage","_stage_"]]}],extensions:["colours_sensing","output_string"]})}};
 	Blockly.Blocks.sensing_of={init:function(){this.jsonInit({message0:"%1 of %2",args0:[{type:"field_dropdown",name:"PROPERTY",options:[["x position","x position"],["y position","y position"],["direction","direction"],["costume #","costume #"],["costume name","costume name"],["size","size"],["volume","volume"],["backdrop #","backdrop #"],["backdrop name","backdrop name"]]},{type:"input_value",name:"OBJECT"}],output:!0,category:Blockly.Categories.sensing,outputShape:Blockly.OUTPUT_SHAPE_ROUND,extensions:["colours_sensing"]})}};
 	Blockly.Blocks.sensing_current={init:function(){this.jsonInit({message0:"current %1",args0:[{type:"field_dropdown",name:"CURRENTMENU",options:[["year","YEAR"],["month","MONTH"],["date","DATE"],["day of week","DAYOFWEEK"],["hour","HOUR"],["minute","MINUTE"],["second","SECOND"]]}],category:Blockly.Categories.sensing,checkboxInFlyout:!0,extensions:["colours_sensing","output_number"]})}};
-	Blockly.Blocks.sensing_dayssince2000={init:function(){this.jsonInit({message0:"days since 2000",category:Blockly.Categories.sensing,extensions:["colours_sensing","output_number"]})}};Blockly.Blocks.sensing_username={init:function(){this.jsonInit({message0:"username",category:Blockly.Categories.sensing,checkboxInFlyout:!0,extensions:["colours_sensing","output_number"]})}};Blockly.Blocks.defaultToolbox='<xml id="toolbox-categories" style="display: none"><category name="Motion" colour="#4C97FF" secondaryColour="#3373CC"><block type="motion_movesteps" id="motion_movesteps"><value name="STEPS"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="motion_turnright" id="motion_turnright"><value name="DEGREES"><shadow type="math_number"><field name="NUM">15</field></shadow></value></block><block type="motion_turnleft" id="motion_turnleft"><value name="DEGREES"><shadow type="math_number"><field name="NUM">15</field></shadow></value></block><block type="motion_pointindirection" id="motion_pointindirection"><value name="DIRECTION"><shadow type="math_angle"><field name="NUM">90</field></shadow></value></block><block type="motion_pointtowards" id="motion_pointtowards"><value name="TOWARDS"><shadow type="motion_pointtowards_menu"></shadow></value></block><block type="motion_gotoxy" id="motion_gotoxy"><value name="X"><shadow id="movex" type="math_number"><field name="NUM">0</field></shadow></value><value name="Y"><shadow id="movey" type="math_number"><field name="NUM">0</field></shadow></value></block><block type="motion_goto" id="motion_goto"><value name="TO"><shadow type="motion_goto_menu"></shadow></value></block><block type="motion_glidesecstoxy" id="motion_glidesecstoxy"><value name="SECS"><shadow type="math_number"><field name="NUM">1</field></shadow></value><value name="X"><shadow id="glidex" type="math_number"><field name="NUM">0</field></shadow></value><value name="Y"><shadow id="glidey" type="math_number"><field name="NUM">0</field></shadow></value></block><block type="motion_glideto" id="motion_glideto"><value name="SECS"><shadow type="math_number"><field name="NUM">1</field></shadow></value><value name="TO"><shadow type="motion_glideto_menu"></shadow></value></block><block type="motion_changexby" id="motion_changexby"><value name="DX"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="motion_setx" id="motion_setx"><value name="X"><shadow id="setx" type="math_number"><field name="NUM">0</field></shadow></value></block><block type="motion_changeyby" id="motion_changeyby"><value name="DY"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="motion_sety" id="motion_sety"><value name="Y"><shadow id="sety" type="math_number"><field name="NUM">0</field></shadow></value></block><block type="motion_ifonedgebounce" id="motion_ifonedgebounce"></block><block type="motion_setrotationstyle" id="motion_setrotationstyle"></block><block type="motion_xposition" id="motion_xposition"></block><block type="motion_yposition" id="motion_yposition"></block><block type="motion_direction" id="motion_direction"></block></category><category name="Looks" colour="#9966FF" secondaryColour="#774DCB"><block type="looks_show" id="looks_show"></block><block type="looks_hide" id="looks_hide"></block><block type="looks_switchcostumeto" id="looks_switchcostumeto"><value name="COSTUME"><shadow type="looks_costume"></shadow></value></block><block type="looks_nextcostume" id="looks_nextcostume"></block><block type="looks_nextbackdrop" id="looks_nextbackdrop"></block><block type="looks_switchbackdropto" id="looks_switchbackdropto"><value name="BACKDROP"><shadow type="looks_backdrops"></shadow></value></block><block type="looks_switchbackdroptoandwait" id="looks_switchbackdroptoandwait"><value name="BACKDROP"><shadow type="looks_backdrops"></shadow></value></block><block type="looks_changeeffectby" id="looks_changeeffectby"><value name="CHANGE"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="looks_seteffectto" id="looks_seteffectto"><value name="VALUE"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="looks_cleargraphiceffects" id="looks_cleargraphiceffects"></block><block type="looks_changesizeby" id="looks_changesizeby"><value name="CHANGE"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="looks_setsizeto" id="looks_setsizeto"><value name="SIZE"><shadow type="math_number"><field name="NUM">100</field></shadow></value></block><block type="looks_gotofrontback" id="looks_gotofrontback"></block><block type="looks_goforwardbackwardlayers" id="looks_goforwardbackwardlayers"><value name="NUM"><shadow type="math_integer"><field name="NUM">1</field></shadow></value></block><block type="looks_costumenumbername" id="looks_costumenumbername"></block><block type="looks_backdropnumbername" id="looks_backdropnumbername"></block><block type="looks_size" id="looks_size"></block></category><category name="Sound" colour="#D65CD6" secondaryColour="#BD42BD"><block type="sound_play" id="sound_play"><value name="SOUND_MENU"><shadow type="sound_sounds_menu"></shadow></value></block><block type="sound_playuntildone" id="sound_playuntildone"><value name="SOUND_MENU"><shadow type="sound_sounds_menu"></shadow></value></block><block type="sound_stopallsounds" id="sound_stopallsounds"></block><block type="sound_playdrumforbeats" id="sound_playdrumforbeats"><value name="DRUM"><shadow type="sound_drums_menu"></shadow></value><value name="BEATS"><shadow type="math_number"><field name="NUM">0.25</field></shadow></value></block><block type="sound_restforbeats" id="sound_restforbeats"><value name="BEATS"><shadow type="math_number"><field name="NUM">0.25</field></shadow></value></block><block type="sound_playnoteforbeats" id="sound_playnoteforbeats"><value name="NOTE"><shadow type="math_number"><field name="NUM">60</field></shadow></value><value name="BEATS"><shadow type="math_number"><field name="NUM">0.5</field></shadow></value></block><block type="sound_setinstrumentto" id="sound_setinstrumentto"><value name="INSTRUMENT"><shadow type="sound_instruments_menu"></shadow></value></block><block type="sound_changeeffectby" id="sound_changeeffectby"><value name="VALUE"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="sound_seteffectto" id="sound_seteffectto"><value name="VALUE"><shadow type="math_number"><field name="NUM">100</field></shadow></value></block><block type="sound_cleareffects" id="sound_cleareffects"></block><block type="sound_changevolumeby" id="sound_changevolumeby"><value name="VOLUME"><shadow type="math_number"><field name="NUM">-10</field></shadow></value></block><block type="sound_setvolumeto" id="sound_setvolumeto"><value name="VOLUME"><shadow type="math_number"><field name="NUM">100</field></shadow></value></block><block type="sound_volume" id="sound_volume"></block><block type="sound_changetempoby" id="sound_changetempoby"><value name="TEMPO"><shadow type="math_number"><field name="NUM">20</field></shadow></value></block><block type="sound_settempotobpm" id="sound_settempotobpm"><value name="TEMPO"><shadow type="math_number"><field name="NUM">60</field></shadow></value></block><block type="sound_tempo" id="sound_tempo"></block></category><category name="Events" colour="#FFD500" secondaryColour="#CC9900"><block type="event_whenflagclicked" id="event_whenflagclicked"></block><block type="event_whenkeypressed" id="event_whenkeypressed"></block><block type="event_whenthisspriteclicked" id="event_whenthisspriteclicked"></block><block type="event_whenbackdropswitchesto" id="event_whenbackdropswitchesto"></block><block type="event_whengreaterthan" id="event_whengreaterthan"><value name="VALUE"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="event_whenbroadcastreceived" id="event_whenbroadcastreceived"></block><block type="event_broadcast" id="event_broadcast"><value name="BROADCAST_INPUT"><shadow type="event_broadcast_menu"></shadow></value></block><block type="event_broadcastandwait" id="event_broadcastandwait"><value name="BROADCAST_INPUT"><shadow type="event_broadcast_menu"></shadow></value></block></category><category name="Control" colour="#FFAB19" secondaryColour="#CF8B17"><block type="control_wait" id="control_wait"><value name="DURATION"><shadow type="math_positive_number"><field name="NUM">1</field></shadow></value></block><block type="control_repeat" id="control_repeat"><value name="TIMES"><shadow type="math_whole_number"><field name="NUM">10</field></shadow></value></block><block type="control_forever" id="control_forever"></block><block type="control_if" id="control_if"></block><block type="control_if_else" id="control_if_else"></block><block type="control_wait_until" id="control_wait_until"></block><block type="control_repeat_until" id="control_repeat_until"></block><block type="control_stop" id="control_stop"></block><block type="control_start_as_clone" id="control_start_as_clone"></block><block type="control_create_clone_of" id="control_create_clone_of"><value name="CLONE_OPTION"><shadow type="control_create_clone_of_menu"></shadow></value></block><block type="control_delete_this_clone" id="control_delete_this_clone"></block></category><category name="Sensing" colour="#4CBFE6" secondaryColour="#2E8EB8"><block type="sensing_touchingobject" id="sensing_touchingobject"><value name="TOUCHINGOBJECTMENU"><shadow type="sensing_touchingobjectmenu"></shadow></value></block><block type="sensing_touchingcolor" id="sensing_touchingcolor"><value name="COLOR"><shadow type="colour_picker"></shadow></value></block><block type="sensing_coloristouchingcolor" id="sensing_coloristouchingcolor"><value name="COLOR"><shadow type="colour_picker"></shadow></value><value name="COLOR2"><shadow type="colour_picker"></shadow></value></block><block type="sensing_distanceto" id="sensing_distanceto"><value name="DISTANCETOMENU"><shadow type="sensing_distancetomenu"></shadow></value></block><block type="sensing_keypressed" id="sensing_keypressed"></block><block type="sensing_mousedown" id="sensing_mousedown"></block><block type="sensing_mousex" id="sensing_mousex"></block><block type="sensing_mousey" id="sensing_mousey"></block><block type="sensing_setdragmode" id="sensing_setdragmode"></block><block type="sensing_loudness" id="sensing_loudness"></block><block type="sensing_timer" id="sensing_timer"></block><block type="sensing_resettimer" id="sensing_resettimer"></block><block type="sensing_of" id="sensing_of"><value name="OBJECT"><shadow type="sensing_of_object_menu"></shadow></value></block><block type="sensing_current" id="sensing_current"></block><block type="sensing_dayssince2000" id="sensing_dayssince2000"></block></category><category name="Pen" colour="#00B295" secondaryColour="#0B8E69"><block type="pen_clear" id="pen_clear"></block><block type="pen_stamp" id="pen_stamp"></block><block type="pen_pendown" id="pen_pendown"></block><block type="pen_penup" id="pen_penup"></block><block type="pen_setpencolortocolor" id="pen_setpencolortocolor"><value name="COLOR"><shadow type="colour_picker"></shadow></value></block><block type="pen_changepencolorby" id="pen_changepencolorby"><value name="COLOR"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="pen_setpencolortonum" id="pen_setpencolortonum"><value name="COLOR"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block><block type="pen_changepenshadeby" id="pen_changepenshadeby"><value name="SHADE"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="pen_setpenshadeto" id="pen_setpenshadeto"><value name="SHADE"><shadow type="math_number"><field name="NUM">50</field></shadow></value></block><block type="pen_changepensizeby" id="pen_changepensizeby"><value name="SIZE"><shadow type="math_number"><field name="NUM">1</field></shadow></value></block><block type="pen_setpensizeto" id="pen_setpensizeto"><value name="SIZE"><shadow type="math_number"><field name="NUM">1</field></shadow></value></block><block type="pen_changepentransparencyby" id="pen_changepentransparencyby"><value name="TRANSPARENCY"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="pen_setpentransparencyto" id="pen_setpentransparencyto"><value name="TRANSPARENCY"><shadow type="math_number"><field name="NUM">50</field></shadow></value></block></category><category name="Operators" colour="#40BF4A" secondaryColour="#389438"><block type="operator_add" id="operator_add"><value name="NUM1"><shadow type="math_number"><field name="NUM"></field></shadow></value><value name="NUM2"><shadow type="math_number"><field name="NUM"></field></shadow></value></block><block type="operator_subtract" id="operator_subtract"><value name="NUM1"><shadow type="math_number"><field name="NUM"></field></shadow></value><value name="NUM2"><shadow type="math_number"><field name="NUM"></field></shadow></value></block><block type="operator_multiply" id="operator_multiply"><value name="NUM1"><shadow type="math_number"><field name="NUM"></field></shadow></value><value name="NUM2"><shadow type="math_number"><field name="NUM"></field></shadow></value></block><block type="operator_divide" id="operator_divide"><value name="NUM1"><shadow type="math_number"><field name="NUM"></field></shadow></value><value name="NUM2"><shadow type="math_number"><field name="NUM"></field></shadow></value></block><block type="operator_random" id="operator_random"><value name="FROM"><shadow type="math_number"><field name="NUM">1</field></shadow></value><value name="TO"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="operator_lt" id="operator_lt"><value name="OPERAND1"><shadow type="text"><field name="TEXT"></field></shadow></value><value name="OPERAND2"><shadow type="text"><field name="TEXT"></field></shadow></value></block><block type="operator_equals" id="operator_equals"><value name="OPERAND1"><shadow type="text"><field name="TEXT"></field></shadow></value><value name="OPERAND2"><shadow type="text"><field name="TEXT"></field></shadow></value></block><block type="operator_gt" id="operator_gt"><value name="OPERAND1"><shadow type="text"><field name="TEXT"></field></shadow></value><value name="OPERAND2"><shadow type="text"><field name="TEXT"></field></shadow></value></block><block type="operator_and" id="operator_and"></block><block type="operator_or" id="operator_or"></block><block type="operator_not" id="operator_not"></block><block type="operator_join" id="operator_join"><value name="STRING1"><shadow type="text"><field name="TEXT">hello</field></shadow></value><value name="STRING2"><shadow type="text"><field name="TEXT">world</field></shadow></value></block><block type="operator_letter_of" id="operator_letter_of"><value name="LETTER"><shadow type="math_whole_number"><field name="NUM">1</field></shadow></value><value name="STRING"><shadow type="text"><field name="TEXT">world</field></shadow></value></block><block type="operator_length" id="operator_length"><value name="STRING"><shadow type="text"><field name="TEXT">world</field></shadow></value></block><block type="operator_contains" id="operator_contains"><value name="STRING1"><shadow type="text"><field name="TEXT">hello</field></shadow></value><value name="STRING2"><shadow type="text"><field name="TEXT">world</field></shadow></value></block><block type="operator_mod" id="operator_mod"><value name="NUM1"><shadow type="math_number"><field name="NUM"></field></shadow></value><value name="NUM2"><shadow type="math_number"><field name="NUM"></field></shadow></value></block><block type="operator_round" id="operator_round"><value name="NUM"><shadow type="math_number"><field name="NUM"></field></shadow></value></block><block type="operator_mathop" id="operator_mathop"><value name="NUM"><shadow type="math_number"><field name="NUM"></field></shadow></value></block></category><category name="Data" colour="#FF8C1A" secondaryColour="#DB6E00" custom="VARIABLE"></category><category name="More" colour="#FF6680" secondaryColour="#FF4D6A" custom="PROCEDURE"></category><category name="Extensions" colour="#FF6680" secondaryColour="#FF4D6A" iconURI="../media/extensions/wedo2-block-icon.svg"><block type="extension_pen_down" id="extension_pen_down"></block><block type="extension_music_drum" id="extension_music_drum"><value name="NUMBER"><shadow type="math_number"><field name="NUM">1</field></shadow></value></block><block type="extension_wedo_motor" id="extension_wedo_motor"></block><block type="extension_wedo_hat" id="extension_wedo_hat"></block><block type="extension_wedo_boolean" id="extension_wedo_boolean"></block><block type="extension_wedo_tilt_reporter" id="extension_wedo_reporter"><value name="TILT"><shadow type="extension_wedo_tilt_menu"></shadow></value></block><block type="extension_music_reporter" id="extension_music_reporter"></block></category></xml>';Blockly.Blocks.data={};Blockly.Constants={};Blockly.Constants.Data={};Blockly.Blocks.data_variable={init:function(){this.jsonInit({message0:"%1",lastDummyAlign0:"CENTRE",args0:[{type:"field_variable_getter",text:"",name:"VARIABLE",variableType:""}],category:Blockly.Categories.data,checkboxInFlyout:!0,extensions:["contextMenu_getVariableBlock","colours_data","output_string"]})}};
+	Blockly.Blocks.sensing_dayssince2000={init:function(){this.jsonInit({message0:"days since 2000",category:Blockly.Categories.sensing,extensions:["colours_sensing","output_number"]})}};Blockly.Blocks.sensing_username={init:function(){this.jsonInit({message0:"username",category:Blockly.Categories.sensing,checkboxInFlyout:!0,extensions:["colours_sensing","output_number"]})}};Blockly.Blocks.defaultToolbox='<xml id="toolbox-categories" style="display: none"><category name="Motion" colour="#4C97FF" secondaryColour="#3373CC"><block type="motion_movesteps" id="motion_movesteps"><value name="STEPS"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="motion_turnright" id="motion_turnright"><value name="DEGREES"><shadow type="math_number"><field name="NUM">15</field></shadow></value></block><block type="motion_turnleft" id="motion_turnleft"><value name="DEGREES"><shadow type="math_number"><field name="NUM">15</field></shadow></value></block><block type="motion_pointindirection" id="motion_pointindirection"><value name="DIRECTION"><shadow type="math_angle"><field name="NUM">90</field></shadow></value></block><block type="motion_pointtowards" id="motion_pointtowards"><value name="TOWARDS"><shadow type="motion_pointtowards_menu"></shadow></value></block><block type="motion_gotoxy" id="motion_gotoxy"><value name="X"><shadow id="movex" type="math_number"><field name="NUM">0</field></shadow></value><value name="Y"><shadow id="movey" type="math_number"><field name="NUM">0</field></shadow></value></block><block type="motion_goto" id="motion_goto"><value name="TO"><shadow type="motion_goto_menu"></shadow></value></block><block type="motion_glidesecstoxy" id="motion_glidesecstoxy"><value name="SECS"><shadow type="math_number"><field name="NUM">1</field></shadow></value><value name="X"><shadow id="glidex" type="math_number"><field name="NUM">0</field></shadow></value><value name="Y"><shadow id="glidey" type="math_number"><field name="NUM">0</field></shadow></value></block><block type="motion_glideto" id="motion_glideto"><value name="SECS"><shadow type="math_number"><field name="NUM">1</field></shadow></value><value name="TO"><shadow type="motion_glideto_menu"></shadow></value></block><block type="motion_changexby" id="motion_changexby"><value name="DX"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="motion_setx" id="motion_setx"><value name="X"><shadow id="setx" type="math_number"><field name="NUM">0</field></shadow></value></block><block type="motion_changeyby" id="motion_changeyby"><value name="DY"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="motion_sety" id="motion_sety"><value name="Y"><shadow id="sety" type="math_number"><field name="NUM">0</field></shadow></value></block><block type="motion_ifonedgebounce" id="motion_ifonedgebounce"></block><block type="motion_setrotationstyle" id="motion_setrotationstyle"></block><block type="motion_xposition" id="motion_xposition"></block><block type="motion_yposition" id="motion_yposition"></block><block type="motion_direction" id="motion_direction"></block></category><category name="Looks" colour="#9966FF" secondaryColour="#774DCB"><block type="looks_show" id="looks_show"></block><block type="looks_hide" id="looks_hide"></block><block type="looks_switchcostumeto" id="looks_switchcostumeto"><value name="COSTUME"><shadow type="looks_costume"></shadow></value></block><block type="looks_nextcostume" id="looks_nextcostume"></block><block type="looks_nextbackdrop" id="looks_nextbackdrop"></block><block type="looks_switchbackdropto" id="looks_switchbackdropto"><value name="BACKDROP"><shadow type="looks_backdrops"></shadow></value></block><block type="looks_switchbackdroptoandwait" id="looks_switchbackdroptoandwait"><value name="BACKDROP"><shadow type="looks_backdrops"></shadow></value></block><block type="looks_changeeffectby" id="looks_changeeffectby"><value name="CHANGE"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="looks_seteffectto" id="looks_seteffectto"><value name="VALUE"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="looks_cleargraphiceffects" id="looks_cleargraphiceffects"></block><block type="looks_changesizeby" id="looks_changesizeby"><value name="CHANGE"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="looks_setsizeto" id="looks_setsizeto"><value name="SIZE"><shadow type="math_number"><field name="NUM">100</field></shadow></value></block><block type="looks_gotofrontback" id="looks_gotofrontback"></block><block type="looks_goforwardbackwardlayers" id="looks_goforwardbackwardlayers"><value name="NUM"><shadow type="math_integer"><field name="NUM">1</field></shadow></value></block><block type="looks_costumenumbername" id="looks_costumenumbername"></block><block type="looks_backdropnumbername" id="looks_backdropnumbername"></block><block type="looks_size" id="looks_size"></block></category><category name="Sound" colour="#D65CD6" secondaryColour="#BD42BD"><block type="sound_play" id="sound_play"><value name="SOUND_MENU"><shadow type="sound_sounds_menu"></shadow></value></block><block type="sound_playuntildone" id="sound_playuntildone"><value name="SOUND_MENU"><shadow type="sound_sounds_menu"></shadow></value></block><block type="sound_stopallsounds" id="sound_stopallsounds"></block><block type="sound_playdrumforbeats" id="sound_playdrumforbeats"><value name="DRUM"><shadow type="sound_drums_menu"></shadow></value><value name="BEATS"><shadow type="math_number"><field name="NUM">0.25</field></shadow></value></block><block type="sound_restforbeats" id="sound_restforbeats"><value name="BEATS"><shadow type="math_number"><field name="NUM">0.25</field></shadow></value></block><block type="sound_playnoteforbeats" id="sound_playnoteforbeats"><value name="NOTE"><shadow type="math_number"><field name="NUM">60</field></shadow></value><value name="BEATS"><shadow type="math_number"><field name="NUM">0.5</field></shadow></value></block><block type="sound_setinstrumentto" id="sound_setinstrumentto"><value name="INSTRUMENT"><shadow type="sound_instruments_menu"></shadow></value></block><block type="sound_changeeffectby" id="sound_changeeffectby"><value name="VALUE"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="sound_seteffectto" id="sound_seteffectto"><value name="VALUE"><shadow type="math_number"><field name="NUM">100</field></shadow></value></block><block type="sound_cleareffects" id="sound_cleareffects"></block><block type="sound_changevolumeby" id="sound_changevolumeby"><value name="VOLUME"><shadow type="math_number"><field name="NUM">-10</field></shadow></value></block><block type="sound_setvolumeto" id="sound_setvolumeto"><value name="VOLUME"><shadow type="math_number"><field name="NUM">100</field></shadow></value></block><block type="sound_volume" id="sound_volume"></block><block type="sound_changetempoby" id="sound_changetempoby"><value name="TEMPO"><shadow type="math_number"><field name="NUM">20</field></shadow></value></block><block type="sound_settempotobpm" id="sound_settempotobpm"><value name="TEMPO"><shadow type="math_number"><field name="NUM">60</field></shadow></value></block><block type="sound_tempo" id="sound_tempo"></block></category><category name="Events" colour="#FFD500" secondaryColour="#CC9900"><block type="event_whenflagclicked" id="event_whenflagclicked"></block><block type="event_whenkeypressed" id="event_whenkeypressed"></block><block type="event_whenthisspriteclicked" id="event_whenthisspriteclicked"></block><block type="event_whenbackdropswitchesto" id="event_whenbackdropswitchesto"></block><block type="event_whengreaterthan" id="event_whengreaterthan"><value name="VALUE"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="event_whenbroadcastreceived" id="event_whenbroadcastreceived"></block><block type="event_broadcast" id="event_broadcast"><value name="BROADCAST_INPUT"><shadow type="event_broadcast_menu"></shadow></value></block><block type="event_broadcastandwait" id="event_broadcastandwait"><value name="BROADCAST_INPUT"><shadow type="event_broadcast_menu"></shadow></value></block></category><category name="Control" colour="#FFAB19" secondaryColour="#CF8B17"><block type="control_wait" id="control_wait"><value name="DURATION"><shadow type="math_positive_number"><field name="NUM">1</field></shadow></value></block><block type="control_repeat" id="control_repeat"><value name="TIMES"><shadow type="math_whole_number"><field name="NUM">10</field></shadow></value></block><block type="control_forever" id="control_forever"></block><block type="control_if" id="control_if"></block><block type="control_if_else" id="control_if_else"></block><block type="control_wait_until" id="control_wait_until"></block><block type="control_repeat_until" id="control_repeat_until"></block><block type="control_stop" id="control_stop"></block><block type="control_start_as_clone" id="control_start_as_clone"></block><block type="control_create_clone_of" id="control_create_clone_of"><value name="CLONE_OPTION"><shadow type="control_create_clone_of_menu"></shadow></value></block><block type="control_delete_this_clone" id="control_delete_this_clone"></block></category><category name="Sensing" colour="#4CBFE6" secondaryColour="#2E8EB8"><block type="sensing_touchingobject" id="sensing_touchingobject"><value name="TOUCHINGOBJECTMENU"><shadow type="sensing_touchingobjectmenu"></shadow></value></block><block type="sensing_touchingcolor" id="sensing_touchingcolor"><value name="COLOR"><shadow type="colour_picker"></shadow></value></block><block type="sensing_coloristouchingcolor" id="sensing_coloristouchingcolor"><value name="COLOR"><shadow type="colour_picker"></shadow></value><value name="COLOR2"><shadow type="colour_picker"></shadow></value></block><block type="sensing_distanceto" id="sensing_distanceto"><value name="DISTANCETOMENU"><shadow type="sensing_distancetomenu"></shadow></value></block><block type="sensing_keypressed" id="sensing_keypressed"><value name="KEY_OPTION"><shadow type="sensing_keyoptions"></shadow></value></block><block type="sensing_mousedown" id="sensing_mousedown"></block><block type="sensing_mousex" id="sensing_mousex"></block><block type="sensing_mousey" id="sensing_mousey"></block><block type="sensing_setdragmode" id="sensing_setdragmode"></block><block type="sensing_loudness" id="sensing_loudness"></block><block type="sensing_timer" id="sensing_timer"></block><block type="sensing_resettimer" id="sensing_resettimer"></block><block type="sensing_of" id="sensing_of"><value name="OBJECT"><shadow type="sensing_of_object_menu"></shadow></value></block><block type="sensing_current" id="sensing_current"></block><block type="sensing_dayssince2000" id="sensing_dayssince2000"></block></category><category name="Pen" colour="#00B295" secondaryColour="#0B8E69"><block type="pen_clear" id="pen_clear"></block><block type="pen_stamp" id="pen_stamp"></block><block type="pen_pendown" id="pen_pendown"></block><block type="pen_penup" id="pen_penup"></block><block type="pen_setpencolortocolor" id="pen_setpencolortocolor"><value name="COLOR"><shadow type="colour_picker"></shadow></value></block><block type="pen_changepencolorby" id="pen_changepencolorby"><value name="COLOR"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="pen_setpencolortonum" id="pen_setpencolortonum"><value name="COLOR"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block><block type="pen_changepenshadeby" id="pen_changepenshadeby"><value name="SHADE"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="pen_setpenshadeto" id="pen_setpenshadeto"><value name="SHADE"><shadow type="math_number"><field name="NUM">50</field></shadow></value></block><block type="pen_changepensizeby" id="pen_changepensizeby"><value name="SIZE"><shadow type="math_number"><field name="NUM">1</field></shadow></value></block><block type="pen_setpensizeto" id="pen_setpensizeto"><value name="SIZE"><shadow type="math_number"><field name="NUM">1</field></shadow></value></block><block type="pen_changepentransparencyby" id="pen_changepentransparencyby"><value name="TRANSPARENCY"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="pen_setpentransparencyto" id="pen_setpentransparencyto"><value name="TRANSPARENCY"><shadow type="math_number"><field name="NUM">50</field></shadow></value></block></category><category name="Operators" colour="#40BF4A" secondaryColour="#389438"><block type="operator_add" id="operator_add"><value name="NUM1"><shadow type="math_number"><field name="NUM"></field></shadow></value><value name="NUM2"><shadow type="math_number"><field name="NUM"></field></shadow></value></block><block type="operator_subtract" id="operator_subtract"><value name="NUM1"><shadow type="math_number"><field name="NUM"></field></shadow></value><value name="NUM2"><shadow type="math_number"><field name="NUM"></field></shadow></value></block><block type="operator_multiply" id="operator_multiply"><value name="NUM1"><shadow type="math_number"><field name="NUM"></field></shadow></value><value name="NUM2"><shadow type="math_number"><field name="NUM"></field></shadow></value></block><block type="operator_divide" id="operator_divide"><value name="NUM1"><shadow type="math_number"><field name="NUM"></field></shadow></value><value name="NUM2"><shadow type="math_number"><field name="NUM"></field></shadow></value></block><block type="operator_random" id="operator_random"><value name="FROM"><shadow type="math_number"><field name="NUM">1</field></shadow></value><value name="TO"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="operator_lt" id="operator_lt"><value name="OPERAND1"><shadow type="text"><field name="TEXT"></field></shadow></value><value name="OPERAND2"><shadow type="text"><field name="TEXT"></field></shadow></value></block><block type="operator_equals" id="operator_equals"><value name="OPERAND1"><shadow type="text"><field name="TEXT"></field></shadow></value><value name="OPERAND2"><shadow type="text"><field name="TEXT"></field></shadow></value></block><block type="operator_gt" id="operator_gt"><value name="OPERAND1"><shadow type="text"><field name="TEXT"></field></shadow></value><value name="OPERAND2"><shadow type="text"><field name="TEXT"></field></shadow></value></block><block type="operator_and" id="operator_and"></block><block type="operator_or" id="operator_or"></block><block type="operator_not" id="operator_not"></block><block type="operator_join" id="operator_join"><value name="STRING1"><shadow type="text"><field name="TEXT">hello</field></shadow></value><value name="STRING2"><shadow type="text"><field name="TEXT">world</field></shadow></value></block><block type="operator_letter_of" id="operator_letter_of"><value name="LETTER"><shadow type="math_whole_number"><field name="NUM">1</field></shadow></value><value name="STRING"><shadow type="text"><field name="TEXT">world</field></shadow></value></block><block type="operator_length" id="operator_length"><value name="STRING"><shadow type="text"><field name="TEXT">world</field></shadow></value></block><block type="operator_contains" id="operator_contains"><value name="STRING1"><shadow type="text"><field name="TEXT">hello</field></shadow></value><value name="STRING2"><shadow type="text"><field name="TEXT">world</field></shadow></value></block><block type="operator_mod" id="operator_mod"><value name="NUM1"><shadow type="math_number"><field name="NUM"></field></shadow></value><value name="NUM2"><shadow type="math_number"><field name="NUM"></field></shadow></value></block><block type="operator_round" id="operator_round"><value name="NUM"><shadow type="math_number"><field name="NUM"></field></shadow></value></block><block type="operator_mathop" id="operator_mathop"><value name="NUM"><shadow type="math_number"><field name="NUM"></field></shadow></value></block></category><category name="Data" colour="#FF8C1A" secondaryColour="#DB6E00" custom="VARIABLE"></category><category name="More" colour="#FF6680" secondaryColour="#FF4D6A" custom="PROCEDURE"></category><category name="Extensions" colour="#FF6680" secondaryColour="#FF4D6A" iconURI="../media/extensions/wedo2-block-icon.svg"><block type="extension_pen_down" id="extension_pen_down"></block><block type="extension_music_drum" id="extension_music_drum"><value name="NUMBER"><shadow type="math_number"><field name="NUM">1</field></shadow></value></block><block type="extension_wedo_motor" id="extension_wedo_motor"></block><block type="extension_wedo_hat" id="extension_wedo_hat"></block><block type="extension_wedo_boolean" id="extension_wedo_boolean"></block><block type="extension_wedo_tilt_reporter" id="extension_wedo_reporter"><value name="TILT"><shadow type="extension_wedo_tilt_menu"></shadow></value></block><block type="extension_music_reporter" id="extension_music_reporter"></block></category></xml>';Blockly.Blocks.data={};Blockly.Constants={};Blockly.Constants.Data={};Blockly.Blocks.data_variable={init:function(){this.jsonInit({message0:"%1",lastDummyAlign0:"CENTRE",args0:[{type:"field_variable_getter",text:"",name:"VARIABLE",variableType:""}],category:Blockly.Categories.data,checkboxInFlyout:!0,extensions:["contextMenu_getVariableBlock","colours_data","output_string"]})}};
 	Blockly.Blocks.data_setvariableto={init:function(){this.jsonInit({message0:"set %1 to %2",args0:[{type:"field_variable",name:"VARIABLE"},{type:"input_value",name:"VALUE"}],category:Blockly.Categories.data,extensions:["colours_data","shape_statement"]})}};Blockly.Blocks.data_changevariableby={init:function(){this.jsonInit({message0:"change %1 by %2",args0:[{type:"field_variable",name:"VARIABLE"},{type:"input_value",name:"VALUE"}],category:Blockly.Categories.data,extensions:["colours_data","shape_statement"]})}};
 	Blockly.Blocks.data_showvariable={init:function(){this.jsonInit({message0:"show variable %1",args0:[{type:"field_variable",name:"VARIABLE"}],previousStatement:null,nextStatement:null,category:Blockly.Categories.data,colour:Blockly.Colours.data.primary,colourSecondary:Blockly.Colours.data.secondary,colourTertiary:Blockly.Colours.data.tertiary})}};
 	Blockly.Blocks.data_hidevariable={init:function(){this.jsonInit({message0:"hide variable %1",args0:[{type:"field_variable",name:"VARIABLE"}],previousStatement:null,nextStatement:null,category:Blockly.Categories.data,colour:Blockly.Colours.data.primary,colourSecondary:Blockly.Colours.data.secondary,colourTertiary:Blockly.Colours.data.tertiary})}};
@@ -20717,7 +21136,7 @@ module.exports =
 	Blockly.Blocks.sound_changevolumeby={init:function(){this.jsonInit({message0:"change volume by %1",args0:[{type:"input_value",name:"VOLUME"}],category:Blockly.Categories.sound,extensions:["colours_sounds","shape_statement"]})}};Blockly.Blocks.sound_setvolumeto={init:function(){this.jsonInit({message0:"set volume to %1%",args0:[{type:"input_value",name:"VOLUME"}],category:Blockly.Categories.sound,extensions:["colours_sounds","shape_statement"]})}};
 	Blockly.Blocks.sound_volume={init:function(){this.jsonInit({message0:"volume",category:Blockly.Categories.sound,checkboxInFlyout:!0,extensions:["colours_sounds","output_number"]})}};Blockly.Blocks.sound_changetempoby={init:function(){this.jsonInit({message0:"change tempo by %1",args0:[{type:"input_value",name:"TEMPO"}],category:Blockly.Categories.sound,extensions:["colours_sounds","shape_statement"]})}};
 	Blockly.Blocks.sound_settempotobpm={init:function(){this.jsonInit({message0:"set tempo to %1 bpm",args0:[{type:"input_value",name:"TEMPO"}],category:Blockly.Categories.sound,extensions:["colours_sounds","shape_statement"]})}};Blockly.Blocks.sound_tempo={init:function(){this.jsonInit({message0:"tempo",category:Blockly.Categories.sound,checkboxInFlyout:!0,extensions:["colours_sounds","output_number"]})}};Blockly.Blocks.event={};Blockly.Blocks.event_whenflagclicked={init:function(){this.jsonInit({id:"event_whenflagclicked",message0:"when %1 clicked",args0:[{type:"field_image",src:Blockly.mainWorkspace.options.pathToMedia+"green-flag.svg",width:24,height:24,alt:"flag"}],category:Blockly.Categories.event,extensions:["colours_event","shape_hat"]})}};
-	Blockly.Blocks.event_whenthisspriteclicked={init:function(){this.jsonInit({message0:"when this sprite clicked",category:Blockly.Categories.event,extensions:["colours_event","shape_hat"]})}};
+	Blockly.Blocks.event_whenthisspriteclicked={init:function(){this.jsonInit({message0:"when this sprite clicked",category:Blockly.Categories.event,extensions:["colours_event","shape_hat"]})}};Blockly.Blocks.event_whenstageclicked={init:function(){this.jsonInit({message0:"when stage clicked",category:Blockly.Categories.event,extensions:["colours_event","shape_hat"]})}};
 	Blockly.Blocks.event_whenbroadcastreceived={init:function(){this.jsonInit({id:"event_whenbroadcastreceived",message0:"when I receive %1",args0:[{type:"field_variable",name:"BROADCAST_OPTION",variableTypes:[Blockly.BROADCAST_MESSAGE_VARIABLE_TYPE],variable:Blockly.Msg.DEFAULT_BROADCAST_MESSAGE_NAME}],category:Blockly.Categories.event,extensions:["colours_event","shape_hat"]})}};
 	Blockly.Blocks.event_whenbackdropswitchesto={init:function(){this.jsonInit({message0:"when backdrop switches to %1",args0:[{type:"field_dropdown",name:"BACKDROP",options:[["backdrop1","BACKDROP1"]]}],category:Blockly.Categories.event,extensions:["colours_event","shape_hat"]})}};
 	Blockly.Blocks.event_whengreaterthan={init:function(){this.jsonInit({message0:"when %1 > %2",args0:[{type:"field_dropdown",name:"WHENGREATERTHANMENU",options:[["timer","TIMER"]]},{type:"input_value",name:"VALUE"}],category:Blockly.Categories.event,extensions:["colours_event","shape_hat"]})}};
@@ -21825,7 +22244,7 @@ module.exports =
 	*/
 	Blockly.Colours={motion:{primary:"#4C97FF",secondary:"#4280D7",tertiary:"#3373CC"},looks:{primary:"#9966FF",secondary:"#855CD6",tertiary:"#774DCB"},sounds:{primary:"#CF63CF",secondary:"#C94FC9",tertiary:"#BD42BD"},control:{primary:"#FFAB19",secondary:"#EC9C13",tertiary:"#CF8B17"},event:{primary:"#FFBF00",secondary:"#E6AC00",tertiary:"#CC9900"},sensing:{primary:"#5CB1D6",secondary:"#47A8D1",tertiary:"#2E8EB8"},pen:{primary:"#0fBD8C",secondary:"#0DA57A",tertiary:"#0B8E69"},operators:{primary:"#59C059",
 	secondary:"#46B946",tertiary:"#389438"},data:{primary:"#FF8C1A",secondary:"#FF8000",tertiary:"#DB6E00"},data_lists:{primary:"#FF661A",secondary:"#FF5500",tertiary:"#E64D00"},more:{primary:"#FF6680",secondary:"#FF4D6A",tertiary:"#FF3355"},text:"#575E75",workspace:"#F9F9F9",toolboxHover:"#4C97FF",toolboxSelected:"#e9eef2",toolboxText:"#575E75",toolbox:"#FFFFFF",flyout:"#F9F9F9",scrollbar:"#CECDCE",scrollbarHover:"#CECDCE",textField:"#FFFFFF",insertionMarker:"#000000",insertionMarkerOpacity:.2,dragShadowOpacity:.3,
-	stackGlow:"#FFF200",stackGlowOpacity:1,replacementGlow:"#FFFFFF",replacementGlowOpacity:1,colourPickerStroke:"#FFFFFF",fieldShadow:"rgba(0,0,0,0.1)",dropDownShadow:"rgba(0, 0, 0, .3)",numPadBackground:"#547AB2",numPadBorder:"#435F91",numPadActiveBackground:"#435F91",numPadText:"#FFFFFF",valueReportBackground:"#FFFFFF",valueReportBorder:"#AAAAAA"};
+	stackGlow:"#FFF200",stackGlowSize:4,stackGlowOpacity:1,replacementGlow:"#FFFFFF",replacementGlowSize:2,replacementGlowOpacity:1,colourPickerStroke:"#FFFFFF",fieldShadow:"rgba(0,0,0,0.1)",dropDownShadow:"rgba(0, 0, 0, .3)",numPadBackground:"#547AB2",numPadBorder:"#435F91",numPadActiveBackground:"#435F91",numPadText:"#FFFFFF",valueReportBackground:"#FFFFFF",valueReportBorder:"#AAAAAA"};
 	Blockly.Touch={};Blockly.Touch.touchIdentifier_=null;Blockly.Touch.TOUCH_MAP={};goog.events.BrowserFeature.TOUCH_ENABLED&&(Blockly.Touch.TOUCH_MAP={mousedown:["touchstart"],mousemove:["touchmove"],mouseup:["touchend","touchcancel"]});Blockly.longPid_=0;Blockly.longStart_=function(a,b){Blockly.longStop_();1==a.changedTouches.length&&(Blockly.longPid_=setTimeout(function(){a.button=2;a.clientX=a.changedTouches[0].clientX;a.clientY=a.changedTouches[0].clientY;b&&b.handleRightClick(a)},Blockly.LONGPRESS))};
 	Blockly.longStop_=function(){Blockly.longPid_&&(clearTimeout(Blockly.longPid_),Blockly.longPid_=0)};Blockly.Touch.clearTouchIdentifier=function(){Blockly.Touch.touchIdentifier_=null};Blockly.Touch.shouldHandleEvent=function(a){return!Blockly.Touch.isMouseOrTouchEvent(a)||Blockly.Touch.checkTouchIdentifier(a)};
 	Blockly.Touch.getTouchIdentifierFromEvent=function(a){return a.changedTouches&&a.changedTouches[0]&&void 0!=a.changedTouches[0].identifier&&null!=a.changedTouches[0].identifier?a.changedTouches[0].identifier:"mouse"};
@@ -21913,9 +22332,9 @@ module.exports =
 	Blockly.ConnectionDB.prototype.searchForClosest=function(a,b,c){if(!this.length)return{connection:null,radius:b};var d=a.y_,e=a.x_;a.x_=e+c.x;a.y_=d+c.y;var f=this.findPositionForConnection_(a);c=null;for(var g=b,h,k=f-1;0<=k&&this.isInYRange_(k,a.y_,b);)h=this[k],a.isConnectionAllowed(h,g)&&(c=h,g=h.distanceFrom(a)),k--;for(;f<this.length&&this.isInYRange_(f,a.y_,b);)h=this[f],a.isConnectionAllowed(h,g)&&(c=h,g=h.distanceFrom(a)),f++;a.x_=e;a.y_=d;return{connection:c,radius:g}};
 	Blockly.ConnectionDB.init=function(a){var b=[];b[Blockly.INPUT_VALUE]=new Blockly.ConnectionDB;b[Blockly.OUTPUT_VALUE]=new Blockly.ConnectionDB;b[Blockly.NEXT_STATEMENT]=new Blockly.ConnectionDB;b[Blockly.PREVIOUS_STATEMENT]=new Blockly.ConnectionDB;a.connectionDBList=b};Blockly.constants={};Blockly.DRAG_RADIUS=3;Blockly.FLYOUT_DRAG_RADIUS=10;Blockly.SNAP_RADIUS=48;Blockly.CONNECTING_SNAP_RADIUS=68;Blockly.CURRENT_CONNECTION_PREFERENCE=20;Blockly.BUMP_DELAY=0;Blockly.COLLAPSE_CHARS=30;Blockly.LONGPRESS=750;Blockly.SOUND_LIMIT=100;Blockly.DRAG_STACK=!0;Blockly.HSV_SATURATION=.45;Blockly.HSV_VALUE=.65;Blockly.SPRITE={width:96,height:124,url:"sprites.png"};Blockly.SVG_NS="http://www.w3.org/2000/svg";Blockly.HTML_NS="http://www.w3.org/1999/xhtml";
 	Blockly.INPUT_VALUE=1;Blockly.OUTPUT_VALUE=2;Blockly.NEXT_STATEMENT=3;Blockly.PREVIOUS_STATEMENT=4;Blockly.DUMMY_INPUT=5;Blockly.ALIGN_LEFT=-1;Blockly.ALIGN_CENTRE=0;Blockly.ALIGN_RIGHT=1;Blockly.DRAG_NONE=0;Blockly.DRAG_STICKY=1;Blockly.DRAG_BEGIN=1;Blockly.DRAG_FREE=2;Blockly.OPPOSITE_TYPE=[];Blockly.OPPOSITE_TYPE[Blockly.INPUT_VALUE]=Blockly.OUTPUT_VALUE;Blockly.OPPOSITE_TYPE[Blockly.OUTPUT_VALUE]=Blockly.INPUT_VALUE;Blockly.OPPOSITE_TYPE[Blockly.NEXT_STATEMENT]=Blockly.PREVIOUS_STATEMENT;
-	Blockly.OPPOSITE_TYPE[Blockly.PREVIOUS_STATEMENT]=Blockly.NEXT_STATEMENT;Blockly.TOOLBOX_AT_TOP=0;Blockly.TOOLBOX_AT_BOTTOM=1;Blockly.TOOLBOX_AT_LEFT=2;Blockly.TOOLBOX_AT_RIGHT=3;Blockly.OUTPUT_SHAPE_HEXAGONAL=1;Blockly.OUTPUT_SHAPE_ROUND=2;Blockly.OUTPUT_SHAPE_SQUARE=3;Blockly.STACK_GLOW_RADIUS=1.3;Blockly.REPLACEMENT_GLOW_RADIUS=2;
-	Blockly.Categories={motion:"motion",looks:"looks",sound:"sounds",pen:"pen",data:"data",dataLists:"data-lists",event:"events",control:"control",sensing:"sensing",operators:"operators",more:"more"};Blockly.DELETE_AREA_NONE=null;Blockly.DELETE_AREA_TRASH=1;Blockly.DELETE_AREA_TOOLBOX=2;Blockly.VARIABLE_CATEGORY_NAME="VARIABLE";Blockly.PROCEDURE_CATEGORY_NAME="PROCEDURE";Blockly.RENAME_VARIABLE_ID="RENAME_VARIABLE_ID";Blockly.DELETE_VARIABLE_ID="DELETE_VARIABLE_ID";Blockly.NEW_BROADCAST_MESSAGE_ID="NEW_BROADCAST_MESSAGE_ID";
-	Blockly.BROADCAST_MESSAGE_VARIABLE_TYPE="broadcast_msg";Blockly.LIST_VARIABLE_TYPE="list";Blockly.SCALAR_VARIABLE_TYPE="";Blockly.PROCEDURES_DEFINITION_BLOCK_TYPE="procedures_definition";Blockly.PROCEDURES_PROTOTYPE_BLOCK_TYPE="procedures_prototype";Blockly.PROCEDURES_CALL_BLOCK_TYPE="procedures_call";Blockly.Variables={};Blockly.Variables.NAME_TYPE=Blockly.VARIABLE_CATEGORY_NAME;
+	Blockly.OPPOSITE_TYPE[Blockly.PREVIOUS_STATEMENT]=Blockly.NEXT_STATEMENT;Blockly.TOOLBOX_AT_TOP=0;Blockly.TOOLBOX_AT_BOTTOM=1;Blockly.TOOLBOX_AT_LEFT=2;Blockly.TOOLBOX_AT_RIGHT=3;Blockly.OUTPUT_SHAPE_HEXAGONAL=1;Blockly.OUTPUT_SHAPE_ROUND=2;Blockly.OUTPUT_SHAPE_SQUARE=3;Blockly.Categories={motion:"motion",looks:"looks",sound:"sounds",pen:"pen",data:"data",dataLists:"data-lists",event:"events",control:"control",sensing:"sensing",operators:"operators",more:"more"};Blockly.DELETE_AREA_NONE=null;
+	Blockly.DELETE_AREA_TRASH=1;Blockly.DELETE_AREA_TOOLBOX=2;Blockly.VARIABLE_CATEGORY_NAME="VARIABLE";Blockly.PROCEDURE_CATEGORY_NAME="PROCEDURE";Blockly.RENAME_VARIABLE_ID="RENAME_VARIABLE_ID";Blockly.DELETE_VARIABLE_ID="DELETE_VARIABLE_ID";Blockly.NEW_BROADCAST_MESSAGE_ID="NEW_BROADCAST_MESSAGE_ID";Blockly.BROADCAST_MESSAGE_VARIABLE_TYPE="broadcast_msg";Blockly.LIST_VARIABLE_TYPE="list";Blockly.SCALAR_VARIABLE_TYPE="";Blockly.PROCEDURES_DEFINITION_BLOCK_TYPE="procedures_definition";
+	Blockly.PROCEDURES_PROTOTYPE_BLOCK_TYPE="procedures_prototype";Blockly.PROCEDURES_CALL_BLOCK_TYPE="procedures_call";Blockly.Variables={};Blockly.Variables.NAME_TYPE=Blockly.VARIABLE_CATEGORY_NAME;
 	Blockly.Variables.allUsedVariables=function(a){if(a instanceof Blockly.Block)var b=a.getDescendants();else if(a instanceof Blockly.Workspace||a instanceof Blockly.WorkspaceSvg)b=a.getAllBlocks();else throw"Not Block or Workspace: "+a;var c=Blockly.Variables.noVariableText();a=Object.create(null);for(var d=0;d<b.length;d++){var e=b[d].getVarModels();if(e)for(var f=0;f<e.length;f++){var g=e[f];g.getId()&&g.name.toLowerCase()!=c&&(a[g.name.toLowerCase()]=g.name)}}b=[];for(var h in a)b.push(a[h]);return b};
 	Blockly.Variables.allVariables=function(a){return a instanceof Blockly.Block?(console.warn("Deprecated call to Blockly.Variables.allVariables with a block instead of a workspace.  You may want Blockly.Variables.allUsedVariables"),{}):a.getAllVariables()};Blockly.Variables.allDeveloperVariables=function(a){var b=a.getAllBlocks();a={};for(var c=0;c<b.length;c++){var d=b[c];if(d.getDeveloperVars){d=d.getDeveloperVars();for(var e=0;e<d.length;e++)a[d[e]]=d[e]}}b=[];for(var f in a)b.push(a[f]);return b};
 	Blockly.Variables.noVariableText=function(){return"No variable selected"};Blockly.Variables.generateUniqueName=function(a){a=a.getAllVariables();var b="";if(a.length)for(var c=1,d=0,e="ijkmnopqrstuvwxyzabcdefgh".charAt(d);!b;){for(var f=!1,g=0;g<a.length;g++)if(a[g].name.toLowerCase()==e){f=!0;break}f?(d++,25==d&&(d=0,c++),e="ijkmnopqrstuvwxyzabcdefgh".charAt(d),1<c&&(e+=c)):b=e}else b="i";return b};
@@ -22185,7 +22604,7 @@ module.exports =
 	f=0;for(var l;l=k[f];f++)if(l.closest(Blockly.SNAP_RADIUS,new goog.math.Coordinate(c,d)).connection){a=!0;break}}a&&(c=this.RTL?c-Blockly.SNAP_RADIUS:c+Blockly.SNAP_RADIUS,d+=2*Blockly.SNAP_RADIUS)}while(a);b.moveBy(c,d)}}finally{Blockly.Events.enable()}Blockly.Events.isEnabled()&&!b.isShadow()&&Blockly.Events.fire(new Blockly.Events.BlockCreate(b));b.select()}};
 	Blockly.WorkspaceSvg.prototype.refreshToolboxSelection_=function(){if(this.toolbox_)this.toolbox_.flyout_&&!this.currentGesture_&&this.toolboxRefreshEnabled_&&this.toolbox_.refreshSelection();else{var a=this.targetWorkspace;a&&a.toolbox_&&a.toolbox_.flyout_&&!a.currentGesture_&&a.toolboxRefreshEnabled_&&a.toolbox_.refreshSelection()}};Blockly.WorkspaceSvg.prototype.renameVariableById=function(a,b){Blockly.WorkspaceSvg.superClass_.renameVariableById.call(this,a,b);this.refreshToolboxSelection_()};
 	Blockly.WorkspaceSvg.prototype.deleteVariableById=function(a){Blockly.WorkspaceSvg.superClass_.deleteVariableById.call(this,a);this.refreshToolboxSelection_()};Blockly.WorkspaceSvg.prototype.createVariable=function(a,b,c){var d=null!=this.getVariable(a,b);a=Blockly.WorkspaceSvg.superClass_.createVariable.call(this,a,b,c);d||b==Blockly.BROADCAST_MESSAGE_VARIABLE_TYPE||this.refreshToolboxSelection_();return a};Blockly.WorkspaceSvg.prototype.recordCachedAreas=function(){this.recordBlocksArea_();this.recordDeleteAreas_()};
-	Blockly.WorkspaceSvg.prototype.recordDeleteAreas_=function(){this.deleteAreaTrash_=this.trashcan?this.trashcan.getClientRect():null;this.deleteAreaToolbox_=this.flyout_?this.flyout_.getClientRect():this.toolbox_?this.toolbox_.getClientRect():null};Blockly.WorkspaceSvg.prototype.recordBlocksArea_=function(){var a=this.svgGroup_.getBoundingClientRect();this.blocksArea_=new goog.math.Rect(a.left,a.top,a.width,a.height)};
+	Blockly.WorkspaceSvg.prototype.recordDeleteAreas_=function(){this.deleteAreaTrash_=this.trashcan?this.trashcan.getClientRect():null;this.deleteAreaToolbox_=this.flyout_?this.flyout_.getClientRect():this.toolbox_?this.toolbox_.getClientRect():null};Blockly.WorkspaceSvg.prototype.recordBlocksArea_=function(){var a=this.getParentSvg();a?(a=a.getBoundingClientRect(),this.blocksArea_=new goog.math.Rect(a.left,a.top,a.width,a.height)):this.blocksArea_=null};
 	Blockly.WorkspaceSvg.prototype.isDeleteArea=function(a){a=new goog.math.Coordinate(a.clientX,a.clientY);return this.deleteAreaTrash_&&this.deleteAreaTrash_.contains(a)?Blockly.DELETE_AREA_TRASH:this.deleteAreaToolbox_&&this.deleteAreaToolbox_.contains(a)?Blockly.DELETE_AREA_TOOLBOX:Blockly.DELETE_AREA_NONE};
 	Blockly.WorkspaceSvg.prototype.isInsideBlocksArea=function(a){var b=new goog.math.Coordinate(a.clientX,a.clientY);return this.isDeleteArea(a)||this.blocksArea_&&this.blocksArea_.contains(b)?!0:!1};Blockly.WorkspaceSvg.prototype.onMouseDown_=function(a){var b=this.getGesture(a);b&&b.handleWsStart(a,this)};
 	Blockly.WorkspaceSvg.prototype.startDrag=function(a,b){var c=Blockly.utils.mouseToSvg(a,this.getParentSvg(),this.getInverseScreenCTM());c.x/=this.scale;c.y/=this.scale;this.dragDeltaXY_=goog.math.Coordinate.difference(b,c)};Blockly.WorkspaceSvg.prototype.moveDrag=function(a){a=Blockly.utils.mouseToSvg(a,this.getParentSvg(),this.getInverseScreenCTM());a.x/=this.scale;a.y/=this.scale;return goog.math.Coordinate.sum(this.dragDeltaXY_,a)};
@@ -22204,7 +22623,7 @@ module.exports =
 	Blockly.WorkspaceSvg.prototype.scrollCenter=function(){if(this.scrollbar){Blockly.WidgetDiv.hide(!0);Blockly.DropDownDiv.hideWithoutAnimation();Blockly.hideChaff(!1);var a=this.getMetrics(),b=(a.contentWidth-a.viewWidth)/2;this.flyout_&&(b-=this.flyout_.width_/2);this.scrollbar.set(b,(a.contentHeight-a.viewHeight)/2)}};
 	Blockly.WorkspaceSvg.prototype.setScale=function(a){this.options.zoomOptions.maxScale&&a>this.options.zoomOptions.maxScale?a=this.options.zoomOptions.maxScale:this.options.zoomOptions.minScale&&a<this.options.zoomOptions.minScale&&(a=this.options.zoomOptions.minScale);this.scale=a;this.grid_&&this.grid_.update(this.scale);this.scrollbar?this.scrollbar.resize():this.translate(this.scrollX,this.scrollY);Blockly.hideChaff(!1);this.flyout_&&this.flyout_.reflow()};
 	Blockly.WorkspaceSvg.prototype.scroll=function(a,b){var c=this.startDragMetrics;a=Math.min(a,-c.contentLeft);b=Math.min(b,-c.contentTop);a=Math.max(a,c.viewWidth-c.contentLeft-c.contentWidth);b=Math.max(b,c.viewHeight-c.contentTop-c.contentHeight);Blockly.WidgetDiv.hide(!0);Blockly.DropDownDiv.hideWithoutAnimation();this.scrollbar.set(-a-c.contentLeft,-b-c.contentTop)};
-	Blockly.WorkspaceSvg.prototype.updateStackGlowScale_=function(){this.options.stackGlowBlur&&this.options.stackGlowBlur.setAttribute("stdDeviation",Blockly.STACK_GLOW_RADIUS/this.scale)};Blockly.WorkspaceSvg.getDimensionsPx_=function(a){var b=0,c=0;a&&(b=a.getWidth(),c=a.getHeight());return{width:b,height:c}};Blockly.WorkspaceSvg.getContentDimensions_=function(a,b){return a.scrollbar?Blockly.WorkspaceSvg.getContentDimensionsBounded_(a,b):Blockly.WorkspaceSvg.getContentDimensionsExact_(a)};
+	Blockly.WorkspaceSvg.prototype.updateStackGlowScale_=function(){this.options.stackGlowBlur&&this.options.stackGlowBlur.setAttribute("stdDeviation",Blockly.Colours.stackGlowSize/this.scale)};Blockly.WorkspaceSvg.getDimensionsPx_=function(a){var b=0,c=0;a&&(b=a.getWidth(),c=a.getHeight());return{width:b,height:c}};Blockly.WorkspaceSvg.getContentDimensions_=function(a,b){return a.scrollbar?Blockly.WorkspaceSvg.getContentDimensionsBounded_(a,b):Blockly.WorkspaceSvg.getContentDimensionsExact_(a)};
 	Blockly.WorkspaceSvg.getContentDimensionsExact_=function(a){var b=a.getBlocksBoundingBox(),c=a.scale;a=b.width*c;var d=b.height*c,e=b.x*c;b=b.y*c;return{left:e,top:b,right:e+a,bottom:b+d,width:a,height:d}};
 	Blockly.WorkspaceSvg.getContentDimensionsBounded_=function(a,b){var c=Blockly.WorkspaceSvg.getContentDimensionsExact_(a),d=b.width,e=b.height,f=d/2,g=e/2,h=Math.min(c.left-f,c.right-d),k=Math.min(c.top-g,c.bottom-e);return{left:h,top:k,height:Math.max(c.bottom+g,c.top+e)-k,width:Math.max(c.right+f,c.left+d)-h}};
 	Blockly.WorkspaceSvg.getTopLevelWorkspaceMetrics_=function(){var a=Blockly.WorkspaceSvg.getDimensionsPx_(this.toolbox_),b=Blockly.WorkspaceSvg.getDimensionsPx_(this.flyout_),c=Blockly.svgSize(this.getParentSvg());if(this.toolbox_)if(this.toolboxPosition==Blockly.TOOLBOX_AT_TOP||this.toolboxPosition==Blockly.TOOLBOX_AT_BOTTOM)c.height-=a.height;else if(this.toolboxPosition==Blockly.TOOLBOX_AT_LEFT||this.toolboxPosition==Blockly.TOOLBOX_AT_RIGHT)c.width-=a.width;var d=Blockly.WorkspaceSvg.getContentDimensions_(this,
@@ -22313,7 +22732,7 @@ module.exports =
 	break;case "input_dummy":d=this.appendDummyInput(e.name);break;case "field_label":f=Blockly.Block.newFieldLabelFromJson_(e);break;case "field_label_serializable":f=Blockly.Block.newFieldLabelSerializableFromJson_(e);break;case "field_input":f=Blockly.Block.newFieldTextInputFromJson_(e);break;case "field_input_removable":f=Blockly.FieldTextInputRemovable.fromJson(e);break;case "field_textdropdown":f=new Blockly.FieldTextDropdown(e.text,e.options);"boolean"==typeof e.spellcheck&&f.setSpellcheck(e.spellcheck);
 	break;case "field_numberdropdown":f=new Blockly.FieldNumberDropdown(e.value,e.options,e.min,e.max,e.precision);break;case "field_angle":f=new Blockly.FieldAngle(e.angle);break;case "field_checkbox":f=new Blockly.FieldCheckbox(e.checked?"TRUE":"FALSE");break;case "field_colour":f=new Blockly.FieldColour(e.colour);break;case "field_colour_slider":f=new Blockly.FieldColourSlider(e.colour);break;case "field_variable":f=Blockly.Block.newFieldVariableFromJson_(e);break;case "field_dropdown":f=new Blockly.FieldDropdown(e.options);
 	break;case "field_iconmenu":f=new Blockly.FieldIconMenu(e.options);break;case "field_image":f=Blockly.Block.newFieldImageFromJson_(e);break;case "field_number":f=new Blockly.FieldNumber(e.value,e.min,e.max,e.precision);break;case "field_variable_getter":f=Blockly.Block.newFieldVariableGetterFromJson_(e);break;case "field_vertical_separator":f=new Blockly.FieldVerticalSeparator;break;case "field_date":if(Blockly.FieldDate){f=new Blockly.FieldDate(e.date);break}default:e.alt&&(e=e.alt,h=!0)}while(h);
-	if(f)b.push([f,e.name]);else if(d){e.check&&d.setCheck(e.check);e.align&&d.setAlign(c[e.align]);for(e=0;e<b.length;e++)d.appendField(b[e][0],b[e][1]);b.length=0}}};Blockly.Block.newFieldImageFromJson_=function(a){var b=Blockly.utils.replaceMessageReferences(a.src),c=Number(Blockly.utils.replaceMessageReferences(a.width)),d=Number(Blockly.utils.replaceMessageReferences(a.height)),e=Blockly.utils.replaceMessageReferences(a.alt);return new Blockly.FieldImage(b,c,d,e,!!a.flip_rtl)};
+	if(f)b.push([f,e.name]);else if(d){e.check&&d.setCheck(e.check);e.align&&d.setAlign(c[e.align]);for(e=0;e<b.length;e++)d.appendField(b[e][0],b[e][1]);b.length=0}}};Blockly.Block.newFieldImageFromJson_=function(a){var b=Blockly.utils.replaceMessageReferences(a.src),c=Number(Blockly.utils.replaceMessageReferences(a.width)),d=Number(Blockly.utils.replaceMessageReferences(a.height)),e=Blockly.utils.replaceMessageReferences(a.alt);return new Blockly.FieldImage(b,c,d,e,!!a.flip_rtl||!!a.flipRtl)};
 	Blockly.Block.newFieldLabelFromJson_=function(a){var b=Blockly.utils.replaceMessageReferences(a.text);return new Blockly.FieldLabel(b,a["class"])};Blockly.Block.newFieldLabelSerializableFromJson_=function(a){var b=Blockly.utils.replaceMessageReferences(a.text);return new Blockly.FieldLabelSerializable(b,a["class"])};
 	Blockly.Block.newFieldTextInputFromJson_=function(a){var b=Blockly.utils.replaceMessageReferences(a.text);b=new Blockly.FieldTextInput(b,a["class"]);"boolean"==typeof a.spellcheck&&b.setSpellcheck(a.spellcheck);return b};Blockly.Block.newFieldVariableFromJson_=function(a){var b=Blockly.utils.replaceMessageReferences(a.variable);return new Blockly.FieldVariable(b,null,a.variableTypes)};
 	Blockly.Block.newFieldVariableGetterFromJson_=function(a){var b=Blockly.utils.replaceMessageReferences(a.text);return new Blockly.FieldVariableGetter(b,a.name,a["class"],a.variableType)};Blockly.Block.prototype.appendInput_=function(a,b){var c=null;if(a==Blockly.INPUT_VALUE||a==Blockly.NEXT_STATEMENT)c=this.makeConnection_(a);c=new Blockly.Input(a,b,this,c);this.inputList.push(c);return c};
@@ -22358,8 +22777,8 @@ module.exports =
 	Blockly.BlockSvg.prototype.createTabList_=function(){for(var a=[],b=0,c;c=this.inputList[b];b++){for(var d=0,e;e=c.fieldRow[d];d++)e instanceof Blockly.FieldTextInput&&a.push(e);c.connection&&(c=c.connection.targetBlock())&&a.push(c)}return a};Blockly.BlockSvg.prototype.onMouseDown_=function(a){var b=this.workspace&&this.workspace.getGesture(a);b&&b.handleBlockStart(a,this)};Blockly.BlockSvg.prototype.showHelp_=function(){var a=goog.isFunction(this.helpUrl)?this.helpUrl():this.helpUrl;a&&alert(a)};
 	Blockly.BlockSvg.prototype.duplicateAndDragCallback_=function(){var a=this;return function(b){setTimeout(function(){var c=a.workspace;if(!a.getSvgRoot())throw Error("oldBlock is not rendered.");var d=Blockly.Xml.blockToDom(a);c.setResizesEnabled(!1);Blockly.Events.disable();try{var e=Blockly.Xml.domToBlock(d,c);Blockly.utils.changeObscuredShadowIds(e);if(!e.getSvgRoot())throw Error("newBlock is not rendered.");var f=a.getRelativeToSurfaceXY();e.moveBy(f.x,f.y)}finally{Blockly.Events.enable()}Blockly.Events.isEnabled()&&
 	Blockly.Events.fire(new Blockly.Events.BlockCreate(e));d=f.scale(c.scale);f=c.getOriginOffsetInPixels();d=goog.math.Coordinate.sum(f,d);f=c.getInjectionDiv().getBoundingClientRect();c.startDragWithFakeEvent({clientX:d.x+f.left,clientY:d.y+f.top,type:"mousedown",preventDefault:function(){b.preventDefault()},stopPropagation:function(){b.stopPropagation()},target:b.target},e)},0)}};
-	Blockly.BlockSvg.prototype.showContextMenu_=function(a){if(!this.workspace.options.readOnly&&this.contextMenu){var b=[];if(this.isDeletable()&&this.isMovable()&&!this.isInFlyout)b.push(Blockly.ContextMenu.blockDuplicateOption(this)),this.isEditable()&&this.workspace.options.comments&&b.push(Blockly.ContextMenu.blockCommentOption(this)),b.push(Blockly.ContextMenu.blockDeleteOption(this));else if(this.parentBlock_&&this.isShadow_){this.parentBlock_.showContextMenu_(a);return}b.push(Blockly.ContextMenu.blockHelpOption(this));
-	this.customContextMenu&&this.customContextMenu(b);Blockly.ContextMenu.show(a,b,this.RTL);Blockly.ContextMenu.currentBlock=this}};Blockly.BlockSvg.prototype.moveConnections_=function(a,b){if(this.rendered){for(var c=this.getConnections_(!1),d=0;d<c.length;d++)c[d].moveBy(a,b);c=this.getIcons();for(d=0;d<c.length;d++)c[d].computeIconLocation();for(d=0;d<this.childBlocks_.length;d++)this.childBlocks_[d].moveConnections_(a,b)}};
+	Blockly.BlockSvg.prototype.showContextMenu_=function(a){if(!this.workspace.options.readOnly&&this.contextMenu){var b=[];if(this.isDeletable()&&this.isMovable()&&!this.isInFlyout)b.push(Blockly.ContextMenu.blockDuplicateOption(this)),this.isEditable()&&this.workspace.options.comments&&b.push(Blockly.ContextMenu.blockCommentOption(this)),b.push(Blockly.ContextMenu.blockDeleteOption(this));else if(this.parentBlock_&&this.isShadow_){this.parentBlock_.showContextMenu_(a);return}this.customContextMenu&&
+	this.customContextMenu(b);Blockly.ContextMenu.show(a,b,this.RTL);Blockly.ContextMenu.currentBlock=this}};Blockly.BlockSvg.prototype.moveConnections_=function(a,b){if(this.rendered){for(var c=this.getConnections_(!1),d=0;d<c.length;d++)c[d].moveBy(a,b);c=this.getIcons();for(d=0;d<c.length;d++)c[d].computeIconLocation();for(d=0;d<this.childBlocks_.length;d++)this.childBlocks_[d].moveConnections_(a,b)}};
 	Blockly.BlockSvg.prototype.setDragging=function(a){if(a){var b=this.getSvgRoot();b.translate_="";b.skew_="";Blockly.draggingConnections_=Blockly.draggingConnections_.concat(this.getConnections_(!0));Blockly.utils.addClass(this.svgGroup_,"blocklyDragging")}else Blockly.draggingConnections_=[],Blockly.utils.removeClass(this.svgGroup_,"blocklyDragging");for(b=0;b<this.childBlocks_.length;b++)this.childBlocks_[b].setDragging(a)};
 	Blockly.BlockSvg.prototype.updateMovable=function(){this.isMovable()?Blockly.utils.addClass(this.svgGroup_,"blocklyDraggable"):Blockly.utils.removeClass(this.svgGroup_,"blocklyDraggable")};Blockly.BlockSvg.prototype.setMovable=function(a){Blockly.BlockSvg.superClass_.setMovable.call(this,a);this.updateMovable()};Blockly.BlockSvg.prototype.setEditable=function(a){Blockly.BlockSvg.superClass_.setEditable.call(this,a);a=this.getIcons();for(var b=0;b<a.length;b++)a[b].updateEditable()};
 	Blockly.BlockSvg.prototype.setShadow=function(a){Blockly.BlockSvg.superClass_.setShadow.call(this,a);this.updateColour()};Blockly.BlockSvg.prototype.setInsertionMarker=function(a,b){Blockly.BlockSvg.superClass_.setInsertionMarker.call(this,a);this.insertionMarkerMinWidth_=b;this.updateColour()};Blockly.BlockSvg.prototype.getSvgRoot=function(){return this.svgGroup_};
@@ -22483,10 +22902,10 @@ module.exports =
 	Blockly.FieldColourSlider.prototype.sliderCallbackFactory_=function(a){var b=this;return function(c){c=c.target.getValue();var d=goog.color.hexToHsv(b.getValue());switch(a){case "hue":d[0]=b.hue_=c;break;case "saturation":d[1]=b.saturation_=c;break;case "brightness":d[2]=b.brightness_=c}c=goog.color.hsvToHex(d[0],d[1],d[2]);b.sourceBlock_&&(c=b.callValidator(c));null!==c&&b.setValue(c,!0)}};
 	Blockly.FieldColourSlider.prototype.activateEyedropperInternal_=function(){var a=this;Blockly.FieldColourSlider.activateEyedropper_(function(b){var c=goog.color.hexToHsv(b);a.hue_=c[0];a.saturation_=c[1];a.brightness_=c[2];a.setValue(b)})};
 	Blockly.FieldColourSlider.prototype.showEditor_=function(){Blockly.DropDownDiv.hideWithoutAnimation();Blockly.DropDownDiv.clearContent();var a=Blockly.DropDownDiv.getContentDiv(),b=goog.color.hexToHsv(this.getValue());this.hue_=b[0];this.saturation_=b[1];this.brightness_=b[2];b=this.createLabelDom_(Blockly.Msg.COLOUR_HUE_LABEL);a.appendChild(b[0]);this.hueReadout_=b[1];this.hueSlider_=new goog.ui.Slider;this.hueSlider_.setUnitIncrement(5);this.hueSlider_.setMinimum(0);this.hueSlider_.setMaximum(360);
-	this.hueSlider_.render(a);b=this.createLabelDom_(Blockly.Msg.COLOUR_SATURATION_LABEL);a.appendChild(b[0]);this.saturationReadout_=b[1];this.saturationSlider_=new goog.ui.Slider;this.saturationSlider_.setUnitIncrement(.01);this.saturationSlider_.setStep(.001);this.saturationSlider_.setMinimum(0);this.saturationSlider_.setMaximum(1);this.saturationSlider_.render(a);b=this.createLabelDom_(Blockly.Msg.COLOUR_BRIGHTNESS_LABEL);a.appendChild(b[0]);this.brightnessReadout_=b[1];this.brightnessSlider_=new goog.ui.Slider;
-	this.brightnessSlider_.setUnitIncrement(2);this.brightnessSlider_.setMinimum(0);this.brightnessSlider_.setMaximum(255);this.brightnessSlider_.render(a);Blockly.FieldColourSlider.hueChangeEventKey_=goog.events.listen(this.hueSlider_,goog.ui.Component.EventType.CHANGE,this.sliderCallbackFactory_("hue"));Blockly.FieldColourSlider.saturationChangeEventKey_=goog.events.listen(this.saturationSlider_,goog.ui.Component.EventType.CHANGE,this.sliderCallbackFactory_("saturation"));Blockly.FieldColourSlider.brightnessChangeEventKey_=
-	goog.events.listen(this.brightnessSlider_,goog.ui.Component.EventType.CHANGE,this.sliderCallbackFactory_("brightness"));if(Blockly.FieldColourSlider.activateEyedropper_){b=document.createElement("button");b.setAttribute("class","scratchEyedropper");var c=document.createElement("img");c.src=Blockly.mainWorkspace.options.pathToMedia+Blockly.FieldColourSlider.EYEDROPPER_PATH;b.appendChild(c);a.appendChild(b);Blockly.FieldColourSlider.eyedropperEventData_=Blockly.bindEventWithChecks_(b,"mousedown",this,
-	this.activateEyedropperInternal_)}Blockly.DropDownDiv.setColour("#ffffff","#dddddd");Blockly.DropDownDiv.setCategory(this.sourceBlock_.parentBlock_.getCategory());Blockly.DropDownDiv.showPositionedByBlock(this,this.sourceBlock_);this.setValue(this.getValue())};
+	this.hueSlider_.setMoveToPointEnabled(!0);this.hueSlider_.render(a);b=this.createLabelDom_(Blockly.Msg.COLOUR_SATURATION_LABEL);a.appendChild(b[0]);this.saturationReadout_=b[1];this.saturationSlider_=new goog.ui.Slider;this.saturationSlider_.setMoveToPointEnabled(!0);this.saturationSlider_.setUnitIncrement(.01);this.saturationSlider_.setStep(.001);this.saturationSlider_.setMinimum(0);this.saturationSlider_.setMaximum(1);this.saturationSlider_.render(a);b=this.createLabelDom_(Blockly.Msg.COLOUR_BRIGHTNESS_LABEL);
+	a.appendChild(b[0]);this.brightnessReadout_=b[1];this.brightnessSlider_=new goog.ui.Slider;this.brightnessSlider_.setUnitIncrement(2);this.brightnessSlider_.setMinimum(0);this.brightnessSlider_.setMaximum(255);this.brightnessSlider_.setMoveToPointEnabled(!0);this.brightnessSlider_.render(a);Blockly.FieldColourSlider.hueChangeEventKey_=goog.events.listen(this.hueSlider_,goog.ui.Component.EventType.CHANGE,this.sliderCallbackFactory_("hue"));Blockly.FieldColourSlider.saturationChangeEventKey_=goog.events.listen(this.saturationSlider_,
+	goog.ui.Component.EventType.CHANGE,this.sliderCallbackFactory_("saturation"));Blockly.FieldColourSlider.brightnessChangeEventKey_=goog.events.listen(this.brightnessSlider_,goog.ui.Component.EventType.CHANGE,this.sliderCallbackFactory_("brightness"));if(Blockly.FieldColourSlider.activateEyedropper_){b=document.createElement("button");b.setAttribute("class","scratchEyedropper");var c=document.createElement("img");c.src=Blockly.mainWorkspace.options.pathToMedia+Blockly.FieldColourSlider.EYEDROPPER_PATH;
+	b.appendChild(c);a.appendChild(b);Blockly.FieldColourSlider.eyedropperEventData_=Blockly.bindEventWithChecks_(b,"mousedown",this,this.activateEyedropperInternal_)}Blockly.DropDownDiv.setColour("#ffffff","#dddddd");Blockly.DropDownDiv.setCategory(this.sourceBlock_.parentBlock_.getCategory());Blockly.DropDownDiv.showPositionedByBlock(this,this.sourceBlock_);this.setValue(this.getValue())};
 	Blockly.FieldColourSlider.prototype.dispose=function(){Blockly.FieldColourSlider.hueChangeEventKey_&&goog.events.unlistenByKey(Blockly.FieldColourSlider.hueChangeEventKey_);Blockly.FieldColourSlider.saturationChangeEventKey_&&goog.events.unlistenByKey(Blockly.FieldColourSlider.saturationChangeEventKey_);Blockly.FieldColourSlider.brightnessChangeEventKey_&&goog.events.unlistenByKey(Blockly.FieldColourSlider.brightnessChangeEventKey_);Blockly.FieldColourSlider.eyedropperEventData_&&Blockly.unbindEvent_(Blockly.FieldColourSlider.eyedropperEventData_);
 	Blockly.Events.setGroup(!1);Blockly.FieldColourSlider.superClass_.dispose.call(this)};Blockly.FieldDropdown=function(a,b){this.menuGenerator_=a;this.trimOptions_();var c=this.getOptions()[0];Blockly.FieldDropdown.superClass_.constructor.call(this,c[1],b);this.addArgType("dropdown")};goog.inherits(Blockly.FieldDropdown,Blockly.Field);Blockly.FieldDropdown.CHECKMARK_OVERHANG=25;Blockly.FieldDropdown.prototype.CURSOR="default";Blockly.FieldDropdown.prototype.selectedItem=null;Blockly.FieldDropdown.prototype.value_="";Blockly.FieldDropdown.prototype.imageElement_=null;
 	Blockly.FieldDropdown.prototype.imageJson_=null;
@@ -22609,8 +23028,9 @@ module.exports =
 	this.workspace_),g.disabled&&this.permanentlyDisabled_.push(g),b.push({type:"block",block:g}),e=parseInt(e.getAttribute("gap"),10),c.push(isNaN(e)?f:e);else if("SEP"==e.tagName.toUpperCase())e=parseInt(e.getAttribute("gap"),10),!isNaN(e)&&0<c.length?c[c.length-1]=e:c.push(f);else if("BUTTON"==g||"LABEL"==g)e=new Blockly.FlyoutButton(this.workspace_,this.targetWorkspace_,e,"LABEL"==g),b.push({type:"button",button:e}),c.push(f)}}this.layout_(b,c);this.listeners_.push(Blockly.bindEvent_(this.svgBackground_,
 	"mouseover",this,function(){for(var a=this.workspace_.getTopBlocks(!1),b=0,c;c=a[b];b++)c.removeSelect()}));this.workspace_.setResizesEnabled(!0);this.reflow();this.position();this.reflowWrapper_=this.reflow.bind(this);this.workspace_.addChangeListener(this.reflowWrapper_);this.recordCategoryScrollPositions_()};
 	Blockly.Flyout.prototype.recordCategoryScrollPositions_=function(){this.categoryScrollPositions=[];for(var a=0;a<this.buttons_.length;a++)if(this.buttons_[a].getIsCategoryLabel()){var b=this.buttons_[a];this.categoryScrollPositions.push({categoryName:b.getText(),position:this.horizontalLayout_?b.getPosition().x:b.getPosition().y})}};
-	Blockly.Flyout.prototype.selectCategoryByScrollPosition=function(a){if(!this.scrollTarget){a/=this.workspace_.scale;for(var b=this.categoryScrollPositions.length-1;0<=b;b--)if(a>this.categoryScrollPositions[b].position){this.parentToolbox_.selectCategoryByName(this.categoryScrollPositions[b].categoryName);break}}};
+	Blockly.Flyout.prototype.selectCategoryByScrollPosition=function(a){if(!this.scrollTarget){a=Math.round(a/this.workspace_.scale);for(var b=this.categoryScrollPositions.length-1;0<=b;b--)if(a>=this.categoryScrollPositions[b].position){this.parentToolbox_.selectCategoryByName(this.categoryScrollPositions[b].categoryName);break}}};
 	Blockly.Flyout.prototype.stepScrollAnimation=function(){if(this.scrollTarget){var a=this.horizontalLayout_?-this.workspace_.scrollX:-this.workspace_.scrollY,b=this.scrollTarget-a;1>Math.abs(b)?(this.scrollbar_.set(this.scrollTarget),this.scrollTarget=null):(this.scrollbar_.set(a+b*this.scrollAnimationFraction),requestAnimationFrame(this.stepScrollAnimation.bind(this)))}};
+	Blockly.Flyout.prototype.getScrollPos=function(){return(this.horizontalLayout_?-this.workspace_.scrollX:-this.workspace_.scrollY)/this.workspace_.scale};Blockly.Flyout.prototype.setScrollPos=function(a){this.scrollbar_.set(a*this.workspace_.scale)};
 	Blockly.Flyout.prototype.clearOldBlocks_=function(){for(var a=this.workspace_.getTopBlocks(!1),b=0,c;c=a[b];b++)c.workspace==this.workspace_&&c.dispose(!1,!1);for(b=0;b<this.backgroundButtons_.length;b++)(a=this.backgroundButtons_[b])&&goog.dom.removeNode(a);for(b=this.backgroundButtons_.length=0;a=this.buttons_[b];b++)a.dispose();this.buttons_.length=0;this.workspace_.getPotentialVariableMap().clear()};
 	Blockly.Flyout.prototype.addBlockListeners_=function(a,b,c){this.listeners_.push(Blockly.bindEventWithChecks_(a,"mousedown",null,this.blockMouseDown_(b)));this.listeners_.push(Blockly.bindEventWithChecks_(c,"mousedown",null,this.blockMouseDown_(b)));this.listeners_.push(Blockly.bindEvent_(a,"mouseover",b,b.addSelect));this.listeners_.push(Blockly.bindEvent_(a,"mouseout",b,b.removeSelect));this.listeners_.push(Blockly.bindEvent_(c,"mouseover",b,b.addSelect));this.listeners_.push(Blockly.bindEvent_(c,
 	"mouseout",b,b.removeSelect))};Blockly.Flyout.prototype.blockMouseDown_=function(a){var b=this;return function(c){var d=b.targetWorkspace_.getGesture(c);d&&(d.setStartBlock(a),d.handleFlyoutStart(c,b))}};Blockly.Flyout.prototype.onMouseDown_=function(a){var b=this.targetWorkspace_.getGesture(a);b&&b.handleFlyoutStart(a,this)};
@@ -22654,12 +23074,14 @@ module.exports =
 	Blockly.Toolbox.prototype.init=function(){var a=this.workspace_,b=this.workspace_.getParentSvg();this.HtmlDiv=goog.dom.createDom("DIV","blocklyToolboxDiv");this.HtmlDiv.setAttribute("dir",a.RTL?"RTL":"LTR");b.parentNode.insertBefore(this.HtmlDiv,b);Blockly.bindEventWithChecks_(this.HtmlDiv,"mousedown",this,function(a){this.workspace_.cancelCurrentGesture();Blockly.utils.isRightButton(a)||a.target==this.HtmlDiv?Blockly.hideChaff(!1):Blockly.hideChaff(!0);Blockly.Touch.clearTouchIdentifier()},!1,!0);
 	this.createFlyout_();this.categoryMenu_=new Blockly.Toolbox.CategoryMenu(this,this.HtmlDiv);this.populate_(a.options.languageTree);this.position()};Blockly.Toolbox.prototype.dispose=function(){this.flyout_.dispose();this.categoryMenu_.dispose();this.categoryMenu_=null;goog.dom.removeNode(this.HtmlDiv);this.lastCategory_=this.workspace_=null};
 	Blockly.Toolbox.prototype.createFlyout_=function(){var a=this.workspace_,b={disabledPatternId:a.options.disabledPatternId,parentWorkspace:a,RTL:a.RTL,oneBasedIndex:a.options.oneBasedIndex,horizontalLayout:a.horizontalLayout,toolboxPosition:a.options.toolboxPosition};this.flyout_=a.horizontalLayout?new Blockly.HorizontalFlyout(b):new Blockly.VerticalFlyout(b);this.flyout_.setParentToolbox(this);goog.dom.insertSiblingAfter(this.flyout_.createDom("svg"),this.workspace_.getParentSvg());this.flyout_.init(a)};
-	Blockly.Toolbox.prototype.populate_=function(a){this.categoryMenu_.populate(a);this.showAll_();this.setSelectedItem(this.categoryMenu_.categories_[0])};Blockly.Toolbox.prototype.showAll_=function(){for(var a=[],b=0;b<this.categoryMenu_.categories_.length;b++){var c=this.categoryMenu_.categories_[b],d=Blockly.Xml.textToDom('<xml><label text="'+c.name_+'" category-label="true" web-class="categoryLabel"></label></xml>');a.push(d.firstChild);a=a.concat(c.getContents())}this.flyout_.show(a)};
+	Blockly.Toolbox.prototype.populate_=function(a){this.categoryMenu_.populate(a);this.showAll_();this.setSelectedItem(this.categoryMenu_.categories_[0],!1)};Blockly.Toolbox.prototype.showAll_=function(){for(var a=[],b=0;b<this.categoryMenu_.categories_.length;b++){var c=this.categoryMenu_.categories_[b],d=Blockly.Xml.textToDom('<xml><label text="'+c.name_+'" category-label="true" web-class="categoryLabel"></label></xml>');a.push(d.firstChild);a=a.concat(c.getContents())}this.flyout_.show(a)};
 	Blockly.Toolbox.prototype.getWidth=function(){return this.width};Blockly.Toolbox.prototype.getHeight=function(){return this.categoryMenu_?this.categoryMenu_.getHeight():0};
 	Blockly.Toolbox.prototype.position=function(){var a=this.HtmlDiv;if(a){var b=this.workspace_.getParentSvg();b=Blockly.svgSize(b);this.horizontalLayout_?(a.style.left="0",a.style.height="auto",a.style.width=b.width+"px",this.height=a.offsetHeight,this.toolboxPosition==Blockly.TOOLBOX_AT_TOP?a.style.top="0":a.style.bottom="0"):(this.toolboxPosition==Blockly.TOOLBOX_AT_RIGHT?a.style.right="0":a.style.left="0",a.style.height="100%");this.flyout_.position()}};Blockly.Toolbox.prototype.clearSelection=function(){this.setSelectedItem(null)};
 	Blockly.Toolbox.prototype.addDeleteStyle=function(){Blockly.utils.addClass(this.HtmlDiv,"blocklyToolboxDelete")};Blockly.Toolbox.prototype.removeDeleteStyle=function(){Blockly.utils.removeClass(this.HtmlDiv,"blocklyToolboxDelete")};
 	Blockly.Toolbox.prototype.getClientRect=function(){if(!this.HtmlDiv)return null;if(!this.flyout_.autoClose)return this.flyout_.getClientRect();var a=this.HtmlDiv.getBoundingClientRect(),b=a.left,c=a.top,d=a.width,e=a.height;return this.toolboxPosition==Blockly.TOOLBOX_AT_LEFT?new goog.math.Rect(-1E7,-1E7,1E7+b+d,2E7):this.toolboxPosition==Blockly.TOOLBOX_AT_RIGHT?new goog.math.Rect(a.right-d,-1E7,1E7+d,2E7):this.toolboxPosition==Blockly.TOOLBOX_AT_TOP?new goog.math.Rect(-1E7,-1E7,2E7,1E7+c+e):new goog.math.Rect(0,
-	c,2E7,1E7)};Blockly.Toolbox.prototype.refreshSelection=function(){this.showAll_()};Blockly.Toolbox.prototype.getSelectedItem=function(){return this.selectedItem_};Blockly.Toolbox.prototype.setSelectedItem=function(a){this.selectedItem_&&this.selectedItem_.setSelected(!1);this.selectedItem_=a;null!=this.selectedItem_&&(this.selectedItem_.setSelected(!0),this.scrollToCategoryByName(a.name_))};Blockly.Toolbox.prototype.setSelectedCategoryByName=function(a){this.selectCategoryByName(a);this.scrollToCategoryByName(a)};
+	c,2E7,1E7)};Blockly.Toolbox.prototype.refreshSelection=function(){this.showAll_()};Blockly.Toolbox.prototype.getSelectedItem=function(){return this.selectedItem_};Blockly.Toolbox.prototype.getSelectedCategoryName=function(){return this.selectedItem_.name_};Blockly.Toolbox.prototype.getCategoryScrollOffset=function(){var a=this.getCategoryPositionByName(this.getSelectedCategoryName());return this.flyout_.getScrollPos()-a};
+	Blockly.Toolbox.prototype.getCategoryPositionByName=function(a){for(var b=this.flyout_.categoryScrollPositions,c=0;c<b.length;c++)if(a===b[c].categoryName)return b[c].position};Blockly.Toolbox.prototype.setFlyoutScrollPos=function(a){this.flyout_.setScrollPos(a)};
+	Blockly.Toolbox.prototype.setSelectedItem=function(a,b){"undefined"===typeof b&&(b=!0);this.selectedItem_&&this.selectedItem_.setSelected(!1);this.selectedItem_=a;if(null!=this.selectedItem_){this.selectedItem_.setSelected(!0);var c=a.name_;b&&this.scrollToCategoryByName(c)}};Blockly.Toolbox.prototype.setSelectedCategoryByName=function(a){this.selectCategoryByName(a);this.scrollToCategoryByName(a)};
 	Blockly.Toolbox.prototype.scrollToCategoryByName=function(a){for(var b=this.flyout_.categoryScrollPositions,c=0;c<b.length;c++)if(a===b[c].categoryName){this.flyout_.setVisible(!0);this.flyout_.scrollTo(b[c].position);break}};Blockly.Toolbox.prototype.selectCategoryByName=function(a){for(var b=0;b<this.categoryMenu_.categories_.length;b++){var c=this.categoryMenu_.categories_[b];a===c.name_&&(this.selectedItem_.setSelected(!1),this.selectedItem_=c,this.selectedItem_.setSelected(!0))}};
 	Blockly.Toolbox.prototype.setSelectedItemFactory=function(a){return function(){this.setSelectedItem(a);Blockly.Touch.clearTouchIdentifier()}};Blockly.Toolbox.CategoryMenu=function(a,b){this.parent_=a;this.height_=0;this.parentHtml_=b;this.createDom();this.categories_=[]};Blockly.Toolbox.CategoryMenu.prototype.getHeight=function(){return this.height_};
 	Blockly.Toolbox.CategoryMenu.prototype.createDom=function(){this.table=goog.dom.createDom("div",this.parent_.horizontalLayout_?"scratchCategoryMenuHorizontal":"scratchCategoryMenu");this.parentHtml_.appendChild(this.table)};
@@ -22675,10 +23097,10 @@ module.exports =
 	"-ms-user-select: none;","}",".blocklyWidgetDiv.fieldTextInput {","overflow: hidden;","border: 1px solid;","box-sizing: border-box;","transform-origin: 0 0;","-ms-transform-origin: 0 0;","-moz-transform-origin: 0 0;","-webkit-transform-origin: 0 0;","}",".blocklyWidgetDiv.fieldTextInput.removableTextInput {","overflow: visible;","}",".blocklyTextDropDownArrow {","position: absolute;","}",".blocklyTextRemoveIcon {","position: absolute;","width: 24px;","height: 24px;","top: -40px;","left: 50%;","margin-left: -12px;",
 	"cursor: pointer;","}",".blocklyNonSelectable {","user-select: none;","-moz-user-select: none;","-webkit-user-select: none;","-ms-user-select: none;","}",".blocklyWsDragSurface {","display: none;","position: absolute;","top: 0;","left: 0;","}",".blocklyWsDragSurface.blocklyOverflowVisible {","overflow: visible;","}",".blocklyBlockDragSurface {","display: none;","position: absolute;","top: 0;","left: 0;","right: 0;","bottom: 0;","overflow: visible !important;","z-index: 50;","}",".blocklyTooltipDiv {",
 	"background-color: #ffffc7;","border: 1px solid #ddc;","box-shadow: 4px 4px 20px 1px rgba(0,0,0,.15);","color: #000;","display: none;",'font-family: "Helvetica Neue", Helvetica, sans-serif;',"font-size: 9pt;","opacity: 0.9;","padding: 2px;","position: absolute;","z-index: 100000;","}",".blocklyDropDownDiv {","position: fixed;","left: 0;","top: 0;","z-index: 1000;","display: none;","border: 1px solid;","border-radius: 4px;","box-shadow: 0px 0px 8px 1px "+Blockly.Colours.dropDownShadow+";","padding: 4px;",
-	"-webkit-user-select: none;","}",".blocklyDropDownContent {","max-height: 300px;","overflow: auto;","}",".blocklyDropDownArrow {","position: absolute;","left: 0;","top: 0;","width: 16px;","height: 16px;","z-index: -1;","background-color: inherit;","border-color: inherit;","}",".blocklyDropDownButton {","display: inline-block;","float: left;","padding: 0;","margin: 4px;","border-radius: 4px;","outline: none;","border: 1px solid;","transition: box-shadow .1s;","cursor: pointer;","}",".blocklyDropDownButtonHover {",
-	"box-shadow: 0px 0px 0px 4px "+Blockly.Colours.fieldShadow+";","}",".blocklyDropDownButton:active {","box-shadow: 0px 0px 0px 6px "+Blockly.Colours.fieldShadow+";","}",".blocklyDropDownButton > img {","width: 80%;","height: 80%;","margin-top: 5%","}",".blocklyDropDownPlaceholder {","display: inline-block;","float: left;","padding: 0;","margin: 4px;","}",".blocklyNumPadButton {","display: inline-block;","float: left;","padding: 0;","width: 48px;","height: 48px;","margin: 4px;","border-radius: 4px;",
-	"background: $colour_numPadBackground;","color: $colour_numPadText;","outline: none;","border: 1px solid $colour_numPadBorder;","cursor: pointer;","font-weight: 600;",'font-family: "Helvetica Neue", Helvetica, sans-serif;',"font-size: 12pt;","-webkit-tap-highlight-color: rgba(0,0,0,0);","}",".blocklyNumPadButton > img {","margin-top: 10%;","width: 80%;","height: 80%;","}",".blocklyNumPadButton:active {","background: $colour_numPadActiveBackground;","-webkit-tap-highlight-color: rgba(0,0,0,0);","}",
-	".arrowTop {","border-top: 1px solid;","border-left: 1px solid;","border-top-left-radius: 4px;","border-color: inherit;","}",".arrowBottom {","border-bottom: 1px solid;","border-right: 1px solid;","border-bottom-right-radius: 4px;","border-color: inherit;","}",".valueReportBox {","min-width: 50px;","max-width: 300px;","max-height: 200px;","overflow: auto;","word-wrap: break-word;","text-align: center;",'font-family: "Helvetica Neue", Helvetica, sans-serif;',"font-size: .8em;","}",".blocklyResizeSE {",
+	"-webkit-user-select: none;","min-height: 26px","}",".blocklyDropDownContent {","max-height: 300px;","overflow: auto;","}",".blocklyDropDownArrow {","position: absolute;","left: 0;","top: 0;","width: 16px;","height: 16px;","z-index: -1;","background-color: inherit;","border-color: inherit;","}",".blocklyDropDownButton {","display: inline-block;","float: left;","padding: 0;","margin: 4px;","border-radius: 4px;","outline: none;","border: 1px solid;","transition: box-shadow .1s;","cursor: pointer;",
+	"}",".blocklyDropDownButtonHover {","box-shadow: 0px 0px 0px 4px "+Blockly.Colours.fieldShadow+";","}",".blocklyDropDownButton:active {","box-shadow: 0px 0px 0px 6px "+Blockly.Colours.fieldShadow+";","}",".blocklyDropDownButton > img {","width: 80%;","height: 80%;","margin-top: 5%","}",".blocklyDropDownPlaceholder {","display: inline-block;","float: left;","padding: 0;","margin: 4px;","}",".blocklyNumPadButton {","display: inline-block;","float: left;","padding: 0;","width: 48px;","height: 48px;",
+	"margin: 4px;","border-radius: 4px;","background: $colour_numPadBackground;","color: $colour_numPadText;","outline: none;","border: 1px solid $colour_numPadBorder;","cursor: pointer;","font-weight: 600;",'font-family: "Helvetica Neue", Helvetica, sans-serif;',"font-size: 12pt;","-webkit-tap-highlight-color: rgba(0,0,0,0);","}",".blocklyNumPadButton > img {","margin-top: 10%;","width: 80%;","height: 80%;","}",".blocklyNumPadButton:active {","background: $colour_numPadActiveBackground;","-webkit-tap-highlight-color: rgba(0,0,0,0);",
+	"}",".arrowTop {","border-top: 1px solid;","border-left: 1px solid;","border-top-left-radius: 4px;","border-color: inherit;","}",".arrowBottom {","border-bottom: 1px solid;","border-right: 1px solid;","border-bottom-right-radius: 4px;","border-color: inherit;","}",".valueReportBox {","min-width: 50px;","max-width: 300px;","max-height: 200px;","overflow: auto;","word-wrap: break-word;","text-align: center;",'font-family: "Helvetica Neue", Helvetica, sans-serif;',"font-size: .8em;","}",".blocklyResizeSE {",
 	"cursor: se-resize;","fill: #aaa;","}",".blocklyResizeSW {","cursor: sw-resize;","fill: #aaa;","}",".blocklyResizeLine {","stroke: #888;","stroke-width: 1;","}",".blocklyHighlightedConnectionPath {","fill: none;","stroke: #fc3;","stroke-width: 4px;","}",".blocklyPath {","stroke-width: 1px;","}",".blocklySelected>.blocklyPath {","}",".blocklySelected>.blocklyPathLight {","display: none;","}",".blocklyDraggable {",'cursor: url("<<<PATH>>>/handopen.cur"), auto;',"cursor: grab;","cursor: -webkit-grab;",
 	"cursor: -moz-grab;","}",".blocklyDragging {",'cursor: url("<<<PATH>>>/handclosed.cur"), auto;',"cursor: grabbing;","cursor: -webkit-grabbing;","cursor: -moz-grabbing;","}",".blocklyDraggable:active {",'cursor: url("<<<PATH>>>/handclosed.cur"), auto;',"cursor: grabbing;","cursor: -webkit-grabbing;","cursor: -moz-grabbing;","}",".blocklyBlockDragSurface .blocklyDraggable {",'cursor: url("<<<PATH>>>/handclosed.cur"), auto;',"cursor: grabbing;","cursor: -webkit-grabbing;","cursor: -moz-grabbing;","}",
 	".blocklyDragging.blocklyDraggingDelete {",'cursor: url("<<<PATH>>>/handdelete.cur"), auto;',"}",".blocklyDragging.blocklyDraggingMouseThrough {","pointer-events: none;","}",".blocklyToolboxDelete {",'cursor: url("<<<PATH>>>/handdelete.cur"), auto;',"}",".blocklyDragging>.blocklyPath,",".blocklyDragging>.blocklyPathLight {","fill-opacity: 1.0;","stroke-opacity: 1.0;","}",".blocklyDragging>.blocklyPath {","}",".blocklyDisabled>.blocklyPath {","fill-opacity: .5;","stroke-opacity: .5;","}",".blocklyInsertionMarker>.blocklyPath {",
@@ -22694,8 +23116,8 @@ module.exports =
 	"float: left;","margin: 1px 5px 8px 0;","}",".blocklyHorizontalTreeRtl {","float: right;","margin: 1px 0 8px 5px;","}",'.blocklyToolboxDiv[dir="RTL"] .blocklyTreeRow {',"margin-left: 8px;","}",".blocklyTreeRow:not(.blocklyTreeSelected):hover {","background-color: #e4e4e4;","}",".blocklyTreeSeparator {","border-bottom: solid #e5e5e5 1px;","height: 0;","margin: 5px 0;","}",".blocklyTreeSeparatorHorizontal {","border-right: solid #e5e5e5 1px;","width: 0;","padding: 5px 0;","margin: 0 5px;","}",".blocklyTreeIcon {",
 	"background-image: url(<<<PATH>>>/sprites.png);","height: 16px;","vertical-align: middle;","width: 16px;","}",".blocklyTreeIconClosedLtr {","background-position: -32px -1px;","}",".blocklyTreeIconClosedRtl {","background-position: 0px -1px;","}",".blocklyTreeIconOpen {","background-position: -16px -1px;","}",".blocklyTreeSelected>.blocklyTreeIconClosedLtr {","background-position: -32px -17px;","}",".blocklyTreeSelected>.blocklyTreeIconClosedRtl {","background-position: 0px -17px;","}",".blocklyTreeSelected>.blocklyTreeIconOpen {",
 	"background-position: -16px -17px;","}",".blocklyTreeIconNone,",".blocklyTreeSelected>.blocklyTreeIconNone {","background-position: -48px -1px;","}",".blocklyTreeLabel {","cursor: default;",'font-family: "Helvetica Neue", Helvetica, sans-serif;',"font-size: 16px;","padding: 0 3px;","vertical-align: middle;","}",".blocklyToolboxDelete .blocklyTreeLabel {",'cursor: url("<<<PATH>>>/handdelete.cur"), auto;',"}",".blocklyTreeSelected .blocklyTreeLabel {","color: #fff;","}",".blocklyDropDownDiv .goog-slider-horizontal {",
-	"margin: 8px;","height: 22px;","width: 150px;","position: relative;","outline: none;","border-radius: 11px;","margin-bottom: 20px;","}",".blocklyDropDownDiv .goog-slider-horizontal .goog-slider-thumb {","width: 26px;","height: 26px;","margin-top: -1px;","position: absolute;","background-color: white;","border-radius: 100%;","-webkit-box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.15);","-moz-box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.15);","box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.15);","}",".scratchEyedropper {",
-	"background: none;","outline: none;","border: none;","width: 100%;","text-align: center;","border-top: 1px solid #ddd;","padding-top: 5px;","cursor: pointer;","}",".scratchColourPickerLabel {",'font-family: "Helvetica Neue", Helvetica, sans-serif;',"font-size: 0.65rem;","color: $colour_toolboxText;","margin: 8px;","}",".scratchColourPickerLabelText {","font-weight: bold;","}",".scratchColourPickerReadout {","margin-left: 10px;","}",".blocklyWidgetDiv .goog-menu {","background: #fff;","border-color: #ccc #666 #666 #ccc;",
+	"margin: 8px;","height: 22px;","width: 150px;","position: relative;","outline: none;","border-radius: 11px;","margin-bottom: 20px;","}",".blocklyDropDownDiv .goog-slider-horizontal .goog-slider-thumb {","width: 26px;","height: 26px;","top: -1px;","position: absolute;","background-color: white;","border-radius: 100%;","-webkit-box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.15);","-moz-box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.15);","box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.15);","}",".scratchEyedropper {","background: none;",
+	"outline: none;","border: none;","width: 100%;","text-align: center;","border-top: 1px solid #ddd;","padding-top: 5px;","cursor: pointer;","}",".scratchColourPickerLabel {",'font-family: "Helvetica Neue", Helvetica, sans-serif;',"font-size: 0.65rem;","color: $colour_toolboxText;","margin: 8px;","}",".scratchColourPickerLabelText {","font-weight: bold;","}",".scratchColourPickerReadout {","margin-left: 10px;","}",".blocklyWidgetDiv .goog-menu {","background: #fff;","border-color: #ccc #666 #666 #ccc;",
 	"border-style: solid;","border-width: 1px;","cursor: default;",'font: normal 13px "Helvetica Neue", Helvetica, sans-serif;',"margin: 0;","outline: none;","padding: 4px 0;","position: absolute;","overflow-y: auto;","overflow-x: hidden;","z-index: 20000;","}",".blocklyDropDownDiv .goog-menu {","cursor: default;",'font: normal 13px "Helvetica Neue", Helvetica, sans-serif;',"outline: none;","z-index: 20000;","}",".blocklyWidgetDiv .goog-menuitem {","color: #000;",'font: normal 13px "Helvetica Neue", Helvetica, sans-serif;',
 	"list-style: none;","margin: 0;","padding: 4px 7em 4px 28px;","white-space: nowrap;","}",".blocklyDropDownDiv .goog-menuitem {","color: #fff;",'font: normal 13px "Helvetica Neue", Helvetica, sans-serif;',"font-weight: bold;","list-style: none;","margin: 0;","min-height: 24px;","padding: 4px 7em 4px 28px;","white-space: nowrap;","}",".blocklyWidgetDiv .goog-menuitem.goog-menuitem-rtl, ",".blocklyDropDownDiv .goog-menuitem.goog-menuitem-rtl {","padding-left: 7em;","padding-right: 28px;","}",".blocklyWidgetDiv .goog-menu-nocheckbox .goog-menuitem,",
 	".blocklyWidgetDiv .goog-menu-noicon .goog-menuitem, ",".blocklyDropDownDiv .goog-menu-nocheckbox .goog-menuitem,",".blocklyDropDownDiv .goog-menu-noicon .goog-menuitem { ","padding-left: 12px;","}",".blocklyWidgetDiv .goog-menu-noaccel .goog-menuitem, ",".blocklyDropDownDiv .goog-menu-noaccel .goog-menuitem {","padding-right: 20px;","}",".blocklyWidgetDiv .goog-menuitem-content ",".blocklyDropDownDiv .goog-menuitem-content {","color: #000;",'font: normal 13px "Helvetica Neue", Helvetica, sans-serif;',
@@ -22716,8 +23138,8 @@ module.exports =
 	Blockly.WidgetDiv.positionWithAnchor=function(a,b,c,d){var e=Blockly.WidgetDiv.calculateY_(a,b,c);a=Blockly.WidgetDiv.calculateX_(a,b,c,d);Blockly.WidgetDiv.positionInternal_(a,e,c.height)};Blockly.WidgetDiv.calculateX_=function(a,b,c,d){if(d)return b=Math.max(b.right-c.width,a.left),Math.min(b,a.right-c.width);b=Math.min(b.left,a.right-c.width);return Math.max(b,a.left)};Blockly.WidgetDiv.calculateY_=function(a,b,c){return b.bottom+c.height>=a.bottom?b.top-c.height:b.bottom};Blockly.inject=function(a,b){goog.isString(a)&&(a=document.getElementById(a)||document.querySelector(a));if(!goog.dom.contains(document,a))throw"Error: container is not in current document.";var c=new Blockly.Options(b||{}),d=goog.dom.createDom("div","injectionDiv");a.appendChild(d);Blockly.Field.startCache();var e=Blockly.createDom_(d,c),f=new Blockly.BlockDragSurfaceSvg(d);d=new Blockly.WorkspaceDragSurfaceSvg(d);c=Blockly.createMainWorkspace_(e,c,f,d);Blockly.init_(c);Blockly.mainWorkspace=c;Blockly.svgResize(c);
 	return c};
 	Blockly.createDom_=function(a,b){a.setAttribute("dir","LTR");goog.ui.Component.setDefaultRightToLeft(b.RTL);Blockly.Css.inject(b.hasCss,b.pathToMedia);var c=Blockly.utils.createSvgElement("svg",{xmlns:"http://www.w3.org/2000/svg","xmlns:html":"http://www.w3.org/1999/xhtml","xmlns:xlink":"http://www.w3.org/1999/xlink",version:"1.1","class":"blocklySvg"},a),d=Blockly.utils.createSvgElement("defs",{},c),e=String(Math.random()).substring(2),f=Blockly.utils.createSvgElement("filter",{id:"blocklyStackGlowFilter",height:"160%",
-	width:"180%",y:"-30%",x:"-40%"},d);b.stackGlowBlur=Blockly.utils.createSvgElement("feGaussianBlur",{"in":"SourceGraphic",stdDeviation:Blockly.STACK_GLOW_RADIUS},f);var g=Blockly.utils.createSvgElement("feComponentTransfer",{result:"outBlur"},f);Blockly.utils.createSvgElement("feFuncA",{type:"table",tableValues:"0"+goog.string.repeat(" 1",16)},g);Blockly.utils.createSvgElement("feFlood",{"flood-color":Blockly.Colours.stackGlow,"flood-opacity":Blockly.Colours.stackGlowOpacity,result:"outColor"},f);
-	Blockly.utils.createSvgElement("feComposite",{"in":"outColor",in2:"outBlur",operator:"in",result:"outGlow"},f);Blockly.utils.createSvgElement("feComposite",{"in":"SourceGraphic",in2:"outGlow",operator:"over"},f);f=Blockly.utils.createSvgElement("filter",{id:"blocklyReplacementGlowFilter",height:"160%",width:"180%",y:"-30%",x:"-40%"},d);Blockly.utils.createSvgElement("feGaussianBlur",{"in":"SourceGraphic",stdDeviation:Blockly.REPLACEMENT_GLOW_RADIUS},f);g=Blockly.utils.createSvgElement("feComponentTransfer",
+	width:"180%",y:"-30%",x:"-40%"},d);b.stackGlowBlur=Blockly.utils.createSvgElement("feGaussianBlur",{"in":"SourceGraphic",stdDeviation:Blockly.Colours.stackGlowSize},f);var g=Blockly.utils.createSvgElement("feComponentTransfer",{result:"outBlur"},f);Blockly.utils.createSvgElement("feFuncA",{type:"table",tableValues:"0"+goog.string.repeat(" 1",16)},g);Blockly.utils.createSvgElement("feFlood",{"flood-color":Blockly.Colours.stackGlow,"flood-opacity":Blockly.Colours.stackGlowOpacity,result:"outColor"},
+	f);Blockly.utils.createSvgElement("feComposite",{"in":"outColor",in2:"outBlur",operator:"in",result:"outGlow"},f);Blockly.utils.createSvgElement("feComposite",{"in":"SourceGraphic",in2:"outGlow",operator:"over"},f);f=Blockly.utils.createSvgElement("filter",{id:"blocklyReplacementGlowFilter",height:"160%",width:"180%",y:"-30%",x:"-40%"},d);Blockly.utils.createSvgElement("feGaussianBlur",{"in":"SourceGraphic",stdDeviation:Blockly.Colours.replacementGlowSize},f);g=Blockly.utils.createSvgElement("feComponentTransfer",
 	{result:"outBlur"},f);Blockly.utils.createSvgElement("feFuncA",{type:"table",tableValues:"0"+goog.string.repeat(" 1",16)},g);Blockly.utils.createSvgElement("feFlood",{"flood-color":Blockly.Colours.replacementGlow,"flood-opacity":Blockly.Colours.replacementGlowOpacity,result:"outColor"},f);Blockly.utils.createSvgElement("feComposite",{"in":"outColor",in2:"outBlur",operator:"in",result:"outGlow"},f);Blockly.utils.createSvgElement("feComposite",{"in":"SourceGraphic",in2:"outGlow",operator:"over"},f);
 	g=Blockly.utils.createSvgElement("pattern",{id:"blocklyDisabledPattern"+e,patternUnits:"userSpaceOnUse",width:10,height:10},d);Blockly.utils.createSvgElement("rect",{width:10,height:10,fill:"#aaa"},g);Blockly.utils.createSvgElement("path",{d:"M 0 0 L 10 10 M 10 0 L 0 10",stroke:"#cc0"},g);b.disabledPatternId=g.id;b.gridPattern=Blockly.Grid.createDom(e,b.gridOptions,d);return c};
 	Blockly.createMainWorkspace_=function(a,b,c,d){b.parentWorkspace=null;var e=new Blockly.WorkspaceSvg(b,c,d);e.scale=b.zoomOptions.startScale;a.appendChild(e.createDom("blocklyMainBackground"));!b.hasCategories&&b.languageTree&&(c=e.addFlyout_("svg"),Blockly.utils.insertAfter_(c,a));e.translate(0,0);Blockly.mainWorkspace=e;b.readOnly||b.hasScrollbars||e.addChangeListener(function(){if(!e.isDragging()){var a=e.getMetrics(),c=a.viewLeft+a.absoluteLeft,d=a.viewTop+a.absoluteTop;if(a.contentTop<d||a.contentTop+
@@ -22781,12 +23203,12 @@ module.exports =
 	*/
 	Blockly.Colours={motion:{primary:"#4C97FF",secondary:"#4280D7",tertiary:"#3373CC"},looks:{primary:"#9966FF",secondary:"#855CD6",tertiary:"#774DCB"},sounds:{primary:"#CF63CF",secondary:"#C94FC9",tertiary:"#BD42BD"},control:{primary:"#FFAB19",secondary:"#EC9C13",tertiary:"#CF8B17"},event:{primary:"#FFBF00",secondary:"#E6AC00",tertiary:"#CC9900"},sensing:{primary:"#5CB1D6",secondary:"#47A8D1",tertiary:"#2E8EB8"},pen:{primary:"#0fBD8C",secondary:"#0DA57A",tertiary:"#0B8E69"},operators:{primary:"#59C059",
 	secondary:"#46B946",tertiary:"#389438"},data:{primary:"#FF8C1A",secondary:"#FF8000",tertiary:"#DB6E00"},data_lists:{primary:"#FF661A",secondary:"#FF5500",tertiary:"#E64D00"},more:{primary:"#FF6680",secondary:"#FF4D6A",tertiary:"#FF3355"},text:"#575E75",workspace:"#F9F9F9",toolboxHover:"#4C97FF",toolboxSelected:"#e9eef2",toolboxText:"#575E75",toolbox:"#FFFFFF",flyout:"#F9F9F9",scrollbar:"#CECDCE",scrollbarHover:"#CECDCE",textField:"#FFFFFF",insertionMarker:"#000000",insertionMarkerOpacity:.2,dragShadowOpacity:.3,
-	stackGlow:"#FFF200",stackGlowOpacity:1,replacementGlow:"#FFFFFF",replacementGlowOpacity:1,colourPickerStroke:"#FFFFFF",fieldShadow:"rgba(0,0,0,0.1)",dropDownShadow:"rgba(0, 0, 0, .3)",numPadBackground:"#547AB2",numPadBorder:"#435F91",numPadActiveBackground:"#435F91",numPadText:"#FFFFFF",valueReportBackground:"#FFFFFF",valueReportBorder:"#AAAAAA"};
+	stackGlow:"#FFF200",stackGlowSize:4,stackGlowOpacity:1,replacementGlow:"#FFFFFF",replacementGlowSize:2,replacementGlowOpacity:1,colourPickerStroke:"#FFFFFF",fieldShadow:"rgba(0,0,0,0.1)",dropDownShadow:"rgba(0, 0, 0, .3)",numPadBackground:"#547AB2",numPadBorder:"#435F91",numPadActiveBackground:"#435F91",numPadText:"#FFFFFF",valueReportBackground:"#FFFFFF",valueReportBorder:"#AAAAAA"};
 	Blockly.constants={};Blockly.DRAG_RADIUS=3;Blockly.FLYOUT_DRAG_RADIUS=10;Blockly.SNAP_RADIUS=48;Blockly.CONNECTING_SNAP_RADIUS=68;Blockly.CURRENT_CONNECTION_PREFERENCE=20;Blockly.BUMP_DELAY=0;Blockly.COLLAPSE_CHARS=30;Blockly.LONGPRESS=750;Blockly.SOUND_LIMIT=100;Blockly.DRAG_STACK=!0;Blockly.HSV_SATURATION=.45;Blockly.HSV_VALUE=.65;Blockly.SPRITE={width:96,height:124,url:"sprites.png"};Blockly.SVG_NS="http://www.w3.org/2000/svg";Blockly.HTML_NS="http://www.w3.org/1999/xhtml";
 	Blockly.INPUT_VALUE=1;Blockly.OUTPUT_VALUE=2;Blockly.NEXT_STATEMENT=3;Blockly.PREVIOUS_STATEMENT=4;Blockly.DUMMY_INPUT=5;Blockly.ALIGN_LEFT=-1;Blockly.ALIGN_CENTRE=0;Blockly.ALIGN_RIGHT=1;Blockly.DRAG_NONE=0;Blockly.DRAG_STICKY=1;Blockly.DRAG_BEGIN=1;Blockly.DRAG_FREE=2;Blockly.OPPOSITE_TYPE=[];Blockly.OPPOSITE_TYPE[Blockly.INPUT_VALUE]=Blockly.OUTPUT_VALUE;Blockly.OPPOSITE_TYPE[Blockly.OUTPUT_VALUE]=Blockly.INPUT_VALUE;Blockly.OPPOSITE_TYPE[Blockly.NEXT_STATEMENT]=Blockly.PREVIOUS_STATEMENT;
-	Blockly.OPPOSITE_TYPE[Blockly.PREVIOUS_STATEMENT]=Blockly.NEXT_STATEMENT;Blockly.TOOLBOX_AT_TOP=0;Blockly.TOOLBOX_AT_BOTTOM=1;Blockly.TOOLBOX_AT_LEFT=2;Blockly.TOOLBOX_AT_RIGHT=3;Blockly.OUTPUT_SHAPE_HEXAGONAL=1;Blockly.OUTPUT_SHAPE_ROUND=2;Blockly.OUTPUT_SHAPE_SQUARE=3;Blockly.STACK_GLOW_RADIUS=1.3;Blockly.REPLACEMENT_GLOW_RADIUS=2;
-	Blockly.Categories={motion:"motion",looks:"looks",sound:"sounds",pen:"pen",data:"data",dataLists:"data-lists",event:"events",control:"control",sensing:"sensing",operators:"operators",more:"more"};Blockly.DELETE_AREA_NONE=null;Blockly.DELETE_AREA_TRASH=1;Blockly.DELETE_AREA_TOOLBOX=2;Blockly.VARIABLE_CATEGORY_NAME="VARIABLE";Blockly.PROCEDURE_CATEGORY_NAME="PROCEDURE";Blockly.RENAME_VARIABLE_ID="RENAME_VARIABLE_ID";Blockly.DELETE_VARIABLE_ID="DELETE_VARIABLE_ID";Blockly.NEW_BROADCAST_MESSAGE_ID="NEW_BROADCAST_MESSAGE_ID";
-	Blockly.BROADCAST_MESSAGE_VARIABLE_TYPE="broadcast_msg";Blockly.LIST_VARIABLE_TYPE="list";Blockly.SCALAR_VARIABLE_TYPE="";Blockly.PROCEDURES_DEFINITION_BLOCK_TYPE="procedures_definition";Blockly.PROCEDURES_PROTOTYPE_BLOCK_TYPE="procedures_prototype";Blockly.PROCEDURES_CALL_BLOCK_TYPE="procedures_call";
+	Blockly.OPPOSITE_TYPE[Blockly.PREVIOUS_STATEMENT]=Blockly.NEXT_STATEMENT;Blockly.TOOLBOX_AT_TOP=0;Blockly.TOOLBOX_AT_BOTTOM=1;Blockly.TOOLBOX_AT_LEFT=2;Blockly.TOOLBOX_AT_RIGHT=3;Blockly.OUTPUT_SHAPE_HEXAGONAL=1;Blockly.OUTPUT_SHAPE_ROUND=2;Blockly.OUTPUT_SHAPE_SQUARE=3;Blockly.Categories={motion:"motion",looks:"looks",sound:"sounds",pen:"pen",data:"data",dataLists:"data-lists",event:"events",control:"control",sensing:"sensing",operators:"operators",more:"more"};Blockly.DELETE_AREA_NONE=null;
+	Blockly.DELETE_AREA_TRASH=1;Blockly.DELETE_AREA_TOOLBOX=2;Blockly.VARIABLE_CATEGORY_NAME="VARIABLE";Blockly.PROCEDURE_CATEGORY_NAME="PROCEDURE";Blockly.RENAME_VARIABLE_ID="RENAME_VARIABLE_ID";Blockly.DELETE_VARIABLE_ID="DELETE_VARIABLE_ID";Blockly.NEW_BROADCAST_MESSAGE_ID="NEW_BROADCAST_MESSAGE_ID";Blockly.BROADCAST_MESSAGE_VARIABLE_TYPE="broadcast_msg";Blockly.LIST_VARIABLE_TYPE="list";Blockly.SCALAR_VARIABLE_TYPE="";Blockly.PROCEDURES_DEFINITION_BLOCK_TYPE="procedures_definition";
+	Blockly.PROCEDURES_PROTOTYPE_BLOCK_TYPE="procedures_prototype";Blockly.PROCEDURES_CALL_BLOCK_TYPE="procedures_call";
 	Blockly.Blocks.math={};Blockly.Blocks.math_number={init:function(){this.jsonInit({message0:"%1",args0:[{type:"field_number",name:"NUM",value:"0"}],output:"Number",outputShape:Blockly.OUTPUT_SHAPE_ROUND,colour:Blockly.Colours.textField,colourSecondary:Blockly.Colours.textField,colourTertiary:Blockly.Colours.textField})}};
 	Blockly.Blocks.math_integer={init:function(){this.jsonInit({message0:"%1",args0:[{type:"field_number",name:"NUM",precision:1}],output:"Number",outputShape:Blockly.OUTPUT_SHAPE_ROUND,colour:Blockly.Colours.textField,colourSecondary:Blockly.Colours.textField,colourTertiary:Blockly.Colours.textField})}};
 	Blockly.Blocks.math_whole_number={init:function(){this.jsonInit({message0:"%1",args0:[{type:"field_number",name:"NUM",min:0,precision:1}],output:"Number",outputShape:Blockly.OUTPUT_SHAPE_ROUND,colour:Blockly.Colours.textField,colourSecondary:Blockly.Colours.textField,colourTertiary:Blockly.Colours.textField})}};
@@ -22808,7 +23230,7 @@ module.exports =
 /******/ ]);
 
 /***/ }),
-/* 44 */
+/* 46 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -22818,11 +23240,11 @@ module.exports =
 /* harmony export (immutable) */ __webpack_exports__["c"] = glowBlock;
 /* harmony export (immutable) */ __webpack_exports__["e"] = report;
 /* harmony export (immutable) */ __webpack_exports__["d"] = changeValue;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(33);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_scratch_blocks__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_scratch_blocks__ = __webpack_require__(45);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_scratch_blocks___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_scratch_blocks__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parser_parserUtils_js__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parser_parserUtils_js__ = __webpack_require__(49);
 
 
 
@@ -22857,6 +23279,7 @@ function scratchify(clasz='scratch',keepText=false) {
             //add to this workspace
             var dom = Blockly.Xml.textToDom(xml);
             Blockly.Xml.domToWorkspace(dom, workspace);
+            //workspace.cleanUp();
         }
         //rescale the workspace to fit to the blocks
         fitBlocks(workspace, id);
@@ -22917,11 +23340,11 @@ function fitBlocks(workspace, id) {
 }
 
 /***/ }),
-/* 45 */
+/* 47 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parser_blocks__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parser_blocks__ = __webpack_require__(32);
 /**
  * Specification of blocks.
  *
@@ -22943,7 +23366,7 @@ function fitBlocks(workspace, id) {
 // some frequently used predicates
 
 let looksSoundPredicate = function (ctx, visitor) {
-    let opt = visitor.getString(ctx.option[0]);
+    let opt = ctx.option?visitor.getString(ctx.option[0]):'';
     let label = visitor.getString(ctx.argument[0]);
     return (opt === 'sound') || (label === "pan left/right" || label === 'pitch');
 };
@@ -24196,22 +24619,22 @@ const blockspecifications = [
 
 
 /***/ }),
-/* 46 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
 (function() {
   var XMLDocument, XMLDocumentCB, XMLStreamWriter, XMLStringWriter, assign, isFunction, ref;
 
-  ref = __webpack_require__(4), assign = ref.assign, isFunction = ref.isFunction;
+  ref = __webpack_require__(5), assign = ref.assign, isFunction = ref.isFunction;
 
-  XMLDocument = __webpack_require__(56);
+  XMLDocument = __webpack_require__(60);
 
-  XMLDocumentCB = __webpack_require__(57);
+  XMLDocumentCB = __webpack_require__(61);
 
-  XMLStringWriter = __webpack_require__(28);
+  XMLStringWriter = __webpack_require__(31);
 
-  XMLStreamWriter = __webpack_require__(58);
+  XMLStreamWriter = __webpack_require__(62);
 
   module.exports.create = function(name, xmldec, doctype, options) {
     var doc, root;
@@ -24255,16 +24678,16 @@ const blockspecifications = [
 
 
 /***/ }),
-/* 47 */
+/* 49 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* unused harmony export init_parser_utils */
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseTextToXML;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__LNParserF__ = __webpack_require__(60);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__XMLVisitor__ = __webpack_require__(61);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__blockspecification_blockspecification__ = __webpack_require__(45);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__blocks__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__LNParserF__ = __webpack_require__(64);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__XMLVisitor__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__blockspecification_blockspecification__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__blocks__ = __webpack_require__(32);
 /**
  * Provide high level function to transform text to XML
  *
@@ -24361,39 +24784,44 @@ init_parser_utils();
 /**
  * todo: return error message in case something goes wrong
  * @param text
+ * @param location boolean indicating an location is added to top blocks
  * @returns xml or undefined
  */
-function parseTextToXML(text,location={
-        x: 10,
-        y: 10
-    }) {
+function parseTextToXML(text,location=true) {
     let cst = getCst(text);
     if (cst) {
         let xml = execXmlVisitor(cst,location);
-        //console.log(xml);
+        console.log(xml);
         return xml;
     }
 }
 
 function getCst(text) {
-    let r = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__LNParserF__["a" /* parse */])(text);
+    let r = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__LNParserF__["a" /* parse */])(cleanupText(text));
     return r.value;
 }
 
 function execXmlVisitor(cst,location) {
-    let v = new visitor(location);
+    let v = new visitor({
+        x: 10,
+        y: 10
+    },location);
     let xml = v.getXML(cst);
     return xml;
 }
 
+function cleanupText(text){
+    return text.trim();
+}
+
 /***/ }),
-/* 48 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var version_1 = __webpack_require__(27);
+var version_1 = __webpack_require__(30);
 function createSyntaxDiagramsCode(grammar, _a) {
     var _b = _a === void 0 ? {} : _a, _c = _b.resourceBase, resourceBase = _c === void 0 ? "https://unpkg.com/chevrotain@" + version_1.VERSION + "/diagrams/" : _c, _d = _b.css, css = _d === void 0 ? "https://unpkg.com/chevrotain@" + version_1.VERSION + "/diagrams/diagrams.css" : _d;
     var header = "\n<!-- This is a generated file -->\n<!DOCTYPE html>\n<meta charset=\"utf-8\">\n<style>\n  body {\n    background-color: hsl(30, 20%, 95%)\n  }\n</style>\n\n";
@@ -24408,13 +24836,209 @@ exports.createSyntaxDiagramsCode = createSyntaxDiagramsCode;
 //# sourceMappingURL=render_public.js.map
 
 /***/ }),
-/* 49 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var cache_1 = __webpack_require__(22);
+var utils_1 = __webpack_require__(0);
+var tokens_public_1 = __webpack_require__(3);
+var gast_public_1 = __webpack_require__(1);
+/**
+ * Missing features
+ * 1. Rule arguments
+ * 2. Gates
+ * 3. embedded actions
+ */
+var NL = "\n";
+function genUmdModule(options) {
+    return "\n(function (root, factory) {\n    if (typeof define === 'function' && define.amd) {\n        // AMD. Register as an anonymous module.\n        define(['chevrotain'], factory);\n    } else if (typeof module === 'object' && module.exports) {\n        // Node. Does not work with strict CommonJS, but\n        // only CommonJS-like environments that support module.exports,\n        // like Node.\n        module.exports = factory(require('chevrotain'));\n    } else {\n        // Browser globals (root is window)\n        root.returnExports = factory(root.b);\n    }\n}(typeof self !== 'undefined' ? self : this, function (chevrotain) {\n\n" + genClass(options) + "\n    \nreturn {\n    " + options.name + ": " + options.name + " \n}\n}));\n";
+}
+exports.genUmdModule = genUmdModule;
+function genWrapperFunction(options) {
+    return "    \n" + genClass(options) + "\nreturn new " + options.name + "(tokenVocabulary, config)    \n";
+}
+exports.genWrapperFunction = genWrapperFunction;
+function genClass(options) {
+    // TODO: how to pass the token vocabulary? Constructor? other?
+    // TODO: should outputCst be enabled by default?
+    var result = "\nfunction " + options.name + "(tokenVocabulary, config) {\n    // invoke super constructor\n    chevrotain.Parser.call(this, [], tokenVocabulary, config)\n\n    const $ = this\n\n    " + genAllRules(options.rules) + "\n\n    // very important to call this after all the rules have been defined.\n    // otherwise the parser may not work correctly as it will lack information\n    // derived during the self analysis phase.\n    chevrotain.Parser.performSelfAnalysis(this)\n}\n\n// inheritance as implemented in javascript in the previous decade... :(\n" + options.name + ".prototype = Object.create(chevrotain.Parser.prototype)\n" + options.name + ".prototype.constructor = " + options.name + "    \n    ";
+    return result;
+}
+exports.genClass = genClass;
+function genAllRules(rules) {
+    var rulesText = utils_1.map(rules, function (currRule) {
+        return genRule(currRule, 1);
+    });
+    return rulesText.join("\n");
+}
+exports.genAllRules = genAllRules;
+function genRule(prod, n) {
+    var result = indent(n, "$.RULE(\"" + prod.name + "\", function() {") + NL;
+    result += genDefinition(prod.definition, n + 1);
+    result += indent(n + 1, "})") + NL;
+    return result;
+}
+exports.genRule = genRule;
+function genTerminal(prod, n) {
+    var name = tokens_public_1.tokenName(prod.terminalType);
+    // TODO: potential performance optimization, avoid tokenMap Dictionary access
+    return indent(n, "$.CONSUME" + prod.idx + "(this.tokensMap." + name + ")" + NL);
+}
+exports.genTerminal = genTerminal;
+function genNonTerminal(prod, n) {
+    return indent(n, "$.SUBRULE" + prod.idx + "($." + prod.nonTerminalName + ")" + NL);
+}
+exports.genNonTerminal = genNonTerminal;
+function genAlternation(prod, n) {
+    var result = indent(n, "$.OR" + prod.idx + "([") + NL;
+    var alts = utils_1.map(prod.definition, function (altDef) { return genSingleAlt(altDef, n + 1); });
+    result += alts.join("," + NL);
+    result += NL + indent(n, "])" + NL);
+    return result;
+}
+exports.genAlternation = genAlternation;
+function genSingleAlt(prod, n) {
+    var result = indent(n, "{") + NL;
+    if (prod.name) {
+        result += indent(n + 1, "NAME: \"" + prod.name + "\",") + NL;
+    }
+    result += indent(n + 1, "ALT: function() {") + NL;
+    result += genDefinition(prod.definition, n + 1);
+    result += indent(n + 1, "}") + NL;
+    result += indent(n, "}");
+    return result;
+}
+exports.genSingleAlt = genSingleAlt;
+function genProd(prod, n) {
+    if (prod instanceof gast_public_1.NonTerminal) {
+        return genNonTerminal(prod, n);
+    }
+    else if (prod instanceof gast_public_1.Option) {
+        return genDSLRule("OPTION", prod, n);
+    }
+    else if (prod instanceof gast_public_1.RepetitionMandatory) {
+        return genDSLRule("AT_LEAST_ONE", prod, n);
+    }
+    else if (prod instanceof gast_public_1.RepetitionMandatoryWithSeparator) {
+        return genDSLRule("AT_LEAST_ONE_SEP", prod, n);
+    }
+    else if (prod instanceof gast_public_1.RepetitionWithSeparator) {
+        return genDSLRule("MANY_SEP", prod, n);
+    }
+    else if (prod instanceof gast_public_1.Repetition) {
+        return genDSLRule("MANY", prod, n);
+    }
+    else if (prod instanceof gast_public_1.Alternation) {
+        return genAlternation(prod, n);
+    }
+    else if (prod instanceof gast_public_1.Terminal) {
+        return genTerminal(prod, n);
+    }
+    else if (prod instanceof gast_public_1.Flat) {
+        return genDefinition(prod.definition, n);
+    }
+    else {
+        /* istanbul ignore next */
+        throw Error("non exhaustive match");
+    }
+}
+function genDSLRule(dslName, prod, n) {
+    var result = indent(n, "$." + (dslName + prod.idx) + "(");
+    if (prod.name || prod.separator) {
+        result += "{" + NL;
+        if (prod.name) {
+            result += indent(n + 1, "NAME: \"" + prod.name + "\"") + "," + NL;
+        }
+        if (prod.separator) {
+            result +=
+                indent(n + 1, "SEP: this.tokensMap." + tokens_public_1.tokenName(prod.separator)) +
+                    "," +
+                    NL;
+        }
+        result += "DEF: " + genDefFunction(prod.definition, n + 2) + NL;
+        result += indent(n, "}") + NL;
+    }
+    else {
+        result += genDefFunction(prod.definition, n + 1);
+    }
+    result += indent(n, ")") + NL;
+    return result;
+}
+function genDefFunction(definition, n) {
+    var def = "function() {" + NL;
+    def += genDefinition(definition, n);
+    def += indent(n, "}") + NL;
+    return def;
+}
+function genDefinition(def, n) {
+    var result = "";
+    utils_1.forEach(def, function (prod) {
+        result += genProd(prod, n + 1);
+    });
+    return result;
+}
+function indent(howMuch, text) {
+    var spaces = Array(howMuch * 4 + 1).join(" ");
+    return spaces + text;
+}
+//# sourceMappingURL=generate.js.map
+
+/***/ }),
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var generate_1 = __webpack_require__(51);
+/**
+ * Will Create a factory function that once invoked with a IParserConfig will return
+ * a Parser Object.
+ *
+ * - Note that this happens using the Function constructor (a type of "eval") so it will not work in environments
+ *   where content security policy is enabled, such as certain websites, Chrome extensions ect...
+ *
+ *   This means this function is best used for development flows to reduce the feedback loops
+ *   or for productive flows targeting node.js only.
+ *
+ *   For productive flows targeting a browser runtime see @link {generation.generateParserModule}
+ */
+function generateParserFactory(options) {
+    var wrapperText = generate_1.genWrapperFunction({
+        name: options.name,
+        rules: options.rules
+    });
+    var constructorWrapper = new Function("tokenVocabulary", "config", "chevrotain", wrapperText);
+    return function (config) {
+        return constructorWrapper(options.tokenVocabulary, config, 
+        // TODO: check how the require is transpiled/webpacked
+        __webpack_require__(6));
+    };
+}
+exports.generateParserFactory = generateParserFactory;
+/**
+ * This would generate the string literal for a UMD module (@link {https://github.com/umdjs/umd})
+ * That exports a Parser Constructor.
+ *
+ * Note that the constructor exposed by the generated module must receive the TokenVocabulary as the first
+ * argument, the IParser config can be passed as the second argument.
+ */
+function generateParserModule(options) {
+    return generate_1.genUmdModule({ name: options.name, rules: options.rules });
+}
+exports.generateParserModule = generateParserModule;
+//# sourceMappingURL=generate_public.js.map
+
+/***/ }),
+/* 53 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var cache_1 = __webpack_require__(25);
 /**
  * Clears the chevrotain internal cache.
  * This should not be used in regular work flows, This is intended for
@@ -24428,15 +25052,15 @@ exports.clearCache = clearCache;
 //# sourceMappingURL=cache_public.js.map
 
 /***/ }),
-/* 50 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var utils_1 = __webpack_require__(0);
-var lang_extensions_1 = __webpack_require__(5);
-var checks_1 = __webpack_require__(35);
+var lang_extensions_1 = __webpack_require__(4);
+var checks_1 = __webpack_require__(10);
 function defaultVisit(ctx, param) {
     var childrenNames = utils_1.keys(ctx);
     var childrenNamesLength = childrenNames.length;
@@ -24471,13 +25095,13 @@ function createBaseSemanticVisitorConstructor(grammarName, ruleNames) {
         visit: function (cstNode, param) {
             // enables writing more concise visitor methods when CstNode has only a single child
             if (utils_1.isArray(cstNode)) {
-                if (cstNode.length > 0) {
-                    cstNode = cstNode[0];
-                }
-                else {
-                    // enables passing optional CstNodes concisely.
-                    return undefined;
-                }
+                // A CST Node's children dictionary can never have empty arrays as values
+                // If a key is defined there will be at least one element in the corresponding value array.
+                cstNode = cstNode[0];
+            }
+            // enables passing optional CstNodes concisely.
+            if (utils_1.isUndefined(cstNode)) {
+                return undefined;
             }
             if (cstNode.fullName !== undefined) {
                 return this[cstNode.fullName](cstNode.children, param);
@@ -24563,15 +25187,15 @@ exports.validateRedundantMethods = validateRedundantMethods;
 //# sourceMappingURL=cst_visitor.js.map
 
 /***/ }),
-/* 51 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var range_1 = __webpack_require__(55);
-var gast_public_1 = __webpack_require__(2);
+var range_1 = __webpack_require__(59);
 var utils_1 = __webpack_require__(0);
+var gast_public_1 = __webpack_require__(1);
 var ProdType;
 (function (ProdType) {
     ProdType[ProdType["OPTION"] = 0] = "OPTION";
@@ -24588,31 +25212,31 @@ var namePropRegExp = /(?:\s*{\s*NAME\s*:\s*["'`]([\w$]*)["'`])?/;
 var namePropRegExpNoCurlyFirstOfTwo = new RegExp(namePropRegExp.source
     .replace("{", "")
     .replace(")?", "\\s*,)?"));
-var terminalRegEx = /\.\s*CONSUME(\d)?\s*\(\s*(?:[a-zA-Z_$]\w*\s*\.\s*)*([a-zA-Z_$]\w*)/;
+var terminalRegEx = /\.\s*CONSUME(\d+)?\s*\(\s*(?:[a-zA-Z_$]\w*\s*\.\s*)*([a-zA-Z_$]\w*)/;
 var terminalRegGlobal = new RegExp(terminalRegEx.source, "g");
-var refRegEx = /\.\s*SUBRULE(\d)?\s*\(\s*(?:[a-zA-Z_$]\w*\s*\.\s*)*([a-zA-Z_$]\w*)/;
+var refRegEx = /\.\s*SUBRULE(\d+)?\s*\(\s*(?:[a-zA-Z_$]\w*\s*\.\s*)*([a-zA-Z_$]\w*)/;
 var refRegExGlobal = new RegExp(refRegEx.source, "g");
-var optionPrefixRegEx = /\.\s*OPTION(\d)?\s*\(/;
+var optionPrefixRegEx = /\.\s*OPTION(\d+)?\s*\(/;
 var optionRegEx = new RegExp(optionPrefixRegEx.source + namePropRegExp.source);
 var optionRegExGlobal = new RegExp(optionPrefixRegEx.source, "g");
-var manyPrefixRegEx = /\.\s*MANY(\d)?\s*\(/;
+var manyPrefixRegEx = /\.\s*MANY(\d+)?\s*\(/;
 var manyRegEx = new RegExp(manyPrefixRegEx.source + namePropRegExp.source);
 var manyRegExGlobal = new RegExp(manyPrefixRegEx.source, "g");
 var sepPropRegEx = /\s*SEP\s*:\s*(?:[a-zA-Z_$]\w*\s*\.\s*)*([a-zA-Z_$]\w*)/;
-var manySepPrefixRegEx = /\.\s*MANY_SEP(\d)?\s*\(\s*{/;
+var manySepPrefixRegEx = /\.\s*MANY_SEP(\d+)?\s*\(\s*{/;
 var manyWithSeparatorRegEx = new RegExp(manySepPrefixRegEx.source +
     namePropRegExpNoCurlyFirstOfTwo.source +
     sepPropRegEx.source);
 var manyWithSeparatorRegExGlobal = new RegExp(manyWithSeparatorRegEx.source, "g");
-var atLeastOneSepPrefixRegEx = /\.\s*AT_LEAST_ONE_SEP(\d)?\s*\(\s*{/;
+var atLeastOneSepPrefixRegEx = /\.\s*AT_LEAST_ONE_SEP(\d+)?\s*\(\s*{/;
 var atLeastOneWithSeparatorRegEx = new RegExp(atLeastOneSepPrefixRegEx.source +
     namePropRegExpNoCurlyFirstOfTwo.source +
     sepPropRegEx.source);
 var atLeastOneWithSeparatorRegExGlobal = new RegExp(atLeastOneWithSeparatorRegEx.source, "g");
-var atLeastOnePrefixRegEx = /\.\s*AT_LEAST_ONE(\d)?\s*\(/;
+var atLeastOnePrefixRegEx = /\.\s*AT_LEAST_ONE(\d+)?\s*\(/;
 var atLeastOneRegEx = new RegExp(atLeastOnePrefixRegEx.source + namePropRegExp.source);
 var atLeastOneRegExGlobal = new RegExp(atLeastOnePrefixRegEx.source, "g");
-var orPrefixRegEx = /\.\s*OR(\d)?\s*\(/;
+var orPrefixRegEx = /\.\s*OR(\d+)?\s*\(/;
 var orRegEx = new RegExp(orPrefixRegEx.source + namePropRegExp.source);
 var orRegExGlobal = new RegExp(orPrefixRegEx.source, "g");
 var orPartSuffixRegEx = /\s*(ALT)\s*:/;
@@ -24636,7 +25260,11 @@ function buildTopProduction(impelText, name, terminals) {
 }
 exports.buildTopProduction = buildTopProduction;
 function buildTopLevel(name, topRange, allRanges, orgText) {
-    var topLevelProd = new gast_public_1.gast.Rule(name, [], orgText);
+    var topLevelProd = new gast_public_1.Rule({
+        name: name,
+        definition: [],
+        orgText: orgText
+    });
     return buildAbstractProd(topLevelProd, topRange, allRanges);
 }
 function buildProdGast(prodRange, allRanges) {
@@ -24671,34 +25299,35 @@ exports.buildProdGast = buildProdGast;
 function buildRefProd(prodRange) {
     var reResult = refRegEx.exec(prodRange.text);
     var isImplicitOccurrenceIdx = reResult[1] === undefined;
-    var refOccurrence = isImplicitOccurrenceIdx ? 1 : parseInt(reResult[1], 10);
+    var refOccurrence = isImplicitOccurrenceIdx ? 0 : parseInt(reResult[1], 10);
     var refProdName = reResult[2];
-    var newRef = new gast_public_1.gast.NonTerminal(refProdName, undefined, refOccurrence);
-    newRef.implicitOccurrenceIndex = isImplicitOccurrenceIdx;
+    var newRef = new gast_public_1.NonTerminal({
+        nonTerminalName: refProdName,
+        idx: refOccurrence
+    });
     return newRef;
 }
 function buildTerminalProd(prodRange) {
     var reResult = terminalRegEx.exec(prodRange.text);
     var isImplicitOccurrenceIdx = reResult[1] === undefined;
     var terminalOccurrence = isImplicitOccurrenceIdx
-        ? 1
+        ? 0
         : parseInt(reResult[1], 10);
     var terminalName = reResult[2];
     var terminalType = exports.terminalNameToConstructor[terminalName];
     if (!terminalType) {
         throw Error("Terminal Token name: " + terminalName + " not found");
     }
-    var newTerminal = new gast_public_1.gast.Terminal(terminalType, terminalOccurrence);
-    newTerminal.implicitOccurrenceIndex = isImplicitOccurrenceIdx;
+    var newTerminal = new gast_public_1.Terminal({
+        terminalType: terminalType,
+        idx: terminalOccurrence
+    });
     return newTerminal;
 }
 function buildProdWithOccurrence(regEx, prodInstance, prodRange, allRanges) {
     var reResult = regEx.exec(prodRange.text);
     var isImplicitOccurrenceIdx = reResult[1] === undefined;
-    prodInstance.occurrenceInParent = isImplicitOccurrenceIdx
-        ? 1
-        : parseInt(reResult[1], 10);
-    prodInstance.implicitOccurrenceIndex = isImplicitOccurrenceIdx;
+    prodInstance.idx = isImplicitOccurrenceIdx ? 0 : parseInt(reResult[1], 10);
     var nestedName = reResult[2];
     if (!utils_1.isUndefined(nestedName)) {
         ;
@@ -24707,27 +25336,31 @@ function buildProdWithOccurrence(regEx, prodInstance, prodRange, allRanges) {
     return buildAbstractProd(prodInstance, prodRange.range, allRanges);
 }
 function buildAtLeastOneProd(prodRange, allRanges) {
-    return buildProdWithOccurrence(atLeastOneRegEx, new gast_public_1.gast.RepetitionMandatory([]), prodRange, allRanges);
+    return buildProdWithOccurrence(atLeastOneRegEx, new gast_public_1.RepetitionMandatory({ definition: [] }), prodRange, allRanges);
 }
 function buildAtLeastOneSepProd(prodRange, allRanges) {
-    return buildRepetitionWithSep(prodRange, allRanges, gast_public_1.gast.RepetitionMandatoryWithSeparator, atLeastOneWithSeparatorRegEx);
+    return buildRepetitionWithSep(prodRange, allRanges, gast_public_1.RepetitionMandatoryWithSeparator, atLeastOneWithSeparatorRegEx);
 }
 function buildManyProd(prodRange, allRanges) {
-    return buildProdWithOccurrence(manyRegEx, new gast_public_1.gast.Repetition([]), prodRange, allRanges);
+    return buildProdWithOccurrence(manyRegEx, new gast_public_1.Repetition({ definition: [] }), prodRange, allRanges);
 }
 function buildManySepProd(prodRange, allRanges) {
-    return buildRepetitionWithSep(prodRange, allRanges, gast_public_1.gast.RepetitionWithSeparator, manyWithSeparatorRegEx);
+    return buildRepetitionWithSep(prodRange, allRanges, gast_public_1.RepetitionWithSeparator, manyWithSeparatorRegEx);
 }
 function buildRepetitionWithSep(prodRange, allRanges, repConstructor, regExp) {
     var reResult = regExp.exec(prodRange.text);
     var isImplicitOccurrenceIdx = reResult[1] === undefined;
-    var occurrenceIdx = isImplicitOccurrenceIdx ? 1 : parseInt(reResult[1], 10);
+    var occurrenceIdx = isImplicitOccurrenceIdx ? 0 : parseInt(reResult[1], 10);
     var sepName = reResult[3];
     var separatorType = exports.terminalNameToConstructor[sepName];
     if (!separatorType) {
         throw Error("Separator Terminal Token name: " + sepName + " not found");
     }
-    var repetitionInstance = new repConstructor([], separatorType, occurrenceIdx);
+    var repetitionInstance = new repConstructor({
+        definition: [],
+        separator: separatorType,
+        idx: occurrenceIdx
+    });
     repetitionInstance.implicitOccurrenceIndex = isImplicitOccurrenceIdx;
     var nestedName = reResult[2];
     if (!utils_1.isUndefined(nestedName)) {
@@ -24737,13 +25370,13 @@ function buildRepetitionWithSep(prodRange, allRanges, repConstructor, regExp) {
     return buildAbstractProd(repetitionInstance, prodRange.range, allRanges);
 }
 function buildOptionProd(prodRange, allRanges) {
-    return buildProdWithOccurrence(optionRegEx, new gast_public_1.gast.Option([]), prodRange, allRanges);
+    return buildProdWithOccurrence(optionRegEx, new gast_public_1.Option({ definition: [] }), prodRange, allRanges);
 }
 function buildOrProd(prodRange, allRanges) {
-    return buildProdWithOccurrence(orRegEx, new gast_public_1.gast.Alternation([]), prodRange, allRanges);
+    return buildProdWithOccurrence(orRegEx, new gast_public_1.Alternation({ definition: [] }), prodRange, allRanges);
 }
 function buildFlatProd(prodRange, allRanges) {
-    var prodInstance = new gast_public_1.gast.Flat([]);
+    var prodInstance = new gast_public_1.Flat({ definition: [] });
     var reResult = orPartRegEx.exec(prodRange.text);
     var nestedName = reResult[1];
     if (!utils_1.isUndefined(nestedName)) {
@@ -24935,7 +25568,7 @@ exports.findClosingOffset = findClosingOffset;
 //# sourceMappingURL=gast_builder.js.map
 
 /***/ }),
-/* 52 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24951,13 +25584,13 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var rest_1 = __webpack_require__(24);
-var lang_extensions_1 = __webpack_require__(5);
-var gast_public_1 = __webpack_require__(2);
-var first_1 = __webpack_require__(36);
+var rest_1 = __webpack_require__(27);
+var lang_extensions_1 = __webpack_require__(4);
+var first_1 = __webpack_require__(37);
 var utils_1 = __webpack_require__(0);
-var constants_1 = __webpack_require__(31);
+var constants_1 = __webpack_require__(34);
 var tokens_public_1 = __webpack_require__(3);
+var gast_public_1 = __webpack_require__(1);
 // This ResyncFollowsWalker computes all of the follows required for RESYNC
 // (skipping reference production).
 var ResyncFollowsWalker = /** @class */ (function (_super) {
@@ -24976,9 +25609,10 @@ var ResyncFollowsWalker = /** @class */ (function (_super) {
         // do nothing! just like in the public sector after 13:00
     };
     ResyncFollowsWalker.prototype.walkProdRef = function (refProd, currRest, prevRest) {
-        var followName = buildBetweenProdsFollowPrefix(refProd.referencedRule, refProd.occurrenceInParent) + this.topProd.name;
+        var followName = buildBetweenProdsFollowPrefix(refProd.referencedRule, refProd.idx) +
+            this.topProd.name;
         var fullRest = currRest.concat(prevRest);
-        var restProd = new gast_public_1.gast.Flat(fullRest);
+        var restProd = new gast_public_1.Flat({ definition: fullRest });
         var t_in_topProd_follows = first_1.first(restProd);
         this.follows.put(followName, t_in_topProd_follows);
     };
@@ -25000,13 +25634,13 @@ function buildBetweenProdsFollowPrefix(inner, occurenceInParent) {
 exports.buildBetweenProdsFollowPrefix = buildBetweenProdsFollowPrefix;
 function buildInProdFollowPrefix(terminal) {
     var terminalName = tokens_public_1.tokenName(terminal.terminalType);
-    return terminalName + terminal.occurrenceInParent + constants_1.IN;
+    return terminalName + terminal.idx + constants_1.IN;
 }
 exports.buildInProdFollowPrefix = buildInProdFollowPrefix;
 //# sourceMappingURL=follow.js.map
 
 /***/ }),
-/* 53 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25022,20 +25656,23 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var parser_public_1 = __webpack_require__(25);
-var gast_public_1 = __webpack_require__(2);
+var parser_public_1 = __webpack_require__(28);
 var utils_1 = __webpack_require__(0);
-function resolveGrammar(topLevels) {
-    var refResolver = new GastRefResolverVisitor(topLevels);
+var gast_visitor_public_1 = __webpack_require__(7);
+var errors_public_1 = __webpack_require__(8);
+function resolveGrammar(topLevels, errMsgProvider) {
+    if (errMsgProvider === void 0) { errMsgProvider = errors_public_1.defaultGrammarResolverErrorProvider; }
+    var refResolver = new GastRefResolverVisitor(topLevels, errMsgProvider);
     refResolver.resolveRefs();
     return refResolver.errors;
 }
 exports.resolveGrammar = resolveGrammar;
 var GastRefResolverVisitor = /** @class */ (function (_super) {
     __extends(GastRefResolverVisitor, _super);
-    function GastRefResolverVisitor(nameToTopRule) {
+    function GastRefResolverVisitor(nameToTopRule, errMsgProvider) {
         var _this = _super.call(this) || this;
         _this.nameToTopRule = nameToTopRule;
+        _this.errMsgProvider = errMsgProvider;
         _this.errors = [];
         return _this;
     }
@@ -25049,12 +25686,7 @@ var GastRefResolverVisitor = /** @class */ (function (_super) {
     GastRefResolverVisitor.prototype.visitNonTerminal = function (node) {
         var ref = this.nameToTopRule.get(node.nonTerminalName);
         if (!ref) {
-            var msg = "Invalid grammar, reference to a rule which is not defined: ->" +
-                node.nonTerminalName +
-                "<-\n" +
-                "inside top level rule: ->" +
-                this.currTopLevel.name +
-                "<-";
+            var msg = this.errMsgProvider.buildRuleNotFoundError(this.currTopLevel, node);
             this.errors.push({
                 message: msg,
                 type: parser_public_1.ParserDefinitionErrorType.UNRESOLVED_SUBRULE_REF,
@@ -25067,19 +25699,19 @@ var GastRefResolverVisitor = /** @class */ (function (_super) {
         }
     };
     return GastRefResolverVisitor;
-}(gast_public_1.gast.GAstVisitor));
+}(gast_visitor_public_1.GAstVisitor));
 exports.GastRefResolverVisitor = GastRefResolverVisitor;
 //# sourceMappingURL=resolver.js.map
 
 /***/ }),
-/* 54 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tokens_public_1 = __webpack_require__(3);
-var lexer_public_1 = __webpack_require__(26);
+var lexer_public_1 = __webpack_require__(29);
 var utils_1 = __webpack_require__(0);
 var PATTERN = "PATTERN";
 exports.DEFAULT_MODE = "defaultMode";
@@ -25668,7 +26300,7 @@ exports.LineTerminatorOptimizedTester = {
 //# sourceMappingURL=lexer.js.map
 
 /***/ }),
-/* 55 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25707,7 +26339,7 @@ exports.isValidRange = isValidRange;
 //# sourceMappingURL=range.js.map
 
 /***/ }),
-/* 56 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -25716,13 +26348,13 @@ exports.isValidRange = isValidRange;
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  isPlainObject = __webpack_require__(4).isPlainObject;
+  isPlainObject = __webpack_require__(5).isPlainObject;
 
-  XMLNode = __webpack_require__(1);
+  XMLNode = __webpack_require__(2);
 
-  XMLStringifier = __webpack_require__(40);
+  XMLStringifier = __webpack_require__(42);
 
-  XMLStringWriter = __webpack_require__(28);
+  XMLStringWriter = __webpack_require__(31);
 
   module.exports = XMLDocument = (function(superClass) {
     extend(XMLDocument, superClass);
@@ -25761,7 +26393,7 @@ exports.isValidRange = isValidRange;
 
 
 /***/ }),
-/* 57 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -25769,37 +26401,37 @@ exports.isValidRange = isValidRange;
   var XMLAttribute, XMLCData, XMLComment, XMLDTDAttList, XMLDTDElement, XMLDTDEntity, XMLDTDNotation, XMLDeclaration, XMLDocType, XMLDocumentCB, XMLElement, XMLProcessingInstruction, XMLRaw, XMLStringWriter, XMLStringifier, XMLText, isFunction, isObject, isPlainObject, ref,
     hasProp = {}.hasOwnProperty;
 
-  ref = __webpack_require__(4), isObject = ref.isObject, isFunction = ref.isFunction, isPlainObject = ref.isPlainObject;
+  ref = __webpack_require__(5), isObject = ref.isObject, isFunction = ref.isFunction, isPlainObject = ref.isPlainObject;
 
-  XMLElement = __webpack_require__(17);
+  XMLElement = __webpack_require__(20);
 
-  XMLCData = __webpack_require__(9);
+  XMLCData = __webpack_require__(12);
 
-  XMLComment = __webpack_require__(10);
+  XMLComment = __webpack_require__(13);
 
-  XMLRaw = __webpack_require__(19);
+  XMLRaw = __webpack_require__(22);
 
-  XMLText = __webpack_require__(20);
+  XMLText = __webpack_require__(23);
 
-  XMLProcessingInstruction = __webpack_require__(18);
+  XMLProcessingInstruction = __webpack_require__(21);
 
-  XMLDeclaration = __webpack_require__(15);
+  XMLDeclaration = __webpack_require__(18);
 
-  XMLDocType = __webpack_require__(16);
+  XMLDocType = __webpack_require__(19);
 
-  XMLDTDAttList = __webpack_require__(11);
+  XMLDTDAttList = __webpack_require__(14);
 
-  XMLDTDEntity = __webpack_require__(13);
+  XMLDTDEntity = __webpack_require__(16);
 
-  XMLDTDElement = __webpack_require__(12);
+  XMLDTDElement = __webpack_require__(15);
 
-  XMLDTDNotation = __webpack_require__(14);
+  XMLDTDNotation = __webpack_require__(17);
 
-  XMLAttribute = __webpack_require__(39);
+  XMLAttribute = __webpack_require__(41);
 
-  XMLStringifier = __webpack_require__(40);
+  XMLStringifier = __webpack_require__(42);
 
-  XMLStringWriter = __webpack_require__(28);
+  XMLStringWriter = __webpack_require__(31);
 
   module.exports = XMLDocumentCB = (function() {
     function XMLDocumentCB(options, onData, onEnd) {
@@ -26169,7 +26801,7 @@ exports.isValidRange = isValidRange;
 
 
 /***/ }),
-/* 58 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -26178,31 +26810,31 @@ exports.isValidRange = isValidRange;
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  XMLDeclaration = __webpack_require__(15);
+  XMLDeclaration = __webpack_require__(18);
 
-  XMLDocType = __webpack_require__(16);
+  XMLDocType = __webpack_require__(19);
 
-  XMLCData = __webpack_require__(9);
+  XMLCData = __webpack_require__(12);
 
-  XMLComment = __webpack_require__(10);
+  XMLComment = __webpack_require__(13);
 
-  XMLElement = __webpack_require__(17);
+  XMLElement = __webpack_require__(20);
 
-  XMLRaw = __webpack_require__(19);
+  XMLRaw = __webpack_require__(22);
 
-  XMLText = __webpack_require__(20);
+  XMLText = __webpack_require__(23);
 
-  XMLProcessingInstruction = __webpack_require__(18);
+  XMLProcessingInstruction = __webpack_require__(21);
 
-  XMLDTDAttList = __webpack_require__(11);
+  XMLDTDAttList = __webpack_require__(14);
 
-  XMLDTDElement = __webpack_require__(12);
+  XMLDTDElement = __webpack_require__(15);
 
-  XMLDTDEntity = __webpack_require__(13);
+  XMLDTDEntity = __webpack_require__(16);
 
-  XMLDTDNotation = __webpack_require__(14);
+  XMLDTDNotation = __webpack_require__(17);
 
-  XMLWriterBase = __webpack_require__(41);
+  XMLWriterBase = __webpack_require__(43);
 
   module.exports = XMLStreamWriter = (function(superClass) {
     extend(XMLStreamWriter, superClass);
@@ -26454,13 +27086,13 @@ exports.isValidRange = isValidRange;
 
 
 /***/ }),
-/* 59 */
+/* 63 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_chevrotain__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__LNParser__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__LNParser__ = __webpack_require__(44);
 /**
  * info visitor.
  *
@@ -26471,7 +27103,7 @@ exports.isValidRange = isValidRange;
  */
 
 //import {NumberLiteral, ColorLiteral} from "./LNLexer";
-const lntokens = __webpack_require__(21);
+const lntokens = __webpack_require__(24);
 let NumberLiteral = lntokens.NumberLiteral;
 let ColorLiteral = lntokens.ColorLiteral;
 
@@ -26486,23 +27118,9 @@ class InformationVisitor extends BaseCstVisitor {
         this.validateVisitor()
     }
 
-    scripts(ctx) {
-        let s = [];
-        for (let i = 0; i < ctx.multipleStacks.length; i++) {
-            s.push(this.visit(ctx.multipleStacks[i]))
-        }
-        for (let i = 0; i < ctx.reporterblock.length; i++) {
-            s.push(this.visit(ctx.reporterblock[i]))
-        }
-        for (let i = 0; i < ctx.booleanblock.length; i++) {
-            s.push(this.visit(ctx.booleanblock[i]))
-        }
-        return s
-    }
-
     multipleStacks(ctx) {
         let s = [];
-        for (let i = 0; i < ctx.stack.length; i++) {
+        for (let i = 0; ctx.stack && i < ctx.stack.length; i++) {
             s.push(this.visit(ctx.stack[i]))
         }
         return {
@@ -26514,7 +27132,7 @@ class InformationVisitor extends BaseCstVisitor {
 
     stack(ctx) {
         let blocks = [];
-        for (let i = 0; i < ctx.stackline.length; i++) {
+        for (let i = 0; ctx.stackline && i < ctx.stackline.length; i++) {
             blocks.push(this.visit(ctx.stackline[i]))
         }
         return blocks
@@ -26522,15 +27140,15 @@ class InformationVisitor extends BaseCstVisitor {
 
     stackline(ctx) {
         let v = ctx;
-        if (ctx.$forever.length > 0) {
+        if (ctx.$forever && ctx.$forever.length > 0) {
             v = this.visit(ctx.$forever)
-        } else if (ctx.$repeatuntil.length > 0) {
+        } else if (ctx.$repeatuntil && ctx.$repeatuntil.length > 0) {
             v = this.visit(ctx.$repeatuntil)
-        } else if (ctx.$repeat.length > 0) {
+        } else if (ctx.$repeat && ctx.$repeat.length > 0) {
             v = this.visit(ctx.$repeat)
-        } else if (ctx.$block.length > 0) {
+        } else if (ctx.$block && ctx.$block.length > 0) {
             v = this.visit(ctx.$block)
-        } else if (ctx.$ifelse.length > 0) {
+        } else if (ctx.$ifelse && ctx.$ifelse.length > 0) {
             v = this.visit(ctx.$ifelse)
         }
         return {
@@ -26577,7 +27195,8 @@ class InformationVisitor extends BaseCstVisitor {
     forever(ctx) {
         return {
             'action': 'forever',
-            'stack': this.visit(ctx.stack)
+            'stack': this.visit(ctx.stack),
+            'id': this.visit(ctx.id),
         }
     }
 
@@ -26586,7 +27205,8 @@ class InformationVisitor extends BaseCstVisitor {
         return {
             'action': 'repeat',
             'amount': this.visit(ctx.countableinput),
-            'stack': this.visit(ctx.stack)
+            'stack': this.visit(ctx.stack),
+            'id': this.visit(ctx.id),
         }
     }
 
@@ -26594,29 +27214,30 @@ class InformationVisitor extends BaseCstVisitor {
         return {
             'action': 'repeat until',
             'until': this.visit(ctx.booleanblock),
-            'stack': this.visit(ctx.stack)
+            'stack': this.visit(ctx.stack),
+            'id': this.visit(ctx.id),
         }
     }
 
     ifelse(ctx) {
-        if (ctx.else.length > 0) {
+        if (ctx.else && ctx.else.length > 0) {
             return {
                 'action': 'ifelse',
                 'until': this.visit(ctx.booleanblock),
-                'stack_one': ctx.stack.length > 0 ? this.visit(ctx.stack[0]) : '',
+                'stack_one': ctx.stack && ctx.stack.length > 0 ? this.visit(ctx.stack[0]) : '',
                 'stack_two': this.visit(ctx.else)
             }
         } else {
             return {
                 'action': 'if',
                 'until': this.visit(ctx.booleanblock),
-                'stack_one': ctx.stack.length > 0 ? this.visit(ctx.stack[0]) : ''
+                'stack_one': ctx.stack && ctx.stack.length > 0 ? this.visit(ctx.stack[0]) : ''
             }
         }
     }
 
     else(ctx) {
-        return ctx.stack.length > 0 ? this.visit(ctx.stack[0]) : ''
+        return ctx.stack && ctx.stack.length > 0 ? this.visit(ctx.stack[0]) : ''
     }
 
     end(ctx) {
@@ -26625,35 +27246,40 @@ class InformationVisitor extends BaseCstVisitor {
     block(ctx) {
         let text = '';
         let a = 0;
-        for (let i = 0; i < ctx.Label.length; i++) {
-            if (a < ctx.argument.length) {
-                while (a < ctx.argument.length && this.getOffsetArgument(ctx.argument[a]) < ctx.Label[i].startOffset) {
+        for (let i = 0; ctx.Identifier && i < ctx.Identifier.length; i++) {
+            if (ctx.argument && a < ctx.argument.length) {
+                while (a < ctx.argument.length && this.getOffsetArgument(ctx.argument[a]) < ctx.Identifier[i].startOffset) {
                     text += '{}';//this.getOffsetArgument(ctx.argument[a])
                     a++;
                 }
             }
 
-            text += ctx.Label[i].image
+            text += ctx.Identifier[i].image
         }
-        for (a; a < ctx.argument.length; a++) {
+        for (a; ctx.argument && a < ctx.argument.length; a++) {
             text += '{}'
         }
 
 
         let args = [];
-        for (let i = 0; i < ctx.argument.length; i++) {
+        for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
             args.push(this.visit(ctx.argument[i]))
         }
         let ofs = 0;
-        if (ctx.argument[0]) {
-            ofs = this.getOffsetArgument(ctx.argument[0]) < ctx.Label[0].startOffset ? this.getOffsetArgument(ctx.argument[0]) : ctx.Label[0].startOffset
-        } else {
-            ofs = ctx.Label[0].startOffset
+        if(ctx.Identifier){
+            if (ctx.argument && ctx.argument[0]) {
+                ofs = this.getOffsetArgument(ctx.argument[0]) < ctx.Identifier[0].startOffset ? this.getOffsetArgument(ctx.argument[0]) : ctx.Identifier[0].startOffset
+            } else {
+                ofs = ctx.Identifier[0].startOffset
+            }
+        }else{
+            ofs = this.getOffsetArgument(ctx.argument[0])
         }
         return {
             'text': text,
             'argumenten': args,
             'option': this.visit(ctx.option),
+            'id': this.visit(ctx.id),
             'offset': ofs
         }
     }
@@ -26668,27 +27294,46 @@ class InformationVisitor extends BaseCstVisitor {
 
     option(ctx) {
         return {
-            'text': ctx.Label[0].image,
+            'text': ctx.Identifier[0].image,
             'type': 'option',
             'offset': ctx.DoubleColon[0].startOffset,
         }
     }
-
+    //TODO
+    id(ctx){
+        return {
+            'text': ctx.ID[0].image,
+            'type': 'ID',
+            'offset': ctx.startOffset,
+        }
+    }
     argument(ctx) {
-        if (ctx.primitive.length > 0) {
+        if (ctx.primitive && ctx.primitive.length > 0) {
             return this.visit(ctx.primitive)
-        } else if (ctx.reporterblock.length > 0) {
+        } else if (ctx.reporterblock && ctx.reporterblock.length > 0) {
             return this.visit(ctx.reporterblock)
-        } else if (ctx.booleanblock.length > 0) {
+        } else if (ctx.booleanblock && ctx.booleanblock.length > 0) {
             return this.visit(ctx.booleanblock)
-        } else if (ctx.choice.length > 0) {
+        } else if (ctx.choice && ctx.choice.length > 0) {
             return this.visit(ctx.choice)
-        } else {
+        } else if (ctx.LCurlyBracket){
             //empty
             return {
                 'value': '',
                 'type': 'empty',
                 'offset': ctx.LCurlyBracket[0].startOffset,
+            }
+        }else if(ctx.StringLiteral) { //if (tokenMatcher(ctx, StringLiteral))
+            return {
+                'value': ctx.StringLiteral[0].image,
+                'type': 'StringLiteral',
+                'offset': ctx.StringLiteral[0].startOffset,
+            }
+        }else if(ctx.ColorLiteral) { //if (tokenMatcher(ctx, StringLiteral))
+            return {
+                'value': ctx.ColorLiteral[0].image,
+                'type': 'ColorLiteral',
+                'offset': ctx.ColorLiteral[0].startOffset,
             }
         }
     }
@@ -26718,9 +27363,9 @@ class InformationVisitor extends BaseCstVisitor {
 
 
     countableinput(ctx) {
-        if (ctx.primitive.length > 0) {
+        if (ctx.primitive && ctx.primitive.length > 0) {
             return this.visit(ctx.primitive)
-        } else if (ctx.reporterblock.length > 0) {
+        } else if (ctx.reporterblock && ctx.reporterblock.length > 0) {
             return this.visit(ctx.reporterblock)
         }
     }
@@ -26728,9 +27373,9 @@ class InformationVisitor extends BaseCstVisitor {
     choice(ctx) {
         return {
             'type': 'choice',
-            'value': ctx.Label[0].image,
+            'value': ctx.Identifier[0].image,
             'offset': ctx.LSquareBracket[0].startOffset,
-            'text': ctx.Label[0].image,
+            'text': ctx.Identifier[0].image,
         };
     }
 
@@ -26745,7 +27390,10 @@ class InformationVisitor extends BaseCstVisitor {
     }
 
     booleanblock(ctx) {
-        let b = this.visit(ctx.block);
+        let b = '';
+        if (ctx.block) {
+            b = this.visit(ctx.block);
+        }
         return {
             'type': 'booleanblock',
             'value': b,
@@ -26761,7 +27409,7 @@ class InformationVisitor extends BaseCstVisitor {
 
 
 /***/ }),
-/* 60 */
+/* 64 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -26794,20 +27442,20 @@ class InformationVisitor extends BaseCstVisitor {
     DoubleColon,
 } from "./LNLexer" */
 
-const lntokens = __webpack_require__(21)
+const lntokens = __webpack_require__(24)
 
 let LNLexer = lntokens.LNLexer;
 let allTokens = lntokens.allTokens;
 let Literal = lntokens.Literal;
 let Forever = lntokens.Forever;
 let End = lntokens.End;
-let Until = lntokens.Until;
+let RepeatUntil = lntokens.RepeatUntil;
 let Repeat = lntokens.Repeat;
 let If = lntokens.If;
 let Else = lntokens.Else;
 let Then = lntokens.Then;
 let StatementTerminator = lntokens.StatementTerminator;
-let Label = lntokens.Label;
+let Identifier = lntokens.Identifier;
 let LCurlyBracket = lntokens.LCurlyBracket;
 let RCurlyBracket = lntokens.RCurlyBracket;
 let LRoundBracket = lntokens.LRoundBracket;
@@ -26817,6 +27465,7 @@ let LAngleBracket = lntokens.LAngleBracket;
 let LSquareBracket = lntokens.LSquareBracket;
 let RSquareBracket = lntokens.RSquareBracket;
 let DoubleColon = lntokens.DoubleColon;
+let ID = lntokens.ID;
 
 // ----------------- parser -----------------
 // Note that this is a Pure grammar, it only describes the grammar
@@ -26828,30 +27477,6 @@ function LNParser(input) {
 
     const $ = this;
 
-    $.RULE("scripts", () => {
-        $.MANY(() => {
-            $.CONSUME(StatementTerminator);
-        });
-        $.AT_LEAST_ONE(() => {
-            $.OR([{
-                ALT: () => {
-                    $.SUBRULE($.multipleStacks);
-                }
-            }, {
-                ALT: () => {
-                    $.SUBRULE($.reporterblock);
-                }
-            }, {
-                ALT: () => {
-                    $.SUBRULE($.booleanblock);
-                }
-            }]);
-        });
-        $.MANY2(() => {
-            $.CONSUME2(StatementTerminator);
-        })
-
-    });
     $.RULE("multipleStacks", () => {
         $.AT_LEAST_ONE_SEP({
             SEP: StatementTerminator,
@@ -26859,6 +27484,7 @@ function LNParser(input) {
                 $.SUBRULE($.stack);
             }
         });
+
     });
 
 
@@ -26901,12 +27527,15 @@ function LNParser(input) {
     $.RULE("forever", () => {
         $.CONSUME(Forever);
         $.OPTION(() => {
-            $.CONSUME(StatementTerminator);
+            $.SUBRULE($.id)
         });
         $.OPTION2(() => {
-            $.SUBRULE($.stack);
+            $.CONSUME(StatementTerminator);
         });
         $.OPTION3(() => {
+            $.SUBRULE($.stack);
+        });
+        $.OPTION4(() => {
             $.SUBRULE($.end);
         })
     });
@@ -26915,28 +27544,33 @@ function LNParser(input) {
         $.CONSUME(Repeat);
         $.SUBRULE($.countableinput);
         $.OPTION(() => {
-            $.CONSUME(StatementTerminator);
+            $.SUBRULE($.id)
         });
         $.OPTION2(() => {
-            $.SUBRULE($.stack);
+            $.CONSUME(StatementTerminator);
         });
         $.OPTION3(() => {
+            $.SUBRULE($.stack);
+        });
+        $.OPTION4(() => {
             $.SUBRULE($.end);
         })
 
     });
 
     $.RULE("repeatuntil", () => {
-        $.CONSUME(Repeat);
-        $.CONSUME(Until);
+        $.CONSUME(RepeatUntil);
         $.SUBRULE($.booleanblock);
         $.OPTION(() => {
-            $.CONSUME(StatementTerminator);
+            $.SUBRULE($.id)
         });
         $.OPTION2(() => {
-            $.SUBRULE($.stack);
+            $.CONSUME(StatementTerminator);
         });
         $.OPTION3(() => {
+            $.SUBRULE($.stack);
+        });
+        $.OPTION4(() => {
             $.SUBRULE($.end);
         })
     });
@@ -26981,7 +27615,7 @@ function LNParser(input) {
         $.AT_LEAST_ONE(() => {
             $.OR([{
                 ALT: () => {
-                    $.CONSUME1(Label);
+                    $.CONSUME1(Identifier);
                 }
             }, {
                 ALT: () => {
@@ -26994,6 +27628,9 @@ function LNParser(input) {
             $.SUBRULE($.option)
         });
         $.OPTION2(() => {
+            $.SUBRULE($.id)
+        });
+        $.OPTION3(() => {
             $.CONSUME(StatementTerminator);
         })
 
@@ -27001,9 +27638,11 @@ function LNParser(input) {
 
     $.RULE("option", () => {
         $.CONSUME(DoubleColon);
-        $.CONSUME(Label);
+        $.CONSUME(Identifier);
     });
-
+    $.RULE("id", () => {
+        $.CONSUME(ID);
+    });
     $.RULE("argument", () => {
         $.OR([{
             ALT: () => {
@@ -27029,6 +27668,22 @@ function LNParser(input) {
             ALT: () => {
                 $.SUBRULE($.choice);
             }
+        }, {
+            ALT: () => {
+                $.SUBRULE2($.reporterblock);
+            }
+        }, {
+            ALT: () => {
+                $.SUBRULE2($.booleanblock);
+            }
+        }, {
+            ALT: () => {
+                $.CONSUME(StringLiteral);
+            }
+        }, {
+            ALT: () => {
+                $.CONSUME(ColorLiteral);
+            }
         }])
 
     });
@@ -27038,9 +27693,11 @@ function LNParser(input) {
 
         $.OR([{
             ALT: () => {
+                $.CONSUME(LCurlyBracket);
                 $.SUBRULE($.primitive);
+                $.CONSUME(RCurlyBracket);
             }
-        }, {
+        },  {
             ALT: () => {
                 $.SUBRULE($.reporterblock);
             }
@@ -27065,7 +27722,7 @@ function LNParser(input) {
     $.RULE("choice", () => {
         $.CONSUME(LSquareBracket);
         $.OPTION(() => {
-            $.CONSUME(Label);
+            $.CONSUME(Identifier);
         });
         $.CONSUME(RSquareBracket);
     });
@@ -27101,7 +27758,7 @@ function parse(text) {
     // setting a new input will RESET the parser instance's state.
     lnparser.input = lexResult.tokens;
     // any top level rule may be used as an entry point
-    const value = lnparser.scripts(); //TOP RULE
+    const value = lnparser.multipleStacks(); //TOP RULE
     /*console.log(value);
     console.log(lexResult.errors);
     console.log(lnparser.errors);*/
@@ -27115,17 +27772,17 @@ function parse(text) {
 
 
 /***/ }),
-/* 61 */
+/* 65 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_chevrotain__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_xmlbuilder__ = __webpack_require__(46);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_xmlbuilder__ = __webpack_require__(48);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_xmlbuilder___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_xmlbuilder__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__blocks__ = __webpack_require__(29);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__LNParser__ = __webpack_require__(42);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__InfoVisitor__ = __webpack_require__(59);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__blocks__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__LNParser__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__InfoVisitor__ = __webpack_require__(63);
 /**
  * XML visitor.
  *
@@ -27138,7 +27795,8 @@ function parse(text) {
 
 
 
-const lntokens = __webpack_require__(21);
+
+const lntokens = __webpack_require__(24);
 let NumberLiteral = lntokens.NumberLiteral;
 let ColorLiteral = lntokens.ColorLiteral;
 
@@ -27152,6 +27810,7 @@ class XMLVisitor extends BaseCstVisitorWithDefaults {
                     x: 0,
                     y: 1
                 },
+                addLocation = true,
                 increase = {
                     x: 75,
                     y: 100
@@ -27173,6 +27832,7 @@ class XMLVisitor extends BaseCstVisitorWithDefaults {
         //location of the blocks
         this.location = coordinate;
         this.increase = increase;
+        this.addLocation = addLocation;
 
         //what kind of blocks should we build now? top, reporter, stack or boolean?
         //top = the first block in a stack, can be a stack or hat block
@@ -27215,13 +27875,15 @@ class XMLVisitor extends BaseCstVisitorWithDefaults {
 
 
     addLocationBelow(xmlElement) {
-        xmlElement.att('x', this.location.x);
-        if (this.prevBlockCounter === 0) {
-            xmlElement.att('y', this.location.y);
-            this.prevBlockCounter = this.blockCounter;
-        } else {
-            xmlElement.att('y', this.location.y + this.increase.y * this.prevBlockCounter);
-            this.prevBlockCounter = this.blockCounter;
+        if (this.addLocation) {
+            xmlElement.att('x', this.location.x);
+            if (this.prevBlockCounter === 0) {
+                xmlElement.att('y', this.location.y);
+                this.prevBlockCounter = this.blockCounter;
+            } else {
+                xmlElement.att('y', this.location.y + this.increase.y * this.prevBlockCounter);
+                this.prevBlockCounter = this.blockCounter;
+            }
         }
     }
 
@@ -27253,30 +27915,15 @@ class XMLVisitor extends BaseCstVisitorWithDefaults {
         this.xml = head;
     }
 
-    scripts(ctx) {
-        for (let i = 0; i < ctx.multipleStacks.length; i++) {
-            this.visit(ctx.multipleStacks[i])
-        }
-        for (let i = 0; i < ctx.reporterblock.length; i++) {
-            this.isTop = true;
-            this.visit(ctx.reporterblock[i]);
-            this.addLocationBelow(this.xml);
-            this.scriptCounter++;
-        }
-        for (let i = 0; i < ctx.booleanblock.length; i++) {
-            this.isTop = true;
-            this.visit(ctx.booleanblock[i]);
-            this.addLocationBelow(this.xml);
-            this.scriptCounter++;
-        }
-    }
-
     multipleStacks(ctx) {
-        for (let i = 0; i < ctx.stack.length; i++) {
+        for (let i = 0; ctx.stack && i < ctx.stack.length; i++) {
             this.isTop = true;
             this.visit(ctx.stack[i]);
-            this.addLocationBelow(this.xml);
-            this.xml = this.xml.up();
+
+            if (this.modus !== 'stand-alone variable') {
+                //this.addLocationBelow(this.xml);
+                this.xml = this.xml.up();
+            }
             this.scriptCounter++;
         }
     }
@@ -27292,8 +27939,13 @@ class XMLVisitor extends BaseCstVisitorWithDefaults {
         }, ' ').ele('statement ', {
             'name': 'SUBSTACK'
         }, ' ');
+        if (this.isTop) {
+            this.addLocationBelow(this.xml.up());
+        }
+        this.isTop = false;
         this.visitSubStack(ctx.stack);
         this.xml = this.xml.up();
+
     }
 
 
@@ -27304,6 +27956,10 @@ class XMLVisitor extends BaseCstVisitorWithDefaults {
         }).ele('value', {
             'name': 'TIMES'
         });
+        if (this.isTop) {
+            this.addLocationBelow(this.xml.up());
+        }
+        this.isTop = false;
         this.visit(ctx.countableinput);
         this.xml = this.xml.up().ele('statement ', {
             'name': 'SUBSTACK'
@@ -27319,26 +27975,38 @@ class XMLVisitor extends BaseCstVisitorWithDefaults {
         }).ele('value', {
             'name': 'CONDITION'
         });
+        if (this.isTop) {
+            this.addLocationBelow(this.xml.up());
+        }
+        this.isTop = false;
         this.visit(ctx.booleanblock);
         this.xml = this.xml.up().ele('statement ', {
             'name': 'SUBSTACK'
         });
         this.visitSubStack(ctx.stack);
         this.xml = this.xml.up();
+
     }
 
     ifelse(ctx) {
-        if (ctx.else.length === 0) {
+        if (!ctx.else || ctx.else.length === 0) {
             this.xml = this.xml.ele('block', {
                 'type': 'control_if',
                 'id': this.getNextId(),
             });
+            if (this.isTop) {
+                this.addLocationBelow(this.xml);
+            }
         } else {
             this.xml = this.xml.ele('block', {
                 'type': 'control_if_else',
                 'id': this.getNextId(),
             });
+            if (this.isTop) {
+                this.addLocationBelow(this.xml);
+            }
         }
+        this.isTop = false;
         this.xml = this.xml.ele('value', {
             'name': 'CONDITION'
         });
@@ -27348,34 +28016,41 @@ class XMLVisitor extends BaseCstVisitorWithDefaults {
         this.xml = this.xml.up().ele('statement ', {
             'name': 'SUBSTACK'
         });
-        if(ctx.stack.length>0) {
+        if (ctx.stack && ctx.stack.length > 0) {
             this.visitSubStack(ctx.stack); //when no index is given it is always 0
         }
         this.xml = this.xml.up();
-        if (ctx.else.length !== 0) {
+        if (ctx.else && ctx.else.length !== 0) {
             this.visit(ctx.else);
         }
+
+
     }
 
     else(ctx) {
         this.xml = this.xml.ele('statement ', {
             'name': 'SUBSTACK2'
         });
-        if(ctx.stack.length>0) {
+        if (ctx.stack && ctx.stack.length > 0) {
             this.visitSubStack(ctx.stack[0]);
         }
         this.xml = this.xml.up();
     }
 
     stack(ctx) {
-        for (let i = 0; i < ctx.stackline.length; i++) {
+        for (let i = 0; ctx.stackline && i < ctx.stackline.length; i++) {
             this.visit(ctx.stackline[i]);
-            this.xml = this.xml.ele('next');
+            this.isTop = false;
+            if (this.modus !== 'stand-alone variable') {
+                this.xml = this.xml.ele('next');
+            }
         }
-        for (let i = 0; i < ctx.stackline.length - 1; i++) {
-            this.xml = this.xml.up().up();
+        if (this.modus !== 'stand-alone variable') {
+            for (let i = 0; ctx.stackline && i < ctx.stackline.length - 1; i++) {
+                this.xml = this.xml.up().up();
+            }
+            this.xml = this.xml.up(); //End with blocks open so that insertbefore works #hacky
         }
-        this.xml = this.xml.up(); //End with blocks open so that insertbefore works #hacky
     }
 
     //if using visitor with defaults, this can be removed
@@ -27400,41 +28075,26 @@ class XMLVisitor extends BaseCstVisitorWithDefaults {
 
     stackline$forever(ctx) {
         this.visit(ctx.forever);
-        if (!this.firstBlock) {
-            this.firstBlock = this.xml;
-        }
         this.blockCounter++;
     }
 
     stackline$repeat(ctx) {
         this.visit(ctx.repeat);
-        if (!this.firstBlock) {
-            this.firstBlock = this.xml;
-        }
         this.blockCounter++;
     }
 
     stackline$repeatuntil(ctx) {
         this.visit(ctx.repeatuntil);
-        if (!this.firstBlock) {
-            this.firstBlock = this.xml;
-        }
         this.blockCounter++;
     }
 
     stackline$ifelse(ctx) {
         this.visit(ctx.ifelse);
-        if (!this.firstBlock) {
-            this.firstBlock = this.xml;
-        }
         this.blockCounter++;
     }
 
     stackline$block(ctx) {
         this.visit(ctx.block);
-        if (!this.firstBlock) {
-            this.firstBlock = this.xml;
-        }
         this.blockCounter++;
     }
 
@@ -27442,16 +28102,16 @@ class XMLVisitor extends BaseCstVisitorWithDefaults {
     makeMatchString(ctx) {
         let matchString = '';
         let a = 0;
-        for (let i = 0; i < ctx.Label.length; i++) {
-            if (a < ctx.argument.length) {
-                while (a < ctx.argument.length && this.getOffsetArgument(ctx.argument[a]) < ctx.Label[i].startOffset) {
+        for (let i = 0; ctx.Identifier && i < ctx.Identifier.length; i++) {
+            if (ctx.argument && a < ctx.argument.length) {
+                while (a < ctx.argument.length && this.getOffsetArgument(ctx.argument[a]) < ctx.Identifier[i].startOffset) {
                     matchString += ' %' + (a + 1) + ' ';
                     ++a;
                 }
             }
-            matchString += ' ' + ctx.Label[i].image + ' ';
+            matchString += ' ' + ctx.Identifier[i].image + ' ';
         }
-        for (a; a < ctx.argument.length; a++) {
+        for (a; ctx.argument && a < ctx.argument.length; a++) {
             matchString += ' %' + (a + 1) + ' ';
         }
         return this.cleanupText(matchString)
@@ -27463,6 +28123,7 @@ class XMLVisitor extends BaseCstVisitorWithDefaults {
             'id': blockid,
         });
         this.xml.att('type', 'procedures_call');
+        this.addLocationBelow(this.xml);
         this.addMutation(ctx, matchString, blockid, true);
     }
 
@@ -27479,10 +28140,10 @@ class XMLVisitor extends BaseCstVisitorWithDefaults {
             let index = m[1] - 1;
             return thisVisitor.getPlaceholder(ctx.argument[index])
         });
-        for (let i = 0; i < ctx.argument.length; i++) {
+        for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
             //make names
             //hier was iets raar...
-            let name = this.getString(ctx.argument[i])
+            let name = this.getString(ctx.argument[i]);
             if (!name) {
                 name = 'argumentname_' + blockid + '_' + i
             }
@@ -27529,7 +28190,7 @@ class XMLVisitor extends BaseCstVisitorWithDefaults {
 
     generateReporterBlock(ctx, matchString) {
         let varID = this.getVariableID(matchString);
-        if (this.getString(ctx.option[0]) === 'list') {
+        if (ctx.option && this.getString(ctx.option[0]) === 'list') {
             this.xml = this.xml.ele('block', {
                 'type': 'data_listcontents',
                 'id': this.getNextId(),
@@ -27557,6 +28218,15 @@ class XMLVisitor extends BaseCstVisitorWithDefaults {
 
     block(ctx) {
         let matchString = this.makeMatchString(ctx);
+        let LabelCount = ctx.Identifier ? ctx.Identifier.length : 0;
+        if (LabelCount === 0) { //no text => only variable => show as variabele
+            this.modus = 'stand-alone variable';
+            for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
+                this.isTop = true;
+                this.visit(ctx.argument[i]);
+            }
+            return;
+        }
         //console.log(matchString)
         if (matchString.startsWith("define")) {
             matchString = matchString.replace(/define/, '');
@@ -27570,17 +28240,25 @@ class XMLVisitor extends BaseCstVisitorWithDefaults {
                 'type': 'procedures_prototype'
             });
             this.addMutation(ctx, matchString, blockid, false);
-            this.xml = this.xml.up().up()
+            this.xml = this.xml.up().up();
+            this.addLocationBelow(this.xml)
         } else if (matchString in __WEBPACK_IMPORTED_MODULE_2__blocks__["a" /* default */]) {
-            __WEBPACK_IMPORTED_MODULE_2__blocks__["a" /* default */][matchString](ctx, this);
+            if (this.isTop) {
+                this.blockCounter++;
+            }
+            let isTopBefore = this.isTop;
+            this.isTop = false;
+            __WEBPACK_IMPORTED_MODULE_2__blocks__["a" /* default */][matchString](ctx, this); //use blocks map to generate appropratie xml
+            this.isTop = isTopBefore;
+            if (this.isTop) {
+                this.addLocationBelow(this.xml)
+            }
+
+
             if (this.modus === 'reporterblock' || this.modus === 'booleanblock') {
-                if (this.isTop) {
-                    this.addLocationBelow(this.xml)
-                }
                 if (!this.firstBlock) {
                     this.firstBlock = this.xml;
                 }
-                this.blockCounter++;
                 this.xml = this.xml.up();
             }
         } else { //what should be done if the block is unknown
@@ -27595,17 +28273,10 @@ class XMLVisitor extends BaseCstVisitorWithDefaults {
                     this.generateBooleanBlock(ctx, matchString);
                     break;
             }
+            if (this.isTop) {
+                this.addLocationBelow(this.xml);
+            }
             if (this.modus === 'reporterblock' || this.modus === 'booleanblock') {
-                if (!this.firstBlock) {
-                    this.firstBlock = this.xml
-                }
-
-                if (this.isTop) {
-                    this.addLocationBelow(this.xml)
-                }
-
-                this.blockCounter++;
-
                 this.xml = this.xml.up();
             }
         }
@@ -27614,14 +28285,24 @@ class XMLVisitor extends BaseCstVisitorWithDefaults {
     }
 
     argument(ctx) { //return is necessary for menu..
-        if (ctx.primitive.length > 0) {
+        let previousModus = this.modus;
+        if (ctx.primitive && ctx.primitive.length > 0) {
             return this.visit(ctx.primitive)
-        } else if (ctx.reporterblock.length > 0) {
-            return this.visit(ctx.reporterblock)
-        } else if (ctx.booleanblock.length > 0) {
-            return this.visit(ctx.booleanblock)
-        } else if (ctx.choice.length > 0) {
-            return this.visit(ctx.choice)
+        } else if (ctx.reporterblock && ctx.reporterblock.length > 0) {
+            this.modus = 'reporterblock';
+            let x = this.visit(ctx.reporterblock);
+            this.modus = previousModus;
+            return x;
+        } else if (ctx.booleanblock && ctx.booleanblock.length > 0) {
+            this.modus = 'booleanblock';
+            let x = this.visit(ctx.booleanblock);
+            this.modus = previousModus;
+            return x;
+        } else if (ctx.choice && ctx.choice.length > 0) {
+            this.modus = 'choice';
+            let x = this.visit(ctx.choice);
+            this.modus = previousModus;
+            return x;
         } else {
             //empty
         }
@@ -27629,7 +28310,7 @@ class XMLVisitor extends BaseCstVisitorWithDefaults {
 
     getString(ctx) {
         if (ctx) {
-            let o = this.infoVisitor.visit(ctx)
+            let o = this.infoVisitor.visit(ctx);
             return o.text
         } else {
             return ''
@@ -27664,21 +28345,25 @@ class XMLVisitor extends BaseCstVisitorWithDefaults {
             console.log('This should not happen');
             return Number.MAX_SAFE_INTEGER; //avoid infinite loop
         }
-        let child = this.infoVisitor.visit(arg)
+        let child = this.infoVisitor.visit(arg);
         return child.offset
     }
 
     choice(ctx) {
         //todo: try to remove this because it is inconsistent that here is the only return...
         //console.log('nah')
-        if (ctx.Label[0]) {
-            return ctx.Label[0].image;
+        if (ctx.Identifier[0]) {
+            return ctx.Identifier[0].image;
         } else {
             return ""
         }
     }
 
     option(ctx) {
+
+    }
+
+    id(ctx) {
 
     }
 
@@ -27690,21 +28375,21 @@ class XMLVisitor extends BaseCstVisitorWithDefaults {
                 'id': this.getNextId(),
             }).ele('field', {
                 'name': 'NUM',
-            }, ctx.Literal[0].image)
+            }, ctx.Literal[0].image);
         } else if (__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["tokenMatcher"])(ctx.Literal[0], ColorLiteral)) {
             this.xml.ele('shadow', {
                 'type': 'colour_picker',
                 'id': this.getNextId(),
             }).ele('field', {
                 'name': 'COLOUR',
-            }, ctx.Literal[0].image)
+            }, ctx.Literal[0].image);
         } else {
             this.xml.ele('shadow', {
                 'type': 'text',
                 'id': this.getNextId(),
             }).ele('field', {
                 'name': 'TEXT',
-            }, ctx.Literal[0].image)
+            }, ctx.Literal[0].image);
 
         }
         return ctx.Literal[0].image;
@@ -27739,23 +28424,23 @@ class XMLVisitor extends BaseCstVisitorWithDefaults {
 
 
 /***/ }),
-/* 62 */,
-/* 63 */,
-/* 64 */,
-/* 65 */,
 /* 66 */,
 /* 67 */,
 /* 68 */,
 /* 69 */,
 /* 70 */,
-/* 71 */
+/* 71 */,
+/* 72 */,
+/* 73 */,
+/* 74 */,
+/* 75 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(33);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__webtools_scratchify_js__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__webtools_scratchify_js__ = __webpack_require__(46);
 
 
 
