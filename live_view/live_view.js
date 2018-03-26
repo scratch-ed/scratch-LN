@@ -57,7 +57,7 @@ window.onload = function () {
     //addBlock('procedures_definition','aaa',500,10);
     //addBlock('procedures_call','aaa',200,10);
 
-    //insertSomeCodeFromXML();
+    insertSomeCodeFromXML();
 
     generateText(workspace)
 
@@ -106,18 +106,45 @@ function addBlock(prototypeName, id, x, y) {
 function insertSomeCodeFromXML() {
 
     let xml = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
-        '  <variables> \n' +
-        '    <variable type="arg" id="var08">a</variable>\n' +
-        '  </variables>\n' +
-        '  <block id="0" type="procedures_call" x="10" y="10">\n' +
-        '    <mutation proccode="sayaas %s" argumentnames="[&quot;a&quot;]" warp="false" argumentids="[&quot;var0&quot;]"/>\n' +
-        '    <value name="a">\n' +
-        '      <block type="data_variable" id="1" x="10" y="10">\n' +
-        '        <field name="VARIABLE" id="var0">a</field>\n' +
-        '      </block>\n' +
-        '    </value>\n' +
-        '    <next/>\n' +
-        '  </block>\n' +
+        '    <variables></variables>\n' +
+        '            <block id="hQ]-n]g^y*;-^RPV]UQh" type="procedures_call">\n' +
+        '                <mutation proccode="blok %n %s %b after text" argumentids="[&quot;input0&quot;,&quot;input1&quot;,&quot;input2&quot;]"></mutation>\n' +
+        '                <value name="input0">\n' +
+        '                    <shadow id="x]R42mYvrfQ{)T+G@cn/" type="math_number">\n' +
+        '                        <field name="NUM">444</field>\n' +
+        '                    </shadow>\n' +
+        '                </value>\n' +
+        '                <value name="input1">\n' +
+        '                    <shadow id="5PYa?j=YPU7n%{y7KbBe" type="text">\n' +
+        '                        <field name="TEXT">lalala</field>\n' +
+        '                    </shadow>\n' +
+        '                </value>\n' +
+        '                <value name="input2">\n' +
+        '                    <block id="Eo{N.OdXey2sykDl7czU" type="operator_lt">\n' +
+        '                        <value name="OPERAND1">\n' +
+        '                            <shadow id="Fqe=q!wYlSE(aM@8:(g`" type="text">\n' +
+        '                                <field name="TEXT"></field>\n' +
+        '                            </shadow>\n' +
+        '                        </value>\n' +
+        '                        <value name="OPERAND2">\n' +
+        '                            <shadow id="CCQfAT1YY%ukDp!mgxqp" type="text">\n' +
+        '                                <field name="TEXT"></field>\n' +
+        '                            </shadow>\n' +
+        '                        </value>\n' +
+        '                    </block>\n' +
+        '                </value>\n' +
+        '            </block>\n' +
+        '</xml>\n';
+    xml = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
+        '    <variables></variables>\n' +
+        '    <block type="procedures_call" id="SaA0RG_sd@{sUN5%SWpW" x="119" y="267">\n' +
+        '        <mutation proccode="blok %n" argumentids="[&quot;input0&quot;]" warp="null"></mutation>\n' +
+        '        <value name="input0">\n' +
+        '            <shadow type="math_number" id="xAsO+lm[%y|!-0je(qxh">\n' +
+        '                <field name="NUM">42</field>\n' +
+        '            </shadow>\n' +
+        '        </value>\n' +
+        '    </block>\n' +
         '</xml>'
     //console.log(xml);
     let dom = Blockly.Xml.textToDom(xml);

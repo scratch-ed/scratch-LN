@@ -24,7 +24,8 @@ const loadProjectFromID = function () {
         //id = '187598405'; //cdjlogo
         //id = '119615668'; //dino
         //id = '194801841'; //memory
-        id = '209232771'; //take steps
+        //id = '209232771'; //take steps
+        id = '212621983'; //custom block
     }
     Scratch.vm.downloadProjectId(id);
 };
@@ -130,6 +131,7 @@ window.onload = function () {
     vm.on('workspaceUpdate', data => {
         workspace.clear();
         const dom = ScratchBlocks.Xml.textToDom(data.xml);
+        console.log(data.xml)
         ScratchBlocks.Xml.domToWorkspace(dom, workspace);
     });
     document.getElementById('toxml').addEventListener('click', () => {

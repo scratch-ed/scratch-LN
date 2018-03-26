@@ -347,6 +347,7 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
         let argumentnames = [];
         let argumentdefaults = [];
         let argumentids = [];
+        let head = this.xml.ele('mutation'); //todo here
 
         //this is a very weird construction but it works...
         //assign this to a variable so that it can be accesed by the function
@@ -378,17 +379,13 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
 
         }
         if (argumentnames.length > 0) {
-            this.xml.ele('mutation', {
-                'proccode': proccode,
-                'argumentnames': '["' + argumentnames.join('","') + '"]',
-                //'argumentdefaults': "['" + argumentdefaults.join("','") + "']",
-                'warp': 'false',
-                'argumentids': '["' + argumentids.join('","') + '"]'
-            });
+            head.att('proccode', proccode);
+            //head.att('argumentnames','["' + argumentnames.join('","') + '"]');
+            head.att('warp', 'null');
+            head.att('argumentids', '["' + argumentnames.join('","') + '"]');
+            //head.att('argumentdefaults', "['" + argumentdefaults.join("','") + "']");
         } else {
-            this.xml.ele('mutation', {
-                'proccode': proccode
-            });
+            head.att('proccode', proccode);
         }
     }
 
