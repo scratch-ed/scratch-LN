@@ -339,6 +339,7 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
             'id': blockid,
         });
         this.xml.att('type', 'procedures_call');
+        this.addLocationBelow(this.xml);
         this.addMutation(ctx, matchString, blockid, true);
     }
 
@@ -455,7 +456,7 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
                 'type': 'procedures_prototype'
             });
             this.addMutation(ctx, matchString, blockid, false);
-            this.xml = this.xml.up().up()
+            this.xml = this.xml.up().up();
             this.addLocationBelow(this.xml)
         } else if (matchString in blocks) {
             if (this.isTop) {
@@ -488,11 +489,11 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
                     this.generateBooleanBlock(ctx, matchString);
                     break;
             }
+            if (this.isTop) {
+                this.addLocationBelow(this.xml);
+            }
             if (this.modus === 'reporterblock' || this.modus === 'booleanblock') {
-                if (this.isTop) {
-                    console.log('loc2')
-                    this.addLocationBelow(this.xml)
-                }
+
 
                 //this.blockCounter++;
 
