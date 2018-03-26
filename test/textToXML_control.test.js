@@ -192,10 +192,10 @@ describe('loops', function() {
                 'repeat {1}\n' +
                 'adsf\n' +
                 'end\n' +
-                'asdf');
+                'asdf',false);
             let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
                 '<variables/>\n'+
-                '  <block type="control_repeat" id="0" x="10" y="10">\n' +
+                '  <block type="control_repeat" id="0">\n' +
                 '    <value name="TIMES">\n' +
                 '      <shadow type="math_number" id="1">\n' +
                 '        <field name="NUM">1</field>\n' +
