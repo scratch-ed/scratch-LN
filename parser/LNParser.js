@@ -31,13 +31,13 @@ const lntokens = require("./LNLexer")
     let Literal = lntokens.Literal;
     let Forever = lntokens.Forever;
     let End = lntokens.End;
-    let Until = lntokens.Until;
+    let RepeatUntil = lntokens.RepeatUntil;
     let Repeat = lntokens.Repeat;
     let If = lntokens.If;
     let Else = lntokens.Else;
     let Then = lntokens.Then;
     let StatementTerminator = lntokens.StatementTerminator;
-    let Label = lntokens.Label;
+    let Identifier = lntokens.Identifier;
     let LCurlyBracket = lntokens.LCurlyBracket;
     let RCurlyBracket = lntokens.RCurlyBracket;
     let LRoundBracket = lntokens.LRoundBracket;
@@ -47,6 +47,7 @@ const lntokens = require("./LNLexer")
     let LSquareBracket = lntokens.LSquareBracket;
     let RSquareBracket = lntokens.RSquareBracket;
     let DoubleColon = lntokens.DoubleColon;
+    let ID = lntokens.ID;
 
 export default class LNParser extends Parser {
     constructor(input) {
@@ -54,30 +55,6 @@ export default class LNParser extends Parser {
 
         const $ = this;
 
-        $.RULE("scripts", () => {
-            $.MANY(() => {
-                $.CONSUME(StatementTerminator);
-            });
-            $.AT_LEAST_ONE(() => {
-                $.OR([{
-                    ALT: () => {
-                        $.SUBRULE($.multipleStacks);
-                    }
-                }, {
-                    ALT: () => {
-                        $.SUBRULE($.reporterblock);
-                    }
-                }, {
-                    ALT: () => {
-                        $.SUBRULE($.booleanblock);
-                    }
-                }]);
-            });
-            $.MANY2(() => {
-                $.CONSUME2(StatementTerminator);
-            })
-
-        });
         $.RULE("multipleStacks", () => {
             $.AT_LEAST_ONE_SEP({
                 SEP: StatementTerminator,
@@ -127,12 +104,15 @@ export default class LNParser extends Parser {
         $.RULE("forever", () => {
             $.CONSUME(Forever);
             $.OPTION(() => {
-                $.CONSUME(StatementTerminator);
+                $.SUBRULE($.id)
             });
             $.OPTION2(() => {
-                $.SUBRULE($.stack);
+                $.CONSUME(StatementTerminator);
             });
             $.OPTION3(() => {
+                $.SUBRULE($.stack);
+            });
+            $.OPTION4(() => {
                 $.SUBRULE($.end);
             })
         });
@@ -141,28 +121,33 @@ export default class LNParser extends Parser {
             $.CONSUME(Repeat);
             $.SUBRULE($.countableinput);
             $.OPTION(() => {
-                $.CONSUME(StatementTerminator);
+                $.SUBRULE($.id)
             });
             $.OPTION2(() => {
-                $.SUBRULE($.stack);
+                $.CONSUME(StatementTerminator);
             });
             $.OPTION3(() => {
+                $.SUBRULE($.stack);
+            });
+            $.OPTION4(() => {
                 $.SUBRULE($.end);
             })
 
         });
 
         $.RULE("repeatuntil", () => {
-            $.CONSUME(Repeat);
-            $.CONSUME(Until);
+            $.CONSUME(RepeatUntil);
             $.SUBRULE($.booleanblock);
             $.OPTION(() => {
-                $.CONSUME(StatementTerminator);
+                $.SUBRULE($.id)
             });
             $.OPTION2(() => {
-                $.SUBRULE($.stack);
+                $.CONSUME(StatementTerminator);
             });
             $.OPTION3(() => {
+                $.SUBRULE($.stack);
+            });
+            $.OPTION4(() => {
                 $.SUBRULE($.end);
             })
         });
@@ -180,11 +165,11 @@ export default class LNParser extends Parser {
                 $.SUBRULE($.stack);
             });
             $.OPTION4(() => {
-                $.SUBRULE($.end);
-            })
-            $.OPTION5(() => {
                 $.SUBRULE($.else);
             });
+            $.OPTION5(() => {
+                $.SUBRULE($.end);
+            })
         });
         $.RULE("else", () => {
             $.CONSUME(Else);
@@ -193,9 +178,6 @@ export default class LNParser extends Parser {
             });
             $.OPTION2(() => {
                 $.SUBRULE($.stack);
-            })
-            $.OPTION5(() => {
-                $.SUBRULE($.end);
             })
         });
 
@@ -210,7 +192,7 @@ export default class LNParser extends Parser {
             $.AT_LEAST_ONE(() => {
                 $.OR([{
                     ALT: () => {
-                        $.CONSUME1(Label);
+                        $.CONSUME1(Identifier);
                     }
                 }, {
                     ALT: () => {
@@ -220,9 +202,12 @@ export default class LNParser extends Parser {
 
             });
             $.OPTION(() => {
-                $.SUBRULE($.option);
+                $.SUBRULE($.option)
             });
             $.OPTION2(() => {
+                $.SUBRULE($.id)
+            });
+            $.OPTION3(() => {
                 $.CONSUME(StatementTerminator);
             })
 
@@ -230,9 +215,11 @@ export default class LNParser extends Parser {
 
         $.RULE("option", () => {
             $.CONSUME(DoubleColon);
-            $.CONSUME(Label);
+            $.CONSUME(Identifier);
         });
-
+        $.RULE("id", () => {
+            $.CONSUME(ID);
+        });
         $.RULE("argument", () => {
             $.OR([{
                 ALT: () => {
@@ -258,6 +245,22 @@ export default class LNParser extends Parser {
                 ALT: () => {
                     $.SUBRULE($.choice);
                 }
+            }, {
+                ALT: () => {
+                    $.SUBRULE2($.reporterblock);
+                }
+            }, {
+                ALT: () => {
+                    $.SUBRULE2($.booleanblock);
+                }
+            }, {
+                ALT: () => {
+                    $.CONSUME(StringLiteral);
+                }
+            }, {
+                ALT: () => {
+                    $.CONSUME(ColorLiteral);
+                }
             }])
 
         });
@@ -267,9 +270,11 @@ export default class LNParser extends Parser {
 
             $.OR([{
                 ALT: () => {
+                    $.CONSUME(LCurlyBracket);
                     $.SUBRULE($.primitive);
+                    $.CONSUME(RCurlyBracket);
                 }
-            }, {
+            },  {
                 ALT: () => {
                     $.SUBRULE($.reporterblock);
                 }
@@ -294,7 +299,7 @@ export default class LNParser extends Parser {
         $.RULE("choice", () => {
             $.CONSUME(LSquareBracket);
             $.OPTION(() => {
-                $.CONSUME(Label);
+                $.CONSUME(Identifier);
             });
             $.CONSUME(RSquareBracket);
         });
@@ -330,7 +335,7 @@ export function parse(text) {
     // setting a new input will RESET the parser instance's state.
     lnparser.input = lexResult.tokens;
     // any top level rule may be used as an entry point
-    const value = lnparser.scripts(); //TOP RULE
+    const value = lnparser.multipleStacks(); //TOP RULE
     console.log(value);
     console.log(lexResult.errors);
     console.log(lnparser.errors);

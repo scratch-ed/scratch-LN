@@ -31,14 +31,14 @@ describe('ifelse', function() {
 
 describe('variables int', function() {
     it('should return valid xml', function() {
-        let parsed = parseTextToXML('\n' +
+        let parsed = parseTextToXML(
             'change [a] by {1};\n' +
-            'change [a] by {(a)}');
+            'change [a] by {(a)}',false);
         let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
             '  <variables>\n' +
             '    <variable type="" id="var0">a</variable>\n' +
             '  </variables>\n' +
-            '  <block id="0" type="data_changevariableby" x="10" y="10">\n' +
+            '  <block id="0" type="data_changevariableby">\n' +
             '    <field name="VARIABLE">a</field>\n' +
             '    <value name="VALUE">\n' +
             '      <shadow type="math_number" id="1">\n' +
@@ -66,7 +66,7 @@ describe('variables int', function() {
     describe('build in vars', function() {
         it('should return valid xml', function() {
             let parsed = parseTextToXML('(costume [number])(backdrop [number])(size)');
-            let expected = '<xml xmlns="http://www.w3.org/1999/xhtml" x="10" y="210">\n' +
+            let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
                 '  <variables/>\n' +
                 '  <block id="0" type="looks_costumenumbername" x="10" y="10">\n' +
                 '    <field name="NUMBER_NAME">number</field>\n' +
@@ -88,7 +88,7 @@ describe('build_in_variable', function() {
     describe('(mouse x)', function() {
         it('should return valid xml', function() {
             let parsed = parseTextToXML('(mouse x)');
-            let expected = '<xml xmlns="http://www.w3.org/1999/xhtml" x="10" y="10">\n' +
+            let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
                 '  <variables/>\n' +
                 '  <block id="0" type="sensing_mousex" x="10" y="10"/>\n' +
                 '</xml>';
@@ -98,7 +98,7 @@ describe('build_in_variable', function() {
     describe('<mouse down?>', function() {
         it('should return valid xml', function() {
             let parsed = parseTextToXML('<mouse down?>');
-            let expected = '<xml xmlns="http://www.w3.org/1999/xhtml" x="10" y="10">\n' +
+            let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
                 '  <variables/>\n' +
                 '  <block id="0" type="sensing_mousedown" x="10" y="10"/>\n' +
                 '</xml>';
@@ -111,7 +111,7 @@ describe('variables', function() {
     describe('variable', function() {
         it('should return valid xml', function() {
             let parsed = parseTextToXML('(m)');
-            let expected = '<xml xmlns="http://www.w3.org/1999/xhtml" x="10" y="10">\n' +
+            let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
                 '  <variables>\n' +
                 '    <variable type="" id="var0">m</variable>\n' +
                 '  </variables>\n' +
@@ -163,7 +163,7 @@ describe('variables', function() {
                 '  <variables/>\n' +
                 '  <block id="0" type="looks_say" x="10" y="10">\n' +
                 '    <value name="MESSAGE">\n' +
-                '      <block id="1" type="operator_add" x="10" y="10">\n' +
+                '      <block id="1" type="operator_add">\n' +
                 '        <value name="NUM1">\n' +
                 '          <shadow type="math_number" id="2">\n' +
                 '            <field name="NUM">1</field>\n' +
