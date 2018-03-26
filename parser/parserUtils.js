@@ -94,27 +94,32 @@ init_parser_utils();
 /**
  * todo: return error message in case something goes wrong
  * @param text
+ * @param location boolean indicating an location is added to top blocks
  * @returns xml or undefined
  */
-export default function parseTextToXML(text,location={
-        x: 10,
-        y: 10
-    }) {
+export default function parseTextToXML(text,location=true) {
     let cst = getCst(text);
     if (cst) {
         let xml = execXmlVisitor(cst,location);
-        //console.log(xml);
+        console.log(xml);
         return xml;
     }
 }
 
 function getCst(text) {
-    let r = parse(text);
+    let r = parse(cleanupText(text));
     return r.value;
 }
 
 function execXmlVisitor(cst,location) {
-    let v = new visitor(location);
+    let v = new visitor({
+        x: 10,
+        y: 10
+    },location);
     let xml = v.getXML(cst);
     return xml;
+}
+
+function cleanupText(text){
+    return text.trim();
 }

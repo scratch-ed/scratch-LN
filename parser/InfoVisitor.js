@@ -23,23 +23,9 @@ export class InformationVisitor extends BaseCstVisitor {
         this.validateVisitor()
     }
 
-    scripts(ctx) {
-        let s = [];
-        for (let i = 0; i < ctx.multipleStacks.length; i++) {
-            s.push(this.visit(ctx.multipleStacks[i]))
-        }
-        for (let i = 0; i < ctx.reporterblock.length; i++) {
-            s.push(this.visit(ctx.reporterblock[i]))
-        }
-        for (let i = 0; i < ctx.booleanblock.length; i++) {
-            s.push(this.visit(ctx.booleanblock[i]))
-        }
-        return s
-    }
-
     multipleStacks(ctx) {
         let s = [];
-        for (let i = 0; i < ctx.stack.length; i++) {
+        for (let i = 0; ctx.stack && i < ctx.stack.length; i++) {
             s.push(this.visit(ctx.stack[i]))
         }
         return {
@@ -51,7 +37,7 @@ export class InformationVisitor extends BaseCstVisitor {
 
     stack(ctx) {
         let blocks = [];
-        for (let i = 0; i < ctx.stackline.length; i++) {
+        for (let i = 0; ctx.stackline && i < ctx.stackline.length; i++) {
             blocks.push(this.visit(ctx.stackline[i]))
         }
         return blocks
@@ -59,15 +45,15 @@ export class InformationVisitor extends BaseCstVisitor {
 
     stackline(ctx) {
         let v = ctx;
-        if (ctx.$forever.length > 0) {
+        if (ctx.$forever && ctx.$forever.length > 0) {
             v = this.visit(ctx.$forever)
-        } else if (ctx.$repeatuntil.length > 0) {
+        } else if (ctx.$repeatuntil && ctx.$repeatuntil.length > 0) {
             v = this.visit(ctx.$repeatuntil)
-        } else if (ctx.$repeat.length > 0) {
+        } else if (ctx.$repeat && ctx.$repeat.length > 0) {
             v = this.visit(ctx.$repeat)
-        } else if (ctx.$block.length > 0) {
+        } else if (ctx.$block && ctx.$block.length > 0) {
             v = this.visit(ctx.$block)
-        } else if (ctx.$ifelse.length > 0) {
+        } else if (ctx.$ifelse && ctx.$ifelse.length > 0) {
             v = this.visit(ctx.$ifelse)
         }
         return {
@@ -114,7 +100,8 @@ export class InformationVisitor extends BaseCstVisitor {
     forever(ctx) {
         return {
             'action': 'forever',
-            'stack': this.visit(ctx.stack)
+            'stack': this.visit(ctx.stack),
+            'id': this.visit(ctx.id),
         }
     }
 
@@ -123,7 +110,8 @@ export class InformationVisitor extends BaseCstVisitor {
         return {
             'action': 'repeat',
             'amount': this.visit(ctx.countableinput),
-            'stack': this.visit(ctx.stack)
+            'stack': this.visit(ctx.stack),
+            'id': this.visit(ctx.id),
         }
     }
 
@@ -131,29 +119,30 @@ export class InformationVisitor extends BaseCstVisitor {
         return {
             'action': 'repeat until',
             'until': this.visit(ctx.booleanblock),
-            'stack': this.visit(ctx.stack)
+            'stack': this.visit(ctx.stack),
+            'id': this.visit(ctx.id),
         }
     }
 
     ifelse(ctx) {
-        if (ctx.else.length > 0) {
+        if (ctx.else && ctx.else.length > 0) {
             return {
                 'action': 'ifelse',
                 'until': this.visit(ctx.booleanblock),
-                'stack_one': ctx.stack.length > 0 ? this.visit(ctx.stack[0]) : '',
+                'stack_one': ctx.stack && ctx.stack.length > 0 ? this.visit(ctx.stack[0]) : '',
                 'stack_two': this.visit(ctx.else)
             }
         } else {
             return {
                 'action': 'if',
                 'until': this.visit(ctx.booleanblock),
-                'stack_one': ctx.stack.length > 0 ? this.visit(ctx.stack[0]) : ''
+                'stack_one': ctx.stack && ctx.stack.length > 0 ? this.visit(ctx.stack[0]) : ''
             }
         }
     }
 
     else(ctx) {
-        return ctx.stack.length > 0 ? this.visit(ctx.stack[0]) : ''
+        return ctx.stack && ctx.stack.length > 0 ? this.visit(ctx.stack[0]) : ''
     }
 
     end(ctx) {
@@ -162,35 +151,40 @@ export class InformationVisitor extends BaseCstVisitor {
     block(ctx) {
         let text = '';
         let a = 0;
-        for (let i = 0; i < ctx.Label.length; i++) {
-            if (a < ctx.argument.length) {
-                while (a < ctx.argument.length && this.getOffsetArgument(ctx.argument[a]) < ctx.Label[i].startOffset) {
+        for (let i = 0; ctx.Identifier && i < ctx.Identifier.length; i++) {
+            if (ctx.argument && a < ctx.argument.length) {
+                while (a < ctx.argument.length && this.getOffsetArgument(ctx.argument[a]) < ctx.Identifier[i].startOffset) {
                     text += '{}';//this.getOffsetArgument(ctx.argument[a])
                     a++;
                 }
             }
 
-            text += ctx.Label[i].image
+            text += ctx.Identifier[i].image
         }
-        for (a; a < ctx.argument.length; a++) {
+        for (a; ctx.argument && a < ctx.argument.length; a++) {
             text += '{}'
         }
 
 
         let args = [];
-        for (let i = 0; i < ctx.argument.length; i++) {
+        for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
             args.push(this.visit(ctx.argument[i]))
         }
         let ofs = 0;
-        if (ctx.argument[0]) {
-            ofs = this.getOffsetArgument(ctx.argument[0]) < ctx.Label[0].startOffset ? this.getOffsetArgument(ctx.argument[0]) : ctx.Label[0].startOffset
-        } else {
-            ofs = ctx.Label[0].startOffset
+        if(ctx.Identifier){
+            if (ctx.argument && ctx.argument[0]) {
+                ofs = this.getOffsetArgument(ctx.argument[0]) < ctx.Identifier[0].startOffset ? this.getOffsetArgument(ctx.argument[0]) : ctx.Identifier[0].startOffset
+            } else {
+                ofs = ctx.Identifier[0].startOffset
+            }
+        }else{
+            ofs = this.getOffsetArgument(ctx.argument[0])
         }
         return {
             'text': text,
             'argumenten': args,
             'option': this.visit(ctx.option),
+            'id': this.visit(ctx.id),
             'offset': ofs
         }
     }
@@ -205,27 +199,46 @@ export class InformationVisitor extends BaseCstVisitor {
 
     option(ctx) {
         return {
-            'text': ctx.Label[0].image,
+            'text': ctx.Identifier[0].image,
             'type': 'option',
             'offset': ctx.DoubleColon[0].startOffset,
         }
     }
-
+    //TODO
+    id(ctx){
+        return {
+            'text': ctx.ID[0].image,
+            'type': 'ID',
+            'offset': ctx.startOffset,
+        }
+    }
     argument(ctx) {
-        if (ctx.primitive.length > 0) {
+        if (ctx.primitive && ctx.primitive.length > 0) {
             return this.visit(ctx.primitive)
-        } else if (ctx.reporterblock.length > 0) {
+        } else if (ctx.reporterblock && ctx.reporterblock.length > 0) {
             return this.visit(ctx.reporterblock)
-        } else if (ctx.booleanblock.length > 0) {
+        } else if (ctx.booleanblock && ctx.booleanblock.length > 0) {
             return this.visit(ctx.booleanblock)
-        } else if (ctx.choice.length > 0) {
+        } else if (ctx.choice && ctx.choice.length > 0) {
             return this.visit(ctx.choice)
-        } else {
+        } else if (ctx.LCurlyBracket){
             //empty
             return {
                 'value': '',
                 'type': 'empty',
                 'offset': ctx.LCurlyBracket[0].startOffset,
+            }
+        }else if(ctx.StringLiteral) { //if (tokenMatcher(ctx, StringLiteral))
+            return {
+                'value': ctx.StringLiteral[0].image,
+                'type': 'StringLiteral',
+                'offset': ctx.StringLiteral[0].startOffset,
+            }
+        }else if(ctx.ColorLiteral) { //if (tokenMatcher(ctx, StringLiteral))
+            return {
+                'value': ctx.ColorLiteral[0].image,
+                'type': 'ColorLiteral',
+                'offset': ctx.ColorLiteral[0].startOffset,
             }
         }
     }
@@ -255,9 +268,9 @@ export class InformationVisitor extends BaseCstVisitor {
 
 
     countableinput(ctx) {
-        if (ctx.primitive.length > 0) {
+        if (ctx.primitive && ctx.primitive.length > 0) {
             return this.visit(ctx.primitive)
-        } else if (ctx.reporterblock.length > 0) {
+        } else if (ctx.reporterblock && ctx.reporterblock.length > 0) {
             return this.visit(ctx.reporterblock)
         }
     }
@@ -265,9 +278,9 @@ export class InformationVisitor extends BaseCstVisitor {
     choice(ctx) {
         return {
             'type': 'choice',
-            'value': ctx.Label[0].image,
+            'value': ctx.Identifier[0].image,
             'offset': ctx.LSquareBracket[0].startOffset,
-            'text': ctx.Label[0].image,
+            'text': ctx.Identifier[0].image,
         };
     }
 
@@ -282,7 +295,10 @@ export class InformationVisitor extends BaseCstVisitor {
     }
 
     booleanblock(ctx) {
-        let b = this.visit(ctx.block);
+        let b = '';
+        if (ctx.block) {
+            b = this.visit(ctx.block);
+        }
         return {
             'type': 'booleanblock',
             'value': b,

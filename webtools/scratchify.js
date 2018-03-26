@@ -32,6 +32,7 @@ export default function scratchify(clasz='scratch',keepText=false) {
             //add to this workspace
             var dom = Blockly.Xml.textToDom(xml);
             Blockly.Xml.domToWorkspace(dom, workspace);
+            //workspace.cleanUp();
         }
         //rescale the workspace to fit to the blocks
         fitBlocks(workspace, id);

@@ -21,7 +21,7 @@ export function universalBlockConverter(ctx, visitor, structure) {
         'id': visitor.getNextId(),
         'type': structure.type
     });
-    for (let i = 0; i < ctx.argument.length; i++) {
+    for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
         let arg = structure.args[i];
         if (arg.menu) {
 

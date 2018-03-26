@@ -77,6 +77,7 @@ function updateWorkspace() {
         //add to workspace
         let dom = Blockly.Xml.textToDom(xml);
         Blockly.Xml.domToWorkspace(dom, workspace)
+        workspace.cleanUp();
     } else {
         updateWarnings('workspace not updated:text is incorrect'); //todo: add clear message
     }

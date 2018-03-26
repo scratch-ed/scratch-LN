@@ -22,7 +22,7 @@ import {
 // some frequently used predicates
 
 let looksSoundPredicate = function (ctx, visitor) {
-    let opt = visitor.getString(ctx.option[0]);
+    let opt = ctx.option?visitor.getString(ctx.option[0]):'';
     let label = visitor.getString(ctx.argument[0]);
     return (opt === 'sound') || (label === "pan left/right" || label === 'pitch');
 };
