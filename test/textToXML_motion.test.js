@@ -215,7 +215,7 @@ describe('motion',function(){
     describe('variables', function() {
         it('should return valid xml', function() {
             let parsed = parseTextToXML('(x position)(y position)(direction)');
-            let expected = '<xml xmlns="http://www.w3.org/1999/xhtml" x="10" y="210">\n' +
+            let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
                 '  <variables/>\n' +
                 '  <block id="0" type="motion_xposition" x="10" y="10"/>\n' +
                 '  <block id="1" type="motion_yposition" x="10" y="110"/>\n' +

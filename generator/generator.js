@@ -139,7 +139,7 @@ ScratchBlocks.text['control_forever'] = function (block) {
 ScratchBlocks.text['control_repeat'] = function (block) {
     let statements = ScratchBlocks.text.statementToCode(block, 'SUBSTACK'); //todo: this automaticly intendents, is this a problem?
     let nr = ScratchBlocks.text.valueToCode(block, 'TIMES', ScratchBlocks.text.ORDER_NONE);
-    return 'repeat ' + nr + '\n' + statements + 'end\n' + ScratchBlocks.text.getNextCode(block);
+    return 'repeat {' + nr + '}\n' + statements + 'end\n' + ScratchBlocks.text.getNextCode(block);
 };
 
 ScratchBlocks.text['control_repeat_until'] = function (block) {
