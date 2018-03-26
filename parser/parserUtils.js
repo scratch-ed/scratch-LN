@@ -100,13 +100,13 @@ export default function parseTextToXML(text,location=true) {
     let cst = getCst(text);
     if (cst) {
         let xml = execXmlVisitor(cst,location);
-        //console.log(xml);
+        console.log(xml);
         return xml;
     }
 }
 
 function getCst(text) {
-    let r = parse(text);
+    let r = parse(cleanupText(text));
     return r.value;
 }
 
@@ -117,4 +117,8 @@ function execXmlVisitor(cst,location) {
     },location);
     let xml = v.getXML(cst);
     return xml;
+}
+
+function cleanupText(text){
+    return text.trim();
 }
