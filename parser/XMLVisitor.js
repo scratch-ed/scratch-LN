@@ -365,7 +365,7 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
             }
             argumentnames.push(name); //('argumentname_' + blockid + '_' + i)
             argumentdefaults.push('');
-            argumentids.push(this.getVariableID(argumentnames[argumentnames.length - 1], 'arg')); //(blockid + '_arg_' + this.getNextId())
+
 
             if (visitArgs) {
                 //make xml
@@ -376,6 +376,7 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
                 this.xml = this.xml.up();
                 args.push(arg);
             }
+            argumentids.push(this.getVariableID(argumentnames[argumentnames.length - 1], 'arg')); //(blockid + '_arg_' + this.getNextId())
 
         }
         if (argumentnames.length > 0) {
