@@ -112,10 +112,12 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
         this.xml = this.variablesTag;
         for (let key in this.varMap) {
             if (this.varMap.hasOwnProperty(key)) {
-                this.xml.ele('variable', {
-                    'type': this.varMap[key].variableType,
-                    'id': this.varMap[key].id,
-                }, key);
+                if (this.varMap[key].variableType != 'arg') {
+                    this.xml.ele('variable', {
+                        'type': this.varMap[key].variableType,
+                        'id': this.varMap[key].id,
+                    }, key);
+                }
             }
         }
         return this.xml.end({
@@ -381,7 +383,9 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
         }
         if (argumentnames.length > 0) {
             head.att('proccode', proccode);
-            //head.att('argumentnames','["' + argumentnames.join('","') + '"]');
+            if(!visitArgs) {
+                head.att('argumentnames', '["' + argumentnames.join('","') + '"]');
+            }
             head.att('warp', 'null');
             head.att('argumentids', '["' + argumentnames.join('","') + '"]');
             //head.att('argumentdefaults', "['" + argumentdefaults.join("','") + "']");

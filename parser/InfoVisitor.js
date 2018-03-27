@@ -227,18 +227,21 @@ export class InformationVisitor extends BaseCstVisitor {
                 'value': '',
                 'type': 'empty',
                 'offset': ctx.LCurlyBracket[0].startOffset,
+                'text': '',
             }
         }else if(ctx.StringLiteral) { //if (tokenMatcher(ctx, StringLiteral))
             return {
                 'value': ctx.StringLiteral[0].image,
                 'type': 'StringLiteral',
                 'offset': ctx.StringLiteral[0].startOffset,
+                'text': ctx.StringLiteral[0].image.substring(1, ctx.StringLiteral[0].image.length-1)
             }
         }else if(ctx.ColorLiteral) { //if (tokenMatcher(ctx, StringLiteral))
             return {
                 'value': ctx.ColorLiteral[0].image,
                 'type': 'ColorLiteral',
                 'offset': ctx.ColorLiteral[0].startOffset,
+                'text':  ctx.ColorLiteral[0].image,
             }
         }
     }

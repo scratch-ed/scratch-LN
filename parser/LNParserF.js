@@ -48,6 +48,7 @@ let LSquareBracket = lntokens.LSquareBracket;
 let RSquareBracket = lntokens.RSquareBracket;
 let DoubleColon = lntokens.DoubleColon;
 let ID = lntokens.ID;
+let StringLiteral = lntokens.StringLiteral;
 
 // ----------------- parser -----------------
 // Note that this is a Pure grammar, it only describes the grammar
