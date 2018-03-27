@@ -383,7 +383,7 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
         }
         if (argumentnames.length > 0) {
             head.att('proccode', proccode);
-            if(!visitArgs) {
+            if (!visitArgs) {
                 head.att('argumentnames', '["' + argumentnames.join('","') + '"]');
             }
             head.att('warp', 'null');
@@ -520,8 +520,15 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
             let x = this.visit(ctx.choice);
             this.modus = previousModus;
             return x;
-        } else {
+        } else if (ctx.LCurlyBracket) {
             //empty
+        } else if (ctx.StringLiteral) { //if (tokenMatcher(ctx, StringLiteral))
+            this.createText(ctx.StringLiteral[0].image);
+            return ctx.StringLiteral[0].image;
+
+        } else if (ctx.ColorLiteral) { //if (tokenMatcher(ctx, StringLiteral))
+            this.createText(ctx.ColorLiteral[0].image);
+            return ctx.ColorLiteral[0].image;
         }
     }
 
@@ -587,29 +594,40 @@ export class XMLVisitor extends BaseCstVisitorWithDefaults {
     primitive(ctx) {
         //todo: try to remove this because it is inconsistent that here is the only return...
         if (tokenMatcher(ctx.Literal[0], NumberLiteral)) {
-            this.xml.ele('shadow', {
-                'type': 'math_number',
-                'id': this.getNextId(),
-            }).ele('field', {
-                'name': 'NUM',
-            }, ctx.Literal[0].image);
+            this.createMathNumber(ctx.Literal[0].image);
         } else if (tokenMatcher(ctx.Literal[0], ColorLiteral)) {
-            this.xml.ele('shadow', {
-                'type': 'colour_picker',
-                'id': this.getNextId(),
-            }).ele('field', {
-                'name': 'COLOUR',
-            }, ctx.Literal[0].image);
+            this.createColourPicker(ctx.Literal[0].image);
         } else {
-            this.xml.ele('shadow', {
-                'type': 'text',
-                'id': this.getNextId(),
-            }).ele('field', {
-                'name': 'TEXT',
-            }, ctx.Literal[0].image);
-
+            this.createText(ctx.Literal[0].image);
         }
         return ctx.Literal[0].image;
+    }
+
+    createText(text) {
+        this.xml.ele('shadow', {
+            'type': 'text',
+            'id': this.getNextId(),
+        }).ele('field', {
+            'name': 'TEXT',
+        }, text);
+    }
+
+    createColourPicker(text) {
+        this.xml.ele('shadow', {
+            'type': 'colour_picker',
+            'id': this.getNextId(),
+        }).ele('field', {
+            'name': 'COLOUR',
+        }, text);
+    }
+
+    createMathNumber(text) {
+        this.xml.ele('shadow', {
+            'type': 'math_number',
+            'id': this.getNextId(),
+        }).ele('field', {
+            'name': 'NUM',
+        }, text);
     }
 
     reporterblock(ctx) {
