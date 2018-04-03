@@ -2,7 +2,7 @@ import $ from "jquery";
 import ScratchBlocks from 'scratch-blocks';
 import parseTextToXML from './../parser/parserUtils.js'
 
-export default function scratchify(clasz='scratch') {
+export function scratchify(clasz='scratch',keepText = false) {
     $('.'+clasz).each(function(i, obj) {
         var id = $(this).attr('id')
         if (!id) {
@@ -11,13 +11,18 @@ export default function scratchify(clasz='scratch') {
             id = "workspace_" + id;
         }
         //wrap the code div in another idv
-        $(this).wrap("<div class='codeDiv'></div>");
+        if(keepText){
+            $(this).wrap("<div class='codeDiv'></div>");
+        }
         //create the div to inject the workspace in
         $(this).parent().append($("<div class=blocklyDiv id=" + id + "></div>"));
 
         var workspace = createWorkspace(id);
         //do parsing
         var text = $(this).text();
+        if(!keepText){
+            $(this).remove();
+        }
         //console.log(text);
         var xml = parseTextToXML(text);
         //console.log(xml)

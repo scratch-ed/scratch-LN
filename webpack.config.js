@@ -29,7 +29,7 @@ const base = {
 };
 
 module.exports = [   
-    defaultsDeep({}, base, {
+    /*defaultsDeep({}, base, {
         target: 'web',
         entry: {
             'live_view':'./live_view/live_view.js',
@@ -82,6 +82,25 @@ module.exports = [
             new CopyWebpackPlugin([{
                 from: 'node_modules/scratch-blocks/media',
                 to: 'static/blocks-media'
+            }])
+        ]),
+    }),*/
+    defaultsDeep({}, base, {
+        target: 'web',
+        entry: {
+            'scratchify':'./webtools/scratchify.js',
+            'auto_scratchify_language_scratch':'./webtools/markdown_scratch.js',
+            'auto_scratchify_scratch':'./webtools/run.js',
+        },
+        output: {
+            filename: 'dist/[name].js',
+            libraryTarget: 'var',
+            library: 'scratchLN'
+        },
+        plugins: base.plugins.concat([
+            new CopyWebpackPlugin([{
+                from: 'node_modules/scratch-blocks/media',
+                to: 'dist/static/blocks-media'
             }])
         ]),
     })
