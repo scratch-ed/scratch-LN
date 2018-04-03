@@ -41,11 +41,14 @@ module.exports = [
             'nice_live_view':'./examples/nice_live_view.js',
             'markdown_scratch':'./webtools/markdown_scratch.js',
             'exe_test':'./exe_test/exe_test.js',
+           // 'scratchify':'./webtools/scratchify.js'
         },
         output: {
-            filename: '[name].js'
+            filename: '[name].js',
+            //libraryTarget: 'var',
+            //library: 'scratchLN'
         },
-        plugins: base.plugins.concat([
+       plugins: base.plugins.concat([
             new CopyWebpackPlugin([{
                 from: './live_view/live_view.html',
                 to: 'index.html'
