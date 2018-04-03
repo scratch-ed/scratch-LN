@@ -7,7 +7,10 @@ Provide an textual representation of the blocks from scratch 3.0. This text can 
 If you are not a developer, you can use the instructions below to use this in your projects. 
 An example can be found: [example scratch exercises](https://github.com/Ellen102/ScratchExercises).
  
-Three files can be found in the `dist` folder. 
+Three javascript files can be found in the `dist` folder, they are explained below.
+
+Scratch 3.0 needs the files inside `static/blocks-media` to render the greenflag,arrows, etc correctly. 
+It must be placed in the root directory of the webserver. (Later, I will add an option to set the location see issue #35) 
 
 ### Basic `scratchify.js`
 This the typical file where you have to call yourself when scratchify will run. 
