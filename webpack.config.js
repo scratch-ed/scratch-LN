@@ -29,7 +29,7 @@ const base = {
 };
 
 module.exports = [   
-    /*defaultsDeep({}, base, {
+    defaultsDeep({}, base, {
         target: 'web',
         entry: {
             'live_view':'./live_view/live_view.js',
@@ -84,8 +84,8 @@ module.exports = [
                 to: 'static/blocks-media'
             }])
         ]),
-    }),*/
-    defaultsDeep({}, base, {
+    }),
+    /* defaultsDeep({}, base, {
         target: 'web',
         entry: {
             'scratchify':'./webtools/scratchify.js',
@@ -103,5 +103,5 @@ module.exports = [
                 to: 'dist/static/blocks-media'
             }])
         ]),
-    })
+    }) */
 ];
