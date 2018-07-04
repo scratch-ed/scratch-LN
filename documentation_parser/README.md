@@ -8,7 +8,7 @@ http://sap.github.io/chevrotain/playground/
 The most recent generated diagrams can be found in  `generated_diagrams.html`
 
 
-
+- longer_alt allows if on edge, bounce
 
 
 

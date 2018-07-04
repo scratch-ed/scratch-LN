@@ -10,23 +10,33 @@
     const Label = createToken({
         name: "Label",
         pattern:
-        //not [] {} () " :: ; \n # unless escaped
-        // : followed by not : or in the end
-            /(:?[^|\{\(\)\}\<\>\[\]:;\\"\n#@]|\\[\{\|\(\)\}\<\>\[\]:;\\"\n#@])+/,
+        //necessary to escape: [] {} () " ; \n # | @ \n
+        //this cannot contain :: and should not partially match ::
+        //--> :(?!:) : not followed by another :
+        // --> x(?!y) = negative lookahead (matches 'x' when it's not followed by 'y')
+
+        //atleast one character
+        // - a : followed by a not :
+        // - normal - not necessary to escape - characters
+        // - \ followed by any character or a newline
+
+        //no whitespace in the beginning or end -> will be skipped (OR allow whitespace with keywords?)
+
+
+            /((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: ]|\\(.|\n))(( +(:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@:]|\\(.|\n))|(:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@:]|\\(.|\n))*/,
+
         line_breaks: true
     });
 
     const LineComment  = createToken({
         name: "LineComment",
-        pattern:
-            /\/\/[^\n]*[\n]?/,
+        pattern:/\/\/[^\n]*[\n]?/,
         group: Lexer.SKIPPED,
     });
 
     const BlockComment  = createToken({
         name: "BlockComment",
-        pattern:
-            /\*[^*]*\*\//,
+        pattern:/\/\*([^\*]|\*[^\/])*\*?\*\//,
         group: Lexer.SKIPPED,
     });
 
@@ -93,13 +103,13 @@
 
     const StringLiteral = createToken({
         name: "StringLiteral",
-        pattern: /"([^"\\]|\\")*"/,
+        pattern: /("([^"]|\\")*[^\\]"|"")/,
         categories: Literal
     });
 
     const NumberLiteral = createToken({
         name: "NumberLiteral",
-        pattern: /-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?/,
+        pattern: /-?(\d+)(\.\d+)?/,
         categories: [Literal, Label]
     });
 
@@ -165,9 +175,10 @@
         line_breaks: true
     });
 
+    //order matters!
     const allTokens = [
         WhiteSpace,
-        Comment,LineComment, BlockComment, //match before anything else
+        BlockComment, Comment,LineComment,  //match before anything else
         Literal, StringLiteral, NumberLiteral, ColorLiteral,
         Forever, End, Repeat, If, Else, Then, RepeatUntil,
         Delimiter,
@@ -842,7 +853,7 @@
     // for the playground to work the returned object must contain these fields
     return {
         lexer: LNLexer,
-        parser: LNParser,
+        //parser: LNParser,
         //visitor: InformationVisitor,
         defaultRule: "code"
     };
