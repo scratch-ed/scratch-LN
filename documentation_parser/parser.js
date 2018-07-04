@@ -121,7 +121,6 @@ module.exports = {
             //empty is allowed ""
             pattern: /("([^"]|\\")*([^\\"]|\\")"|"")/,
             categories: [Literal],
-            longer_alt: Label,
             line_breaks: true
         });
 
