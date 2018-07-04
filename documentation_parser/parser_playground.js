@@ -113,7 +113,7 @@
         //"char*" -> "char+" or ""
         //most characters = [^"]
         //escaped the " char =  \\"
-        //cannot end with \ so must end with = [^\\"]
+        //cannot end with \ so must end with = [^\\"] or \\"
         //empty is allowed ""
         pattern: /("([^"]|\\")*([^\\"]|\\")"|"")/,
         categories: [Literal],
