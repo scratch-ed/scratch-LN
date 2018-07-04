@@ -28,20 +28,20 @@
         line_breaks: true
     });
 
-    const LineComment  = createToken({
+    const LineComment = createToken({
         name: "LineComment",
-        pattern:/\/\/[^\n]*[\n]?/,
+        pattern: /\/\/[^\n]*[\n]?/,
         group: Lexer.SKIPPED,
     });
 
-    const BlockComment  = createToken({
+    const BlockComment = createToken({
         name: "BlockComment",
         //between /**/
         //allowed to use * and / within text but not after each other
         //most chars = [^\*]
         //* followed by not = /\*[^\/]
         // /***/ should also be allowed, thus optional end with * = \*?
-        pattern:/\/\*([^\*]|\*[^\/])*\*?\*\//,
+        pattern: /\/\*([^\*]|\*[^\/])*\*?\*\//,
         group: Lexer.SKIPPED,
         line_breaks: true
     });
@@ -206,7 +206,7 @@
     //order matters!
     const allTokens = [
         WhiteSpace,
-        LineComment,  BlockComment, Comment,  //match before anything else
+        LineComment, BlockComment, Comment,  //match before anything else
         Literal, StringLiteral, NumberLiteral, ColorLiteral,
         Forever, End, Repeat, If, Else, Then, RepeatUntil,
         Delimiter,
@@ -364,7 +364,7 @@
                 ALT: () => {
                     $.SUBRULE($.ifelse);
                 }
-            },{
+            }, {
                 NAME: "$forever",
                 ALT: () => {
                     $.SUBRULE($.forever);
@@ -479,7 +479,7 @@
                             ALT: () => {
                                 $.SUBRULE($.predicate);
                             }
-                        },{
+                        }, {
                             ALT: () => {
                                 $.SUBRULE($.choice);
                             }
@@ -492,15 +492,15 @@
                 }
             }, {
                 ALT: () => {
-                    $.OR3([ {
+                    $.OR3([{
                         ALT: () => {
                             $.CONSUME(StringLiteral);
                         }
-                    },{
+                    }, {
                         ALT: () => {
                             $.CONSUME(ColorLiteral);
                         }
-                    },{
+                    }, {
                         ALT: () => {
                             $.SUBRULE2($.expression);
                         }
@@ -508,7 +508,7 @@
                         ALT: () => {
                             $.SUBRULE2($.predicate);
                         }
-                    },{
+                    }, {
                         ALT: () => {
                             $.SUBRULE2($.choice);
                         }

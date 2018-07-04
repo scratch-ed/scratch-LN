@@ -14,24 +14,40 @@ module.exports = {
         const Label = createToken({
             name: "Label",
             pattern:
-            //not [] {} () " :: ; \n # unless escaped
-            // : followed by not : or in the end
-                /(:?[^|\{\(\)\}\<\>\[\]:;\\"\n#@]|\\[\{\|\(\)\}\<\>\[\]:;\\"\n#@])+/,
+            //necessary to escape: [] {} () " ; \n # | @ \n and whitespace
+            //this cannot contain :: and should not partially match ::
+            //--> :(?!:) : not followed by another :
+            // --> x(?!y) = negative lookahead (matches 'x' when it's not followed by 'y')
+
+            //atleast one character
+            // - a : followed by a not :  = (:(?!:))
+            // - normal - not necessary to escape or whitespace - characters = [^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]
+            // - \ followed by any character or a newline = \\(.|\n))
+
+            //no whitespace in the beginning or end -> will be skipped (OR allow whitespace with keywords?)
+            //char (whitespace* char)* char*
+
+                /((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\(.|\n))([ \t]*((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\(.|\n)))*((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\(.|\n))*/,
+
             line_breaks: true
         });
 
         const LineComment = createToken({
             name: "LineComment",
-            pattern:
-                /\/\/[^\n]*[\n]?/,
+            pattern: /\/\/[^\n]*[\n]?/,
             group: Lexer.SKIPPED,
         });
 
         const BlockComment = createToken({
             name: "BlockComment",
-            pattern:
-                /\*[^*]*\*\//,
+            //between /**/
+            //allowed to use * and / within text but not after each other
+            //most chars = [^\*]
+            //* followed by not = /\*[^\/]
+            // /***/ should also be allowed, thus optional end with * = \*?
+            pattern: /\/\*([^\*]|\*[^\/])*\*?\*\//,
             group: Lexer.SKIPPED,
+            line_breaks: true
         });
 
         const LCurlyBracket = createToken({
@@ -81,13 +97,14 @@ module.exports = {
 
         const Comment = createToken({
             name: "Comment",
-            pattern: /\|[^|]*\|/
+            //similar to stringliteral but between ||
+            pattern: /(\|([^\|]|\\\|)*([^\\]|\\\|)\||\|\|)/
         });
 
 
         const ID = createToken({
             name: "ID",
-            pattern: /@[a-z0-9_]*/i
+            pattern: /@[a-z0-9_]+/i
         });
 
         const Literal = createToken({
@@ -97,61 +114,82 @@ module.exports = {
 
         const StringLiteral = createToken({
             name: "StringLiteral",
-            pattern: /"([^"\\]|\\")*"/,
-            categories: Literal
+            //"char*" -> "char+" or ""
+            //most characters = [^"]
+            //escaped the " char =  \\"
+            //cannot end with \ so must end with = [^\\"]
+            //empty is allowed ""
+            pattern: /("([^"]|\\")*([^\\"]|\\")"|"")/,
+            categories: [Literal],
+            longer_alt: Label,
+            line_breaks: true
         });
 
         const NumberLiteral = createToken({
             name: "NumberLiteral",
-            pattern: /-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?/,
-            categories: [Literal, Label]
+            pattern: /-?(\d+)(\.\d+)?/,
+            categories: [Literal],
+            longer_alt: Label,
         });
 
         const ColorLiteral = createToken({
             name: "ColorLiteral",
-            pattern: /#([0-9a-f]{3}|[0-9a-f]{6})/i,
+            //first the 6 , otherwise only 3 will be matched
+            pattern: /#([0-9a-f]{6}|[0-9a-f]{3})/i,
             categories: [Literal]
+        });
+
+        const Keyword = createToken({
+            name: "Keyword",
+            pattern: Lexer.NA
         });
 
         const Forever = createToken({
             name: "Forever",
-            pattern: /forever/,
-            longer_alt: Label
+            pattern: /forever/i,
+            longer_alt: Label,
+            categories: [Keyword]
         });
 
         const End = createToken({
             name: "End",
-            pattern: /end/,
-            longer_alt: Label
+            pattern: /end/i,
+            longer_alt: Label,
+            categories: [Keyword]
         });
 
         const Then = createToken({
             name: "Then",
-            pattern: /then/,
-            longer_alt: Label
+            pattern: /then/i,
+            longer_alt: Label,
+            categories: [Keyword]
         });
 
         const Repeat = createToken({
             name: "Repeat",
-            pattern: /repeat/,
-            longer_alt: Label
+            pattern: /repeat/i,
+            longer_alt: Label,
+            categories: [Keyword]
         });
         const RepeatUntil = createToken({
             name: "RepeatUntil",
-            pattern: /repeat[ \t]+until/,
-            longer_alt: Label
+            pattern: /repeat[ \t]+until/i,
+            longer_alt: Label,
+            categories: [Keyword]
         });
 
         const If = createToken({
             name: "If",
-            pattern: /if/,
-            longer_alt: Label
+            pattern: /if/i,
+            longer_alt: Label,
+            categories: [Keyword]
         });
 
         const Else = createToken({
             name: "Else",
-            pattern: /else/,
-            longer_alt: Label
+            pattern: /else/i,
+            longer_alt: Label,
+            categories: [Keyword]
         });
 
 
@@ -169,9 +207,10 @@ module.exports = {
             line_breaks: true
         });
 
+        //order matters!
         const allTokens = [
             WhiteSpace,
-            Comment, LineComment, BlockComment, //match before anything else
+            LineComment, BlockComment, Comment,  //match before anything else
             Literal, StringLiteral, NumberLiteral, ColorLiteral,
             Forever, End, Repeat, If, Else, Then, RepeatUntil,
             Delimiter,
