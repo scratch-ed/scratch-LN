@@ -21,9 +21,9 @@
         // - \ followed by any character or a newline
 
         //no whitespace in the beginning or end -> will be skipped (OR allow whitespace with keywords?)
+        // char (whitespace* char)* char*
 
-
-            /((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: ]|\\(.|\n))(( +((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: ]|\\(.|\n)))|(:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: ]|\\(.|\n))*/,
+            /((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\(.|\n))([ \t]*((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\(.|\n)))*((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\(.|\n))*/,
 
         line_breaks: true
     });
@@ -868,7 +868,7 @@
     // for the playground to work the returned object must contain these fields
     return {
         lexer: LNLexer,
-        parser: LNParser,
+        //parser: LNParser,
         //visitor: InformationVisitor,
         defaultRule: "code"
     };
