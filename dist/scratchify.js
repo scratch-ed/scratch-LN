@@ -27109,7 +27109,7 @@ let NumberLiteral = lntokens.NumberLiteral;
 let ColorLiteral = lntokens.ColorLiteral;
 
 
-const BaseCstVisitor = __WEBPACK_IMPORTED_MODULE_1__LNParser__["a" /* lnparser */].getBaseCstVisitorConstructor();
+const BaseCstVisitor = __WEBPACK_IMPORTED_MODULE_1__LNParser__["a" /* LNParser */].getBaseCstVisitorConstructor();
 
 class InformationVisitor extends BaseCstVisitor {
 
@@ -27754,7 +27754,7 @@ LNParser.prototype.constructor = LNParser;
 // wrapping it all together
 // reuse the same parser instance.
 const lnparser = new LNParser([]);
-/* unused harmony export lnparser */
+/* unused harmony export LNParser */
 
 
 function parse(text) {
@@ -27766,7 +27766,7 @@ function parse(text) {
     const value = lnparser.multipleStacks(); //TOP RULE
     /*console.log(value);
     console.log(lexResult.errors);
-    console.log(lnparser.errors);*/
+    console.log(LNParser.errors);*/
     return {
         value: value,
         lexErrors: lexResult.errors,
@@ -27807,7 +27807,7 @@ let ColorLiteral = lntokens.ColorLiteral;
 
 
 //const BaseCstVisitor = parser.getBaseCstVisitorConstructor();
-const BaseCstVisitorWithDefaults = __WEBPACK_IMPORTED_MODULE_3__LNParser__["a" /* lnparser */].getBaseCstVisitorConstructorWithDefaults();
+const BaseCstVisitorWithDefaults = __WEBPACK_IMPORTED_MODULE_3__LNParser__["a" /* LNParser */].getBaseCstVisitorConstructorWithDefaults();
 
 class XMLVisitor extends BaseCstVisitorWithDefaults {
 

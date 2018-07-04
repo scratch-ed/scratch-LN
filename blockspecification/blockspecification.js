@@ -980,7 +980,8 @@ export const blockspecifications = [
         {
             "template": "set %1 effect to %2",
             "description": {
-                "type": "looks_seteffectto",
+                "type"
+                    : "looks_seteffectto",
                 "args": [{
                     "type": "field_dropdown",
                     "name": "EFFECT",

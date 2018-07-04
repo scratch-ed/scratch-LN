@@ -17,7 +17,7 @@ const g = require("./parser")
 
 var o = g.myGrammar();
 // extract the serialized grammar.
-const parserInstance = o.parser
+const parserInstance = o.parserinstance
 const serializedGrammar = parserInstance.getSerializedGastProductions()
 
 // create the HTML Text

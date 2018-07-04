@@ -331,22 +331,22 @@ LNParser.prototype.constructor = LNParser;
 
 // wrapping it all together
 // reuse the same parser instance.
-export const lnparser = new LNParser([]);
+export const LNParser = new LNParser([]);
 
 export function parse(text) {
     //console.log('seperate file, function');
     const lexResult = LNLexer.tokenize(text);
     // setting a new input will RESET the parser instance's state.
-    lnparser.input = lexResult.tokens;
+    LNParser.input = lexResult.tokens;
     // any top level rule may be used as an entry point
-    const value = lnparser.multipleStacks(); //TOP RULE
+    const value = LNParser.multipleStacks(); //TOP RULE
     /*console.log(value);
     console.log(lexResult.errors);
-    console.log(lnparser.errors);*/
+    console.log(LNParser.errors);*/
     return {
         value: value,
         lexErrors: lexResult.errors,
-        parseErrors: lnparser.errors
+        parseErrors: LNParser.errors
     }
 }
 
