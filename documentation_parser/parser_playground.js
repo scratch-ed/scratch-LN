@@ -12,15 +12,22 @@
         pattern:
         //not [] {} () " :: ; \n # unless escaped
         // : followed by not : or in the end
-        //    /(:?[^\{\(\)\}\<\>\[\]:;\\"\n#]|\\[\{\(\)\}\<\>\[\]:;\\"\n#])+:?/,
-            /(:?[^\{\(\)\}\<\>\[\]:;\\"\n#@]|\\[\{\(\)\}\<\>\[\]:;\\"\n#@])+/,
+            /(:?[^|\{\(\)\}\<\>\[\]:;\\"\n#@]|\\[\{\|\(\)\}\<\>\[\]:;\\"\n#@])+/,
         line_breaks: true
     });
 
-    const Comment  = createToken({
-        name: "Comment",
+    const LineComment  = createToken({
+        name: "LineComment",
         pattern:
-            /\/\/[^\n]*/,
+            /\/\/[^\n]*[\n]?/,
+        group: Lexer.SKIPPED,
+    });
+
+    const BlockComment  = createToken({
+        name: "BlockComment",
+        pattern:
+            /\*[^*]*\*\//,
+        group: Lexer.SKIPPED,
     });
 
     const LCurlyBracket = createToken({
@@ -68,9 +75,15 @@
         pattern: /::/
     });
 
+    const Comment = createToken({
+        name: "Comment",
+        pattern: /\|[^|]*\|/
+    });
+
+
     const ID = createToken({
         name: "ID",
-        pattern: /@[a-zA-Z0-9_]*/
+        pattern: /@[a-z0-9_]*/i
     });
 
     const Literal = createToken({
@@ -80,7 +93,7 @@
 
     const StringLiteral = createToken({
         name: "StringLiteral",
-        pattern: /"[^"]*"/,
+        pattern: /"([^"\\]|\\")*"/,
         categories: Literal
     });
 
@@ -92,48 +105,48 @@
 
     const ColorLiteral = createToken({
         name: "ColorLiteral",
-        pattern: /#[0-9a-z]{6}/,
+        pattern: /#([0-9a-f]{3}|[0-9a-f]{6})/i,
         categories: [Literal]
     });
 
     const Forever = createToken({
         name: "Forever",
-        pattern: / *forever */,
+        pattern: /forever/,
         longer_alt: Label
     });
 
     const End = createToken({
         name: "End",
-        pattern: / *end */,
+        pattern: /end/,
         longer_alt: Label
     });
 
     const Then = createToken({
         name: "Then",
-        pattern: / *then */,
+        pattern: /then/,
         longer_alt: Label
     });
 
     const Repeat = createToken({
         name: "Repeat",
-        pattern: / *repeat */,
+        pattern: /repeat/,
         longer_alt: Label
     });
     const RepeatUntil = createToken({
         name: "RepeatUntil",
-        pattern: / *repeat *until */,
+        pattern: /repeat[ \t]+until/,
         longer_alt: Label
     });
 
     const If = createToken({
         name: "If",
-        pattern: /if */,
+        pattern: /if/,
         longer_alt: Label
     });
 
     const Else = createToken({
         name: "Else",
-        pattern: / *else */,
+        pattern: /else/,
         longer_alt: Label
     });
 
@@ -148,13 +161,13 @@
 
     const Delimiter = createToken({
         name: "Delimiter",
-        pattern: /;\n|;|\n/,
+        pattern: /;[ \t]*\n|;|\n/,
         line_breaks: true
     });
 
     const allTokens = [
         WhiteSpace,
-        Comment, //match before anything else
+        Comment,LineComment, BlockComment, //match before anything else
         Literal, StringLiteral, NumberLiteral, ColorLiteral,
         Forever, End, Repeat, If, Else, Then, RepeatUntil,
         Delimiter,
@@ -186,44 +199,71 @@
                     $.CONSUME(Delimiter);
                 }
             });
+            $.OPTION3(() => {
+                $.SUBRULE($.comment);
+            })
             $.OPTION(() => {
+
                 $.SUBRULE($.stack);
 
                 $.MANY2({
-                    //SEP: Delimiter,
                     DEF: () => {
-                        $.CONSUME2(Delimiter);
+                        //$.CONSUME2(Delimiter);
                         $.AT_LEAST_ONE({
                             DEF: () => {
-                                $.CONSUME3(Delimiter);
+
+                                $.OR([{
+                                    ALT: () => {
+                                        $.CONSUME3(Delimiter);
+                                    }
+                                }, {
+                                    ALT: () => {
+                                        $.SUBRULE2($.comment);
+                                    }
+                                }]);
                             }
                         });
-                        $.SUBRULE2($.stack);
+                        $.OPTION2(() => {
+                            $.SUBRULE2($.stack);
+                        })
+
                     }
                 });
 
-                $.MANY3(() => {
-                    $.CONSUME4(Delimiter);
-                })
+                //$.MANY3(() => {
+                //   $.CONSUME4(Delimiter);
+                //})
             })
+
+            //$.CONSUME(chevrotain.EOF);
         });
 
+        $.RULE("comment", () => {
+            $.AT_LEAST_ONE(() => {
+                $.CONSUME(Comment);
+                $.MANY2(() => {
+                    $.CONSUME2(Delimiter);
+                })
+            });
+
+        })
 
         $.RULE("stack", () => {
             $.SUBRULE($.block);
+
+
             $.MANY(() => {
                 $.CONSUME(Delimiter);
                 $.SUBRULE2($.block);
             });
+
+            $.OPTION(() => {
+                $.CONSUME2(Delimiter);
+            })
         });
 
         $.RULE("block", () => {
             $.OR([{
-                NAME: "$comment",
-                ALT: () => {
-                    $.SUBRULE($.comment);
-                }
-            },{
                 NAME: "$atomic",
                 ALT: () => {
                     $.SUBRULE($.atomic);
@@ -236,9 +276,6 @@
             }]);
         });
 
-        $.RULE("comment", () => {
-            $.CONSUME(Comment);
-        });
 
         $.RULE("atomic", () => {
             $.AT_LEAST_ONE(() => {
@@ -253,18 +290,42 @@
                 }]);
 
             });
-            $.OPTION(() => {
-                $.SUBRULE($.option);
-            });
-            $.OPTION2(() => {
-                $.SUBRULE($.id);
-            });
 
+            $.SUBRULE($.modifier);
+
+
+            $.SUBRULE($.annotations);
 
         });
 
+        $.RULE("annotations", () => {
+            $.OPTION(() => {
+                $.OR([{
+                    ALT: () => {
+                        $.CONSUME(Comment);
+                        $.OPTION2(() => {
+                            $.CONSUME(ID);
+                        });
+
+                    }
+                }, {
+                    ALT: () => {
+                        $.CONSUME2(ID);
+                        $.OPTION3(() => {
+                            $.CONSUME2(Comment);
+                        });
+                    }
+                }]);
+            })
+        })
+
         $.RULE("composite", () => {
             $.OR([{
+                NAME: "$ifelse",
+                ALT: () => {
+                    $.SUBRULE($.ifelse);
+                }
+            },{
                 NAME: "$forever",
                 ALT: () => {
                     $.SUBRULE($.forever);
@@ -279,20 +340,27 @@
                 ALT: () => {
                     $.SUBRULE($.repeatuntil);
                 }
-            }, {
-                NAME: "$ifelse",
-                ALT: () => {
-                    $.SUBRULE($.ifelse);
-                }
             }]);
         });
 
+        $.RULE("ifelse", () => {
+            $.CONSUME(If);
+            $.SUBRULE($.condition);
+            $.OPTION(() => {
+                $.CONSUME(Then);
+            });
+            $.SUBRULE($.annotations);
+            $.SUBRULE($.clause);
+            $.OPTION3(() => {
+                $.CONSUME(Else);
+                $.SUBRULE3($.clause);
+            });
+
+        });
 
         $.RULE("forever", () => {
             $.CONSUME(Forever);
-            $.OPTION(() => {
-                $.SUBRULE($.id);
-            });
+            $.SUBRULE($.annotations);
             $.SUBRULE($.clause);
 
         });
@@ -301,38 +369,38 @@
         $.RULE("repeat", () => {
             $.CONSUME(Repeat);
             $.SUBRULE($.argument);
-            $.OPTION(() => {
-                $.SUBRULE($.id);
-            });
+            $.SUBRULE($.annotations);
             $.SUBRULE($.clause);
 
         });
 
         $.RULE("repeatuntil", () => {
             $.CONSUME(RepeatUntil);
-            $.SUBRULE($.predicate);
-            $.OPTION(() => {
-                $.SUBRULE($.id);
-            });
+            $.SUBRULE($.condition);
+            $.SUBRULE($.annotations);
             $.SUBRULE($.clause);
         });
 
-        $.RULE("ifelse", () => {
-            $.CONSUME(If);
-            $.SUBRULE($.predicate);
-            $.OPTION(() => {
-                $.CONSUME(Then);
-            });
-            $.OPTION2(() => {
-                $.SUBRULE2($.id);
-            });
-            $.SUBRULE($.clause);
-            $.OPTION3(() => {
-                $.CONSUME(Else);
-                $.SUBRULE3($.clause);
-            });
+        $.RULE("condition", () => {
+            $.OR([{
+                ALT: () => {
+                    $.CONSUME(LCurlyBracket);
+                    $.OPTION(() => {
+                        $.SUBRULE($.predicate);
 
-        });
+                    });
+                    $.OPTION2(() => {
+                        $.CONSUME(ID);
+                    });
+                    $.CONSUME(RCurlyBracket);
+                }
+            }, {
+                ALT: () => {
+                    $.SUBRULE2($.predicate);
+                }
+            }])
+        })
+
 
         $.RULE("clause", () => {
             $.OPTION(() => {
@@ -343,18 +411,18 @@
             });
 
             $.OPTION3(() => {
-                $.CONSUME2(Delimiter);
+                //$.CONSUME2(Delimiter);
                 $.CONSUME(End);
             })
         });
 
-        $.RULE("option", () => {
-            $.CONSUME(DoubleColon);
-            $.CONSUME(Label);
+        $.RULE("modifier", () => {
+            $.OPTION(() => {
+                $.CONSUME(DoubleColon);
+                $.CONSUME(Label);
+            })
         });
-        $.RULE("id", () => {
-            $.CONSUME(ID);
-        });
+
         $.RULE("argument", () => {
             $.OR([{
                 ALT: () => {
@@ -372,20 +440,20 @@
                             ALT: () => {
                                 $.SUBRULE($.predicate);
                             }
+                        },{
+                            ALT: () => {
+                                $.SUBRULE($.choice);
+                            }
                         }]);
                     });
                     $.OPTION2(() => {
-                        $.SUBRULE($.id);
+                        $.CONSUME(ID);
                     });
                     $.CONSUME(RCurlyBracket);
                 }
             }, {
                 ALT: () => {
-                    $.OR3([{
-                        ALT: () => {
-                            $.SUBRULE($.choice);
-                        }
-                    }, {
+                    $.OR3([ {
                         ALT: () => {
                             $.CONSUME(StringLiteral);
                         }
@@ -401,10 +469,11 @@
                         ALT: () => {
                             $.SUBRULE2($.predicate);
                         }
+                    },{
+                        ALT: () => {
+                            $.SUBRULE2($.choice);
+                        }
                     }]);
-                    $.OPTION3(() => {
-                        $.SUBRULE2($.id);
-                    });
                 }
             }])
 
@@ -419,13 +488,6 @@
             $.CONSUME(RRoundBracket);
         });
 
-        $.RULE("choice", () => {
-            $.CONSUME(LSquareBracket);
-            $.OPTION(() => {
-                $.CONSUME(Label);
-            });
-            $.CONSUME(RSquareBracket);
-        });
 
         $.RULE("predicate", () => {
             $.CONSUME(LAngleBracket);
@@ -435,6 +497,13 @@
             $.CONSUME(RAngleBracket);
         });
 
+        $.RULE("choice", () => {
+            $.CONSUME(LSquareBracket);
+            $.OPTION(() => {
+                $.CONSUME(Label);
+            });
+            $.CONSUME(RSquareBracket);
+        });
 
         // very important to call this after all the rules have been defined.
         // otherwise the parser may not work correctly as it will lack information
@@ -640,7 +709,7 @@
             return {
                 'text': text,
                 'argumenten': args,
-                'option': this.visit(ctx.option),
+                'modifier': this.visit(ctx.modifier),
                 'id': this.visit(ctx.id),
                 'offset': ofs
             }
@@ -654,10 +723,10 @@
             return child.offset
         }
 
-        option(ctx) {
+        modifier(ctx) {
             return {
                 'text': ctx.Label[0].image,
-                'type': 'option',
+                'type': 'modifier',
                 'offset': ctx.DoubleColon[0].startOffset,
             }
         }
