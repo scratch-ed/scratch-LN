@@ -94,7 +94,7 @@
     const Comment = createToken({
         name: "Comment",
         //similar to stringliteral but between ||
-        pattern: /(\|([^\|]|\\\|)*[^\\]\||\|\|)/
+        pattern: /(\|([^\|]|\\\|)*([^\\]|\\\|)\||\|\|)/
     });
 
 
@@ -115,7 +115,7 @@
         //escaped the " char =  \\"
         //cannot end with \ so must end with = [^\\"]
         //empty is allowed ""
-        pattern: /("([^"]|\\")*[^\\"]"|"")/,
+        pattern: /("([^"]|\\")*([^\\"]|\\")"|"")/,
         categories: [Literal],
         longer_alt: Label,
         line_breaks: true
