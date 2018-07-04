@@ -10,18 +10,18 @@
     const Label = createToken({
         name: "Label",
         pattern:
-        //necessary to escape: [] {} () " ; \n # | @ \n
+        //necessary to escape: [] {} () " ; \n # | @ \n and whitespace
         //this cannot contain :: and should not partially match ::
         //--> :(?!:) : not followed by another :
         // --> x(?!y) = negative lookahead (matches 'x' when it's not followed by 'y')
 
         //atleast one character
-        // - a : followed by a not :
-        // - normal - not necessary to escape - characters
-        // - \ followed by any character or a newline
+        // - a : followed by a not :  = (:(?!:))
+        // - normal - not necessary to escape or whitespace - characters = [^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]
+        // - \ followed by any character or a newline = \\(.|\n))
 
         //no whitespace in the beginning or end -> will be skipped (OR allow whitespace with keywords?)
-        // char (whitespace* char)* char*
+        //char (whitespace* char)* char*
 
             /((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\(.|\n))([ \t]*((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\(.|\n)))*((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\(.|\n))*/,
 
@@ -38,6 +38,7 @@
         name: "BlockComment",
         pattern:/\/\*([^\*]|\*[^\/])*\*?\*\//,
         group: Lexer.SKIPPED,
+        line_breaks: true
     });
 
     const LCurlyBracket = createToken({
@@ -106,6 +107,7 @@
         pattern: /("([^"]|\\")*[^\\]"|"")/,
         categories: [Literal],
         longer_alt: Label,
+        line_breaks: true
     });
 
     const NumberLiteral = createToken({
@@ -193,7 +195,7 @@
     //order matters!
     const allTokens = [
         WhiteSpace,
-        BlockComment, Comment,LineComment,  //match before anything else
+        LineComment,  BlockComment, Comment,  //match before anything else
         Literal, StringLiteral, NumberLiteral, ColorLiteral,
         Forever, End, Repeat, If, Else, Then, RepeatUntil,
         Delimiter,
