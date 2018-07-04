@@ -36,6 +36,11 @@
 
     const BlockComment  = createToken({
         name: "BlockComment",
+        //between /**/
+        //allowed to use * and / within text but not after each other
+        //most chars = [^\*]
+        //* followed by not = /\*[^\/]
+        // /***/ should also be allowed, thus optional end with * = \*?
         pattern:/\/\*([^\*]|\*[^\/])*\*?\*\//,
         group: Lexer.SKIPPED,
         line_breaks: true
@@ -88,6 +93,7 @@
 
     const Comment = createToken({
         name: "Comment",
+        //similar to stringliteral but between ||
         pattern: /(\|([^\|]|\\\|)*[^\\]\||\|\|)/
     });
 
@@ -104,7 +110,12 @@
 
     const StringLiteral = createToken({
         name: "StringLiteral",
-        pattern: /("([^"]|\\")*[^\\]"|"")/,
+        //"char*" -> "char+" or ""
+        //most characters = [^"]
+        //escaped the " char =  \\"
+        //cannot end with \ so must end with = [^\\"]
+        //empty is allowed ""
+        pattern: /("([^"]|\\")*[^\\"]"|"")/,
         categories: [Literal],
         longer_alt: Label,
         line_breaks: true
@@ -131,48 +142,48 @@
 
     const Forever = createToken({
         name: "Forever",
-        pattern: /forever/,
+        pattern: /forever/i,
         longer_alt: Label,
         categories: [Keyword]
     });
 
     const End = createToken({
         name: "End",
-        pattern: /end/,
+        pattern: /end/i,
         longer_alt: Label,
         categories: [Keyword]
     });
 
     const Then = createToken({
         name: "Then",
-        pattern: /then/,
+        pattern: /then/i,
         longer_alt: Label,
         categories: [Keyword]
     });
 
     const Repeat = createToken({
         name: "Repeat",
-        pattern: /repeat/,
+        pattern: /repeat/i,
         longer_alt: Label,
         categories: [Keyword]
     });
     const RepeatUntil = createToken({
         name: "RepeatUntil",
-        pattern: /repeat[ \t]+until/,
+        pattern: /repeat[ \t]+until/i,
         longer_alt: Label,
         categories: [Keyword]
     });
 
     const If = createToken({
         name: "If",
-        pattern: /if/,
+        pattern: /if/i,
         longer_alt: Label,
         categories: [Keyword]
     });
 
     const Else = createToken({
         name: "Else",
-        pattern: /else/,
+        pattern: /else/i,
         longer_alt: Label,
         categories: [Keyword]
     });
