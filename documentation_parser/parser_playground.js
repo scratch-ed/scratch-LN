@@ -75,13 +75,13 @@
         pattern: /</
     });
 
-     const Comment = createToken({
+    const Comment = createToken({
         name: "Comment",
         //similar to stringliteral but between ||
         pattern: /\|([^\|\\]|\\.)*\|/
     });
 
-  
+
     const DoubleColon = createToken({
         name: "DoubleColon",
         pattern: /::/
@@ -122,8 +122,8 @@
         pattern: /#([0-9a-f]{6}|[0-9a-f]{3})/i,
         categories: [Literal]
     });
-  
-      const ChoiceLiteral = createToken({
+
+    const ChoiceLiteral = createToken({
         name: "ChoiceLiteral",
         //idem stringLiteral
         pattern: /\[([^\]\\]|\\.)*\]/,
@@ -185,7 +185,7 @@
     });
 
 
-// marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
+    // marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
     const WhiteSpace = createToken({
         name: "WhiteSpace",
         pattern: /[ \t]+/,
@@ -202,7 +202,7 @@
     //order matters!
     const allTokens = [
         WhiteSpace,
-        LineComment, BlockComment, Comment,  //match before anything else
+        LineComment, BlockComment, Comment, //match before anything else
         Literal, StringLiteral, NumberLiteral, ColorLiteral, ChoiceLiteral,
         Forever, End, Repeat, If, Else, Then, RepeatUntil,
         Delimiter,
@@ -218,8 +218,8 @@
 
 
     // ----------------- parser -----------------
-// Note that this is a Pure grammar, it only describes the grammar
-// Not any actions (semantics) to perform during parsing.
+    // Note that this is a Pure grammar, it only describes the grammar
+    // Not any actions (semantics) to perform during parsing.
     function LNParser(input) {
         Parser.call(this, input, allTokens, {
             outputCst: true
@@ -418,7 +418,7 @@
                 $.CONSUME(Label);
             })
         });
-      
+
         $.RULE("annotations", () => {
             $.OPTION(() => {
                 $.OR([{
@@ -492,7 +492,7 @@
 
         });
 
-       $.RULE("condition", () => {
+        $.RULE("condition", () => {
             $.OR([{
                 ALT: () => {
                     $.CONSUME(LCurlyBracket);
@@ -539,18 +539,117 @@
     LNParser.prototype = Object.create(Parser.prototype);
     LNParser.prototype.constructor = LNParser;
 
-// wrapping it all together
-// reuse the same parser instance.
+    // wrapping it all together
+    // reuse the same parser instance.
     const lnparser = new LNParser([]);
 
     // ----------------- Interpreter -----------------
-    //TODO
+    const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
+    class LNVisitor extends BaseCstVisitor {
+
+        constructor() {
+            super();
+            // This helper will detect any missing or redundant methods on this visitor
+            this.validateVisitor()
+        }
+
+        code(ctx) {
+
+        }
+
+        comments(ctx) {
+
+        }
+
+        stack(ctx) {
+
+        }
+
+        block(ctx) {
+
+        }
+
+        block$atomic(ctx) {
+
+        }
+
+        block$composite(ctx) {
+
+        }
+        atomic(ctx) {
+
+        }
+
+        composite(ctx) {
+
+        }
+        composite$ifelse(ctx) {
+
+        }
+
+        composite$forever(ctx) {
+
+        }
+
+        composite$repeat(ctx) {
+
+        }
+
+        composite$repeatuntil(ctx) {
+
+        }
+
+        ifelse(ctx) {
+
+        }
+
+        forever(ctx) {
+
+        }
+
+        repeat(ctx) {
+
+        }
+
+        repeatuntil(ctx) {
+
+        }
+
+        clause(ctx) {
+
+        }
+
+        modifier(ctx) {
+
+        }
+
+        annotations(ctx) {
+
+        }
+
+        argument(ctx) {
+
+        }
+
+        condition(ctx) {
+
+        }
+
+        expression(ctx) {
+
+        }
+
+        predicate(ctx) {
+
+        }
+
+    }
 
     // for the playground to work the returned object must contain these fields
     return {
         lexer: LNLexer,
         parser: LNParser,
-        //visitor: InformationVisitor,
+        //visitor: LNVisitor,
         defaultRule: "code"
     };
 }())
