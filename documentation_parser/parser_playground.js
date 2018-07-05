@@ -237,7 +237,7 @@
                 }
             });
             $.OPTION3(() => {
-                $.SUBRULE($.Comment);
+                $.SUBRULE($.comments);
             })
             $.OPTION(() => {
 
@@ -255,7 +255,7 @@
                                     }
                                 }, {
                                     ALT: () => {
-                                        $.SUBRULE2($.Comment);
+                                        $.SUBRULE2($.comments);
                                     }
                                 }]);
                             }
@@ -275,7 +275,7 @@
             //$.CONSUME(chevrotain.EOF);
         });
 
-        $.RULE("Comment", () => {
+        $.RULE("comments", () => {
             $.AT_LEAST_ONE(() => {
                 $.CONSUME(Comment);
                 $.MANY2(() => {
@@ -879,7 +879,7 @@
     // for the playground to work the returned object must contain these fields
     return {
         lexer: LNLexer,
-        //parser: LNParser,
+        parser: LNParser,
         //visitor: InformationVisitor,
         defaultRule: "code"
     };
