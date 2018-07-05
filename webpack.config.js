@@ -88,9 +88,9 @@ module.exports = [
     /* defaultsDeep({}, base, {
         target: 'web',
         entry: {
-            'scratchify':'./webtools/scratchify.js',
-            'auto_scratchify_language_scratch':'./webtools/markdown_scratch.js',
-            'auto_scratchify_scratch':'./webtools/run.js',
+            'ScratchLN':'./webtools/scratchify.js',
+            //'auto_scratchify_language_scratch':'./webtools/markdown_scratch.js',
+            //'auto_scratchify_scratch':'./webtools/run.js',
         },
         output: {
             filename: 'dist/[name].js',

@@ -6,6 +6,22 @@
     const Lexer = chevrotain.Lexer;
     const Parser = chevrotain.Parser;
 
+    function matchTest(text, startOffset, matchedTokens, groups) {
+        var t = text.substring(startOffset, startOffset+2);
+        // No match, must return null to conform with the RegExp.prototype.exec signature
+        if (!t.includes("lo")) {
+            return null
+        } else {
+            let matchedString = text.substring(startOffset, startOffset+2)
+            // according to the RegExp.prototype.exec API the first item in the returned array must be the whole matched string.
+            return [matchedString]
+        }
+    }
+
+    const TestToken = createToken({
+        name: "TestToken",
+        pattern: { exec: matchTest },
+    })
 
     const Label = createToken({
         name: "Label",
@@ -204,6 +220,7 @@
 
     //order matters!
     const allTokens = [
+        TestToken,
         WhiteSpace,
         LineComment, BlockComment, Comment,  //match before anything else
         Literal, StringLiteral, NumberLiteral, ColorLiteral,
@@ -238,7 +255,7 @@
                 }
             });
             $.OPTION3(() => {
-                $.SUBRULE($.Comment);
+                $.SUBRULE($.comment);
             })
             $.OPTION(() => {
 
@@ -256,7 +273,7 @@
                                     }
                                 }, {
                                     ALT: () => {
-                                        $.SUBRULE2($.Comment);
+                                        $.SUBRULE2($.comment);
                                     }
                                 }]);
                             }
@@ -276,7 +293,7 @@
             //$.CONSUME(chevrotain.EOF);
         });
 
-        $.RULE("Comment", () => {
+        $.RULE("comment", () => {
             $.AT_LEAST_ONE(() => {
                 $.CONSUME(Comment);
                 $.MANY2(() => {
