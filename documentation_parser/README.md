@@ -15,7 +15,7 @@ The most recent generated diagrams can be found in  `generated_diagrams.html`
 
 - regex
     - https://regexper.com/
-    - lookaheads 
+    - lookaheads: https://www.stefanjudis.com/today-i-learned/the-complicated-syntax-of-lookaheads-in-javascript-regular-expressions/ 
 
 
 
