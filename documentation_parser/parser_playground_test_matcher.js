@@ -8,14 +8,21 @@
 
     function matchTest(text, startOffset, matchedTokens, groups) {
         var t = text.substring(startOffset, startOffset+2);
-        // No match, must return null to conform with the RegExp.prototype.exec signature
-        if (!t.includes("lo")) {
-            return null
-        } else {
-            let matchedString = text.substring(startOffset, startOffset+2)
-            // according to the RegExp.prototype.exec API the first item in the returned array must be the whole matched string.
-            return [matchedString]
+        var x = matchedTokens.length-1;
+        for(x; x >=0; x--){
+          if(tokenMatcher(RAngleBracket, matchedTokens[x]) || tokenMatcher(LAngleBracket, matchedTokens[x])){
+             break;
+          }
         }
+ 
+        console.log(matchedTokens,x);
+
+        if( x < 0 || tokenMatcher(LAngleBracket, matchedTokens[x])){
+            return null;
+        }else{
+            return [">"]; 
+        }
+             
     }
 
     const TestToken = createToken({

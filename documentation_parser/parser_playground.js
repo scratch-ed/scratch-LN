@@ -75,27 +75,17 @@
         pattern: /</
     });
 
-    const LSquareBracket = createToken({
-        name: "LSquareBracket",
-        pattern: /\[/
-    });
-
-    const RSquareBracket = createToken({
-        name: "RSquareBracket",
-        pattern: /\]/
-    });
-
-    const DoubleColon = createToken({
-        name: "DoubleColon",
-        pattern: /::/
-    });
-
-    const Comment = createToken({
+     const Comment = createToken({
         name: "Comment",
         //similar to stringliteral but between ||
         pattern: /\|([^\|\\]|\\.)*\|/
     });
 
+  
+    const DoubleColon = createToken({
+        name: "DoubleColon",
+        pattern: /::/
+    });
 
     const ID = createToken({
         name: "ID",
@@ -131,6 +121,14 @@
         //first the 6 , otherwise only 3 will be matched
         pattern: /#([0-9a-f]{6}|[0-9a-f]{3})/i,
         categories: [Literal]
+    });
+  
+      const ChoiceLiteral = createToken({
+        name: "ChoiceLiteral",
+        //idem stringLiteral
+        pattern: /\[([^\]\\]|\\.)*\]/,
+        categories: [Literal],
+        line_breaks: true
     });
 
     const Keyword = createToken({
@@ -205,14 +203,14 @@
     const allTokens = [
         WhiteSpace,
         LineComment, BlockComment, Comment,  //match before anything else
-        Literal, StringLiteral, NumberLiteral, ColorLiteral,
+        Literal, StringLiteral, NumberLiteral, ColorLiteral, ChoiceLiteral,
         Forever, End, Repeat, If, Else, Then, RepeatUntil,
         Delimiter,
         Label,
         LCurlyBracket, RCurlyBracket,
         LRoundBracket, RRoundBracket,
         RAngleBracket, LAngleBracket,
-        LSquareBracket, RSquareBracket,
+        //LSquareBracket, RSquareBracket,
         DoubleColon, ID
     ];
 
@@ -335,27 +333,6 @@
 
         });
 
-        $.RULE("annotations", () => {
-            $.OPTION(() => {
-                $.OR([{
-                    ALT: () => {
-                        $.CONSUME(Comment);
-                        $.OPTION2(() => {
-                            $.CONSUME(ID);
-                        });
-
-                    }
-                }, {
-                    ALT: () => {
-                        $.CONSUME2(ID);
-                        $.OPTION3(() => {
-                            $.CONSUME2(Comment);
-                        });
-                    }
-                }]);
-            })
-        })
-
         $.RULE("composite", () => {
             $.OR([{
                 NAME: "$ifelse",
@@ -418,25 +395,7 @@
             $.SUBRULE($.clause);
         });
 
-        $.RULE("condition", () => {
-            $.OR([{
-                ALT: () => {
-                    $.CONSUME(LCurlyBracket);
-                    $.OPTION(() => {
-                        $.SUBRULE($.predicate);
 
-                    });
-                    $.OPTION2(() => {
-                        $.CONSUME(ID);
-                    });
-                    $.CONSUME(RCurlyBracket);
-                }
-            }, {
-                ALT: () => {
-                    $.SUBRULE2($.predicate);
-                }
-            }])
-        })
 
 
         $.RULE("clause", () => {
@@ -459,6 +418,27 @@
                 $.CONSUME(Label);
             })
         });
+      
+        $.RULE("annotations", () => {
+            $.OPTION(() => {
+                $.OR([{
+                    ALT: () => {
+                        $.CONSUME(Comment);
+                        $.OPTION2(() => {
+                            $.CONSUME(ID);
+                        });
+
+                    }
+                }, {
+                    ALT: () => {
+                        $.CONSUME2(ID);
+                        $.OPTION3(() => {
+                            $.CONSUME2(Comment);
+                        });
+                    }
+                }]);
+            })
+        })
 
         $.RULE("argument", () => {
             $.OR([{
@@ -476,10 +456,6 @@
                         }, {
                             ALT: () => {
                                 $.SUBRULE($.predicate);
-                            }
-                        }, {
-                            ALT: () => {
-                                $.SUBRULE($.choice);
                             }
                         }]);
                     });
@@ -500,15 +476,15 @@
                         }
                     }, {
                         ALT: () => {
+                            $.CONSUME(ChoiceLiteral);
+                        }
+                    }, {
+                        ALT: () => {
                             $.SUBRULE2($.expression);
                         }
                     }, {
                         ALT: () => {
                             $.SUBRULE2($.predicate);
-                        }
-                    }, {
-                        ALT: () => {
-                            $.SUBRULE2($.choice);
                         }
                     }]);
                 }
@@ -516,6 +492,25 @@
 
         });
 
+       $.RULE("condition", () => {
+            $.OR([{
+                ALT: () => {
+                    $.CONSUME(LCurlyBracket);
+                    $.OPTION(() => {
+                        $.SUBRULE($.predicate);
+
+                    });
+                    $.OPTION2(() => {
+                        $.CONSUME(ID);
+                    });
+                    $.CONSUME(RCurlyBracket);
+                }
+            }, {
+                ALT: () => {
+                    $.SUBRULE2($.predicate);
+                }
+            }])
+        })
 
         $.RULE("expression", () => {
             $.CONSUME(LRoundBracket);
@@ -534,13 +529,6 @@
             $.CONSUME(RAngleBracket);
         });
 
-        $.RULE("choice", () => {
-            $.CONSUME(LSquareBracket);
-            $.OPTION(() => {
-                $.CONSUME(Label);
-            });
-            $.CONSUME(RSquareBracket);
-        });
 
         // very important to call this after all the rules have been defined.
         // otherwise the parser may not work correctly as it will lack information

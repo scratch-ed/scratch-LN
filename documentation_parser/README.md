@@ -17,6 +17,14 @@ The most recent generated diagrams can be found in  `generated_diagrams.html`
     - https://regexper.com/
     - lookaheads: https://www.stefanjudis.com/today-i-learned/the-complicated-syntax-of-lookaheads-in-javascript-regular-expressions/ 
 
+- allowing < {} > {} >
+	- backtracking?
+		- https://github.com/SAP/chevrotain/blob/master/examples/parser/backtracking/backtracking.js
+		- https://sap.github.io/chevrotain/docs/guide/syntactic_content_assist.html#gates-predicates
+		- https://github.com/SAP/chevrotain/blob/master/examples/parser/predicate_lookahead/predicate_lookahead.js
+
+
+
 
 
 
