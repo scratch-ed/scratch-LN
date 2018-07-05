@@ -6,6 +6,9 @@
  */
 import { Token, Lexer, createToken } from "chevrotain"
 
+//DO NOT FORGET TO ADD THE EXPORT WHEN COPY PASTING
+//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
+
 export const Label = createToken({
     name: "Label",
     pattern:
@@ -211,5 +214,7 @@ export const allTokens = [
     RAngleBracket, LAngleBracket,
     DoubleColon, ID
 ];
+
+//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
 
 export const LNLexer = new Lexer(allTokens);

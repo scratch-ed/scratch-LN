@@ -7,7 +7,7 @@
  * @author Ellen Vanhove.
  */
 
-import {parse} from './LNParserF'
+import {parse} from './LNParser'
 import {XMLVisitor} from './XMLVisitor'
 import {blockspecifications} from '../blockspecification/blockspecification'
 import blocks from './blocks'
