@@ -18,12 +18,12 @@
         //atleast one character
         // - a : followed by a not :  = (:(?!:))
         // - normal - not necessary to escape or whitespace - characters = [^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]
-        // - \ followed by any character or a newline = \\(.|\n))
+        // - \ followed by any character or a newline = [^] not
 
         //no whitespace in the beginning or end -> will be skipped (OR allow whitespace with keywords?)
-        //char (whitespace* char)* char*
+        //char (whitespace* char)*
 
-            /((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\(.|\n))([ \t]*((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\(.|\n)))*((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\(.|\n))*/,
+            /((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"#@: \t\n]|\\[^])([ \t]*((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\[^]))*/,
 
         line_breaks: true
     });
@@ -326,7 +326,7 @@
 
             });
 
-            $.SUBRULE($.modifier);
+            $.SUBRULE($.modifiers);
 
 
             $.SUBRULE($.annotations);
@@ -407,13 +407,15 @@
             });
 
             $.OPTION3(() => {
-                //$.CONSUME2(Delimiter);
                 $.CONSUME(End);
+                $.OPTION4(() => {
+                    $.CONSUME2(Delimiter);
+                });
             })
         });
 
-        $.RULE("modifier", () => {
-            $.OPTION(() => {
+        $.RULE("modifiers", () => {
+            $.MANY(() => {
                 $.CONSUME(DoubleColon);
                 $.CONSUME(Label);
             })
