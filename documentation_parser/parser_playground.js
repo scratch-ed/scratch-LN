@@ -75,23 +75,6 @@
         pattern: /</
     });
 
-    const Comment = createToken({
-        name: "Comment",
-        //similar to stringliteral but between ||
-        pattern: /\|([^\|\\]|\\.)*\|/
-    });
-
-
-    const DoubleColon = createToken({
-        name: "DoubleColon",
-        pattern: /::/
-    });
-
-    const ID = createToken({
-        name: "ID",
-        pattern: /@[a-z0-9_]+/i
-    });
-
     const Literal = createToken({
         name: "Literal",
         pattern: Lexer.NA
@@ -131,58 +114,77 @@
         line_breaks: true
     });
 
+    const Comment = createToken({
+        name: "Comment",
+        //similar to stringliteral but between ||
+        pattern: /\|([^\|\\]|\\.)*\|/
+    });
+
+    const DoubleColon = createToken({
+        name: "DoubleColon",
+        pattern: /::/
+    });
+
+    const ID = createToken({
+        name: "ID",
+        pattern: /@[a-z0-9_]+/i
+    });
+
+
     const Keyword = createToken({
         name: "Keyword",
-        pattern: Lexer.NA
-    });
-
-    const Forever = createToken({
-        name: "Forever",
-        pattern: /forever/i,
-        longer_alt: Label,
-        categories: [Keyword]
-    });
-
-    const End = createToken({
-        name: "End",
-        pattern: /end/i,
-        longer_alt: Label,
-        categories: [Keyword]
-    });
-
-    const Then = createToken({
-        name: "Then",
-        pattern: /then/i,
-        longer_alt: Label,
-        categories: [Keyword]
-    });
-
-    const Repeat = createToken({
-        name: "Repeat",
-        pattern: /repeat/i,
-        longer_alt: Label,
-        categories: [Keyword]
-    });
-    const RepeatUntil = createToken({
-        name: "RepeatUntil",
-        pattern: /repeat[ \t]+until/i,
-        longer_alt: Label,
-        categories: [Keyword]
+        pattern: Lexer.NA,
+        //longer_alt: Label //I would expect that this is valid for all keywords but apparently not
     });
 
     const If = createToken({
         name: "If",
         pattern: /if/i,
-        longer_alt: Label,
-        categories: [Keyword]
+        categories: [Keyword],
+        longer_alt: Label
+    });
+
+    const Then = createToken({
+        name: "Then",
+        pattern: /then/i,
+        categories: [Keyword],
+        longer_alt: Label
     });
 
     const Else = createToken({
         name: "Else",
         pattern: /else/i,
-        longer_alt: Label,
-        categories: [Keyword]
+        categories: [Keyword],
+        longer_alt: Label
     });
+
+    const Forever = createToken({
+        name: "Forever",
+        pattern: /forever/i,
+        categories: [Keyword],
+        longer_alt: Label
+    });
+
+    const Repeat = createToken({
+        name: "Repeat",
+        pattern: /repeat/i,
+        categories: [Keyword],
+        longer_alt: Label
+    });
+    const RepeatUntil = createToken({
+        name: "RepeatUntil",
+        pattern: /repeat[ \t]+until/i,
+        categories: [Keyword],
+        longer_alt: Label
+    });
+
+    const End = createToken({
+        name: "End",
+        pattern: /end/i,
+        categories: [Keyword],
+        longer_alt: Label
+    });
+
 
 
     // marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
@@ -206,12 +208,11 @@
         Literal, StringLiteral, NumberLiteral, ColorLiteral, ChoiceLiteral,
         Forever, End, Repeat, If, Else, Then, RepeatUntil,
         Delimiter,
-        Label,
         LCurlyBracket, RCurlyBracket,
         LRoundBracket, RRoundBracket,
         RAngleBracket, LAngleBracket,
-        //LSquareBracket, RSquareBracket,
-        DoubleColon, ID
+        DoubleColon, ID,
+        Label
     ];
 
     const LNLexer = new Lexer(allTokens);
@@ -650,7 +651,7 @@
     // for the playground to work the returned object must contain these fields
     return {
         lexer: LNLexer,
-        parser: LNParser,
+        //parser: LNParser,
         //visitor: LNVisitor,
         defaultRule: "code"
     };
