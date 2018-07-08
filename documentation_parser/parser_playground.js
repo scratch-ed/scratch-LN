@@ -28,11 +28,11 @@
         line_breaks: true
     });
 
-  const ScratchLNComment = createToken({
+    const ScratchLNComment = createToken({
         name: "ScratchLNComment",
         pattern: Lexer.NA,
-  })
-  
+    })
+
     const LineComment = createToken({
         name: "LineComment",
         pattern: /\/\/[^\n]*[\n]?/,
@@ -72,14 +72,14 @@
         pattern: /\)/
     });
 
-    const RAngleBracket = createToken({
-        name: "RAngleBracket",
-        pattern: />/
-    });
-
     const LAngleBracket = createToken({
         name: "LAngleBracket",
         pattern: /</
+    });
+
+    const RAngleBracket = createToken({
+        name: "RAngleBracket",
+        pattern: />/
     });
 
     const Literal = createToken({
@@ -120,23 +120,6 @@
         categories: [Literal],
         line_breaks: true
     });
-
-    const Comment = createToken({
-        name: "Comment",
-        //similar to stringliteral but between ||
-        pattern: /\|([^\|\\]|\\.)*\|/
-    });
-
-    const Modifier = createToken({
-        name: "Modifier",
-        pattern: /::((:(?!:))|[^\{\|\\#@: \t\n]|\\[^])([ \t]*((:(?!:))|[^\|\\#@: \t]|\\[^]))*/
-    });
-
-    const ID = createToken({
-        name: "ID",
-        pattern: /@[a-z0-9_]+/i
-    });
-
 
     const Keyword = createToken({
         name: "Keyword",
@@ -192,7 +175,28 @@
         longer_alt: Label
     });
 
+    const Modifier = createToken({
+        name: "Modifier",
+        pattern: /::((:(?!:))|[^\{\|\\#@: \t\n]|\\[^])([ \t]*((:(?!:))|[^\|\\#@: \t]|\\[^]))*/
+    });
 
+    const Comment = createToken({
+        name: "Comment",
+        //similar to stringliteral but between ||
+        pattern: /\|([^\|\\]|\\.)*\|/
+    });
+
+    const ID = createToken({
+        name: "ID",
+        pattern: /@[a-z0-9_]+/i
+    });
+
+
+    const Delimiter = createToken({
+        name: "Delimiter",
+        pattern: /;[ \t]*\n|;|\n/,
+        line_breaks: true
+    });
 
     // marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
     const WhiteSpace = createToken({
@@ -200,12 +204,6 @@
         pattern: /[ \t]+/,
         group: Lexer.SKIPPED,
         line_breaks: false
-    });
-
-    const Delimiter = createToken({
-        name: "Delimiter",
-        pattern: /;[ \t]*\n|;|\n/,
-        line_breaks: true
     });
 
     //order matters!
