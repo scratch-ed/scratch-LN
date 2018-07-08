@@ -234,7 +234,6 @@
         const $ = this;
 
         $.RULE("code", () => {
-
             $.MANY({
                 DEF: () => {
                     $.CONSUME(Delimiter);
@@ -263,7 +262,6 @@
                         $.OPTION2(() => {
                             $.SUBRULE2($.stack);
                         })
-
                     }
                 });
             })
@@ -273,11 +271,10 @@
         $.RULE("comments", () => {
             $.AT_LEAST_ONE(() => {
                 $.CONSUME(Comment);
-                $.MANY2(() => {
-                    $.CONSUME2(Delimiter);
+                $.MANY(() => {
+                    $.CONSUME(Delimiter);
                 })
             });
-
         })
 
         $.RULE("stack", () => {
@@ -317,7 +314,6 @@
                         $.SUBRULE($.argument);
                     }
                 }]);
-
             });
             $.SUBRULE($.modifiers);
             $.SUBRULE($.annotations);
