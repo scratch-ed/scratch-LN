@@ -120,9 +120,9 @@
         pattern: /\|([^\|\\]|\\.)*\|/
     });
 
-    const DoubleColon = createToken({
-        name: "DoubleColon",
-        pattern: /::/
+    const Modifier = createToken({
+        name: "Modifier",
+        pattern: /::((:(?!:))|[^\{\|\\#@: \t\n]|\\[^])([ \t]*((:(?!:))|[^\|\\#@: \t]|\\[^]))*/
     });
 
     const ID = createToken({
@@ -211,7 +211,7 @@
         LCurlyBracket, RCurlyBracket,
         LRoundBracket, RRoundBracket,
         RAngleBracket, LAngleBracket,
-        DoubleColon, ID,
+        Modifier, ID,
         Label
     ];
 
@@ -417,8 +417,7 @@
 
         $.RULE("modifiers", () => {
             $.MANY(() => {
-                $.CONSUME(DoubleColon);
-                $.CONSUME(Label);
+                $.CONSUME(Modifier);
             })
         });
 
@@ -651,7 +650,7 @@
     // for the playground to work the returned object must contain these fields
     return {
         lexer: LNLexer,
-        //parser: LNParser,
+        parser: LNParser,
         //visitor: LNVisitor,
         defaultRule: "code"
     };
