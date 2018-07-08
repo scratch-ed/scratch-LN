@@ -28,10 +28,16 @@
         line_breaks: true
     });
 
+  const ScratchLNComment = createToken({
+        name: "ScratchLNComment",
+        pattern: Lexer.NA,
+  })
+  
     const LineComment = createToken({
         name: "LineComment",
         pattern: /\/\/[^\n]*[\n]?/,
         group: Lexer.SKIPPED,
+        categories: [ScratchLNComment],
     });
 
     const BlockComment = createToken({
@@ -42,6 +48,7 @@
         //* followed by /  = /\*(?!\/))
         pattern: /\/\*([^\*]|\*(?!\/))*\*\//,
         group: Lexer.SKIPPED,
+        categories: [ScratchLNComment],
         line_breaks: true
     });
 
@@ -621,7 +628,7 @@
 
         }
 
-        modifier(ctx) {
+        modifiers(ctx) {
 
         }
 
@@ -650,7 +657,7 @@
     // for the playground to work the returned object must contain these fields
     return {
         lexer: LNLexer,
-        parser: LNParser,
+        //parser: LNParser,
         //visitor: LNVisitor,
         defaultRule: "code"
     };
