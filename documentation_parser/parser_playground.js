@@ -28,11 +28,11 @@
         line_breaks: true
     });
 
-    const ScratchLNComment = createToken({
+  const ScratchLNComment = createToken({
         name: "ScratchLNComment",
         pattern: Lexer.NA,
-    })
-
+  })
+  
     const LineComment = createToken({
         name: "LineComment",
         pattern: /\/\/[^\n]*[\n]?/,
@@ -76,7 +76,7 @@
         name: "LAngleBracket",
         pattern: /</
     });
-
+  
     const RAngleBracket = createToken({
         name: "RAngleBracket",
         pattern: />/
@@ -175,11 +175,11 @@
         longer_alt: Label
     });
 
-    const Modifier = createToken({
+     const Modifier = createToken({
         name: "Modifier",
         pattern: /::((:(?!:))|[^\{\|\\#@: \t\n]|\\[^])([ \t]*((:(?!:))|[^\|\\#@: \t]|\\[^]))*/
     });
-
+  
     const Comment = createToken({
         name: "Comment",
         //similar to stringliteral but between ||
@@ -197,7 +197,7 @@
         pattern: /;[ \t]*\n|;|\n/,
         line_breaks: true
     });
-
+  
     // marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
     const WhiteSpace = createToken({
         name: "WhiteSpace",
@@ -244,15 +244,11 @@
                 $.SUBRULE($.comments);
             })
             $.OPTION(() => {
-
                 $.SUBRULE($.stack);
-
                 $.MANY2({
                     DEF: () => {
-                        //$.CONSUME2(Delimiter);
                         $.AT_LEAST_ONE({
                             DEF: () => {
-
                                 $.OR([{
                                     ALT: () => {
                                         $.CONSUME3(Delimiter);
@@ -270,12 +266,7 @@
 
                     }
                 });
-
-                //$.MANY3(() => {
-                //   $.CONSUME4(Delimiter);
-                //})
             })
-
             //$.CONSUME(chevrotain.EOF);
         });
 
@@ -291,13 +282,10 @@
 
         $.RULE("stack", () => {
             $.SUBRULE($.block);
-
-
             $.MANY(() => {
                 $.CONSUME(Delimiter);
                 $.SUBRULE2($.block);
             });
-
             $.OPTION(() => {
                 $.CONSUME2(Delimiter);
             })
@@ -331,12 +319,8 @@
                 }]);
 
             });
-
             $.SUBRULE($.modifiers);
-
-
             $.SUBRULE($.annotations);
-
         });
 
         $.RULE("composite", () => {
@@ -411,7 +395,6 @@
             $.OPTION2(() => {
                 $.SUBRULE($.stack);
             });
-
             $.OPTION3(() => {
                 $.CONSUME(End);
                 $.OPTION4(() => {
@@ -419,7 +402,7 @@
                 });
             })
         });
-
+      
         $.RULE("modifiers", () => {
             $.MANY(() => {
                 $.CONSUME(Modifier);
@@ -434,7 +417,6 @@
                         $.OPTION2(() => {
                             $.CONSUME(ID);
                         });
-
                     }
                 }, {
                     ALT: () => {
@@ -655,7 +637,7 @@
     // for the playground to work the returned object must contain these fields
     return {
         lexer: LNLexer,
-        //parser: LNParser,
+        parser: LNParser,
         //visitor: LNVisitor,
         defaultRule: "code"
     };
