@@ -453,15 +453,15 @@
                 ALT: () => {
                     $.OR3([{
                         ALT: () => {
-                            $.CONSUME(StringLiteral);
+                            $.CONSUME(StringLiteral,{ LABEL: "Literal" });
                         }
                     }, {
                         ALT: () => {
-                            $.CONSUME(ColorLiteral);
+                            $.CONSUME(ColorLiteral,{ LABEL: "Literal" });
                         }
                     }, {
                         ALT: () => {
-                            $.CONSUME(ChoiceLiteral);
+                            $.CONSUME(ChoiceLiteral,{ LABEL: "Literal" });
                         }
                     }, {
                         ALT: () => {
