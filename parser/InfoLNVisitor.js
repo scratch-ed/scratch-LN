@@ -194,12 +194,12 @@ export class InfoLNVisitor extends BaseCstVisitor {
     }
 
     argument(ctx) {
-        if (ctx.StringLiteral) {
+        if (ctx.Literal) {
             return {
                 PLACEHOLDER: "%s",
-                TEXT: ctx.StringLiteral.Image,
-                OFFSET: ctx.StringLiteral.offset,
-                TYPE: ctx.StringLiteral.tokenName
+                TEXT: ctx.Literal.Image,
+                OFFSET: ctx.Literal.offset,
+                TYPE: ctx.Literal.tokenName
             }
         } else if (ctx.expression) {
             return this.visit(ctx.expression);

@@ -276,7 +276,7 @@ function LNParser(input) {
             ALT: () => {
                 $.OR3([{
                     ALT: () => {
-                        $.CONSUME(StringLiteral);
+                        $.CONSUME(StringLiteral, { LABEL: "Literal" });
                     }
                 }, {
                     ALT: () => {

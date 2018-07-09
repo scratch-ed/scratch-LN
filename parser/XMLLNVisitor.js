@@ -304,7 +304,8 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     argument(ctx) {
         console.log("arg",ctx);
-        if (ctx.Literal) { //why does this not work??
+        if (ctx.Literal) { //todo: why does this not work??
+            console.log("literal");
             this.createTextInput(ctx.Literal.image);
         } if (ctx.StringLiteral) {
             this.createTextInput(ctx.StringLiteral.image);
