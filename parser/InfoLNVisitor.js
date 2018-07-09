@@ -194,19 +194,20 @@ export class InfoLNVisitor extends BaseCstVisitor {
     }
 
     argument(ctx) {
-        if (ctx.Literal) {
+        if (ctx.StringLiteral) {
             return {
                 PLACEHOLDER: "%s",
-                TEXT: ctx.Literal.Image,
-                OFFSET: ctx.Literal.offset,
-                TYPE: ctx.Literal.tokenName
+                TEXT: ctx.StringLiteral.Image,
+                OFFSET: ctx.StringLiteral.offset,
+                TYPE: ctx.StringLiteral.tokenName
             }
         } else if (ctx.expression) {
-            this.visit(ctx.expression);
+            return this.visit(ctx.expression);
         } else if (ctx.predicate) {
-            this.visit(ctx.predicate);
+            return this.visit(ctx.predicate);
         } else {
             //empty argument
+            console.log("empty",ctx);
             return {
                 PLACEHOLDER: "%s",
                 TEXT: "",
@@ -218,7 +219,7 @@ export class InfoLNVisitor extends BaseCstVisitor {
     }
 
     condition(ctx) {
-
+        return this.visit(ctx.expression);
     }
 
     expression(ctx) {

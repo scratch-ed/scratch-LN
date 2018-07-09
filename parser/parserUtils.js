@@ -18,7 +18,6 @@ const visitor = XMLLNVisitor;
  * init blocks with information from blockspecifications
  */
 export function init_parser_utils() {
-    console.log('parser utils called');
     // blockspecifications
     //generate the functions in blocks
     for (let x = 0; x < blockspecifications.length; x++) {
@@ -100,7 +99,6 @@ export default function parseTextToXML(text,location=true) {
     let cst = getCst(text);
     if (cst) {
         let xml = execXmlVisitor(cst,location);
-        console.log(xml);
         return xml;
     }
 }

@@ -16,7 +16,7 @@ let ColorLiteral = lntokens.ColorLiteral;
 let StringLiteral = lntokens.StringLiteral;
 let ChoiceLiteral = lntokens.ChoiceLiteral;
 import {lnparser} from "./LNParser"
-import {InfoLNVisitor,TEXT} from './InfoLNVisitor';
+import {InfoLNVisitor, TEXT} from './InfoLNVisitor';
 
 //xml
 import builder from 'xmlbuilder';
@@ -58,6 +58,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         //IDs
         //id generation
         this.counter = 0;
+        this.inputCounter = 0;
 
         //information visitor
         this.infoVisitor = new InfoLNVisitor();
@@ -95,6 +96,11 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     //IDS
     getNextBlockID() {
         return this.counter++;
+    }
+
+    //IDS
+    getNextInputID() {
+        return this.counter + '_' + this.inputCounter;
     }
 
     /**
@@ -144,8 +150,8 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     }
 
-    atomic(ctx){
-        this.createProcedureBlock(ctx,this.getString(ctx,"atomic"));
+    atomic(ctx) {
+        this.createProcedureBlock(ctx, this.getString(ctx, "atomic"));
     }
 
     /**
@@ -229,13 +235,13 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
      * @param ctx
      * @param rule explicitly declare the rule that needs to be used
      */
-    getString(ctx,rule=null) {
+    getString(ctx, rule = null) {
         //console.log("getstring");
         //console.log(ctx);
         let x;
-        if(!rule) {
+        if (!rule) {
             x = this.infoVisitor.visit(ctx);
-        }else{
+        } else {
             x = this.infoVisitor[rule](ctx);
         }
         //console.log(x);
@@ -247,6 +253,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         let x = this.infoVisitor.visit(ctx);
         return x.PLACEHOLDER;
     }
+
     /*composite(ctx) {
 
     }*/
@@ -296,7 +303,23 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     argument(ctx) {
+        console.log("arg",ctx);
+        if (ctx.Literal) { //why does this not work??
+            this.createTextInput(ctx.Literal.image);
+        } if (ctx.StringLiteral) {
+            this.createTextInput(ctx.StringLiteral.image);
+        }else{
 
+        }
+    }
+
+    createTextInput(text) {
+        this.xml.ele('shadow', {
+            'type': 'text',
+            'id': this.getNextInputID(),
+        }).ele('field', {
+            'name': 'TEXT',
+        }, text);
     }
 
     condition(ctx) {
@@ -312,4 +335,5 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
 }
+
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
