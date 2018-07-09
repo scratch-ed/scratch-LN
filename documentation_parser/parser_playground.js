@@ -429,7 +429,7 @@
             $.OR([{
                 ALT: () => {
                     $.CONSUME(LCurlyBracket);
-                    $.OPTION(() => {
+                    //$.OPTION(() => {
                         $.OR2([{
                             ALT: () => {
                                 $.CONSUME(Literal);
@@ -442,8 +442,10 @@
                             ALT: () => {
                                 $.SUBRULE($.predicate);
                             }
-                        }]);
-                    });
+                        },  
+                        {ALT: chevrotain.EMPTY_ALT({LABEL:"EMPTY"})},
+                              ]);
+                    //});
                     $.OPTION2(() => {
                         $.CONSUME(ID);
                     });
