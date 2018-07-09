@@ -33,14 +33,14 @@ module.exports = [
         target: 'web',
         entry: {
             'live_view':'./live_view/live_view.js',
-            'live_view_blocks':'./live_view/live_view_blocks.js',
-            'test':'./testWebpage/test.js',
-            'run':'./webtools/run.js',
-            'example':'./examples/example.js',
-            'createTest':'./examples/createTest.js',
-            'nice_live_view':'./examples/nice_live_view.js',
-            'markdown_scratch':'./webtools/markdown_scratch.js',
-            'exe_test':'./exe_test/exe_test.js',
+            //'live_view_blocks':'./live_view/live_view_blocks.js',
+            //'test':'./testWebpage/test.js',
+            //'run':'./webtools/run.js',
+            //'example':'./examples/example.js',
+            //'createTest':'./examples/createTest.js',
+        //'nice_live_view':'./examples/nice_live_view.js',
+            //'markdown_scratch':'./webtools/markdown_scratch.js',
+            //'exe_test':'./exe_test/exe_test.js',
            // 'scratchify':'./webtools/scratchify.js'
         },
         output: {

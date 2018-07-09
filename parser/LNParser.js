@@ -374,7 +374,7 @@ LNParser.prototype.constructor = LNParser;
 
 // wrapping it all together
 // reuse the same parser instance.
-const lnparser = new LNParser([]);
+export const lnparser = new LNParser([]);
 
 export function parse(text) {
     //console.log('seperate file, function');
