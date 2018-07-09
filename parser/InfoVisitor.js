@@ -189,6 +189,8 @@ export class InformationVisitor extends BaseCstVisitor {
         }
     }
 
+
+
     getOffsetArgument(arg) {
         if (!arg) {
             return Number.MAX_SAFE_INTEGER; //avoid infinite loop
