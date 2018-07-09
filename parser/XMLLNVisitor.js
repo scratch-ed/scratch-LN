@@ -237,15 +237,12 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
      *             this is necessary if this function is called with whole ctx and not with a child
      */
     getString(ctx, rule = null) {
-        //console.log("getstring");
-        //console.log(ctx);
         let x;
         if (!rule) {
             x = this.infoVisitor.visit(ctx);
         } else {
             x = this.infoVisitor[rule](ctx);
         }
-        //console.log(x);
         console.log(x.TEXT);
         return x.TEXT;
     }
@@ -304,7 +301,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     argument(ctx) {
-        if (ctx.Literal) { //todo: why does this not work??
+        if (ctx.Literal || (!ctx.predicate && !ctx.expression )) {
             this.createTextInput(this.getString(ctx,"argument"));
         } else{
 

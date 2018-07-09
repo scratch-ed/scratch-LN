@@ -71,7 +71,6 @@ export class InfoLNVisitor extends BaseCstVisitor {
     }
 
     atomic(ctx) {
-        console.log("info at",ctx)
         //calculate the offset
         let offset = 0;
         if (ctx.Label) {
@@ -195,7 +194,6 @@ export class InfoLNVisitor extends BaseCstVisitor {
 
     argument(ctx) {
         if (ctx.Literal) {
-            console.log("hello",ctx);
             return {
                 PLACEHOLDER: "%s",
                 TEXT: this.unescapeString(ctx.Literal[0].image),
@@ -208,7 +206,6 @@ export class InfoLNVisitor extends BaseCstVisitor {
             return this.visit(ctx.predicate);
         } else {
             //empty argument
-            console.log("empty",ctx);
             return {
                 PLACEHOLDER: "%s",
                 TEXT: "",
@@ -220,7 +217,7 @@ export class InfoLNVisitor extends BaseCstVisitor {
     }
 
     unescapeString(text){
-        return text.replace(/\\"/g, '"').replace(/^"(.+(?="$))"$/, '$1');
+        return text.replace(/\\"/g, '"').replace(/^"(.*(?="$))"$/, '$1');
     }
 
     condition(ctx) {
