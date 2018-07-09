@@ -31,8 +31,9 @@ import builder from 'xmlbuilder';
 */
 const BaseCstVisitorWithDefaults = lnparser.getBaseCstVisitorConstructorWithDefaults();
 
+//variable types
+const ARG = 'arg';
 
-//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
 export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     constructor() {
@@ -78,7 +79,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         this.xml = this.variablesTag;
         for (let key in this.varMap) {
             if (this.varMap.hasOwnProperty(key)) {
-                if (this.varMap[key].variableType != 'arg') {
+                if (this.varMap[key].variableType != ARG) {
                     this.xml.ele('variable', {
                         'type': this.varMap[key].variableType,
                         'id': this.varMap[key].id,
@@ -96,6 +97,11 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         return this.counter++;
     }
 
+    /**
+     * todo: do the variabletype a bit better
+     * @param varName
+     * @param variableType
+     */
     getVariableID(varName, variableType = '') {
         //if first time this variable is encoutered, create an ID for it
         if (!this.varMap[varName]) {
@@ -125,8 +131,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }*/
 
     /*block$atomic(ctx) {
-        //this will always be a stack block if there is a label
-        this.generateProcedure(ctx.atomic,this.getString(ctx.atomic));
+
     }*/
 
     block$composite(ctx) {
@@ -134,17 +139,22 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     atomic(ctx){
-        this.generateProcedure(ctx,this.getString(ctx,"atomic"));
+        this.createProcedureBlock(ctx,this.getString(ctx,"atomic"));
     }
 
-    generateProcedure(ctx, description) {
+    /**
+     * add a procedure block to the xml
+     * @param ctx
+     * @param description
+     */
+    createProcedureBlock(ctx, description) {
         let blockid = this.getNextBlockID();
         this.xml = this.xml.ele('block', {
             'id': blockid,
         });
         this.xml.att('type', 'procedures_call');
         this.addMutation(ctx, description, blockid, true);
-        this.xml=this.xml.up();
+        this.xml = this.xml.up();  //todo moet dithier?
     }
 
     /**
@@ -165,11 +175,12 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         //this is a very weird construction but it works...
         //assign this to a variable so that it can be accessed by the function
         let thisVisitor = this;
-        console.log(ctx);
+        //replace %1 by %s or %b corresponding to the block
         let proccode = description.replace(/%[1-9]/g, function (m) {
             let index = m[1] - 1;
             return thisVisitor.getPlaceholder(ctx.argument[index])
         });
+
 
         for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
             //make names
@@ -190,7 +201,8 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
                 this.xml = this.xml.up();
                 args.push(arg);
             }
-            argumentids.push(this.getVariableID(argumentnames[argumentnames.length - 1], 'arg')); //(blockid + '_arg_' + this.getNextId())
+
+            argumentids.push(this.getVariableID(argumentnames[argumentnames.length - 1], ARG)); //(blockid + '_arg_' + this.getNextId())
 
         }
         if (argumentnames.length > 0) {
@@ -206,6 +218,11 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         }
     }
 
+    /**
+     * returns a string for the given ctx
+     * @param ctx
+     * @param rule explicitly declare the rule that needs to be used
+     */
     getString(ctx,rule=null) {
         //console.log("getstring");
         //console.log(ctx);
