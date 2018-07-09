@@ -39,7 +39,7 @@ let RRoundBracket = lntokens.RRoundBracket;
 let RAngleBracket = lntokens.RAngleBracket;
 let LAngleBracket = lntokens.LAngleBracket;
 
-let DoubleColon = lntokens.DoubleColon;
+let Modifier = lntokens.Modifier;
 let ID = lntokens.ID;
 
 let Comment = lntokens.Comment;
@@ -57,7 +57,6 @@ function LNParser(input) {
     const $ = this;
 
     $.RULE("code", () => {
-
         $.MANY({
             DEF: () => {
                 $.CONSUME(Delimiter);
@@ -67,15 +66,11 @@ function LNParser(input) {
             $.SUBRULE($.comments);
         })
         $.OPTION(() => {
-
             $.SUBRULE($.stack);
-
             $.MANY2({
                 DEF: () => {
-                    //$.CONSUME2(Delimiter);
                     $.AT_LEAST_ONE({
                         DEF: () => {
-
                             $.OR([{
                                 ALT: () => {
                                     $.CONSUME3(Delimiter);
@@ -90,37 +85,27 @@ function LNParser(input) {
                     $.OPTION2(() => {
                         $.SUBRULE2($.stack);
                     })
-
                 }
             });
-
-            //$.MANY3(() => {
-            //   $.CONSUME4(Delimiter);
-            //})
         })
-
         //$.CONSUME(chevrotain.EOF);
     });
 
     $.RULE("comments", () => {
         $.AT_LEAST_ONE(() => {
             $.CONSUME(Comment);
-            $.MANY2(() => {
-                $.CONSUME2(Delimiter);
+            $.MANY(() => {
+                $.CONSUME(Delimiter);
             })
         });
-
     })
 
     $.RULE("stack", () => {
         $.SUBRULE($.block);
-
-
         $.MANY(() => {
             $.CONSUME(Delimiter);
             $.SUBRULE2($.block);
         });
-
         $.OPTION(() => {
             $.CONSUME2(Delimiter);
         })
@@ -152,14 +137,9 @@ function LNParser(input) {
                     $.SUBRULE($.argument);
                 }
             }]);
-
         });
-
-        $.SUBRULE($.modifier);
-
-
+        $.SUBRULE($.modifiers);
         $.SUBRULE($.annotations);
-
     });
 
     $.RULE("composite", () => {
@@ -234,17 +214,17 @@ function LNParser(input) {
         $.OPTION2(() => {
             $.SUBRULE($.stack);
         });
-
         $.OPTION3(() => {
-            //$.CONSUME2(Delimiter);
             $.CONSUME(End);
+            $.OPTION4(() => {
+                $.CONSUME2(Delimiter);
+            });
         })
     });
 
-    $.RULE("modifier", () => {
-        $.OPTION(() => {
-            $.CONSUME(DoubleColon);
-            $.CONSUME(Label);
+    $.RULE("modifiers", () => {
+        $.MANY(() => {
+            $.CONSUME(Modifier);
         })
     });
 
@@ -256,7 +236,6 @@ function LNParser(input) {
                     $.OPTION2(() => {
                         $.CONSUME(ID);
                     });
-
                 }
             }, {
                 ALT: () => {
@@ -364,6 +343,7 @@ function LNParser(input) {
     // derived during the self analysis phase.
     Parser.performSelfAnalysis(this);
 }
+
 
 
 

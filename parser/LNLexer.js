@@ -20,20 +20,26 @@ export const Label = createToken({
     //atleast one character
     // - a : followed by a not :  = (:(?!:))
     // - normal - not necessary to escape or whitespace - characters = [^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]
-    // - \ followed by any character or a newline = \\(.|\n))
+    // - \ followed by any character or a newline = [^] not
 
     //no whitespace in the beginning or end -> will be skipped (OR allow whitespace with keywords?)
-    //char (whitespace* char)* char*
+    //char (whitespace* char)*
 
-        /((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\(.|\n))([ \t]*((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\(.|\n)))*((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\(.|\n))*/,
+        /((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"#@: \t\n]|\\[^])([ \t]*((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\[^]))*/,
 
     line_breaks: true
 });
+
+export const ScratchLNComment = createToken({
+    name: "ScratchLNComment",
+    pattern: Lexer.NA,
+})
 
 export const LineComment = createToken({
     name: "LineComment",
     pattern: /\/\/[^\n]*[\n]?/,
     group: Lexer.SKIPPED,
+    categories: [ScratchLNComment],
 });
 
 export const BlockComment = createToken({
@@ -44,6 +50,7 @@ export const BlockComment = createToken({
     //* followed by /  = /\*(?!\/))
     pattern: /\/\*([^\*]|\*(?!\/))*\*\//,
     group: Lexer.SKIPPED,
+    categories: [ScratchLNComment],
     line_breaks: true
 });
 
@@ -67,31 +74,14 @@ export const RRoundBracket = createToken({
     pattern: /\)/
 });
 
-export const RAngleBracket = createToken({
-    name: "RAngleBracket",
-    pattern: />/
-});
-
 export const LAngleBracket = createToken({
     name: "LAngleBracket",
     pattern: /</
 });
 
-export const Comment = createToken({
-    name: "Comment",
-    //similar to stringliteral but between ||
-    pattern: /\|([^\|\\]|\\.)*\|/
-});
-
-
-export const DoubleColon = createToken({
-    name: "DoubleColon",
-    pattern: /::/
-});
-
-export const ID = createToken({
-    name: "ID",
-    pattern: /@[a-z0-9_]+/i
+export const RAngleBracket = createToken({
+    name: "RAngleBracket",
+    pattern: />/
 });
 
 export const Literal = createToken({
@@ -135,57 +125,80 @@ export const ChoiceLiteral = createToken({
 
 export const Keyword = createToken({
     name: "Keyword",
-    pattern: Lexer.NA
-});
-
-export const Forever = createToken({
-    name: "Forever",
-    pattern: /forever/i,
-    longer_alt: Label,
-    categories: [Keyword]
-});
-
-export const End = createToken({
-    name: "End",
-    pattern: /end/i,
-    longer_alt: Label,
-    categories: [Keyword]
-});
-
-export const Then = createToken({
-    name: "Then",
-    pattern: /then/i,
-    longer_alt: Label,
-    categories: [Keyword]
-});
-
-export const Repeat = createToken({
-    name: "Repeat",
-    pattern: /repeat/i,
-    longer_alt: Label,
-    categories: [Keyword]
-});
-export const RepeatUntil = createToken({
-    name: "RepeatUntil",
-    pattern: /repeat[ \t]+until/i,
-    longer_alt: Label,
-    categories: [Keyword]
+    pattern: Lexer.NA,
+    //longer_alt: Label //I would expect that this is valid for all keywords but apparently not
 });
 
 export const If = createToken({
     name: "If",
     pattern: /if/i,
-    longer_alt: Label,
-    categories: [Keyword]
+    categories: [Keyword],
+    longer_alt: Label
+});
+
+export const Then = createToken({
+    name: "Then",
+    pattern: /then/i,
+    categories: [Keyword],
+    longer_alt: Label
 });
 
 export const Else = createToken({
     name: "Else",
     pattern: /else/i,
-    longer_alt: Label,
-    categories: [Keyword]
+    categories: [Keyword],
+    longer_alt: Label
 });
 
+export const Forever = createToken({
+    name: "Forever",
+    pattern: /forever/i,
+    categories: [Keyword],
+    longer_alt: Label
+});
+
+export const Repeat = createToken({
+    name: "Repeat",
+    pattern: /repeat/i,
+    categories: [Keyword],
+    longer_alt: Label
+});
+export const RepeatUntil = createToken({
+    name: "RepeatUntil",
+    pattern: /repeat[ \t]+until/i,
+    categories: [Keyword],
+    longer_alt: Label
+});
+
+export const End = createToken({
+    name: "End",
+    pattern: /end/i,
+    categories: [Keyword],
+    longer_alt: Label
+});
+
+export const Modifier = createToken({
+    name: "Modifier",
+    pattern: /::((:(?!:))|[^\{\|\\#@: \t\n]|\\[^])([ \t]*((:(?!:))|[^\|\\#@: \t]|\\[^]))*/
+});
+
+export const Comment = createToken({
+    name: "Comment",
+    //similar to stringliteral but between ||
+    pattern: /\|([^\|\\]|\\.)*\|/
+});
+
+export const ID = createToken({
+    name: "ID",
+    pattern: /@[a-z0-9_]+/i
+});
+
+
+export const Delimiter = createToken({
+    name: "Delimiter",
+    pattern: /;[ \t]*\n|;|\n/,
+    line_breaks: true
+});
 
 // marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
 export const WhiteSpace = createToken({
@@ -195,24 +208,18 @@ export const WhiteSpace = createToken({
     line_breaks: false
 });
 
-export const Delimiter = createToken({
-    name: "Delimiter",
-    pattern: /;[ \t]*\n|;|\n/,
-    line_breaks: true
-});
-
 //order matters!
 export const allTokens = [
     WhiteSpace,
-    LineComment, BlockComment, Comment,
+    LineComment, BlockComment, Comment, //match before anything else
     Literal, StringLiteral, NumberLiteral, ColorLiteral, ChoiceLiteral,
     Forever, End, Repeat, If, Else, Then, RepeatUntil,
     Delimiter,
-    Label,
     LCurlyBracket, RCurlyBracket,
     LRoundBracket, RRoundBracket,
     RAngleBracket, LAngleBracket,
-    DoubleColon, ID
+    Modifier, ID,
+    Label
 ];
 
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
