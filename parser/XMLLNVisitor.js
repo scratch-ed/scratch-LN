@@ -17,7 +17,7 @@ let ChoiceLiteral = lntokens.ChoiceLiteral;
 import {lnparser} from "./LNParser"
 
 
-const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
+//const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
 
 /*
     No dispatching necessary if nothing special happens, specifically block and composite
@@ -25,11 +25,11 @@ const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
     docs: This base visitor includes a default implementation for all visit methods which simply invokes this.visit on all none terminals in the CSTNode's children.
 
 */
-//const BaseCstVisitorWithDefaults = lnparser.getBaseCstVisitorConstructorWithDefaults();
+const BaseCstVisitorWithDefaults = lnparser.getBaseCstVisitorConstructorWithDefaults();
 
-//DO NOT FORGET THE EXPORT
+
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
-export class LNVisitor extends BaseCstVisitor {
+export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     constructor() {
         super();
