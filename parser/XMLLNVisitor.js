@@ -7,6 +7,7 @@
  * @author Ellen Vanhove.
  */
 
+//parser
 import {tokenMatcher} from 'chevrotain'
 //import {NumberLiteral, ColorLiteral} from "./LNLexer";
 const lntokens = require("./LNLexer");
@@ -16,6 +17,8 @@ let StringLiteral = lntokens.StringLiteral;
 let ChoiceLiteral = lntokens.ChoiceLiteral;
 import {lnparser} from "./LNParser"
 
+//xml
+import builder from 'xmlbuilder';
 
 //const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
 
@@ -35,6 +38,15 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         super();
         // This helper will detect any missing or redundant methods on this visitor
         this.validateVisitor()
+
+        //-- xml --
+        //the visitor stores an xml, this is reinit every visit call.
+        //the builder keeps where we are adding the next block
+        this.xml = null;
+        //xml root
+        this.xmlRoot = null;
+        //placeholder in the beginning for variables
+        this.variablesTag = null;
     }
 
     code(ctx) {
@@ -49,9 +61,9 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     }
 
-    block(ctx) {
+    /*block(ctx) {
 
-    }
+    }*/
 
     block$atomic(ctx) {
 
@@ -64,9 +76,10 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     }
 
-    composite(ctx) {
+    /*composite(ctx) {
 
-    }
+    }*/
+
     composite$ifelse(ctx) {
 
     }

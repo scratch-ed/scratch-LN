@@ -12,7 +12,7 @@ import {XMLVisitor} from './XMLVisitor'
 import {blockspecifications} from '../blockspecification/blockspecification'
 import blocks from './blocks'
 
-let visitor = XMLVisitor;
+const visitor = XMLVisitor;
 
 /**
  * init blocks with information from blockspecifications
