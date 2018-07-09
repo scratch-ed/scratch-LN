@@ -3,6 +3,7 @@
  *
  * things that need to be possible are:
  *      - varID, id for the variable
+ *      - unique id for every block
  *      - text on a block -> parent ID (define block)
  *      -
  *
@@ -11,7 +12,7 @@
  */
 
 
-export class BasicIDManager {
+export class BasicIDManager{
 
     constructor(informationVisitor) {
         this.infoVisitor = informationVisitor;
@@ -21,11 +22,13 @@ export class BasicIDManager {
     reset(){
         this.counter = 0;
         //maps blockid -> counter for the inputs
-        this.inputCounter = new Object();
+        this.inputCounter = {};
         //-- variables --
         //map a variablename  to its id
         this.varMap = {};
         this.varCounter = 0;
+        //define blocks
+        this.procedureDefinitions = {};
     }
 
 
@@ -34,9 +37,10 @@ export class BasicIDManager {
      * todo: if an id is defined in the ctx this one should be used
      * todo: waring in case an id is used twice.
      * @param ctx
+     * @param procedure_definition
      * @returns {string}
      */
-    getNextBlockID(ctx, Procedure=false) {
+    getNextBlockID(ctx, procedure_definition=false) {
         let id;
         id = "block_"+this.counter++;
         if (this.inputCounter[id]) {
@@ -44,6 +48,9 @@ export class BasicIDManager {
             //todo generate warning
         }
         this.inputCounter[id] = 0;
+        if(procedure_definition){
+            procedureDefinitions[this.infoVisitor.atomic(ctx).TEXT.replace(/^define/i,"")] = id;
+        }
         return id;
     }
 
@@ -62,7 +69,7 @@ export class BasicIDManager {
     }
 
     /**
-     * todo: do the variabletype a bit better
+     * todo: do the variabletype a bit better: types: none=normal, list, mesage,arg,custom???
      * @param varName
      * @param variableType
      */
@@ -78,11 +85,20 @@ export class BasicIDManager {
     }
 
     /**
-     *
+     * returns the ID of the define block with the same text.
      * @param ctx
      * @returns {string}
      */
     getProcedureParentID(ctx){
-        return 0;
+        return procedureDefinitions[this.infoVisitor.atomic(ctx).TEXT];
+    }
+
+    /**
+     * returns the ID of the define block with the same text.
+     * @param mutation string
+     * @returns {string}
+     */
+    getProcedureParentIDMutation(mutation){
+        return procedureDefinitions[mutation];
     }
 }

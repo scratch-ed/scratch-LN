@@ -16,11 +16,11 @@ let ColorLiteral = lntokens.ColorLiteral;
 let StringLiteral = lntokens.StringLiteral;
 let ChoiceLiteral = lntokens.ChoiceLiteral;
 import {lnparser} from "./LNParser"
-import {InfoLNVisitor, TEXT} from './InfoLNVisitor';
+import {InfoLNVisitor} from './InfoLNVisitor';
 
 //xml
 import builder from 'xmlbuilder';
-import {BasicIDManager} from "./IDmanager";
+import {BasicIDManager} from "./IDManager";
 
 //const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
 
