@@ -122,9 +122,15 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     }
 
-    /*stack(ctx) {
-
-    }*/
+    stack(ctx) {
+        for (let i = 0; ctx.block && i < ctx.block.length; i++) {
+            this.visit(ctx.block[i]);
+            this.xml = this.xml.ele('next');
+        }
+        for (let i = 0; ctx.block && i < ctx.block.length; i++) {
+            this.xml = this.xml.up().up(); //close the block and the next
+        }
+    }
 
     /*block(ctx) {
 
@@ -154,7 +160,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         });
         this.xml.att('type', 'procedures_call');
         this.addMutation(ctx, description, blockid, true);
-        this.xml = this.xml.up();  //todo moet dithier?
+
     }
 
     /**

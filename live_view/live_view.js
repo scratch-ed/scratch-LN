@@ -31,7 +31,7 @@ window.onload = function () {
     //text
     let editor = document.getElementById('editor');
     editor.addEventListener('input', updateWorkspace);
-    editor.value = 'mimi {42}';//' when greenflag clicked;move {456} steps;pen up;'//go to x: {0} y: {0};pen down;repeat (zijde);move {100} steps;turn cw {({360} /{(zijde)})} degrees;end;pen up'//'when gf clicked;repeat 10;pen up;' //'define BLUB {(d)} {<f>}'
+    editor.value = 'aaa;bbb;ccc;;zzz;yyy;;ooo';//' when greenflag clicked;move {456} steps;pen up;'//go to x: {0} y: {0};pen down;repeat (zijde);move {100} steps;turn cw {({360} /{(zijde)})} degrees;end;pen up'//'when gf clicked;repeat 10;pen up;' //'define BLUB {(d)} {<f>}'
     updateWorkspace();
 
     //button options
