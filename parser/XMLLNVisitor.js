@@ -20,6 +20,7 @@ import {InfoLNVisitor, TEXT} from './InfoLNVisitor';
 
 //xml
 import builder from 'xmlbuilder';
+import {BasicIDManager} from "./IDmanager";
 
 //const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
 
@@ -50,33 +51,21 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         //placeholder in the beginning for variables
         this.variablesTag = null;
 
-        //-- variables --
-        //map a variablename  to its id
-        this.varMap = new Object();
-        this.varCounter = 0;
-
-        //IDs
         //id generation
-        this.counter = 0;
-        this.inputCounter = 0;
+        this.idManager = new BasicIDManager();
 
         //information visitor
         this.infoVisitor = new InfoLNVisitor();
     }
 
     getXML(cst) {
+        //reset
+        this.idManager.reset();
+        //create new xml
         this.xml = builder.begin().ele('xml').att('xmlns', 'http://www.w3.org/1999/xhtml');
         this.variablesTag = this.xml.ele('variables');
         this.xmlRoot = this.xml;
         this.visit(cst);
-        /*this.xml = this.xml.ele('block', {
-            'type': 'control_forever',
-            'id': 1,
-        }, ' ').ele('statement ', {
-            'name': 'SUBSTACK'
-        }, ' ');
-        this.xml = this.xml.up();*/
-
         this.xml = this.variablesTag;
         for (let key in this.varMap) {
             if (this.varMap.hasOwnProperty(key)) {
@@ -93,31 +82,8 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         });
     }
 
-    //IDS
-    getNextBlockID() {
-        return this.counter++;
-    }
 
-    //IDS
-    getNextInputID() {
-        return this.counter + '_' + this.inputCounter;
-    }
 
-    /**
-     * todo: do the variabletype a bit better
-     * @param varName
-     * @param variableType
-     */
-    getVariableID(varName, variableType = '') {
-        //if first time this variable is encoutered, create an ID for it
-        if (!this.varMap[varName]) {
-            this.varMap[varName] = {
-                'id': 'var' + this.varCounter++,
-                'variableType': variableType
-            }
-        }
-        return this.varMap[varName].id;
-    }
 
 
     /*code(ctx) {
@@ -158,6 +124,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
      * add a procedure block to the xml
      * @param ctx
      * @param description
+     * todo:parent (link to the define block)
      */
     createProcedureBlock(ctx, description) {
         let blockid = this.getNextBlockID();
@@ -302,19 +269,19 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     argument(ctx) {
         if (ctx.Literal || (!ctx.predicate && !ctx.expression )) {
-            this.createTextInput(this.getString(ctx,"argument"));
+            this.createTextInput(ctx);
         } else{
 
         }
     }
 
-    createTextInput(text) {
+    createTextInput(ctx) {
         this.xml.ele('shadow', {
             'type': 'text',
             'id': this.getNextInputID(),
         }).ele('field', {
             'name': 'TEXT',
-        }, text);
+        }, this.getString(ctx,"argument"));
     }
 
     createColourPickerInput(text) {

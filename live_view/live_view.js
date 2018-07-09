@@ -61,6 +61,7 @@ window.onload = function () {
 
     //generateText(workspace)
 
+
 };
 
 function generateTextWorkspace() {
@@ -81,6 +82,8 @@ function updateWorkspace() {
         Blockly.Xml.domToWorkspace(dom, workspace);
         workspace.cleanUp();
     }
+
+    //console.log(getWorkspaceXML())
 }
 
 
@@ -187,4 +190,10 @@ function showExample() {
     let code = 'when gf clicked \nif < {(blub)} contains {"citroen"} ? > \nif < {(length of {(blub)})} = {2} >\nrepeat 10\nrepeat 10\nset pen color to {(pick random {0} to {255})}\nglide {2} secs to x: {(pick random {0} to {240})} y: {(pick random {0} to {180})}\npen up\nend\ngo to x: {0} y: {0}'
     editor.value = code;
     updateWorkspace();
+}
+
+function getWorkspaceXML() {
+    let dom = ScratchBlocks.Xml.workspaceToDom(workspace);
+    let text = new XMLSerializer().serializeToString(dom);
+    return text
 }
