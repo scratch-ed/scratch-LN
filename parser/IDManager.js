@@ -64,17 +64,18 @@ export class BasicIDManager{
      */
     getNextInputID(ctx, parentID) {
         let id;
-        id=parentID + '_' + this.inputCounter[parentID]++;
+        id=parentID + '_input_' + this.inputCounter[parentID]++;
         return id;
     }
 
     /**
      * todo: do the variabletype a bit better: types: none=normal, list, mesage,arg,custom???
+     * variable id is never defined or used by the user. it is only for internal reference to the same block
      * @param varName
      * @param variableType
      */
     getVariableID(varName, variableType = '') {
-        //if first time this variable is encoutered, create an ID for it
+        //if first time this variable is encountered, create an ID for it
         if (!this.varMap[varName]) {
             this.varMap[varName] = {
                 'id': 'var' + this.varCounter++,

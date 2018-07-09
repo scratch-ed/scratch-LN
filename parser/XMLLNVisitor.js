@@ -67,9 +67,9 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         this.xmlRoot = this.xml;
         this.visit(cst);
         this.xml = this.variablesTag;
-        for (let key in this.varMap) {
-            if (this.varMap.hasOwnProperty(key)) {
-                if (this.varMap[key].variableType != ARG) {
+        for (let key in this.idManager.varMap) {
+            if (this.idManager.varMap.hasOwnProperty(key)) {
+                if (this.idManager.varMap[key].variableType !== ARG) {
                     this.xml.ele('variable', {
                         'type': this.varMap[key].variableType,
                         'id': this.varMap[key].id,
@@ -181,7 +181,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
                 args.push(arg);
             }
 
-            argumentids.push(this.getVariableID(argumentnames[argumentnames.length - 1], ARG)); //(blockid + '_arg_' + this.getNextId())
+            argumentids.push(this.idManager.getVariableID(argumentnames[argumentnames.length - 1], ARG));
 
         }
         if (argumentnames.length > 0) {
