@@ -195,9 +195,10 @@ export class InfoLNVisitor extends BaseCstVisitor {
 
     argument(ctx) {
         if (ctx.Literal) {
+            console.log("hello",ctx);
             return {
                 PLACEHOLDER: "%s",
-                TEXT: ctx.Literal.Image,
+                TEXT: this.unescapeString(ctx.Literal[0].image),
                 OFFSET: ctx.Literal.offset,
                 TYPE: ctx.Literal.tokenName
             }
@@ -216,6 +217,10 @@ export class InfoLNVisitor extends BaseCstVisitor {
             }
         }
 
+    }
+
+    unescapeString(text){
+        return text.replace(/\\"/g, '"').replace(/^"(.+(?="$))"$/, '$1');
     }
 
     condition(ctx) {

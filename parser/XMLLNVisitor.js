@@ -196,7 +196,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
         for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
             //make names
-            let name = this.getString(ctx.argument[i]);
+            let name;// = this.getString(ctx.argument[i]);
             if (!name) {
                 name = 'argumentname_' + blockid + '_' + i
             }
@@ -233,7 +233,8 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     /**
      * returns a string for the given ctx
      * @param ctx
-     * @param rule explicitly declare the rule that needs to be used
+     * @param rule explicitly declare the rule that needs to be used:
+     *             this is necessary if this function is called with whole ctx and not with a child
      */
     getString(ctx, rule = null) {
         //console.log("getstring");
@@ -245,7 +246,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             x = this.infoVisitor[rule](ctx);
         }
         //console.log(x);
-        //console.log(x.TEXT);
+        console.log(x.TEXT);
         return x.TEXT;
     }
 
@@ -303,13 +304,9 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     argument(ctx) {
-        console.log("arg",ctx);
         if (ctx.Literal) { //todo: why does this not work??
-            console.log("literal");
-            this.createTextInput(ctx.Literal.image);
-        } if (ctx.StringLiteral) {
-            this.createTextInput(ctx.StringLiteral.image);
-        }else{
+            this.createTextInput(this.getString(ctx,"argument"));
+        } else{
 
         }
     }
@@ -320,6 +317,24 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             'id': this.getNextInputID(),
         }).ele('field', {
             'name': 'TEXT',
+        }, text);
+    }
+
+    createColourPickerInput(text) {
+        this.xml.ele('shadow', {
+            'type': 'colour_picker',
+            'id': this.getNextInputID(),
+        }).ele('field', {
+            'name': 'COLOUR',
+        }, text);
+    }
+
+    createMathNumberInput(text) {
+        this.xml.ele('shadow', {
+            'type': 'math_number',
+            'id': this.getNextInputID(),
+        }).ele('field', {
+            'name': 'NUM',
         }, text);
     }
 

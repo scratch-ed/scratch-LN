@@ -280,11 +280,11 @@ function LNParser(input) {
                     }
                 }, {
                     ALT: () => {
-                        $.CONSUME(ColorLiteral);
+                        $.CONSUME(ColorLiteral, { LABEL: "Literal" });
                     }
                 }, {
                     ALT: () => {
-                        $.CONSUME(ChoiceLiteral);
+                        $.CONSUME(ChoiceLiteral, { LABEL: "Literal" });
                     }
                 }, {
                     ALT: () => {
