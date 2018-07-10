@@ -23,7 +23,7 @@ export class State {
     reset() {
         //list of all blocks
         this.blocks = [];
-        this.blocks.push({ID:-1,SHAPE:null});
+        this.blocks.push({ID:-1,SHAPE:null}); //this should not happen normally but this way nothing breaks during dev
     }
 
     /**
@@ -65,6 +65,20 @@ export class State {
      */
     getLastBlockID(){
         return this.blocks[this.blocks.length-1].ID;
+    }
+
+    /**
+     * todo The start of a new stack
+     */
+    startStack(){
+
+    }
+
+    /**
+     * todo The end of the current stack
+     */
+    endStack(){
+
     }
 
 }
