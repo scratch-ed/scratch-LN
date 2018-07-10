@@ -104,7 +104,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     stack(ctx) {
         for (let i = 0; ctx.block && i < ctx.block.length; i++) {
-            this.visit(ctx.block[i]);
+            this.visit(ctx.block[i]); //opens a block
             this.xml = this.xml.ele('next');
         }
         for (let i = 0; ctx.block && i < ctx.block.length; i++) {
@@ -120,9 +120,9 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     }*/
 
-    block$composite(ctx) {
+    /*block$composite(ctx) {
 
-    }
+    }*/
 
     atomic(ctx) {
         this.createProcedureBlock(ctx);
@@ -231,7 +231,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     /*composite(ctx) {
 
-    }*/
+    }
 
     composite$ifelse(ctx) {
 
@@ -247,27 +247,56 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     composite$repeatuntil(ctx) {
 
-    }
+    }*/
 
     ifelse(ctx) {
 
     }
 
     forever(ctx) {
-
+        this.xml = this.xml.ele('block', {
+            'type': 'control_forever',
+            'id': this.idManager.getNextBlockID(ctx),
+        }).ele('statement ', {
+            'name': 'SUBSTACK'
+        });
+        this.visit(ctx.clause);
+        this.xml = this.xml.up(); //close statement (stack will close block)
     }
 
     repeat(ctx) {
-
+        this.xml = this.xml.ele('block', {
+            'type': 'control_repeat',
+            'id': this.idManager.getNextBlockID(ctx),
+        }).ele('value', {
+            'name': 'TIMES'
+        });
+        this.visit(ctx.argument);
+        this.xml = this.xml.up().ele('statement ', {
+            'name': 'SUBSTACK'
+        });
+        this.visit(ctx.clause);
+        this.xml = this.xml.up(); //go out of statement
     }
 
     repeatuntil(ctx) {
-
+        this.xml = this.xml.ele('block', {
+            'type': 'control_repeat_until',
+            'id': this.idManager.getNextBlockID(ctx),
+        }).ele('value', {
+            'name': 'CONDITION'
+        });
+        this.visit(ctx.condition);
+        this.xml = this.xml.up().ele('statement ', {
+            'name': 'SUBSTACK'
+        });
+        this.visit(ctx.clause);
+        this.xml = this.xml.up(); //go out of statement
     }
 
-    clause(ctx) {
+    /*clause(ctx) {
 
-    }
+    }*/
 
     modifiers(ctx) {
 

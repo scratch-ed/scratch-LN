@@ -23,6 +23,7 @@ export class State {
     reset() {
         //list of all blocks
         this.blocks = [];
+        this.blocks.push({ID:-1,SHAPE:null});
     }
 
     /**
