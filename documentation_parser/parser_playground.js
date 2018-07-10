@@ -219,12 +219,15 @@
         WhiteSpace,
         LineComment, BlockComment, Comment, //match before anything else
         Literal, StringLiteral, NumberLiteral, ColorLiteral, ChoiceLiteral,
+        //WARNING: RepeatUntil must be defined before Repeat
         Forever, End, RepeatUntil, Repeat, If, Else, Then,
+        //WARNING: StackDelimiter must be defined before Delimiter
         StackDelimiter, Delimiter,
         LCurlyBracket, RCurlyBracket,
         LRoundBracket, RRoundBracket,
         RAngleBracket, LAngleBracket,
         Modifier, ID,
+        //WARNING: Label must be defined after anything else
         Label
     ];
 
@@ -243,16 +246,15 @@
 
         $.RULE("code", () => {
             $.SUBRULE($.delimiter);
-
-            $.OPTION3(() => {
+            $.OPTION(() => {
                 $.SUBRULE($.comments);
             })
-            $.OPTION(() => {
+            $.OPTION2(() => {
                     $.SUBRULE($.stack);
-                    $.MANY2({
+                    $.MANY({
                         DEF: () => {
                             $.SUBRULE($.stackDelimiter);
-                            $.OPTION2(() => {
+                            $.OPTION3(() => {
                                 $.SUBRULE2($.stack);
                             })
                         }
@@ -260,26 +262,10 @@
                 })
                 //$.CONSUME(chevrotain.EOF);
         });
-        $.RULE("stackDelimiter", () => {
-            $.AT_LEAST_ONE({
-                                DEF: () => {
-                                    $.OR([{
-                                        ALT: () => {
-                                            $.CONSUME3(StackDelimiter, {
-                                                LABEL: "intermediateCodeDelimiters"
-                                            });
-                                        }
-                                    }, {
-                                        ALT: () => {
-                                            $.SUBRULE2($.comments);
-                                        }
-                                    }]);
-                                }
-                            });
-        })
-      
+
+
         $.RULE("delimiter", () => {
-            $.OR5([{
+            $.OR([{
                 ALT: () => {
                     $.CONSUME(Delimiter, {
                         LABEL: "leadingCodeDelimiters"
@@ -295,15 +281,31 @@
                 ALT: chevrotain.EMPTY_ALT()
             }])
         })
+
         $.RULE("comments", () => {
             $.AT_LEAST_ONE(() => {
                 $.CONSUME(Comment);
-                /*$.MANY(() => {
-                    $.CONSUME(Delimiter, {
-                        LABEL: "trailingCommentsDelimiters"
-                    });
-                })*/
-                $.SUBRULE($.delimiter);
+                $.SUBRULE($.delimiter,{
+                                LABEL: "trailingCommentsDelimiters"
+                            });
+            });
+        })
+
+        $.RULE("stackDelimiter", () => {
+            $.AT_LEAST_ONE({
+                DEF: () => {
+                    $.OR([{
+                        ALT: () => {
+                            $.CONSUME(StackDelimiter, {
+                                LABEL: "intermediateCodeDelimiters"
+                            });
+                        }
+                    }, {
+                        ALT: () => {
+                            $.SUBRULE($.comments);
+                        }
+                    }]);
+                }
             });
         })
 
@@ -384,15 +386,14 @@
                 $.CONSUME(Then);
             });
             $.SUBRULE($.annotations);
-            $.SUBRULE($.clause);
+            $.SUBRULE($.clause,{
+                    LABEL: "ifClause"
+                });
             $.OPTION3(() => {
-                $.OPTION4(() => {
-                    $.CONSUME(Delimiter, {
-                        LABEL: "elseDelimiter"
-                    });
-                })
                 $.CONSUME(Else);
-                $.SUBRULE3($.clause);
+                $.SUBRULE3($.clause,{
+                    LABEL: "elseClause"
+                });
             });
 
         });
@@ -434,9 +435,9 @@
             });
             $.OPTION3(() => {
                 $.CONSUME(End);
-                /*$.OPTION4(() => {
+                $.OPTION4(() => {
                     $.CONSUME2(Delimiter, {LABEL:"trailingClauseDelimiter"});
-                });*/
+                });
             })
         });
 
@@ -471,18 +472,22 @@
                 ALT: () => {
                     $.CONSUME(LCurlyBracket);
                     $.OR2([{
+                        NAME: "$literal",
                         ALT: () => {
                             $.CONSUME(Literal);
                         }
                     }, {
+                        NAME: "$expression",
                         ALT: () => {
                             $.SUBRULE($.expression);
                         }
                     }, {
+                        NAME: "$predicate",
                         ALT: () => {
                             $.SUBRULE($.predicate);
                         }
                     }, {
+                        NAME: "$empty",
                         ALT: chevrotain.EMPTY_ALT()
                     }, ]);
                     $.OPTION2(() => {
@@ -494,27 +499,32 @@
                 ALT: () => {
                     $.OR3([{
                         ALT: () => {
+                            NAME: "$literal",
                             $.CONSUME(StringLiteral, {
                                 LABEL: "Literal"
                             });
                         }
                     }, {
                         ALT: () => {
+                            NAME: "$literal",
                             $.CONSUME(ColorLiteral, {
                                 LABEL: "Literal"
                             });
                         }
                     }, {
                         ALT: () => {
+                            NAME: "$literal",
                             $.CONSUME(ChoiceLiteral, {
                                 LABEL: "Literal"
                             });
                         }
                     }, {
+                        NAME: "$expression2",
                         ALT: () => {
                             $.SUBRULE2($.expression);
                         }
                     }, {
+                        NAME: "$predicate2",
                         ALT: () => {
                             $.SUBRULE2($.predicate);
                         }
@@ -528,16 +538,22 @@
             $.OR([{
                 ALT: () => {
                     $.CONSUME(LCurlyBracket);
-                    $.OPTION(() => {
-                        $.SUBRULE($.predicate);
-
-                    });
+                    $.OR2([{
+                        NAME: "$predicate",
+                        ALT: () => {
+                            $.SUBRULE($.predicate);
+                        }
+                    }, {
+                        NAME: "$empty",
+                        ALT: chevrotain.EMPTY_ALT()
+                    }, ]);
                     $.OPTION2(() => {
                         $.CONSUME(ID);
                     });
                     $.CONSUME(RCurlyBracket);
                 }
             }, {
+                NAME: "$predicate2",
                 ALT: () => {
                     $.SUBRULE2($.predicate);
                 }
