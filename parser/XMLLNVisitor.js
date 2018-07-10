@@ -21,6 +21,7 @@ import {InfoLNVisitor} from './InfoLNVisitor';
 //xml
 import builder from 'xmlbuilder';
 import {BasicIDManager} from "./IDManager";
+import {State} from "./State";
 
 //const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
 
@@ -34,6 +35,10 @@ const BaseCstVisitorWithDefaults = lnparser.getBaseCstVisitorConstructorWithDefa
 
 //variable types
 const ARG = 'arg';
+
+//shapes
+const STACKBLOCK = "statement";
+
 
 export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
@@ -56,6 +61,9 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
         //information visitor
         this.infoVisitor = new InfoLNVisitor();
+
+        //state
+        this.state = new State(InfoLNVisitor);
     }
 
     getXML(cst) {
@@ -117,7 +125,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     atomic(ctx) {
-        this.createProcedureBlock(ctx, this.getString(ctx, "atomic"));
+        this.createProcedureBlock(ctx);
     }
 
     /**
@@ -126,8 +134,10 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
      * @param description
      * todo:parent (link to the define block)
      */
-    createProcedureBlock(ctx, description) {
-        let blockid = this.getNextBlockID();
+    createProcedureBlock(ctx) {
+        let description = this.getString(ctx, "atomic");
+        let blockid = this.idManager.getNextBlockID();
+        this.state.addBlock(blockid,STACKBLOCK);
         this.xml = this.xml.ele('block', {
             'id': blockid,
         });
@@ -278,28 +288,28 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     createTextInput(ctx) {
         this.xml.ele('shadow', {
             'type': 'text',
-            'id': this.getNextInputID(),
+            'id': this.idManager.getNextInputID(ctx,this.state.getLastBlockID()),
         }).ele('field', {
             'name': 'TEXT',
         }, this.getString(ctx,"argument"));
     }
 
-    createColourPickerInput(text) {
+    createColourPickerInput(ctx) {
         this.xml.ele('shadow', {
             'type': 'colour_picker',
-            'id': this.getNextInputID(),
+            'id': this.idManager.getNextInputID(ctx,this.state.getLastBlockID()),
         }).ele('field', {
             'name': 'COLOUR',
-        }, text);
+        }, this.getString(ctx,"argument"));
     }
 
-    createMathNumberInput(text) {
+    createMathNumberInput(ctx) {
         this.xml.ele('shadow', {
             'type': 'math_number',
-            'id': this.getNextInputID(),
+            'id': this.idManager.getNextInputID(ctx),
         }).ele('field', {
             'name': 'NUM',
-        }, text);
+        }, this.getString(ctx,"argument"));
     }
 
     condition(ctx) {
