@@ -238,7 +238,7 @@
         $.RULE("code", () => {
             $.MANY({
                 DEF: () => {
-                    $.CONSUME(Delimiter);
+                    $.CONSUME(Delimiter, {LABEL:"leadingCodeDelimiters"});
                 }
             });
             $.OPTION3(() => {
@@ -252,7 +252,7 @@
                                 DEF: () => {
                                     $.OR([{
                                         ALT: () => {
-                                            $.CONSUME3(Delimiter);
+                                            $.CONSUME3(Delimiter,{LABEL:"intermediateCodeDelimiters"});
                                         }
                                     }, {
                                         ALT: () => {
@@ -274,7 +274,7 @@
             $.AT_LEAST_ONE(() => {
                 $.CONSUME(Comment);
                 $.MANY(() => {
-                    $.CONSUME(Delimiter);
+                    $.CONSUME(Delimiter, {LABEL:"trailingCommentsDelimiters"});
                 })
             });
         })
@@ -282,11 +282,11 @@
         $.RULE("stack", () => {
             $.SUBRULE($.block);
             $.MANY(() => {
-                $.CONSUME(Delimiter);
+                $.CONSUME(Delimiter, {LABEL:"intermediateStackDelimiter"});
                 $.SUBRULE2($.block);
             });
             $.OPTION(() => {
-                $.CONSUME2(Delimiter);
+                $.CONSUME2(Delimiter, {LABEL:"trailingStackDelimiter"});
             })
         });
 
@@ -354,6 +354,9 @@
             $.SUBRULE($.annotations);
             $.SUBRULE($.clause);
             $.OPTION3(() => {
+                $.OPTION4(() => {
+                    $.CONSUME(Delimiter, {LABEL:"elseDelimiter"});
+                })
                 $.CONSUME(Else);
                 $.SUBRULE3($.clause);
             });
@@ -388,16 +391,16 @@
 
         $.RULE("clause", () => {
             $.OPTION(() => {
-                $.CONSUME(Delimiter);
+                $.CONSUME(Delimiter, {LABEL:"leadingClauseDelimiter"});
             });
             $.OPTION2(() => {
                 $.SUBRULE($.stack);
             });
             $.OPTION3(() => {
                 $.CONSUME(End);
-                $.OPTION4(() => {
-                    $.CONSUME2(Delimiter);
-                });
+                /*$.OPTION4(() => {
+                    $.CONSUME2(Delimiter, {LABEL:"trailingClauseDelimiter"});
+                });*/
             })
         });
 
