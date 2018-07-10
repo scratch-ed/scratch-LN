@@ -242,7 +242,7 @@
         const $ = this;
 
         $.RULE("code", () => {
-            $.SUBRULE($.whitespace);
+            $.SUBRULE($.delimiter);
 
             $.OPTION3(() => {
                 $.SUBRULE($.comments);
@@ -251,7 +251,17 @@
                     $.SUBRULE($.stack);
                     $.MANY2({
                         DEF: () => {
-                            $.AT_LEAST_ONE({
+                            $.SUBRULE($.stackDelimiter);
+                            $.OPTION2(() => {
+                                $.SUBRULE2($.stack);
+                            })
+                        }
+                    });
+                })
+                //$.CONSUME(chevrotain.EOF);
+        });
+        $.RULE("stackDelimiter", () => {
+            $.AT_LEAST_ONE({
                                 DEF: () => {
                                     $.OR([{
                                         ALT: () => {
@@ -266,15 +276,9 @@
                                     }]);
                                 }
                             });
-                            $.OPTION2(() => {
-                                $.SUBRULE2($.stack);
-                            })
-                        }
-                    });
-                })
-                //$.CONSUME(chevrotain.EOF);
-        });
-        $.RULE("whitespace", () => {
+        })
+      
+        $.RULE("delimiter", () => {
             $.OR5([{
                 ALT: () => {
                     $.CONSUME(Delimiter, {
@@ -299,7 +303,7 @@
                         LABEL: "trailingCommentsDelimiters"
                     });
                 })*/
-                $.SUBRULE($.whitespace);
+                $.SUBRULE($.delimiter);
             });
         })
 
