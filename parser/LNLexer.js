@@ -213,7 +213,7 @@ export const allTokens = [
     WhiteSpace,
     LineComment, BlockComment, Comment, //match before anything else
     Literal, StringLiteral, NumberLiteral, ColorLiteral, ChoiceLiteral,
-    Forever, End, Repeat, If, Else, Then, RepeatUntil,
+    Forever, End, RepeatUntil, Repeat, If, Else, Then,
     Delimiter,
     LCurlyBracket, RCurlyBracket,
     LRoundBracket, RRoundBracket,
