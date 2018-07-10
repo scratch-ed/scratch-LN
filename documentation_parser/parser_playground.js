@@ -604,9 +604,17 @@
         code(ctx) {
 
         }
+      
+        delimiter(ctx){
+        
+        }
 
         comments(ctx) {
 
+        }
+      
+        stackDelimiter(ctx){
+        
         }
 
         stack(ctx) {
@@ -678,8 +686,49 @@
         argument(ctx) {
 
         }
+      
+        argument$literal(ctx) {
+
+        }
+      
+        argument$predicate(ctx) {
+
+        }
+      
+        argument$predicate(ctx) {
+
+        }
+
+        argument$expression(ctx) {
+
+        }
+
+        argument$empty(ctx) {
+
+        }
+      
+        argument$predicate2(ctx) {
+
+        }
+
+        argument$expression2(ctx) {
+
+        }
+
 
         condition(ctx) {
+
+        }
+      
+        condition$predicate(ctx) {
+
+        }
+      
+        condition$empty(ctx) {
+
+        }
+      
+        condition$predicate2(ctx) {
 
         }
 
@@ -697,7 +746,7 @@
     return {
         lexer: LNLexer,
         parser: LNParser,
-        //visitor: LNVisitor,
+        visitor: LNVisitor,
         defaultRule: "code"
     };
 }())
