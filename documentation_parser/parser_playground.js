@@ -283,10 +283,11 @@
             $.SUBRULE($.block);
             $.MANY(() => {
                 $.CONSUME(Delimiter);
-                $.OPTION(() => {
-                    $.SUBRULE2($.block);
-                })
+                $.SUBRULE2($.block);
             });
+            $.OPTION(() => {
+                $.CONSUME2(Delimiter);
+            })
         });
 
         $.RULE("block", () => {
