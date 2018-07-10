@@ -161,7 +161,7 @@
         categories: [Keyword],
         longer_alt: Label
     });
-  
+
     const Repeat = createToken({
         name: "Repeat",
         pattern: /repeat/i,
@@ -200,6 +200,12 @@
         line_breaks: true
     });
 
+    const StackDelimiter = createToken({
+        name: "StackDelimiter",
+        pattern: /((;[ \t]*\n|;|\n)[ \t]*){2,}/,
+        line_breaks: true
+    });
+
     // marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
     const WhiteSpace = createToken({
         name: "WhiteSpace",
@@ -213,8 +219,8 @@
         WhiteSpace,
         LineComment, BlockComment, Comment, //match before anything else
         Literal, StringLiteral, NumberLiteral, ColorLiteral, ChoiceLiteral,
-        Forever, End, RepeatUntil,Repeat, If, Else, Then, 
-        Delimiter,
+        Forever, End, RepeatUntil, Repeat, If, Else, Then,
+        StackDelimiter, Delimiter,
         LCurlyBracket, RCurlyBracket,
         LRoundBracket, RRoundBracket,
         RAngleBracket, LAngleBracket,
@@ -236,11 +242,8 @@
         const $ = this;
 
         $.RULE("code", () => {
-            $.MANY({
-                DEF: () => {
-                    $.CONSUME(Delimiter, {LABEL:"leadingCodeDelimiters"});
-                }
-            });
+            $.SUBRULE($.whitespace);
+
             $.OPTION3(() => {
                 $.SUBRULE($.comments);
             })
@@ -252,7 +255,9 @@
                                 DEF: () => {
                                     $.OR([{
                                         ALT: () => {
-                                            $.CONSUME3(Delimiter,{LABEL:"intermediateCodeDelimiters"});
+                                            $.CONSUME3(StackDelimiter, {
+                                                LABEL: "intermediateCodeDelimiters"
+                                            });
                                         }
                                     }, {
                                         ALT: () => {
@@ -269,24 +274,47 @@
                 })
                 //$.CONSUME(chevrotain.EOF);
         });
-
+        $.RULE("whitespace", () => {
+            $.OR5([{
+                ALT: () => {
+                    $.CONSUME(Delimiter, {
+                        LABEL: "leadingCodeDelimiters"
+                    });
+                }
+            }, {
+                ALT: () => {
+                    $.CONSUME(StackDelimiter, {
+                        LABEL: "leadingCodeDelimiters"
+                    });
+                },
+            }, {
+                ALT: chevrotain.EMPTY_ALT()
+            }])
+        })
         $.RULE("comments", () => {
             $.AT_LEAST_ONE(() => {
                 $.CONSUME(Comment);
-                $.MANY(() => {
-                    $.CONSUME(Delimiter, {LABEL:"trailingCommentsDelimiters"});
-                })
+                /*$.MANY(() => {
+                    $.CONSUME(Delimiter, {
+                        LABEL: "trailingCommentsDelimiters"
+                    });
+                })*/
+                $.SUBRULE($.whitespace);
             });
         })
 
         $.RULE("stack", () => {
             $.SUBRULE($.block);
             $.MANY(() => {
-                $.CONSUME(Delimiter, {LABEL:"intermediateStackDelimiter"});
+                $.CONSUME(Delimiter, {
+                    LABEL: "intermediateStackDelimiter"
+                });
                 $.SUBRULE2($.block);
             });
             $.OPTION(() => {
-                $.CONSUME2(Delimiter, {LABEL:"trailingStackDelimiter"});
+                $.CONSUME2(Delimiter, {
+                    LABEL: "trailingStackDelimiter"
+                });
             })
         });
 
@@ -355,7 +383,9 @@
             $.SUBRULE($.clause);
             $.OPTION3(() => {
                 $.OPTION4(() => {
-                    $.CONSUME(Delimiter, {LABEL:"elseDelimiter"});
+                    $.CONSUME(Delimiter, {
+                        LABEL: "elseDelimiter"
+                    });
                 })
                 $.CONSUME(Else);
                 $.SUBRULE3($.clause);
@@ -391,7 +421,9 @@
 
         $.RULE("clause", () => {
             $.OPTION(() => {
-                $.CONSUME(Delimiter, {LABEL:"leadingClauseDelimiter"});
+                $.CONSUME(Delimiter, {
+                    LABEL: "leadingClauseDelimiter"
+                });
             });
             $.OPTION2(() => {
                 $.SUBRULE($.stack);
