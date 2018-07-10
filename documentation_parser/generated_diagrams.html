@@ -25,16 +25,9 @@
     "name": "code",
     "definition": [
       {
-        "type": "Repetition",
-        "definition": [
-          {
-            "type": "Terminal",
-            "name": "Delimiter",
-            "label": "Delimiter",
-            "idx": 0,
-            "pattern": ";[ \\t]*\\n|;|\\n"
-          }
-        ]
+        "type": "NonTerminal",
+        "name": "delimiter",
+        "idx": 0
       },
       {
         "type": "Option",
@@ -58,36 +51,9 @@
             "type": "Repetition",
             "definition": [
               {
-                "type": "RepetitionMandatory",
-                "definition": [
-                  {
-                    "type": "Alternation",
-                    "definition": [
-                      {
-                        "type": "Flat",
-                        "definition": [
-                          {
-                            "type": "Terminal",
-                            "name": "Delimiter",
-                            "label": "Delimiter",
-                            "idx": 3,
-                            "pattern": ";[ \\t]*\\n|;|\\n"
-                          }
-                        ]
-                      },
-                      {
-                        "type": "Flat",
-                        "definition": [
-                          {
-                            "type": "NonTerminal",
-                            "name": "comments",
-                            "idx": 2
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
+                "type": "NonTerminal",
+                "name": "stackDelimiter",
+                "idx": 0
               },
               {
                 "type": "Option",
@@ -100,6 +66,45 @@
                 ]
               }
             ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "Rule",
+    "name": "delimiter",
+    "definition": [
+      {
+        "type": "Alternation",
+        "definition": [
+          {
+            "type": "Flat",
+            "definition": [
+              {
+                "type": "Terminal",
+                "name": "Delimiter",
+                "label": "Delimiter",
+                "idx": 0,
+                "pattern": ";[ \\t]*\\n|;|\\n"
+              }
+            ]
+          },
+          {
+            "type": "Flat",
+            "definition": [
+              {
+                "type": "Terminal",
+                "name": "StackDelimiter",
+                "label": "StackDelimiter",
+                "idx": 0,
+                "pattern": "((;[ \\t]*\\n|;|\\n)[ \\t]*){2,}"
+              }
+            ]
+          },
+          {
+            "type": "Flat",
+            "definition": []
           }
         ]
       }
@@ -120,14 +125,45 @@
             "pattern": "\\|([^\\|\\\\]|\\\\.)*\\|"
           },
           {
-            "type": "Repetition",
+            "type": "NonTerminal",
+            "name": "delimiter",
+            "idx": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "Rule",
+    "name": "stackDelimiter",
+    "definition": [
+      {
+        "type": "RepetitionMandatory",
+        "definition": [
+          {
+            "type": "Alternation",
             "definition": [
               {
-                "type": "Terminal",
-                "name": "Delimiter",
-                "label": "Delimiter",
-                "idx": 2,
-                "pattern": ";[ \\t]*\\n|;|\\n"
+                "type": "Flat",
+                "definition": [
+                  {
+                    "type": "Terminal",
+                    "name": "StackDelimiter",
+                    "label": "StackDelimiter",
+                    "idx": 0,
+                    "pattern": "((;[ \\t]*\\n|;|\\n)[ \\t]*){2,}"
+                  }
+                ]
+              },
+              {
+                "type": "Flat",
+                "definition": [
+                  {
+                    "type": "NonTerminal",
+                    "name": "comments",
+                    "idx": 0
+                  }
+                ]
               }
             ]
           }
@@ -422,7 +458,7 @@
         "name": "RepeatUntil",
         "label": "RepeatUntil",
         "idx": 0,
-        "pattern": "repeat[ \\t]+until"
+        "pattern": "repeat[ \\t]*until"
       },
       {
         "type": "NonTerminal",
@@ -593,44 +629,43 @@
                 "pattern": "{"
               },
               {
-                "type": "Option",
+                "type": "Alternation",
                 "definition": [
                   {
-                    "type": "Alternation",
+                    "type": "Flat",
                     "definition": [
                       {
-                        "type": "Flat",
-                        "definition": [
-                          {
-                            "type": "Terminal",
-                            "name": "Literal",
-                            "label": "Literal",
-                            "idx": 0,
-                            "pattern": "NOT_APPLICABLE"
-                          }
-                        ]
-                      },
-                      {
-                        "type": "Flat",
-                        "definition": [
-                          {
-                            "type": "NonTerminal",
-                            "name": "expression",
-                            "idx": 0
-                          }
-                        ]
-                      },
-                      {
-                        "type": "Flat",
-                        "definition": [
-                          {
-                            "type": "NonTerminal",
-                            "name": "predicate",
-                            "idx": 0
-                          }
-                        ]
+                        "type": "Terminal",
+                        "name": "Literal",
+                        "label": "Literal",
+                        "idx": 0,
+                        "pattern": "NOT_APPLICABLE"
                       }
                     ]
+                  },
+                  {
+                    "type": "Flat",
+                    "definition": [
+                      {
+                        "type": "NonTerminal",
+                        "name": "expression",
+                        "idx": 0
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Flat",
+                    "definition": [
+                      {
+                        "type": "NonTerminal",
+                        "name": "predicate",
+                        "idx": 0
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Flat",
+                    "definition": []
                   }
                 ]
               },
@@ -743,12 +778,21 @@
                 "pattern": "{"
               },
               {
-                "type": "Option",
+                "type": "Alternation",
                 "definition": [
                   {
-                    "type": "NonTerminal",
-                    "name": "predicate",
-                    "idx": 0
+                    "type": "Flat",
+                    "definition": [
+                      {
+                        "type": "NonTerminal",
+                        "name": "predicate",
+                        "idx": 0
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Flat",
+                    "definition": []
                   }
                 ]
               },
