@@ -307,6 +307,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     argument(ctx) {
+        console.log("arg",ctx);
         if (ctx.Literal || (!ctx.predicate && !ctx.expression )) {
             this.createTextInput(ctx);
         } else{

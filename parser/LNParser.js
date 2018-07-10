@@ -7,7 +7,7 @@
  * @author Ellen Vanhove.
  */
 // Using ES6 style imports, this means Webpack 2 can perform tree shaking
-import { Parser } from "chevrotain"
+import {Parser, EMPTY_ALT} from "chevrotain"
 
 const lntokens = require("./LNLexer");
 
@@ -16,6 +16,7 @@ let allTokens = lntokens.allTokens;
 
 let Label = lntokens.Label;
 let Delimiter = lntokens.Delimiter;
+let StackDelimiter = lntokens.StackDelimiter;
 
 let Literal = lntokens.Literal;
 let StringLiteral = lntokens.StringLiteral;
@@ -57,32 +58,16 @@ function LNParser(input) {
     const $ = this;
 
     $.RULE("code", () => {
-        $.MANY({
-            DEF: () => {
-                $.CONSUME(Delimiter);
-            }
-        });
-        $.OPTION3(() => {
+        $.SUBRULE($.delimiter);
+        $.OPTION(() => {
             $.SUBRULE($.comments);
         })
-        $.OPTION(() => {
+        $.OPTION2(() => {
             $.SUBRULE($.stack);
-            $.MANY2({
+            $.MANY({
                 DEF: () => {
-                    $.AT_LEAST_ONE({
-                        DEF: () => {
-                            $.OR([{
-                                ALT: () => {
-                                    $.CONSUME3(Delimiter);
-                                }
-                            }, {
-                                ALT: () => {
-                                    $.SUBRULE2($.comments);
-                                }
-                            }]);
-                        }
-                    });
-                    $.OPTION2(() => {
+                    $.SUBRULE($.stackDelimiter);
+                    $.OPTION3(() => {
                         $.SUBRULE2($.stack);
                     })
                 }
@@ -91,23 +76,64 @@ function LNParser(input) {
         //$.CONSUME(chevrotain.EOF);
     });
 
+
+    $.RULE("delimiter", () => {
+        $.OR([{
+            ALT: () => {
+                $.CONSUME(Delimiter, {
+                    LABEL: "leadingCodeDelimiters"
+                });
+            }
+        }, {
+            ALT: () => {
+                $.CONSUME(StackDelimiter, {
+                    LABEL: "leadingCodeDelimiters"
+                });
+            },
+        }, {
+            ALT: EMPTY_ALT()
+        }])
+    })
+
     $.RULE("comments", () => {
         $.AT_LEAST_ONE(() => {
             $.CONSUME(Comment);
-            $.MANY(() => {
-                $.CONSUME(Delimiter);
-            })
+            $.SUBRULE($.delimiter, {
+                LABEL: "trailingCommentsDelimiters"
+            });
+        });
+    })
+
+    $.RULE("stackDelimiter", () => {
+        $.AT_LEAST_ONE({
+            DEF: () => {
+                $.OR([{
+                    ALT: () => {
+                        $.CONSUME(StackDelimiter, {
+                            LABEL: "intermediateCodeDelimiters"
+                        });
+                    }
+                }, {
+                    ALT: () => {
+                        $.SUBRULE($.comments);
+                    }
+                }]);
+            }
         });
     })
 
     $.RULE("stack", () => {
         $.SUBRULE($.block);
         $.MANY(() => {
-            $.CONSUME(Delimiter);
+            $.CONSUME(Delimiter, {
+                LABEL: "intermediateStackDelimiter"
+            });
             $.SUBRULE2($.block);
         });
         $.OPTION(() => {
-            $.CONSUME2(Delimiter);
+            $.CONSUME2(Delimiter, {
+                LABEL: "trailingStackDelimiter"
+            });
         })
     });
 
@@ -173,10 +199,14 @@ function LNParser(input) {
             $.CONSUME(Then);
         });
         $.SUBRULE($.annotations);
-        $.SUBRULE($.clause);
+        $.SUBRULE($.clause, {
+            LABEL: "ifClause"
+        });
         $.OPTION3(() => {
             $.CONSUME(Else);
-            $.SUBRULE3($.clause);
+            $.SUBRULE3($.clause, {
+                LABEL: "elseClause"
+            });
         });
 
     });
@@ -205,11 +235,11 @@ function LNParser(input) {
     });
 
 
-
-
     $.RULE("clause", () => {
         $.OPTION(() => {
-            $.CONSUME(Delimiter);
+            $.CONSUME(Delimiter, {
+                LABEL: "leadingClauseDelimiter"
+            });
         });
         $.OPTION2(() => {
             $.SUBRULE($.stack);
@@ -217,7 +247,7 @@ function LNParser(input) {
         $.OPTION3(() => {
             $.CONSUME(End);
             $.OPTION4(() => {
-                $.CONSUME2(Delimiter);
+                $.CONSUME2(Delimiter, {LABEL: "trailingClauseDelimiter"});
             });
         })
     });
@@ -252,21 +282,22 @@ function LNParser(input) {
         $.OR([{
             ALT: () => {
                 $.CONSUME(LCurlyBracket);
-                $.OPTION(() => {
-                    $.OR2([{
-                        ALT: () => {
-                            $.CONSUME(Literal);
-                        }
-                    }, {
-                        ALT: () => {
-                            $.SUBRULE($.expression);
-                        }
-                    }, {
-                        ALT: () => {
-                            $.SUBRULE($.predicate);
-                        }
-                    }]);
-                });
+                $.OR2([{
+                    ALT: () => {
+                        $.CONSUME(Literal);
+                    }
+                }, {
+                    ALT: () => {
+                        $.SUBRULE($.expression);
+                    }
+                }, {
+                    ALT: () => {
+                        $.SUBRULE($.predicate);
+                    }
+                }, {
+                    NAME: "$empty",
+                    ALT: EMPTY_ALT()
+                },]);
                 $.OPTION2(() => {
                     $.CONSUME(ID);
                 });
@@ -276,15 +307,21 @@ function LNParser(input) {
             ALT: () => {
                 $.OR3([{
                     ALT: () => {
-                        $.CONSUME(StringLiteral, { LABEL: "Literal" });
+                        $.CONSUME(StringLiteral, {
+                            LABEL: "Literal"
+                        });
                     }
                 }, {
                     ALT: () => {
-                        $.CONSUME(ColorLiteral, { LABEL: "Literal" });
+                        $.CONSUME(ColorLiteral, {
+                            LABEL: "Literal"
+                        });
                     }
                 }, {
                     ALT: () => {
-                        $.CONSUME(ChoiceLiteral, { LABEL: "Literal" });
+                        $.CONSUME(ChoiceLiteral, {
+                            LABEL: "Literal"
+                        });
                     }
                 }, {
                     ALT: () => {
@@ -304,10 +341,14 @@ function LNParser(input) {
         $.OR([{
             ALT: () => {
                 $.CONSUME(LCurlyBracket);
-                $.OPTION(() => {
-                    $.SUBRULE($.predicate);
-
-                });
+                $.OR2([{
+                    ALT: () => {
+                        $.SUBRULE($.predicate);
+                    }
+                }, {
+                    NAME: "$empty",
+                    ALT: EMPTY_ALT()
+                },]);
                 $.OPTION2(() => {
                     $.CONSUME(ID);
                 });
@@ -343,10 +384,6 @@ function LNParser(input) {
     // derived during the self analysis phase.
     Parser.performSelfAnalysis(this);
 }
-
-
-
-
 
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
 LNParser.prototype = Object.create(Parser.prototype);

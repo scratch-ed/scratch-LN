@@ -31,9 +31,7 @@ window.onload = function () {
     //text
     let editor = document.getElementById('editor');
     editor.addEventListener('input', updateWorkspace);
-    editor.value = 'forever\n' +
-        //'\n' +
-        'aaa';
+    editor.value = 'a {1} "x"';
     updateWorkspace();
 
     //button options

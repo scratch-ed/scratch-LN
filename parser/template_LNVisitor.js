@@ -41,7 +41,15 @@ export class LNVisitor extends BaseCstVisitor {
 
     }
 
+    delimiter(ctx){
+
+    }
+
     comments(ctx) {
+
+    }
+
+    stackDelimiter(ctx){
 
     }
 
@@ -115,7 +123,15 @@ export class LNVisitor extends BaseCstVisitor {
 
     }
 
+    argument$empty(ctx) {
+
+    }
+
     condition(ctx) {
+
+    }
+
+    condition$empty(ctx) {
 
     }
 

@@ -50,7 +50,15 @@ export class InfoLNVisitor extends BaseCstVisitor {
 
     }
 
+    delimiter(ctx){
+
+    }
+
     comments(ctx) {
+
+    }
+
+    stackDelimiter(ctx){
 
     }
 
@@ -192,6 +200,7 @@ export class InfoLNVisitor extends BaseCstVisitor {
 
     }
 
+
     argument(ctx) {
         if (ctx.Literal) {
             return {
@@ -216,12 +225,21 @@ export class InfoLNVisitor extends BaseCstVisitor {
 
     }
 
+
+    argument$empty(ctx) {
+
+    }
+
     unescapeString(text){
         return text.replace(/\\"/g, '"').replace(/^"(.*(?="$))"$/, '$1');
     }
 
     condition(ctx) {
         return this.visit(ctx.expression);
+    }
+
+    condition$empty(ctx) {
+
     }
 
     expression(ctx) {

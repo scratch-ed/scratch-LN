@@ -8,7 +8,6 @@ import { Token, Lexer, createToken } from "chevrotain"
 
 //DO NOT FORGET TO ADD THE EXPORT WHEN COPY PASTING
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
-
 export const Label = createToken({
     name: "Label",
     pattern:
@@ -157,18 +156,20 @@ export const Forever = createToken({
     longer_alt: Label
 });
 
+export const RepeatUntil = createToken({
+    name: "RepeatUntil",
+    pattern: /repeat[ \t]*until/i,
+    categories: [Keyword],
+    longer_alt: Label
+});
+
 export const Repeat = createToken({
     name: "Repeat",
     pattern: /repeat/i,
     categories: [Keyword],
     longer_alt: Label
 });
-export const RepeatUntil = createToken({
-    name: "RepeatUntil",
-    pattern: /repeat[ \t]+until/i,
-    categories: [Keyword],
-    longer_alt: Label
-});
+
 
 export const End = createToken({
     name: "End",
@@ -200,6 +201,12 @@ export const Delimiter = createToken({
     line_breaks: true
 });
 
+export const StackDelimiter = createToken({
+    name: "StackDelimiter",
+    pattern: /((;[ \t]*\n|;|\n)[ \t]*){2,}/,
+    line_breaks: true
+});
+
 // marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
 export const WhiteSpace = createToken({
     name: "WhiteSpace",
@@ -213,15 +220,17 @@ export const allTokens = [
     WhiteSpace,
     LineComment, BlockComment, Comment, //match before anything else
     Literal, StringLiteral, NumberLiteral, ColorLiteral, ChoiceLiteral,
+    //WARNING: RepeatUntil must be defined before Repeat
     Forever, End, RepeatUntil, Repeat, If, Else, Then,
-    Delimiter,
+    //WARNING: StackDelimiter must be defined before Delimiter
+    StackDelimiter, Delimiter,
     LCurlyBracket, RCurlyBracket,
     LRoundBracket, RRoundBracket,
     RAngleBracket, LAngleBracket,
     Modifier, ID,
+    //WARNING: Label must be defined after anything else
     Label
 ];
-
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
 
 export const LNLexer = new Lexer(allTokens);
