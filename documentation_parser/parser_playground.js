@@ -285,9 +285,9 @@
         $.RULE("comments", () => {
             $.AT_LEAST_ONE(() => {
                 $.CONSUME(Comment);
-                $.SUBRULE($.delimiter,{
-                                LABEL: "trailingCommentsDelimiters"
-                            });
+                $.SUBRULE($.delimiter, {
+                    LABEL: "trailingCommentsDelimiters"
+                });
             });
         })
 
@@ -386,12 +386,12 @@
                 $.CONSUME(Then);
             });
             $.SUBRULE($.annotations);
-            $.SUBRULE($.clause,{
-                    LABEL: "ifClause"
-                });
+            $.SUBRULE($.clause, {
+                LABEL: "ifClause"
+            });
             $.OPTION3(() => {
                 $.CONSUME(Else);
-                $.SUBRULE3($.clause,{
+                $.SUBRULE3($.clause, {
                     LABEL: "elseClause"
                 });
             });
@@ -436,7 +436,9 @@
             $.OPTION3(() => {
                 $.CONSUME(End);
                 $.OPTION4(() => {
-                    $.CONSUME2(Delimiter, {LABEL:"trailingClauseDelimiter"});
+                    $.CONSUME2(Delimiter, {
+                        LABEL: "trailingClauseDelimiter"
+                    });
                 });
             })
         });
@@ -472,17 +474,14 @@
                 ALT: () => {
                     $.CONSUME(LCurlyBracket);
                     $.OR2([{
-                        NAME: "$literal",
                         ALT: () => {
                             $.CONSUME(Literal);
                         }
                     }, {
-                        NAME: "$expression",
                         ALT: () => {
                             $.SUBRULE($.expression);
                         }
                     }, {
-                        NAME: "$predicate",
                         ALT: () => {
                             $.SUBRULE($.predicate);
                         }
@@ -499,32 +498,27 @@
                 ALT: () => {
                     $.OR3([{
                         ALT: () => {
-                            NAME: "$literal",
                             $.CONSUME(StringLiteral, {
                                 LABEL: "Literal"
                             });
                         }
                     }, {
                         ALT: () => {
-                            NAME: "$literal",
                             $.CONSUME(ColorLiteral, {
                                 LABEL: "Literal"
                             });
                         }
                     }, {
                         ALT: () => {
-                            NAME: "$literal",
                             $.CONSUME(ChoiceLiteral, {
                                 LABEL: "Literal"
                             });
                         }
                     }, {
-                        NAME: "$expression2",
                         ALT: () => {
                             $.SUBRULE2($.expression);
                         }
                     }, {
-                        NAME: "$predicate2",
                         ALT: () => {
                             $.SUBRULE2($.predicate);
                         }
@@ -539,7 +533,6 @@
                 ALT: () => {
                     $.CONSUME(LCurlyBracket);
                     $.OR2([{
-                        NAME: "$predicate",
                         ALT: () => {
                             $.SUBRULE($.predicate);
                         }
@@ -553,12 +546,11 @@
                     $.CONSUME(RCurlyBracket);
                 }
             }, {
-                NAME: "$predicate2",
                 ALT: () => {
                     $.SUBRULE2($.predicate);
                 }
             }])
-        })
+        });
 
         $.RULE("expression", () => {
             $.CONSUME(LRoundBracket);
@@ -604,17 +596,17 @@
         code(ctx) {
 
         }
-      
-        delimiter(ctx){
-        
+
+        delimiter(ctx) {
+
         }
 
         comments(ctx) {
 
         }
-      
-        stackDelimiter(ctx){
-        
+
+        stackDelimiter(ctx) {
+
         }
 
         stack(ctx) {
@@ -686,49 +678,16 @@
         argument(ctx) {
 
         }
-      
-        argument$literal(ctx) {
-
-        }
-      
-        argument$predicate(ctx) {
-
-        }
-      
-        argument$predicate(ctx) {
-
-        }
-
-        argument$expression(ctx) {
-
-        }
 
         argument$empty(ctx) {
 
         }
-      
-        argument$predicate2(ctx) {
-
-        }
-
-        argument$expression2(ctx) {
-
-        }
-
 
         condition(ctx) {
 
         }
-      
-        condition$predicate(ctx) {
 
-        }
-      
         condition$empty(ctx) {
-
-        }
-      
-        condition$predicate2(ctx) {
 
         }
 
