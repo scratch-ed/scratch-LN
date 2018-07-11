@@ -246,9 +246,9 @@ function LNParser(input) {
         });
         $.OPTION3(() => {
             $.CONSUME(End);
-            $.OPTION4(() => {
+            /*$.OPTION4(() => {
                 $.CONSUME2(Delimiter, {LABEL: "trailingClauseDelimiter"});
-            });
+            });*/
         })
     });
 

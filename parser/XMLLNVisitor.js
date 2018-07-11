@@ -250,6 +250,36 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }*/
 
     ifelse(ctx) {
+        console.log(ctx)
+        if (!ctx.Else) {
+            this.xml = this.xml.ele('block', {
+                'type': 'control_if',
+                'id': this.idManager.getNextBlockID(ctx)
+            });
+        } else {
+            this.xml = this.xml.ele('block', {
+                'type': 'control_if_else',
+                'id': this.idManager.getNextBlockID(ctx)
+            });
+        }
+        this.xml = this.xml.ele('value', {
+            'name': 'CONDITION'
+        });
+        this.visit(ctx.condition);
+        //Stack
+        //go up from condition
+        this.xml = this.xml.up().ele('statement ', {
+            'name': 'SUBSTACK'
+        });
+        this.visit(ctx.ifClause);
+        this.xml = this.xml.up();
+        if (ctx.Else) {
+            this.xml = this.xml.ele('statement ', {
+                'name': 'SUBSTACK2'
+            });
+            this.visit(ctx.elseClause);
+            this.xml = this.xml.up();
+        }
 
     }
 

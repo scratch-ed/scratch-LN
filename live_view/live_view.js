@@ -30,9 +30,16 @@ window.onload = function () {
 
     //text
     let editor = document.getElementById('editor');
-    //editor.addEventListener('input', updateWorkspace);
-    editor.value = 'a {1} "x"';
-    //updateWorkspace();
+    editor.addEventListener('input', updateWorkspace);
+    editor.value = 'if <>\n' +
+        'a\n' +
+        'else\n' +
+        'b\n' +
+        'end\n' +
+        'y\n' +
+        '\n' +
+        'x';
+    updateWorkspace();
 
     //button options
     document.getElementById('xmlparser').addEventListener('click', generateTextWorkspace);
@@ -57,11 +64,11 @@ window.onload = function () {
     //addBlock('procedures_definition','aaa',500,10);
     //addBlock('procedures_call','aaa',200,10);
 
-    insertSomeCodeFromXML();
+    //insertSomeCodeFromXML();
 
     //generateText(workspace)
 
-    console.log(getWorkspaceXML())
+    //console.log(getWorkspaceXML())
 };
 
 function generateTextWorkspace() {
@@ -140,9 +147,11 @@ function insertSomeCodeFromXML() {
         '</xml>\n';
     xml = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
         '    <variables></variables>\n' +
-        '    <comment pinned="true">sad comment</comment> \n' +
+        //todo this generates an error when toworkspace is called. somehting with x and y. I am not sure of the cause
+        '    <comment x="0" y="0" w="100" h="100" minimized="false" id="biboba" >sad comment</comment> \n' +
+        '    <comment x="100" y="100" w="100" h="100" minimized="false" id="biboba2" >sad comment2</comment> \n' +
         '    <block type="procedures_call" id="SaA0RG_sd@{sUN5%SWpW" x="119" y="267">\n' +
-        '        <comment pinned="true">happy comment</comment> \n' +
+        '        <comment pinned="true">happy comment</comment> \n' + //pinned=true is for attached comments
         '        <mutation proccode="blok %n" argumentids="[&quot;input0&quot;]" warp="null"></mutation>\n' +
         '        <value name="input0">\n' +
         '            <shadow type="math_number" id="xAsO+lm[%y|!-0je(qxh">\n' +
@@ -150,11 +159,11 @@ function insertSomeCodeFromXML() {
         '            </shadow>\n' +
         '        </value>\n' +
         '    </block>\n' +
-        '</xml>'
-    //xml = '<comment> xxxx</comment>';
+        '</xml>';
     console.log(xml);
     let dom = Blockly.Xml.textToDom(xml);
     Blockly.Xml.domToWorkspace(dom, workspace);
+    //<comment id="8*/w-@zgZoKksBwJl*dh" pinned="false" x="247" y="275" minimized="false" h="200" w="200">
     //workspace.getById(id) //https://developers.google.com/blockly/reference/js/Blockly.Workspace#.getById
 }
 
