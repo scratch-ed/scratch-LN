@@ -285,9 +285,9 @@
         $.RULE("comments", () => {
             $.AT_LEAST_ONE(() => {
                 $.CONSUME(Comment);
-                $.SUBRULE($.delimiter, {
-                    LABEL: "trailingCommentsDelimiters"
-                });
+                $.SUBRULE($.delimiter,{
+                                LABEL: "trailingCommentsDelimiters"
+                            });
             });
         })
 
@@ -386,12 +386,12 @@
                 $.CONSUME(Then);
             });
             $.SUBRULE($.annotations);
-            $.SUBRULE($.clause, {
-                LABEL: "ifClause"
-            });
+            $.SUBRULE($.clause,{
+                    LABEL: "ifClause"
+                });
             $.OPTION3(() => {
                 $.CONSUME(Else);
-                $.SUBRULE3($.clause, {
+                $.SUBRULE3($.clause,{
                     LABEL: "elseClause"
                 });
             });
@@ -435,11 +435,9 @@
             });
             $.OPTION3(() => {
                 $.CONSUME(End);
-                $.OPTION4(() => {
-                    $.CONSUME2(Delimiter, {
-                        LABEL: "trailingClauseDelimiter"
-                    });
-                });
+                /*$.OPTION4(() => {
+                    $.CONSUME2(Delimiter, {LABEL:"trailingClauseDelimiter"});
+                });*/
             })
         });
 
@@ -596,17 +594,17 @@
         code(ctx) {
 
         }
-
-        delimiter(ctx) {
-
+      
+        delimiter(ctx){
+        
         }
 
         comments(ctx) {
 
         }
-
-        stackDelimiter(ctx) {
-
+      
+        stackDelimiter(ctx){
+        
         }
 
         stack(ctx) {
@@ -685,11 +683,11 @@
 
         condition(ctx) {
 
-        }
-
+        }      
+      
         condition$empty(ctx) {
 
-        }
+        }      
 
         expression(ctx) {
 
@@ -705,7 +703,7 @@
     return {
         lexer: LNLexer,
         parser: LNParser,
-        visitor: LNVisitor,
+        //visitor: LNVisitor,
         defaultRule: "code"
     };
 }())
