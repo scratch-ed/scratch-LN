@@ -31,14 +31,9 @@ window.onload = function () {
     //text
     let editor = document.getElementById('editor');
     editor.addEventListener('input', updateWorkspace);
-    editor.value = 'if <>\n' +
+    editor.value = '|x|\n' +
         'a\n' +
-        'else\n' +
-        'b\n' +
-        'end\n' +
-        'y\n' +
-        '\n' +
-        'x';
+        '|y|';
     updateWorkspace();
 
     //button options
@@ -68,7 +63,7 @@ window.onload = function () {
 
     //generateText(workspace)
 
-    //console.log(getWorkspaceXML())
+    console.log(getWorkspaceXML())
 };
 
 function generateTextWorkspace() {

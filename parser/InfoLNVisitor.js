@@ -6,6 +6,7 @@
  * {
  * placeHolder: %b (boolean)| %s (string) ,
  * offset: number,
+ * todo:startline?
  * text: "a string",
  * type: "tokename" or "expression" or "predicate"
  * }
@@ -33,6 +34,7 @@ export const EXPRESSION = "expression";
 export const PREDICATE = "predicate";
 export const ATOMIC = "atomic";
 export const EMPTY = "empty";
+export const COMMENT = "comment";
 
 
 const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
@@ -205,7 +207,7 @@ export class InfoLNVisitor extends BaseCstVisitor {
         if (ctx.Literal) {
             return {
                 PLACEHOLDER: "%s",
-                TEXT: this.unescapeString(ctx.Literal[0].image),
+                TEXT: this.unescapeStringLiteral(ctx.Literal[0].image),
                 OFFSET: ctx.Literal.offset,
                 TYPE: ctx.Literal.tokenName
             }
@@ -230,7 +232,7 @@ export class InfoLNVisitor extends BaseCstVisitor {
 
     }
 
-    unescapeString(text){
+    unescapeStringLiteral(text){
         return text.replace(/\\"/g, '"').replace(/^"(.*(?="$))"$/, '$1');
     }
 
@@ -256,6 +258,26 @@ export class InfoLNVisitor extends BaseCstVisitor {
             OFFSET: ctx.LAngleBracket.offset,
             TYPE: PREDICATE
         }
+    }
+
+    //////////////////////////////////////////////////
+    //// no 'real' visitor methods as they are not rules.
+    //////////////////////////////////////////////////
+
+    /**
+     * @param ctx comemnt token
+     */
+    comment(ctx){
+        console.log(ctx);
+        return {
+            OFFSET: ctx.offset,
+            TEXT: this.unescapeComment(ctx.image),
+            TYPE: COMMENT
+        }
+    }
+
+    unescapeComment(text){
+        return text.replace(/\\\|/g, '|').replace(/^\|(.*(?=\|$))\|$/, '$1');
     }
 
 }

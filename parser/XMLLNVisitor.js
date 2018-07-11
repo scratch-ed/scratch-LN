@@ -98,9 +98,26 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     }*/
 
+    /**
+     * this comments are always pinned=false i.e. not linkt to a block
+     * @param ctx
+     */
     comments(ctx) {
+        for (let i = 0; ctx.Comment && i < ctx.Comment.length; i++) {
 
+            this.createComment(ctx.Comment[0],false);
+        }
     }
+
+    createComment(ctx,pinned){
+        console.log(ctx);
+        this.xml.ele('comment ', {
+            'id': this.idManager.getNextCommentID(ctx),
+            'pinned': pinned,
+            'minimized':false, //todo:should be known from the ctx
+        }, this.getString(ctx,"comment") );
+    }
+
 
     stack(ctx) {
         for (let i = 0; ctx.block && i < ctx.block.length; i++) {
@@ -325,7 +342,8 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     /*clause(ctx) {
-
+        //it is not possible to add the statement, substack here because the name is different for the else clause
+        //it's only one line 5 times deal with it.
     }*/
 
     modifiers(ctx) {

@@ -29,6 +29,8 @@ export class BasicIDManager{
         this.varCounter = 0;
         //define blocks
         this.procedureDefinitions = {};
+        //comments
+        this.commentCounter = 0;
     }
 
 
@@ -101,5 +103,17 @@ export class BasicIDManager{
      */
     getProcedureParentIDMutation(mutation){
         return procedureDefinitions[mutation];
+    }
+
+    /**
+     * generates an unique id for every coment
+     * todo: if an id is defined in the ctx this one should be used
+     * todo: waring in case an id is used twice.
+     * @param ctx
+     * @param {boolean} pinned is it a stand alone block?
+     * @returns {string}
+     */
+    getNextCommentID(ctx,pinned=true){
+        return "comment_"+this.commentCounter++;
     }
 }
