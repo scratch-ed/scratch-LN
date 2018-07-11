@@ -113,7 +113,7 @@ export class BasicIDManager{
      * @param {boolean} pinned is it a stand alone block?
      * @returns {string}
      */
-    getNextCommentID(ctx,pinned=true){
+    getNextCommentID(CommentToken,pinned=true){
         return "comment_"+this.commentCounter++;
     }
 }

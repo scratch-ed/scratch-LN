@@ -265,13 +265,13 @@ export class InfoLNVisitor extends BaseCstVisitor {
     //////////////////////////////////////////////////
 
     /**
-     * @param ctx comemnt token
+     * @param CommentToken
      */
-    comment(ctx){
-        console.log(ctx);
+    comment(CommentToken){
+        console.log(CommentToken);
         return {
-            OFFSET: ctx.offset,
-            TEXT: this.unescapeComment(ctx.image),
+            OFFSET: CommentToken.offset,
+            TEXT: this.unescapeComment(CommentToken.image),
             TYPE: COMMENT
         }
     }

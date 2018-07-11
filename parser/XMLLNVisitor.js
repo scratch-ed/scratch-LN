@@ -104,18 +104,21 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
      */
     comments(ctx) {
         for (let i = 0; ctx.Comment && i < ctx.Comment.length; i++) {
-
             this.createComment(ctx.Comment[0],false);
         }
     }
 
-    createComment(ctx,pinned){
-        console.log(ctx);
+    /**
+     * creates the xml for a comment
+     * @param commentToken
+     * @param pinned (linked to a block)
+     */
+    createComment(commentToken,pinned){
         this.xml.ele('comment ', {
-            'id': this.idManager.getNextCommentID(ctx),
+            'id': this.idManager.getNextCommentID(commentToken),
             'pinned': pinned,
-            'minimized':false, //todo:should be known from the ctx
-        }, this.getString(ctx,"comment") );
+            'minimized':false, //todo:should be known from modifier in the ctx
+        }, this.getString(commentToken,"comment") );
     }
 
 
@@ -143,6 +146,8 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     atomic(ctx) {
         this.createProcedureBlock(ctx);
+        //will create the comment
+        this.visit(ctx.annotations)
     }
 
     /**
@@ -187,7 +192,6 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             return thisVisitor.getPlaceholder(ctx.argument[index])
         });
 
-
         for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
             //make names
             let name;// = this.getString(ctx.argument[i]);
@@ -196,8 +200,6 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             }
             argumentnames.push(name);
             argumentdefaults.push('');
-
-
             if (visitArgs) {
                 //make xml
                 this.xml = this.xml.ele('value', {
@@ -207,9 +209,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
                 this.xml = this.xml.up();
                 args.push(arg);
             }
-
             argumentids.push(this.idManager.getVariableID(argumentnames[argumentnames.length - 1], ARG));
-
         }
         if (argumentnames.length > 0) {
             head.att('proccode', proccode);
@@ -351,7 +351,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     annotations(ctx) {
-
+        this.createComment(ctx.Comment[0],true);
     }
 
     argument(ctx) {
@@ -404,4 +404,3 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
 }
 
-//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\

@@ -31,9 +31,7 @@ window.onload = function () {
     //text
     let editor = document.getElementById('editor');
     editor.addEventListener('input', updateWorkspace);
-    editor.value = '|x|\n' +
-        'a\n' +
-        '|y|';
+    editor.value = 'block |c|; next block |c2|';
     updateWorkspace();
 
     //button options
