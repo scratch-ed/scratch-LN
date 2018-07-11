@@ -30,9 +30,9 @@ window.onload = function () {
 
     //text
     let editor = document.getElementById('editor');
-    editor.addEventListener('input', updateWorkspace);
+    //editor.addEventListener('input', updateWorkspace);
     editor.value = 'a {1} "x"';
-    updateWorkspace();
+    //updateWorkspace();
 
     //button options
     document.getElementById('xmlparser').addEventListener('click', generateTextWorkspace);
@@ -57,11 +57,11 @@ window.onload = function () {
     //addBlock('procedures_definition','aaa',500,10);
     //addBlock('procedures_call','aaa',200,10);
 
-    //insertSomeCodeFromXML();
+    insertSomeCodeFromXML();
 
     //generateText(workspace)
 
-
+    console.log(getWorkspaceXML())
 };
 
 function generateTextWorkspace() {
@@ -140,7 +140,9 @@ function insertSomeCodeFromXML() {
         '</xml>\n';
     xml = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
         '    <variables></variables>\n' +
+        '    <comment pinned="true">sad comment</comment> \n' +
         '    <block type="procedures_call" id="SaA0RG_sd@{sUN5%SWpW" x="119" y="267">\n' +
+        '        <comment pinned="true">happy comment</comment> \n' +
         '        <mutation proccode="blok %n" argumentids="[&quot;input0&quot;]" warp="null"></mutation>\n' +
         '        <value name="input0">\n' +
         '            <shadow type="math_number" id="xAsO+lm[%y|!-0je(qxh">\n' +
@@ -149,7 +151,8 @@ function insertSomeCodeFromXML() {
         '        </value>\n' +
         '    </block>\n' +
         '</xml>'
-    //console.log(xml);
+    //xml = '<comment> xxxx</comment>';
+    console.log(xml);
     let dom = Blockly.Xml.textToDom(xml);
     Blockly.Xml.domToWorkspace(dom, workspace);
     //workspace.getById(id) //https://developers.google.com/blockly/reference/js/Blockly.Workspace#.getById
