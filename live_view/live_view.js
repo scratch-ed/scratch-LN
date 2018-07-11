@@ -3,6 +3,7 @@ import parseTextToXML from './../parser/parserUtils.js'
 import generateText from './../generator/generator.js'
 
 let workspace = null;
+let editor;
 
 
 window.onload = function () {
@@ -29,7 +30,7 @@ window.onload = function () {
     ScratchBlocks.mainWorkspace.getFlyout().hide();
 
     //text
-    let editor = document.getElementById('editor');
+    editor = document.getElementById('editor');
     editor.addEventListener('input', updateWorkspace);
     editor.value = 'block |c|; next block |c2|';
     updateWorkspace();
@@ -83,6 +84,7 @@ function updateWorkspace() {
         workspace.cleanUp();
     }
 
+    editor.focus();
     //console.log(getWorkspaceXML())
 }
 

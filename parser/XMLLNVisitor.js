@@ -351,7 +351,9 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     annotations(ctx) {
-        this.createComment(ctx.Comment[0],true);
+        if(ctx.Comment) {
+            this.createComment(ctx.Comment[0], true);
+        }
     }
 
     argument(ctx) {
