@@ -39,6 +39,9 @@ const ARG = 'arg';
 //shapes
 const STACKBLOCK = "statement";
 
+//regexen
+const DEFINE_REGEX = /^[ \t]*define/i ;
+
 
 export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
@@ -145,7 +148,12 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }*/
 
     atomic(ctx) {
-        this.createProcedureBlock(ctx);
+        let description = this.getString(ctx, "atomic");
+        if (description.match(DEFINE_REGEX)) {
+            this.createDefineBlock(ctx,description);
+        }else {
+            this.createProcedureBlock(ctx, description);
+        }
         //will create the comment
         this.visit(ctx.annotations)
     }
@@ -153,11 +161,9 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     /**
      * add a procedure block to the xml
      * @param ctx
-     * @param description
-     * todo:parent (link to the define block)
+     * @param description can be obtain from the ctx but avoid multiple calls to getstring
      */
-    createProcedureBlock(ctx) {
-        let description = this.getString(ctx, "atomic");
+    createProcedureBlock(ctx,description) {
         let blockid = this.idManager.getNextBlockID();
         this.state.addBlock(blockid,STACKBLOCK);
         this.xml = this.xml.ele('block', {
@@ -165,7 +171,21 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         });
         this.xml.att('type', 'procedures_call');
         this.addMutation(ctx, description, blockid, true);
+    }
 
+    createDefineBlock(ctx,description){
+        description = description.replace(DEFINE_REGEX, '');
+        let blockid = this.idManager.getNextBlockID();
+        this.xml = this.xml.ele('block', {
+            'type': 'procedures_definition',
+            'id': blockid,
+        }).ele('statement', {
+            'name': 'custom_block'
+        }).ele('shadow', {
+            'type': 'procedures_prototype'
+        });
+        this.addMutation(ctx, description, blockid, false);
+        this.xml = this.xml.up().up();
     }
 
     /**
