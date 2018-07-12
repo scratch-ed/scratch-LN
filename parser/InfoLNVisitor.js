@@ -36,7 +36,7 @@ export const ATOMIC = "atomic";
 export const EMPTY = "empty";
 export const COMMENT = "comment";
 export const ID = "id";
-
+export const CBLOCK = "cblock"
 
 const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
 
@@ -177,19 +177,43 @@ export class InfoLNVisitor extends BaseCstVisitor {
     }
 
     ifelse(ctx) {
-
+        return {
+            PLACEHOLDER: "%s",
+            TEXT: "",
+            OFFSET: ctx.If.offset,
+            TYPE: CBLOCK,
+            ID: this.visit(ctx.annotations).ID
+        }
     }
 
     forever(ctx) {
-
+        return {
+            PLACEHOLDER: "%s",
+            TEXT: "",
+            OFFSET: ctx.Forever.offset,
+            TYPE: CBLOCK,
+            ID: this.visit(ctx.annotations).ID
+        }
     }
 
     repeat(ctx) {
-
+        return {
+            PLACEHOLDER: "%s",
+            TEXT: "",
+            OFFSET: ctx.Repeat.offset,
+            TYPE: CBLOCK,
+            ID: this.visit(ctx.annotations).ID
+        }
     }
 
     repeatuntil(ctx) {
-
+        return {
+            PLACEHOLDER: "%s",
+            TEXT: "",
+            OFFSET: ctx.RepeatUntil.offset,
+            TYPE: CBLOCK,
+            ID: this.visit(ctx.annotations).ID
+        }
     }
 
     clause(ctx) {
@@ -297,7 +321,6 @@ export class InfoLNVisitor extends BaseCstVisitor {
     }
 
     id(IDToken){
-        console.log("idtoken",IDToken);
         if(!IDToken){
             return {
                 OFFSET: null,

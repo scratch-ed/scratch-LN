@@ -196,7 +196,6 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
      * @param visitArgs boolean indicating whethter the arguments must visited or not
      */
     addMutation(ctx, description, blockid, visitArgs) {
-        console.log(ctx);
         let args = [];
         let argumentnames = [];
         let argumentdefaults = [];
@@ -267,14 +266,12 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     getID(ctx, rule = null) {
-        console.log(ctx)
         let x;
         if (!rule) {
             x = this.infoVisitor.visit(ctx);
         } else {
             x = this.infoVisitor[rule](ctx);
         }
-        console.log("id",x.ID);
         return x.ID;
     }
 
@@ -299,16 +296,15 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }*/
 
     ifelse(ctx) {
-        console.log(ctx)
         if (!ctx.Else) {
             this.xml = this.xml.ele('block', {
                 'type': 'control_if',
-                'id': this.idManager.getNextBlockID(this.getID(ctx))
+                'id': this.idManager.getNextBlockID(this.getID(ctx,"ifelse"))
             });
         } else {
             this.xml = this.xml.ele('block', {
                 'type': 'control_if_else',
-                'id': this.idManager.getNextBlockID(this.getID(ctx))
+                'id': this.idManager.getNextBlockID(this.getID(ctx,"ifelse"))
             });
         }
         this.xml = this.xml.ele('value', {
@@ -335,7 +331,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     forever(ctx) {
         this.xml = this.xml.ele('block', {
             'type': 'control_forever',
-            'id': this.idManager.getNextBlockID(this.getID(ctx)),
+            'id': this.idManager.getNextBlockID(this.getID(ctx,"forever")),
         }).ele('statement ', {
             'name': 'SUBSTACK'
         });
@@ -346,7 +342,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     repeat(ctx) {
         this.xml = this.xml.ele('block', {
             'type': 'control_repeat',
-            'id': this.idManager.getNextBlockID(this.getID(ctx)),
+            'id': this.idManager.getNextBlockID(this.getID(ctx,"repeat")),
         }).ele('value', {
             'name': 'TIMES'
         });
@@ -361,7 +357,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     repeatuntil(ctx) {
         this.xml = this.xml.ele('block', {
             'type': 'control_repeat_until',
-            'id': this.idManager.getNextBlockID(this.getID(ctx)),
+            'id': this.idManager.getNextBlockID(this.getID(ctx,"repeatuntil")),
         }).ele('value', {
             'name': 'CONDITION'
         });
@@ -389,7 +385,6 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     argument(ctx) {
-        console.log("arg",ctx);
         if (ctx.Literal || (!ctx.predicate && !ctx.expression )) {
             this.createTextInput(ctx);
         } else{
