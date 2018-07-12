@@ -4,7 +4,6 @@
  * things that need to be possible are:
  *      - varID, id for the variable
  *      - unique id for every block
- *      - text on a block -> parent ID (define block)
  *      -
  *
  * @file   This files defines the BasicIDManager class.
@@ -27,8 +26,6 @@ export class BasicIDManager{
         //map a variablename  to its id
         this.varMap = {};
         this.varCounter = 0;
-        //define blocks
-        this.procedureDefinitions = {};
         //comments
         this.commentCounter = 0;
     }
@@ -38,21 +35,22 @@ export class BasicIDManager{
      * generates an unique id for every block
      * todo: if an id is defined in the ctx this one should be used
      * todo: waring in case an id is used twice.
-     * @param ctx
-     * @param procedure_definition
+     * @param definedID the id defiend by the user, null incase the id is not defined
      * @returns {string}
      */
-    getNextBlockID(ctx, procedure_definition=false) {
+    getNextBlockID(definedID=null) {
         let id;
-        id = "block_"+this.counter++;
+        console.log("blockid",definedID);
+        if(definedID){
+            id=definedID;
+        }else {
+            id = "block_" + this.counter++;
+        }
         if (this.inputCounter[id]) {
             //the id is already used, this is not allowed
             //todo generate warning
         }
         this.inputCounter[id] = 0;
-        if(procedure_definition){
-            procedureDefinitions[this.infoVisitor.atomic(ctx).TEXT.replace(/^define/i,"")] = id;
-        }
         return id;
     }
 
@@ -60,13 +58,18 @@ export class BasicIDManager{
      * generates an unique id for every block
      * todo: if an id is defined in the ctx this one should be used
      * todo: waring in case an id is used twice.
-     * @param ctx
+     * @param definedID the id defiend by the user, null incase the id is not defined
      * @param parentID the id of the parent block that contains this input
      * @returns {string}
      */
-    getNextInputID(ctx, parentID) {
+    getNextInputID(parentID,definedID=null) {
+        console.log("input",definedID);
         let id;
-        id=parentID + '_input_' + this.inputCounter[parentID]++;
+        if(definedID){
+            id=definedID;
+        }else {
+            id=parentID + '_input_' + this.inputCounter[parentID]++;
+        }
         return id;
     }
 
@@ -87,33 +90,22 @@ export class BasicIDManager{
         return this.varMap[varName].id;
     }
 
-    /**
-     * returns the ID of the define block with the same text.
-     * @param ctx
-     * @returns {string}
-     */
-    getProcedureParentID(ctx){
-        return procedureDefinitions[this.infoVisitor.atomic(ctx).TEXT];
-    }
-
-    /**
-     * returns the ID of the define block with the same text.
-     * @param mutation string
-     * @returns {string}
-     */
-    getProcedureParentIDMutation(mutation){
-        return procedureDefinitions[mutation];
-    }
 
     /**
      * generates an unique id for every coment
      * todo: if an id is defined in the ctx this one should be used
      * todo: waring in case an id is used twice.
-     * @param ctx
+     * @param definedID
      * @param {boolean} pinned is it a stand alone block?
      * @returns {string}
      */
-    getNextCommentID(CommentToken,pinned=true){
-        return "comment_"+this.commentCounter++;
+    getNextCommentID(definedID,pinned=true){
+        let id;
+        if(definedID){
+            id=definedID;
+        }else {
+            id="comment_"+this.commentCounter++;
+        }
+        return id;
     }
 }

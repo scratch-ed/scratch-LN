@@ -35,6 +35,7 @@ export const PREDICATE = "predicate";
 export const ATOMIC = "atomic";
 export const EMPTY = "empty";
 export const COMMENT = "comment";
+export const ID = "id";
 
 
 const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
@@ -99,7 +100,8 @@ export class InfoLNVisitor extends BaseCstVisitor {
         return {
             TEXT: this.getTextAtomic(ctx),
             OFFSET: offset,
-            TYPE: ATOMIC
+            TYPE: ATOMIC,
+            ID: this.visit(ctx.annotations).ID
         }
     }
 
@@ -199,17 +201,29 @@ export class InfoLNVisitor extends BaseCstVisitor {
     }
 
     annotations(ctx) {
+        if(ctx.ID) {
+            return this.id(ctx.ID[0]);
+        }else {
+            return this.id(null);
+        }
 
     }
 
 
     argument(ctx) {
+        let id;
+        if(ctx.ID) {
+            id= this.id(ctx.ID[0]).ID;
+        }else {
+            id= this.id(null).ID;
+        }
         if (ctx.Literal) {
             return {
                 PLACEHOLDER: "%s",
                 TEXT: this.unescapeStringLiteral(ctx.Literal[0].image),
                 OFFSET: ctx.Literal.offset,
-                TYPE: ctx.Literal.tokenName
+                TYPE: ctx.Literal.tokenName,
+                ID: id
             }
         } else if (ctx.expression) {
             return this.visit(ctx.expression);
@@ -221,7 +235,8 @@ export class InfoLNVisitor extends BaseCstVisitor {
                 PLACEHOLDER: "%s",
                 TEXT: "",
                 OFFSET: ctx.LCurlyBracket.offset,
-                TYPE: EMPTY
+                TYPE: EMPTY,
+                ID: id
             }
         }
 
@@ -248,7 +263,8 @@ export class InfoLNVisitor extends BaseCstVisitor {
         return {
             PLACEHOLDER: "%s",
             OFFSET: ctx.LRoundBracket.offset,
-            TYPE: EXPRESSION
+            TYPE: EXPRESSION,
+            ID: this.id(ctx.ID).ID
         }
     }
 
@@ -256,7 +272,8 @@ export class InfoLNVisitor extends BaseCstVisitor {
         return {
             PLACEHOLDER: "%b",
             OFFSET: ctx.LAngleBracket.offset,
-            TYPE: PREDICATE
+            TYPE: PREDICATE,
+            ID: this.id(ctx.ID).ID
         }
     }
 
@@ -265,19 +282,36 @@ export class InfoLNVisitor extends BaseCstVisitor {
     //////////////////////////////////////////////////
 
     /**
-     * @param CommentToken
+     * @param commentToken
      */
-    comment(CommentToken){
-        console.log(CommentToken);
+    comment(commentToken){
         return {
-            OFFSET: CommentToken.offset,
-            TEXT: this.unescapeComment(CommentToken.image),
+            OFFSET: commentToken.offset,
+            TEXT: this.unescapeComment(commentToken.image),
             TYPE: COMMENT
         }
     }
 
     unescapeComment(text){
         return text.replace(/\\\|/g, '|').replace(/^\|(.*(?=\|$))\|$/, '$1');
+    }
+
+    id(IDToken){
+        console.log("idtoken",IDToken);
+        if(!IDToken){
+            return {
+                OFFSET: null,
+                TEXT: null,
+                ID: null,
+                TYPE: ID
+            }
+        }
+        return {
+            OFFSET: IDToken.offset,
+            TEXT: IDToken.image,
+            ID: IDToken.image,
+            TYPE: ID
+        }
     }
 
 }

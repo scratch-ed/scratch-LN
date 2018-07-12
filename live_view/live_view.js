@@ -32,7 +32,8 @@ window.onload = function () {
     //text
     editor = document.getElementById('editor');
     editor.addEventListener('input', updateWorkspace);
-    editor.value = 'block {"x"} {1}';
+    editor.value = //'block {"x"} {1};\n' +
+        'c {"x" @idx} @idc';
     updateWorkspace();
 
     //button options

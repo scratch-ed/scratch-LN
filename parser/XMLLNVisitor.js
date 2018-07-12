@@ -118,7 +118,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
      */
     createComment(commentToken,pinned){
         this.xml.ele('comment ', {
-            'id': this.idManager.getNextCommentID(commentToken),
+            'id': this.idManager.getNextCommentID(this.getID(commentToken,"comment")),
             'pinned': pinned,
             'minimized':false, //todo:should be known from modifier in the ctx
         }, this.getString(commentToken,"comment") );
@@ -164,7 +164,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
      * @param description can be obtain from the ctx but avoid multiple calls to getstring
      */
     createProcedureBlock(ctx,description) {
-        let blockid = this.idManager.getNextBlockID();
+        let blockid = this.idManager.getNextBlockID(this.getID(ctx,"atomic"));
         this.state.addBlock(blockid,STACKBLOCK);
         this.xml = this.xml.ele('block', {
             'id': blockid,
@@ -175,7 +175,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     createDefineBlock(ctx,description){
         description = description.replace(DEFINE_REGEX, '');
-        let blockid = this.idManager.getNextBlockID();
+        let blockid = this.idManager.getNextBlockID(this.getID(ctx,"atomic"));
         this.xml = this.xml.ele('block', {
             'type': 'procedures_definition',
             'id': blockid,
@@ -257,13 +257,25 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         } else {
             x = this.infoVisitor[rule](ctx);
         }
-        console.log(x.TEXT);
+        //console.log(x.TEXT);
         return x.TEXT;
     }
 
     getPlaceholder(ctx) {
         let x = this.infoVisitor.visit(ctx);
         return x.PLACEHOLDER;
+    }
+
+    getID(ctx, rule = null) {
+        console.log(ctx)
+        let x;
+        if (!rule) {
+            x = this.infoVisitor.visit(ctx);
+        } else {
+            x = this.infoVisitor[rule](ctx);
+        }
+        console.log("id",x.ID);
+        return x.ID;
     }
 
     /*composite(ctx) {
@@ -291,12 +303,12 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         if (!ctx.Else) {
             this.xml = this.xml.ele('block', {
                 'type': 'control_if',
-                'id': this.idManager.getNextBlockID(ctx)
+                'id': this.idManager.getNextBlockID(this.getID(ctx))
             });
         } else {
             this.xml = this.xml.ele('block', {
                 'type': 'control_if_else',
-                'id': this.idManager.getNextBlockID(ctx)
+                'id': this.idManager.getNextBlockID(this.getID(ctx))
             });
         }
         this.xml = this.xml.ele('value', {
@@ -323,7 +335,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     forever(ctx) {
         this.xml = this.xml.ele('block', {
             'type': 'control_forever',
-            'id': this.idManager.getNextBlockID(ctx),
+            'id': this.idManager.getNextBlockID(this.getID(ctx)),
         }).ele('statement ', {
             'name': 'SUBSTACK'
         });
@@ -334,7 +346,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     repeat(ctx) {
         this.xml = this.xml.ele('block', {
             'type': 'control_repeat',
-            'id': this.idManager.getNextBlockID(ctx),
+            'id': this.idManager.getNextBlockID(this.getID(ctx)),
         }).ele('value', {
             'name': 'TIMES'
         });
@@ -349,7 +361,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     repeatuntil(ctx) {
         this.xml = this.xml.ele('block', {
             'type': 'control_repeat_until',
-            'id': this.idManager.getNextBlockID(ctx),
+            'id': this.idManager.getNextBlockID(this.getID(ctx)),
         }).ele('value', {
             'name': 'CONDITION'
         });
@@ -388,16 +400,16 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     createTextInput(ctx) {
         this.xml.ele('shadow', {
             'type': 'text',
-            'id': this.idManager.getNextInputID(ctx,this.state.getLastBlockID()),
+            'id': this.idManager.getNextInputID(this.state.getLastBlockID(),this.getID(ctx,"argument")),
         }).ele('field', {
             'name': 'TEXT',
         }, this.getString(ctx,"argument"));
     }
-
+/* todo make function
     createColourPickerInput(ctx) {
         this.xml.ele('shadow', {
             'type': 'colour_picker',
-            'id': this.idManager.getNextInputID(ctx,this.state.getLastBlockID()),
+            'id': this.idManager.getNextInputID(this.getID(ctx,"argument"),this.state.getLastBlockID()),
         }).ele('field', {
             'name': 'COLOUR',
         }, this.getString(ctx,"argument"));
@@ -406,11 +418,12 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     createMathNumberInput(ctx) {
         this.xml.ele('shadow', {
             'type': 'math_number',
-            'id': this.idManager.getNextInputID(ctx),
+            'id': this.idManager.getNextInputID(this.getID(ctx,"argument"),this.state.getLastBlockID()),
         }).ele('field', {
             'name': 'NUM',
         }, this.getString(ctx,"argument"));
     }
+    */
 
     condition(ctx) {
 
