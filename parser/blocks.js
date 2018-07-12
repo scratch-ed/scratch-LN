@@ -56,7 +56,7 @@ export function universalBlockConverter(ctx, visitor, structure) {
 
 export function variableBlockConverter(ctx, visitor, structure) {
     visitor.xml = visitor.xml.ele('block', {
-        'id': visitor.getNextId(),
+        'id': visitor.idManager.getNextBlockID(visitor.getID(ctx, "atomic")),
     });
     visitor.xml.att('type', structure.type);
     let varble = visitor.visit(ctx.argument[0]);
@@ -71,9 +71,10 @@ export function variableBlockConverter(ctx, visitor, structure) {
     visitor.xml = visitor.xml.up();
 }
 
+//todo
 export function listBlockConverter(ctx, visitor, structure) {
     visitor.xml = visitor.xml.ele('block', {
-        'id': visitor.getNextId(),
+        'id': visitor.idManager.getNextBlockID(visitor.getID(ctx, "atomic")),
         'type': structure.type
     });
     for (let i = 0; i < ctx.argument.length; i++) {
@@ -101,7 +102,7 @@ export function listBlockConverter(ctx, visitor, structure) {
     }
 }
 
-
+//todo
 export function messageShadowBlockconverter(ctx, visitor,structure) {
     visitor.xml = visitor.xml.ele('block', {
         'id': visitor.getNextId(),
@@ -125,6 +126,7 @@ export function messageShadowBlockconverter(ctx, visitor,structure) {
     visitor.xml = visitor.xml.up();
 }
 
+//todo
 export function messageBlockconverter(ctx, visitor,structure) {
     visitor.xml = visitor.xml.ele('block', {
         'id': visitor.getNextId(),

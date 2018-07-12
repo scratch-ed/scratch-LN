@@ -96,7 +96,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
 
     /*code(ctx) {
-
+       //todo: correct order of comments and stacks
     }*/
 
     /**
@@ -147,15 +147,17 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     atomic(ctx) {
         let description = this.getString(ctx, "atomic");
-        console.log(description);
         if (description in blocks) {
-            console.log("build-in");
-            //this.createProcedureBlock(ctx, description);
             //generate block
             blocks[description](ctx, this);
         } else if (description.match(DEFINE_REGEX)) {
             this.createDefineBlock(ctx, description);
-        } else {
+        } else { //the block is not defined in scratch, so considered it as user-defined
+            //if this is a reporterblock
+
+            //if this is a boolean block (not possible)
+
+            //if this is a stack block
             this.createProcedureBlock(ctx, description);
         }
         //will create the comment
@@ -177,6 +179,11 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         this.addMutation(ctx, description, blockid, true);
     }
 
+    /**
+     * adds a procedure definition to the xml
+     * @param ctx
+     * @param description
+     */
     createDefineBlock(ctx, description) {
         description = description.replace(DEFINE_REGEX, '');
         let blockid = this.idManager.getNextBlockID(this.getID(ctx, "atomic"));
@@ -193,7 +200,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     /**
-     *
+     * adds a mutation to the xml
      * @param ctx
      * @param description e.g. "some label %1 and %2 and %3"
      * @param blockid the id of the parent block
@@ -377,9 +384,9 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         //it's only one line 5 times deal with it.
     }*/
 
-    modifiers(ctx) {
-
-    }
+    /*modifiers(ctx) {
+        //will add nothing to the xml
+    }*/
 
     annotations(ctx) {
         if (ctx.Comment) {
