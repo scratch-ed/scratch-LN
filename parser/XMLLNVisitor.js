@@ -390,8 +390,10 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     argument(ctx) {
         if (ctx.Literal || (!ctx.predicate && !ctx.expression)) {
             this.createTextInput(ctx);
-        } else {
-
+        } else if(ctx.expression) {
+            this.visit(ctx.expression);
+        }else if (ctx.predicate){
+            this.visit(ctx.predicate)
         }
     }
 
@@ -425,15 +427,17 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         */
 
     condition(ctx) {
-
+        this.visit(ctx.predicate);
     }
 
     expression(ctx) {
-
+        this.visit(ctx.atomic);
+        this.xml = this.xml.up();
     }
 
     predicate(ctx) {
-
+        this.visit(ctx.atomic);
+        this.xml = this.xml.up();
     }
 
 }

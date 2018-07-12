@@ -32,12 +32,12 @@ window.onload = function () {
     //text
     editor = document.getElementById('editor');
     editor.addEventListener('input', updateWorkspace);
-    editor.value = 'block {"x"} {1}\n' +
+    editor.value = 'block {"x"} {1} {(mouse x)}\n' +
         'move {10} steps\n' +
         'go to [mouse-pointer]\n' +
         'move {} steps;\n';
     updateWorkspace();
- 
+
     //button options
     document.getElementById('xmlparser').addEventListener('click', generateTextWorkspace);
     document.getElementById('showexample').addEventListener('click', showExample);
