@@ -40,7 +40,6 @@ export class BasicIDManager{
      */
     getNextBlockID(definedID=null) {
         let id;
-        console.log("blockid",definedID);
         if(definedID){
             id=definedID;
         }else {
@@ -63,7 +62,6 @@ export class BasicIDManager{
      * @returns {string}
      */
     getNextInputID(parentID,definedID=null) {
-        console.log("input",definedID);
         let id;
         if(definedID){
             id=definedID;

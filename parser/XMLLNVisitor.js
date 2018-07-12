@@ -22,6 +22,7 @@ import {InfoLNVisitor} from './InfoLNVisitor';
 import builder from 'xmlbuilder';
 import {BasicIDManager} from "./IDManager";
 import {State} from "./State";
+import blocks from "./blocks";
 
 //const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
 
@@ -40,7 +41,7 @@ const ARG = 'arg';
 const STACKBLOCK = "statement";
 
 //regexen
-const DEFINE_REGEX = /^[ \t]*define/i ;
+const DEFINE_REGEX = /^[ \t]*define/i;
 
 
 export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
@@ -94,9 +95,6 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
 
-
-
-
     /*code(ctx) {
 
     }*/
@@ -107,7 +105,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
      */
     comments(ctx) {
         for (let i = 0; ctx.Comment && i < ctx.Comment.length; i++) {
-            this.createComment(ctx.Comment[0],false);
+            this.createComment(ctx.Comment[0], false);
         }
     }
 
@@ -116,12 +114,12 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
      * @param commentToken
      * @param pinned (linked to a block)
      */
-    createComment(commentToken,pinned){
+    createComment(commentToken, pinned) {
         this.xml.ele('comment ', {
-            'id': this.idManager.getNextCommentID(this.getID(commentToken,"comment")),
+            'id': this.idManager.getNextCommentID(this.getID(commentToken, "comment")),
             'pinned': pinned,
-            'minimized':false, //todo:should be known from modifier in the ctx
-        }, this.getString(commentToken,"comment") );
+            'minimized': false, //todo:should be known from modifier in the ctx
+        }, this.getString(commentToken, "comment"));
     }
 
 
@@ -149,9 +147,15 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     atomic(ctx) {
         let description = this.getString(ctx, "atomic");
-        if (description.match(DEFINE_REGEX)) {
-            this.createDefineBlock(ctx,description);
-        }else {
+        console.log(description);
+        if (description in blocks) {
+            console.log("build-in");
+            //this.createProcedureBlock(ctx, description);
+            //generate block
+            blocks[description](ctx, this);
+        } else if (description.match(DEFINE_REGEX)) {
+            this.createDefineBlock(ctx, description);
+        } else {
             this.createProcedureBlock(ctx, description);
         }
         //will create the comment
@@ -163,9 +167,9 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
      * @param ctx
      * @param description can be obtain from the ctx but avoid multiple calls to getstring
      */
-    createProcedureBlock(ctx,description) {
-        let blockid = this.idManager.getNextBlockID(this.getID(ctx,"atomic"));
-        this.state.addBlock(blockid,STACKBLOCK);
+    createProcedureBlock(ctx, description) {
+        let blockid = this.idManager.getNextBlockID(this.getID(ctx, "atomic"));
+        this.state.addBlock(blockid, STACKBLOCK);
         this.xml = this.xml.ele('block', {
             'id': blockid,
         });
@@ -173,9 +177,9 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         this.addMutation(ctx, description, blockid, true);
     }
 
-    createDefineBlock(ctx,description){
+    createDefineBlock(ctx, description) {
         description = description.replace(DEFINE_REGEX, '');
-        let blockid = this.idManager.getNextBlockID(this.getID(ctx,"atomic"));
+        let blockid = this.idManager.getNextBlockID(this.getID(ctx, "atomic"));
         this.xml = this.xml.ele('block', {
             'type': 'procedures_definition',
             'id': blockid,
@@ -256,7 +260,6 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         } else {
             x = this.infoVisitor[rule](ctx);
         }
-        //console.log(x.TEXT);
         return x.TEXT;
     }
 
@@ -299,12 +302,12 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         if (!ctx.Else) {
             this.xml = this.xml.ele('block', {
                 'type': 'control_if',
-                'id': this.idManager.getNextBlockID(this.getID(ctx,"ifelse"))
+                'id': this.idManager.getNextBlockID(this.getID(ctx, "ifelse"))
             });
         } else {
             this.xml = this.xml.ele('block', {
                 'type': 'control_if_else',
-                'id': this.idManager.getNextBlockID(this.getID(ctx,"ifelse"))
+                'id': this.idManager.getNextBlockID(this.getID(ctx, "ifelse"))
             });
         }
         this.xml = this.xml.ele('value', {
@@ -331,7 +334,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     forever(ctx) {
         this.xml = this.xml.ele('block', {
             'type': 'control_forever',
-            'id': this.idManager.getNextBlockID(this.getID(ctx,"forever")),
+            'id': this.idManager.getNextBlockID(this.getID(ctx, "forever")),
         }).ele('statement ', {
             'name': 'SUBSTACK'
         });
@@ -342,7 +345,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     repeat(ctx) {
         this.xml = this.xml.ele('block', {
             'type': 'control_repeat',
-            'id': this.idManager.getNextBlockID(this.getID(ctx,"repeat")),
+            'id': this.idManager.getNextBlockID(this.getID(ctx, "repeat")),
         }).ele('value', {
             'name': 'TIMES'
         });
@@ -357,7 +360,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     repeatuntil(ctx) {
         this.xml = this.xml.ele('block', {
             'type': 'control_repeat_until',
-            'id': this.idManager.getNextBlockID(this.getID(ctx,"repeatuntil")),
+            'id': this.idManager.getNextBlockID(this.getID(ctx, "repeatuntil")),
         }).ele('value', {
             'name': 'CONDITION'
         });
@@ -379,15 +382,15 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     annotations(ctx) {
-        if(ctx.Comment) {
+        if (ctx.Comment) {
             this.createComment(ctx.Comment[0], true);
         }
     }
 
     argument(ctx) {
-        if (ctx.Literal || (!ctx.predicate && !ctx.expression )) {
+        if (ctx.Literal || (!ctx.predicate && !ctx.expression)) {
             this.createTextInput(ctx);
-        } else{
+        } else {
 
         }
     }
@@ -395,30 +398,31 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     createTextInput(ctx) {
         this.xml.ele('shadow', {
             'type': 'text',
-            'id': this.idManager.getNextInputID(this.state.getLastBlockID(),this.getID(ctx,"argument")),
+            'id': this.idManager.getNextInputID(this.state.getLastBlockID(), this.getID(ctx, "argument")),
         }).ele('field', {
             'name': 'TEXT',
-        }, this.getString(ctx,"argument"));
-    }
-/* todo make function
-    createColourPickerInput(ctx) {
-        this.xml.ele('shadow', {
-            'type': 'colour_picker',
-            'id': this.idManager.getNextInputID(this.getID(ctx,"argument"),this.state.getLastBlockID()),
-        }).ele('field', {
-            'name': 'COLOUR',
-        }, this.getString(ctx,"argument"));
+        }, this.getString(ctx, "argument"));
     }
 
-    createMathNumberInput(ctx) {
-        this.xml.ele('shadow', {
-            'type': 'math_number',
-            'id': this.idManager.getNextInputID(this.getID(ctx,"argument"),this.state.getLastBlockID()),
-        }).ele('field', {
-            'name': 'NUM',
-        }, this.getString(ctx,"argument"));
-    }
-    */
+    /* todo make function
+        createColourPickerInput(ctx) {
+            this.xml.ele('shadow', {
+                'type': 'colour_picker',
+                'id': this.idManager.getNextInputID(this.getID(ctx,"argument"),this.state.getLastBlockID()),
+            }).ele('field', {
+                'name': 'COLOUR',
+            }, this.getString(ctx,"argument"));
+        }
+
+        createMathNumberInput(ctx) {
+            this.xml.ele('shadow', {
+                'type': 'math_number',
+                'id': this.idManager.getNextInputID(this.getID(ctx,"argument"),this.state.getLastBlockID()),
+            }).ele('field', {
+                'name': 'NUM',
+            }, this.getString(ctx,"argument"));
+        }
+        */
 
     condition(ctx) {
 

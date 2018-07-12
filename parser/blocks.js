@@ -18,13 +18,12 @@ export default blocks;
 
 export function universalBlockConverter(ctx, visitor, structure) {
     visitor.xml = visitor.xml.ele('block', {
-        'id': visitor.getNextId(),
+        'id': visitor.idManager.getNextBlockID(visitor.getID(ctx, "atomic")),
         'type': structure.type
     });
     for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
         let arg = structure.args[i];
         if (arg.menu) {
-
             visitor.xml = visitor.xml.ele('value', {
                 'name': arg.name
             });
@@ -32,20 +31,18 @@ export function universalBlockConverter(ctx, visitor, structure) {
                 'type': arg.menu //this was added to the json and was not default.
             }).ele('field', {
                 'name': arg.name
-            }, visitor.visit(ctx.argument[i])); // '_mouse_'
+            }, visitor.getString(ctx.argument[i])); // '_mouse_'
             visitor.xml = visitor.xml.up();
         } else if (arg.type === 'input_value') {
-
             visitor.xml = visitor.xml.ele('value', {
                 'name': arg.name
             });
             visitor.visit(ctx.argument[i]);
             visitor.xml = visitor.xml.up();
-
         } else if (arg.type === 'field_dropdown') {
             visitor.xml = visitor.xml.ele('field', {
                 'name': arg.name
-            }, visitor.visit(ctx.argument[i])); //'all around' //this is ugly because 'option' is the only one that returns something... and there is no check whether the option is existing and valid
+            }, visitor.getString(ctx.argument[i])); //'all around' //this is ugly because 'option' is the only one that returns something... and there is no check whether the option is existing and valid
             visitor.xml = visitor.xml.up();
         }
     }

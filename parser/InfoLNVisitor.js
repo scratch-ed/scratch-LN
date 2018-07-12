@@ -133,7 +133,7 @@ export class InfoLNVisitor extends BaseCstVisitor {
             return Number.MAX_SAFE_INTEGER; //avoid infinite loop
         }
         let child = this.visit(arg);
-        return child[OFFSET]
+        return child.OFFSET
     }
 
     /**
@@ -245,8 +245,8 @@ export class InfoLNVisitor extends BaseCstVisitor {
             return {
                 PLACEHOLDER: "%s",
                 TEXT: this.unescapeStringLiteral(ctx.Literal[0].image),
-                OFFSET: ctx.Literal.offset,
-                TYPE: ctx.Literal.tokenName,
+                OFFSET: ctx.Literal[0].startOffset,
+                TYPE: ctx.Literal[0].tokenName,
                 ID: id
             }
         } else if (ctx.expression) {
@@ -258,7 +258,7 @@ export class InfoLNVisitor extends BaseCstVisitor {
             return {
                 PLACEHOLDER: "%s",
                 TEXT: "",
-                OFFSET: ctx.LCurlyBracket.offset,
+                OFFSET: ctx.LCurlyBracket[0].startOffset,
                 TYPE: EMPTY,
                 ID: id
             }
@@ -286,7 +286,7 @@ export class InfoLNVisitor extends BaseCstVisitor {
     expression(ctx) {
         return {
             PLACEHOLDER: "%s",
-            OFFSET: ctx.LRoundBracket.offset,
+            OFFSET: ctx.LRoundBracket[0].startOffset,
             TYPE: EXPRESSION,
             ID: this.id(ctx.ID).ID
         }
@@ -295,7 +295,7 @@ export class InfoLNVisitor extends BaseCstVisitor {
     predicate(ctx) {
         return {
             PLACEHOLDER: "%b",
-            OFFSET: ctx.LAngleBracket.offset,
+            OFFSET: ctx.LAngleBracket[0].startOffset,
             TYPE: PREDICATE,
             ID: this.id(ctx.ID).ID
         }
