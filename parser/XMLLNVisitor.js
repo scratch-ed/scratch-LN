@@ -39,7 +39,9 @@ const ARG = 'arg';
 
 //shapes
 const STACKBLOCK = "statement";
-
+const BOOLEANBLOCK = "blooleanblock";
+const REPORTERBLOCK = "reporterblock";
+const HATBLOCK = "hatblock";
 //regexen
 const DEFINE_REGEX = /^[ \t]*define/i;
 
@@ -124,6 +126,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
 
     stack(ctx) {
+        this.state.startStack();
         for (let i = 0; ctx.block && i < ctx.block.length; i++) {
             this.visit(ctx.block[i]); //opens a block
             this.xml = this.xml.ele('next');
@@ -131,6 +134,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         for (let i = 0; ctx.block && i < ctx.block.length; i++) {
             this.xml = this.xml.up().up(); //close the block and the next
         }
+        this.state.endStack();
     }
 
     /*block(ctx) {
@@ -209,6 +213,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     createDefineBlock(ctx, description) {
         description = description.replace(DEFINE_REGEX, '');
         let blockid = this.idManager.getNextBlockID(this.getID(ctx, "atomic"));
+        this.state.addBlock(blockid, HATBLOCK);
         this.xml = this.xml.ele('block', {
             'type': 'procedures_definition',
             'id': blockid,
@@ -460,13 +465,17 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     expression(ctx) {
+        this.state.openReporterBlock();
         this.visit(ctx.atomic);
         this.xml = this.xml.up();
+        this.state.closeReporterBlock();
     }
 
     predicate(ctx) {
+        this.state.openBooleanBlock();
         this.visit(ctx.atomic);
         this.xml = this.xml.up();
+        this.state.closeBooleanBlock();
     }
 
     createVariableBlock(ctx, description) {

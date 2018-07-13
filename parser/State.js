@@ -81,4 +81,20 @@ export class State {
 
     }
 
+    openBooleanBlock(){
+
+    }
+
+    closeBooleanBlock(){
+
+    }
+
+    openReporterBlock(){
+
+    }
+
+    closeReporterBlock(){
+
+    }
+
 }

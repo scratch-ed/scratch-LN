@@ -50,6 +50,7 @@ export function addType(ctx,visitor,structure) {
         'id': visitor.idManager.getNextBlockID(visitor.getID(ctx, "atomic")),
         'type': structure.type
     });
+    //todo add to state
 };
 
 //=======================================================================================================================================

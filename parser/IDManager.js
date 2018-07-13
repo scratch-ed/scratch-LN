@@ -74,7 +74,6 @@ export class BasicIDManager{
     }
 
     /**
-     * todo: do the variabletype a bit better: types: none=normal, list, mesage,arg,custom???
      * variable id is never defined or used by the user. it is only for internal reference to the same block
      * @param varName
      * @param variableType
