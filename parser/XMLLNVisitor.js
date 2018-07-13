@@ -23,6 +23,8 @@ import builder from 'xmlbuilder';
 import {BasicIDManager, LIST} from "./IDManager";
 import {State} from "./State";
 import blocks from "./blocks";
+import {Modifier} from "./LNLexer";
+import {ModifierAnalyser} from "./modifierAnalyser";
 
 //const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
 
@@ -71,6 +73,9 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
         //state
         this.state = new State(InfoLNVisitor);
+
+        //modifiers
+        this.modifierAnalyser = new ModifierAnalyser();
     }
 
     getXML(cst) {
@@ -152,6 +157,8 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     atomic(ctx) {
         let description = this.getString(ctx, "atomic");
+        let modifiers = this.modifierAnalyser.getMods(ctx.modifiers);
+        console.log(modifiers);
         if (description in blocks) {
             //generate block
             blocks[description](ctx, this);
