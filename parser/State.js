@@ -24,6 +24,13 @@ export class State {
         //list of all blocks
         this.blocks = [];
         this.blocks.push({ID:-1,SHAPE:null}); //this should not happen normally but this way nothing breaks during dev
+        this.everythingFalse();
+    }
+
+    everythingFalse(){
+        this.stack = false;
+        this.boolean = false;
+        this.reporter = false;
     }
 
     /**
@@ -71,30 +78,33 @@ export class State {
      * todo The start of a new stack
      */
     startStack(){
-
+        this.everythingFalse();
+        this.stack = true;
     }
 
     /**
      * todo The end of the current stack
      */
     endStack(){
-
+        this.everythingFalse();
     }
 
     openBooleanBlock(){
-
+        this.everythingFalse();
+        this.boolean = true;
     }
 
     closeBooleanBlock(){
-
+        this.everythingFalse();
     }
 
     openReporterBlock(){
-
+        this.everythingFalse();
+        this.reporter = true;
     }
 
     closeReporterBlock(){
-
+        this.everythingFalse();
     }
 
 }

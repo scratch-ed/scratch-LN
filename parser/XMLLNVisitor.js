@@ -85,8 +85,8 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             if (this.idManager.varMap.hasOwnProperty(key)) {
                 if (this.idManager.varMap[key].variableType !== ARG) {
                     this.xml.ele('variable', {
-                        'type': this.varMap[key].variableType,
-                        'id': this.varMap[key].id,
+                        'type': this.idManager.varMap[key].variableType,
+                        'id': this.idManager.varMap[key].id,
                     }, key);
                 }
             }
@@ -159,12 +159,16 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         } else { //the block is not defined in scratch, so considered it as user-defined
             if (this.isCustomReporterblock(ctx)) {
                 this.createCustomReporterBlock(ctx,description);
+
             } else if (this.isListBlock(ctx)) {
                 this.createListBlock(ctx, description);
+
             } else if (this.isVariableBlock(ctx)) {
                 this.createVariableBlock(ctx, description);
+
             } else if (this.isBooleanBlock(ctx)) {
                 this.createCustomBooleanBlock(ctx, description);
+
             } else {
                 //if this is a stack block
                 this.createProcedureBlock(ctx, description);
@@ -175,7 +179,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     isVariableBlock(ctx) {
-        return false;
+        return this.state.reporter;
     }
 
     isListBlock(ctx) {
@@ -480,7 +484,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     createVariableBlock(ctx, description) {
         let blockID = this.idManager.getNextBlockID(this.getID(ctx, "atomic"));
-        let varID = this.idManager.acquireVariableID(this.getString(ctx, "atomic"), LIST);
+        let varID = this.idManager.acquireVariableID(this.getString(ctx, "atomic"));
         this.xml = this.xml.ele('block', {
             'type': 'data_variable',
             'id': blockID,
