@@ -180,7 +180,7 @@ export const End = createToken({
 
 export const Modifier = createToken({
     name: "Modifier",
-    pattern: /::((:(?!:))|[^\{\|\\#@: \t\n]|\\[^])([ \t]*((:(?!:))|[^\|\\#@: \t]|\\[^]))*/
+    pattern: /::((:(?!:))|[^\{\|\(\)<>\\#@: \t\n]|\\[^])([ \t]*((:(?!:))|[^\|\(\)<>\\#@: \t]|\\[^]))*/
 });
 
 export const Comment = createToken({

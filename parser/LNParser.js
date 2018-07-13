@@ -397,6 +397,7 @@ export function parse(text) {
     //console.log('seperate file, function');
     const lexResult = LNLexer.tokenize(text);
     // setting a new input will RESET the parser instance's state.
+    //console.log(lexResult.tokens);
     lnparser.input = lexResult.tokens;
     // any top level rule may be used as an entry point
     const value = lnparser.code(); //TOP RULE
