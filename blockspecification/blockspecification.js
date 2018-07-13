@@ -8,7 +8,7 @@
  */
 import {
     universalBlockConverter, listBlockConverter, messageBlockconverter,
-    messageShadowBlockconverter, variableBlockConverter,
+    messageShadowBlockconverter, variableBlockConverter, stopConverter
 } from "../parser/blocks";
 
 /*
@@ -1254,18 +1254,7 @@ export const blockspecifications = [
                     }],
                 "shape": "capblock",
             },
-            "converter": function (ctx, visitor) {
-                visitor.xml = visitor.xml.ele('block', {
-                    'id': visitor.getNextId(),
-                    'type': "control_stop"
-                });
-
-                visitor.xml = visitor.xml.ele('field', {
-                    'name': "STOP_OPTION"
-                }, visitor.visit(ctx.argument));
-
-                visitor.xml = visitor.xml.up();
-            }
+            "converter": stopConverter
         },
 
     ]

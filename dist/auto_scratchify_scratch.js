@@ -7708,7 +7708,7 @@ function variableBlockConverter(ctx, visitor, structure) {
     });
     visitor.xml.att('type', structure.type);
     let varble = visitor.visit(ctx.argument[0]);
-    visitor.getVariableID(varble);
+    visitor.acquireVariableID(varble);
     visitor.xml = visitor.xml.ele('field', {
         'name': 'VARIABLE'
     }, varble);
@@ -7728,7 +7728,7 @@ function listBlockConverter(ctx, visitor, structure) {
         let arg = structure.args[i];
         if (arg.name === 'LIST') {
             let varble = visitor.visit(ctx.argument[i]);
-            visitor.getVariableID(varble, 'list');
+            visitor.acquireVariableID(varble, 'list');
             visitor.xml = visitor.xml.ele('field', {
                 'name': 'LIST',
                 'variabletype': 'list',
@@ -7758,7 +7758,7 @@ function messageShadowBlockconverter(ctx, visitor,structure) {
 
     let varble = visitor.visit(ctx.argument[0]);
     let arg = structure.args[0];
-    let id = visitor.getVariableID(varble, 'broadcast_msg');
+    let id = visitor.acquireVariableID(varble, 'broadcast_msg');
 
     visitor.xml = visitor.xml.ele('value', {
         'name': arg.name
@@ -7781,7 +7781,7 @@ function messageBlockconverter(ctx, visitor,structure) {
 
     let varble = visitor.visit(ctx.argument[0]);
     let arg = structure.args[0];
-    let id = visitor.getVariableID(varble, 'broadcast_msg');
+    let id = visitor.acquireVariableID(varble, 'broadcast_msg');
 
     visitor.xml.ele('field', {
         'name': "BROADCAST_OPTION",

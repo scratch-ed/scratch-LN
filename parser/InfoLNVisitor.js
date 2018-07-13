@@ -242,9 +242,15 @@ export class InfoLNVisitor extends BaseCstVisitor {
             id= this.id(null).ID;
         }
         if (ctx.Literal) {
+            let text = "";
+            if(tokenMatcher(ctx.Literal[0],ChoiceLiteral)){
+                text = this.unescapeChoiceLiteral(ctx.Literal[0].image);
+            }else{
+                text = this.unescapeStringLiteral(ctx.Literal[0].image);
+            }
             return {
                 PLACEHOLDER: "%s",
-                TEXT: this.unescapeStringLiteral(ctx.Literal[0].image),
+                TEXT: text,
                 OFFSET: ctx.Literal[0].startOffset,
                 TYPE: ctx.Literal[0].tokenName,
                 ID: id
@@ -274,7 +280,9 @@ export class InfoLNVisitor extends BaseCstVisitor {
     unescapeStringLiteral(text){
         return text.replace(/\\"/g, '"').replace(/^"(.*(?="$))"$/, '$1');
     }
-
+    unescapeChoiceLiteral(text){
+        return text.replace(/\\\[/g, '"').replace(/^\[(.*(?=\]$))\]$/, '$1');
+    }
     condition(ctx) {
         return this.visit(ctx.expression);
     }

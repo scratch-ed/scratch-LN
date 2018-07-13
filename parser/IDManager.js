@@ -10,6 +10,8 @@
  * @author Ellen Vanhove.
  */
 
+export const BROADCAST = 'broadcast_msg';
+export const LIST = 'list';
 
 export class BasicIDManager{
 
@@ -77,7 +79,7 @@ export class BasicIDManager{
      * @param varName
      * @param variableType
      */
-    getVariableID(varName, variableType = '') {
+    acquireVariableID(varName, variableType = '') {
         //if first time this variable is encountered, create an ID for it
         if (!this.varMap[varName]) {
             this.varMap[varName] = {

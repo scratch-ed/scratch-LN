@@ -105,7 +105,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
      */
     comments(ctx) {
         for (let i = 0; ctx.Comment && i < ctx.Comment.length; i++) {
-            this.createComment(ctx.Comment[0], false);
+            this.createComment(ctx.Comment[i], false);
         }
     }
 
@@ -239,7 +239,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
                 this.xml = this.xml.up();
                 args.push(arg);
             }
-            argumentids.push(this.idManager.getVariableID(argumentnames[argumentnames.length - 1], ARG));
+            argumentids.push(this.idManager.acquireVariableID(argumentnames[argumentnames.length - 1], ARG));
         }
         if (argumentnames.length > 0) {
             head.att('proccode', proccode);
@@ -445,6 +445,14 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     predicate(ctx) {
         this.visit(ctx.atomic);
         this.xml = this.xml.up();
+    }
+
+    createVariableBlock(ctx){
+
+    }
+
+    createListBlock(ctx){
+
     }
 
 }
