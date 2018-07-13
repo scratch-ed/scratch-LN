@@ -193,18 +193,20 @@
         pattern: /@[a-z0-9_]+/i
     });
 
+      const StackDelimiter = createToken({
+        name: "StackDelimiter",
+        pattern: /((;[ \t]*\n|;[ \t]*(?!\n)|\n)[ \t]*){2,}/,
+        line_breaks: true
+    });
 
     const Delimiter = createToken({
         name: "Delimiter",
-        pattern: /;[ \t]*\n|;|\n/,
-        line_breaks: true
+        pattern: /;[ \t]*\n?|\n/,
+        line_breaks: true,
+        //longer_alt: StackDelimiter
     });
 
-    const StackDelimiter = createToken({
-        name: "StackDelimiter",
-        pattern: /((;[ \t]*\n|;|\n)[ \t]*){2,}/,
-        line_breaks: true
-    });
+
 
     // marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
     const WhiteSpace = createToken({
@@ -702,7 +704,7 @@
     // for the playground to work the returned object must contain these fields
     return {
         lexer: LNLexer,
-        parser: LNParser,
+        //parser: LNParser,
         //visitor: LNVisitor,
         defaultRule: "code"
     };
