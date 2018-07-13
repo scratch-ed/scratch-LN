@@ -11,6 +11,7 @@
 let modifierExtractors = [];
 
 let listModifierExtractor = function (modifierToken) {
+    console.log("mimi",modifierToken);
     if(modifierToken.image.matches(/::list/i)) {
         return {name: "list", info: {}}
     }
@@ -28,11 +29,16 @@ export class ModifierAnalyser{
 
     getMods(ctx){
         let mods = {};
-        for(let i=0;ctx.modifier && i<ctx.modifier.length; i++){
-            for(let m=0; m < modifierExtractors.length; m++){
-                let mod = modifierExtractors[m](ctx.modifier[i]);
-                if(mod){
-                    mods[mod.name] = mods.info;
+        let modifierList =  ctx.children.Modifier;
+        if(modifierList) {
+            console.log("modlist", modifierList,modifierExtractors);
+            for (let i = 0;  i < modifierList.length; i++) {
+                for (let m = 0; m < modifierExtractors.length; m++) {
+                    console.log("here");
+                    let mod = modifierExtractors[m](modifierList[i]);
+                    if (mod) {
+                        mods[mod.name] = mods.info;
+                    }
                 }
             }
         }
