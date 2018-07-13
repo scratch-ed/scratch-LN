@@ -44,6 +44,7 @@ const REPORTERBLOCK = "reporterblock";
 const HATBLOCK = "hatblock";
 //regexen
 const DEFINE_REGEX = /^[ \t]*define/i;
+const VARIABLE_REGEX = /^([ \t]*%[0-9][ \t]*)$/i;
 
 
 export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
@@ -170,8 +171,16 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
                 this.createCustomBooleanBlock(ctx, description);
 
             } else {
-                //if this is a stack block
-                this.createProcedureBlock(ctx, description);
+                //todo
+                //if the label is empty this is a stand alone block so just visit the child
+                /*if(description.match(VARIABLE_REGEX)){
+                    for(let a=0;a<ctx.argument.length;a++) {
+                        this.visit(ctx.argument[0])
+                    }
+                }else*/ {
+                    //if this is a stack block
+                    this.createProcedureBlock(ctx, description);
+                }
             }
         }
         //will create the comment
@@ -183,7 +192,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     isListBlock(ctx) {
-        return false;
+        return this.isVariableBlock(ctx);
     }
 
     isCustomReporterblock(ctx) {
@@ -191,7 +200,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     isBooleanBlock(ctx) {
-        return false;
+        return this.state.boolean;
     }
 
     /**
@@ -495,13 +504,13 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     createListBlock(ctx, description) {
         let blockID = this.idManager.getNextBlockID(this.getID(ctx, "atomic"));
         let varID = this.idManager.acquireVariableID(this.getString(ctx, "atomic"), LIST);
-        this.xml = this.xml.ele('block', {
+        this.xml.ele('block', {
             'type': 'data_listcontents',
             'id': blockID,
         }).ele('field', {
             'name': 'LIST',
             'id': varID,
-        }, description).up();
+        }, description)
     }
 
     createCustomReporterBlock(ctx, description) {
