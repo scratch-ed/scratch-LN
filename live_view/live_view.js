@@ -32,10 +32,7 @@ window.onload = function () {
     //text
     editor = document.getElementById('editor');
     editor.addEventListener('input', updateWorkspace);
-    editor.value = 'block {"x"} {1} {(mouse x)}\n' +
-        'move {10} steps\n' +
-        'go to [mouse-pointer]\n' +
-        'move {} steps;\n';
+    editor.value = 'block {(lala)} {1} {(mouse x)}\n';
     updateWorkspace();
 
     //button options

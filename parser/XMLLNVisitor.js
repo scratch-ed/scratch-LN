@@ -471,21 +471,19 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     expression(ctx) {
         this.state.openReporterBlock();
         this.visit(ctx.atomic);
-        this.xml = this.xml.up();
         this.state.closeReporterBlock();
     }
 
     predicate(ctx) {
         this.state.openBooleanBlock();
         this.visit(ctx.atomic);
-        this.xml = this.xml.up();
         this.state.closeBooleanBlock();
     }
 
     createVariableBlock(ctx, description) {
         let blockID = this.idManager.getNextBlockID(this.getID(ctx, "atomic"));
         let varID = this.idManager.acquireVariableID(this.getString(ctx, "atomic"));
-        this.xml = this.xml.ele('block', {
+        this.xml.ele('block', {
             'type': 'data_variable',
             'id': blockID,
         }).ele('field', {
@@ -503,7 +501,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         }).ele('field', {
             'name': 'LIST',
             'id': varID,
-        }, description)
+        }, description).up();
     }
 
     createCustomReporterBlock(ctx, description) {
