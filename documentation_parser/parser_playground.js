@@ -179,7 +179,7 @@
 
     const Modifier = createToken({
         name: "Modifier",
-        pattern: /::((:(?!:))|[^\{\|\\#@: \t\n]|\\[^])([ \t]*((:(?!:))|[^\|\\#@: \t]|\\[^]))*/
+        pattern: /::((:(?!:))|[^\{\|\(\)<>\\#@: \t\n]|\\[^])([ \t]*((:(?!:))|[^\|\(\)<>\\#@: \t]|\\[^]))*/
     });
 
     const Comment = createToken({
@@ -247,7 +247,7 @@
         const $ = this;
 
         $.RULE("code", () => {
-            $.SUBRULE($.delimiter);
+            $.SUBRULE($.delimiters);
             $.OPTION(() => {
                 $.SUBRULE($.comments);
             })
@@ -266,7 +266,7 @@
         });
 
 
-        $.RULE("delimiter", () => {
+        $.RULE("delimiters", () => {
             $.OR([{
                 ALT: () => {
                     $.CONSUME(Delimiter, {
@@ -287,7 +287,7 @@
         $.RULE("comments", () => {
             $.AT_LEAST_ONE(() => {
                 $.CONSUME(Comment);
-                $.SUBRULE($.delimiter,{
+                $.SUBRULE($.delimiters,{
                                 LABEL: "trailingCommentsDelimiters"
                             });
             });
