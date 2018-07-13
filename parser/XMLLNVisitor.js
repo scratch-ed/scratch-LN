@@ -20,7 +20,7 @@ import {InfoLNVisitor} from './InfoLNVisitor';
 
 //xml
 import builder from 'xmlbuilder';
-import {BasicIDManager} from "./IDManager";
+import {BasicIDManager, LIST} from "./IDManager";
 import {State} from "./State";
 import blocks from "./blocks";
 
@@ -153,15 +153,37 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         } else if (description.match(DEFINE_REGEX)) {
             this.createDefineBlock(ctx, description);
         } else { //the block is not defined in scratch, so considered it as user-defined
-            //if this is a reporterblock
-
-            //if this is a boolean block (not possible)
-
-            //if this is a stack block
-            this.createProcedureBlock(ctx, description);
+            if (this.isCustomReporterblock(ctx)) {
+                this.createCustomReporterBlock(ctx,description);
+            } else if (this.isListBlock(ctx)) {
+                this.createListBlock(ctx, description);
+            } else if (this.isVariableBlock(ctx)) {
+                this.createVariableBlock(ctx, description);
+            } else if (this.isBooleanBlock(ctx)) {
+                this.createCustomBooleanBlock(ctx, description);
+            } else {
+                //if this is a stack block
+                this.createProcedureBlock(ctx, description);
+            }
         }
         //will create the comment
         this.visit(ctx.annotations)
+    }
+
+    isVariableBlock(ctx) {
+        return false;
+    }
+
+    isListBlock(ctx) {
+        return false;
+    }
+
+    isCustomReporterblock(ctx) {
+        return false;
+    }
+
+    isBooleanBlock(ctx) {
+        return false;
     }
 
     /**
@@ -397,9 +419,9 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     argument(ctx) {
         if (ctx.Literal || (!ctx.predicate && !ctx.expression)) {
             this.createTextInput(ctx);
-        } else if(ctx.expression) {
+        } else if (ctx.expression) {
             this.visit(ctx.expression);
-        }else if (ctx.predicate){
+        } else if (ctx.predicate) {
             this.visit(ctx.predicate)
         }
     }
@@ -447,12 +469,45 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         this.xml = this.xml.up();
     }
 
-    createVariableBlock(ctx){
-
+    createVariableBlock(ctx, description) {
+        let blockID = this.idManager.getNextBlockID(this.getID(ctx, "atomic"));
+        let varID = this.idManager.acquireVariableID(this.getString(ctx, "atomic"), LIST);
+        this.xml = this.xml.ele('block', {
+            'type': 'data_variable',
+            'id': blockID,
+        }).ele('field', {
+            'name': 'VARIABLE',
+            'id': varID,
+        }, description)
     }
 
-    createListBlock(ctx){
+    createListBlock(ctx, description) {
+        let blockID = this.idManager.getNextBlockID(this.getID(ctx, "atomic"));
+        let varID = this.idManager.acquireVariableID(this.getString(ctx, "atomic"), LIST);
+        this.xml = this.xml.ele('block', {
+            'type': 'data_listcontents',
+            'id': blockID,
+        }).ele('field', {
+            'name': 'LIST',
+            'id': varID,
+        }, description)
+    }
 
+    createCustomReporterBlock(ctx, description) {
+        //Todo
+        let blockID = this.idManager.getNextBlockID(this.getID(ctx, "atomic"));
+        let varID = this.idManager.acquireVariableID(this.getString(ctx, "atomic"), LIST);
+        this.xml = this.xml.ele('block', {
+            'type': 'data_variable',
+            'id': blockID,
+        }).ele('field', {
+            'name': 'VARIABLE',
+            'id': varID,
+        }, description)
+    }
+
+    createCustomBooleanBlock(ctx, description) {
+        //todo
     }
 
 }
