@@ -362,6 +362,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             this.visit(ctx.elseClause);
             this.xml = this.xml.up();
         }
+        this.visit(ctx.annotations);
 
     }
 
@@ -374,6 +375,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         });
         this.visit(ctx.clause);
         this.xml = this.xml.up(); //close statement (stack will close block)
+        this.visit(ctx.annotations);
     }
 
     repeat(ctx) {
@@ -389,6 +391,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         });
         this.visit(ctx.clause);
         this.xml = this.xml.up(); //go out of statement
+        this.visit(ctx.annotations);
     }
 
     repeatuntil(ctx) {
@@ -404,6 +407,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         });
         this.visit(ctx.clause);
         this.xml = this.xml.up(); //go out of statement
+        this.visit(ctx.annotations);
     }
 
     /*clause(ctx) {
