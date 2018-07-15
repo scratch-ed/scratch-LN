@@ -46,7 +46,7 @@ const REPORTERBLOCK = "reporterblock";
 const HATBLOCK = "hatblock";
 //regexen
 const DEFINE_REGEX = /^[ \t]*define/i;
-const VARIABLE_REGEX = /^([ \t]*%[0-9][ \t]*)$/i;
+const VARIABLE_REGEX = /^([ \t]*%[0-9][ \t]*)*$/i;
 
 
 export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
@@ -136,7 +136,13 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         let prevxml = this.xml;
         for (let i = 0; ctx.block && i < ctx.block.length; i++) {
             this.visit(ctx.block[i]); //opens a block
-            this.xml = this.xml.ele('next');
+            //the flow was interrupted by a hat block or stand alone variable
+            //so a new stack has to start
+            if(this.state.isInterruptedStack()){
+                this.state.startStack();
+            }else { //normal flow
+                this.xml = this.xml.ele('next');
+            }
         }
         this.xml = prevxml;
         this.state.endStack();
@@ -178,12 +184,12 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             } else {
                 //todo
                 //if the label is empty this is a stand alone block so just visit the child
-                /*if(description.match(VARIABLE_REGEX)){
+                if(description.match(VARIABLE_REGEX)){
+                    this.interruptStack();
                     for(let a=0;a<ctx.argument.length;a++) {
-                        this.visit(ctx.argument[0])
+                        this.visit(ctx.argument[a])
                     }
-                }else*/
-                {
+                }else{
                     //if this is a stack block
                     this.createProcedureBlock(ctx, description);
                 }
@@ -191,6 +197,17 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         }
         //will create the comment
         this.visit(ctx.annotations)
+    }
+
+    /**
+     * intterupt a stack, can be done because of a hatblock, standalone variable, after a cap block
+     * this wil set the state correctly and set the xml to the correct position to start building new blocks
+     */
+    interruptStack() {
+        //notify the state
+        this.state.interruptStack();
+        //set xml to the root
+        this.xml = this.xmlRoot;
     }
 
     isBuildinBlock(description, ctx, modifiers) {

@@ -25,6 +25,13 @@ export class State {
         this.blocks = [];
         this.blocks.push({ID:-1,SHAPE:null}); //this should not happen normally but this way nothing breaks during dev
         this.everythingFalse();
+        this.interrupted = false;
+    }
+
+    everythingFalse(){
+        this.stack = false;
+        this.boolean = false;
+        this.reporter = false;
     }
 
     isBuildingStackBlock(){
@@ -37,12 +44,6 @@ export class State {
 
     isBuildingBooleanBlock(){
         return this.boolean
-    }
-
-    everythingFalse(){
-        this.stack = false;
-        this.boolean = false;
-        this.reporter = false;
     }
 
     /**
@@ -92,6 +93,7 @@ export class State {
     startStack(){
         this.everythingFalse();
         this.stack = true;
+        this.interrupted=false;
     }
 
     /**
@@ -99,6 +101,14 @@ export class State {
      */
     endStack(){
         this.everythingFalse();
+    }
+
+    interruptStack(){
+        this.interrupted = true;
+    }
+
+    isInterruptedStack(){
+        return this.interrupted;
     }
 
     openBooleanBlock(){
@@ -118,5 +128,7 @@ export class State {
     closeReporterBlock(){
         this.everythingFalse();
     }
+
+
 
 }
