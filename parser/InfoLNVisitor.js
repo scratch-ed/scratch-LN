@@ -230,7 +230,6 @@ export class InfoLNVisitor extends BaseCstVisitor {
         }else {
             return this.id(null);
         }
-
     }
 
 
@@ -245,6 +244,8 @@ export class InfoLNVisitor extends BaseCstVisitor {
             let text = "";
             if(tokenMatcher(ctx.Literal[0],ChoiceLiteral)){
                 text = this.unescapeChoiceLiteral(ctx.Literal[0].image);
+            }else if(tokenMatcher(ctx.Literal[0],ColorLiteral)){
+                text = this.makeValidColor(ctx.Literal[0].image);
             }else{
                 text = this.unescapeStringLiteral(ctx.Literal[0].image);
             }
@@ -269,7 +270,6 @@ export class InfoLNVisitor extends BaseCstVisitor {
                 ID: id
             }
         }
-
     }
 
 
@@ -283,6 +283,15 @@ export class InfoLNVisitor extends BaseCstVisitor {
     unescapeChoiceLiteral(text){
         return text.replace(/\\\[/g, '"').replace(/^\[(.*(?=\]$))\]$/, '$1');
     }
+
+    /**
+     * color has to have 6 digits so ABC -> AABBCC
+     * @param text
+     */
+    makeValidColor(text){
+        return text.replace(/^#([0-F])([0-F])([0-F])$/i, '#$1$1$2$2$3$3')
+    }
+
     condition(ctx) {
         return this.visit(ctx.expression);
     }

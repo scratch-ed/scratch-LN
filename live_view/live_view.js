@@ -32,7 +32,11 @@ window.onload = function () {
     //text
     editor = document.getElementById('editor');
     editor.addEventListener('input', updateWorkspace);
-    editor.value = 'block (x::list)\n';
+    editor.value = 'block #FFF\n' +
+        'block #123456\n' +
+        'block #ABC\n'
+    ;
+
     updateWorkspace();
 
     //button options
