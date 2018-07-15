@@ -157,25 +157,23 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     atomic(ctx) {
         let description = this.getString(ctx, "atomic");
-        console.log(ctx);
         let modifiers = this.modifierAnalyser.getMods(ctx.modifiers[0]);
-        console.log(modifiers);
-        if (description in blocks) {
+        if (this.isBuildinBlock(description, ctx, modifiers)) {
             //generate block
-            blocks[description](ctx, this);
+            blocks[description](ctx, this) //todo: should i add modifiers?
         } else if (description.match(DEFINE_REGEX)) {
             this.createDefineBlock(ctx, description);
         } else { //the block is not defined in scratch, so considered it as user-defined
-            if (this.isCustomReporterblock(ctx)) {
-                this.createCustomReporterBlock(ctx,description);
+            if (this.isCustomReporterblock(ctx, modifiers)) {
+                this.createCustomReporterBlock(ctx, description);
 
-            } else if (this.isListBlock(ctx)) {
+            } else if (this.isListBlock(ctx, modifiers)) {
                 this.createListBlock(ctx, description);
 
-            } else if (this.isVariableBlock(ctx)) {
+            } else if (this.isVariableBlock(ctx, modifiers)) {
                 this.createVariableBlock(ctx, description);
 
-            } else if (this.isBooleanBlock(ctx)) {
+            } else if (this.isBooleanBlock(ctx, modifiers)) {
                 this.createCustomBooleanBlock(ctx, description);
 
             } else {
@@ -185,7 +183,8 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
                     for(let a=0;a<ctx.argument.length;a++) {
                         this.visit(ctx.argument[0])
                     }
-                }else*/ {
+                }else*/
+                {
                     //if this is a stack block
                     this.createProcedureBlock(ctx, description);
                 }
@@ -195,20 +194,24 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         this.visit(ctx.annotations)
     }
 
-    isVariableBlock(ctx) {
-        return this.state.reporter;
+    isBuildinBlock(description, ctx, modifiers) {
+        return description in blocks; //todo: check modifier if it is a customblock
     }
 
-    isListBlock(ctx) {
-        return this.isVariableBlock(ctx);
+    isVariableBlock(ctx, modifiers) {
+        return this.state.isBuildingReporterBlock();
     }
 
-    isCustomReporterblock(ctx) {
+    isListBlock(ctx, modifiers) {
+        return this.isVariableBlock(ctx, modifiers) && modifiers.list;
+    }
+
+    isCustomReporterblock(ctx, modifiers) {
         return false;
     }
 
-    isBooleanBlock(ctx) {
-        return this.state.boolean;
+    isBooleanBlock(ctx, modifiers) {
+        return this.state.isBuildingBooleanBlock();
     }
 
     /**
@@ -444,7 +447,12 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     argument(ctx) {
         if (ctx.Literal || (!ctx.predicate && !ctx.expression)) {
-            this.createTextInput(ctx);
+            console.log(ctx.Literal)
+            if (tokenMatcher(ctx.Literal[0], ColorLiteral)) {
+                this.createColourPickerInput(ctx)
+            } else {
+                this.createTextInput(ctx);
+            }
         } else if (ctx.expression) {
             this.visit(ctx.expression);
         } else if (ctx.predicate) {
@@ -461,25 +469,25 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         }, this.getString(ctx, "argument"));
     }
 
-    /* todo make function
-        createColourPickerInput(ctx) {
-            this.xml.ele('shadow', {
-                'type': 'colour_picker',
-                'id': this.idManager.getNextInputID(this.getID(ctx,"argument"),this.state.getLastBlockID()),
-            }).ele('field', {
-                'name': 'COLOUR',
-            }, this.getString(ctx,"argument"));
-        }
 
-        createMathNumberInput(ctx) {
-            this.xml.ele('shadow', {
-                'type': 'math_number',
-                'id': this.idManager.getNextInputID(this.getID(ctx,"argument"),this.state.getLastBlockID()),
-            }).ele('field', {
-                'name': 'NUM',
-            }, this.getString(ctx,"argument"));
-        }
-        */
+    createColourPickerInput(ctx) {
+        this.xml.ele('shadow', {
+            'type': 'colour_picker',
+            'id': this.idManager.getNextInputID(this.state.getLastBlockID(), this.getID(ctx, "argument")),
+        }).ele('field', {
+            'name': 'COLOUR',
+        }, this.getString(ctx, "argument"));
+    }
+
+    createMathNumberInput(ctx) {
+        this.xml.ele('shadow', {
+            'type': 'math_number',
+            'id': this.idManager.getNextInputID(this.state.getLastBlockID(), this.getID(ctx, "argument")),
+        }).ele('field', {
+            'name': 'NUM',
+        }, this.getString(ctx, "argument"));
+    }
+
 
     condition(ctx) {
         this.visit(ctx.predicate);

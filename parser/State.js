@@ -27,6 +27,18 @@ export class State {
         this.everythingFalse();
     }
 
+    isBuildingStackBlock(){
+        return this.stack
+    }
+
+    isBuildingReporterBlock(){
+        return this.reporter
+    }
+
+    isBuildingBooleanBlock(){
+        return this.boolean
+    }
+
     everythingFalse(){
         this.stack = false;
         this.boolean = false;
