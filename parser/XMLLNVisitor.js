@@ -133,13 +133,12 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     stack(ctx) {
         this.state.startStack();
+        let prevxml = this.xml;
         for (let i = 0; ctx.block && i < ctx.block.length; i++) {
             this.visit(ctx.block[i]); //opens a block
             this.xml = this.xml.ele('next');
         }
-        for (let i = 0; ctx.block && i < ctx.block.length; i++) {
-            this.xml = this.xml.up().up(); //close the block and the next
-        }
+        this.xml = prevxml;
         this.state.endStack();
     }
 
@@ -452,6 +451,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
                 this.createColourPickerInput(ctx)
             } else {
                 this.createTextInput(ctx);
+                //todo: numberinputs + context -> createnumber
             }
         } else if (ctx.expression) {
             this.visit(ctx.expression);
@@ -468,7 +468,6 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             'name': 'TEXT',
         }, this.getString(ctx, "argument"));
     }
-
 
     createColourPickerInput(ctx) {
         this.xml.ele('shadow', {
@@ -487,7 +486,6 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             'name': 'NUM',
         }, this.getString(ctx, "argument"));
     }
-
 
     condition(ctx) {
         this.visit(ctx.predicate);
