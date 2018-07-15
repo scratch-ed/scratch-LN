@@ -698,7 +698,7 @@ export const blockspecifications = [
             "converter": universalBlockConverter
         },
         //=== pen
-
+        //todo -> extensions
         {
             "template": "clear",
             "description": {"type": "pen_clear", "shape": "statement"},

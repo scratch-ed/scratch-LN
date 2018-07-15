@@ -32,7 +32,7 @@ window.onload = function () {
     //text
     editor = document.getElementById('editor');
     editor.addEventListener('input', updateWorkspace);
-    editor.value =  'block < {< {(a)} = {(b)} >} = {(x)} >'
+    editor.value =  'block < {< {(a)} = {(b ::custom )} >} = {(x)} >'
     ;
 
     updateWorkspace();

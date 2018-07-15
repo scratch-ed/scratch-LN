@@ -354,4 +354,39 @@ export class InfoLNVisitor extends BaseCstVisitor {
         }
     }
 
+
+    //////////////////////////////////////////////////
+    //// simplified getters
+    //////////////////////////////////////////////////
+
+    /**
+     * returns a string for the given ctx
+     * @param ctx
+     * @param rule explicitly declare the rule that needs to be used:
+     *             this is necessary if this function is called with whole ctx and not with a child
+     */
+    getString(ctx, rule = null) {
+        let x;
+        if (!rule) {
+            x = this.visit(ctx);
+        } else {
+            x = this[rule](ctx);
+        }
+        return x.TEXT;
+    }
+
+    getPlaceholder(ctx, rule=null) {
+        let x = this.visit(ctx);
+        return x.PLACEHOLDER;
+    }
+
+    getID(ctx, rule = null) {
+        let x;
+        if (!rule) {
+            x = this.visit(ctx);
+        } else {
+            x = this[rule](ctx);
+        }
+        return x.ID;
+    }
 }

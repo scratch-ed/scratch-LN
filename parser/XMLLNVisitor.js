@@ -124,10 +124,10 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
      */
     createComment(commentToken, pinned) {
         this.xml.ele('comment ', {
-            'id': this.idManager.getNextCommentID(this.getID(commentToken, "comment")),
+            'id': this.idManager.getNextCommentID(this.infoVisitor.getID(commentToken, "comment")),
             'pinned': pinned,
             'minimized': false, //todo:should be known from modifier in the ctx
-        }, this.getString(commentToken, "comment"));
+        }, this.infoVisitor.getString(commentToken, "comment"));
     }
 
 
@@ -152,16 +152,8 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     }*/
 
-    /*block$atomic(ctx) {
-
-    }*/
-
-    /*block$composite(ctx) {
-
-    }*/
-
     atomic(ctx) {
-        let description = this.getString(ctx, "atomic");
+        let description = this.infoVisitor.getString(ctx, "atomic");
         let modifiers = this.modifierAnalyser.getMods(ctx.modifiers[0]);
         if (this.isBuildInBlock(description, ctx, modifiers)) {
             //generate block
@@ -210,6 +202,12 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         this.xml = this.xmlRoot;
     }
 
+    /**
+     * start the stack again after an interrupt
+     */
+    startStack() {
+        this.state.startStack();
+    }
 
 
     isBuildInBlock(description, ctx, modifiers) {
@@ -225,7 +223,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     isCustomReporterblock(ctx, modifiers) {
-        return false;
+        return this.isVariableBlock(ctx, modifiers) && modifiers.custom;
     }
 
     isBooleanBlock(ctx, modifiers) {
@@ -238,7 +236,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
      * @param description can be obtain from the ctx but avoid multiple calls to getstring
      */
     createProcedureBlock(ctx, description) {
-        let blockid = this.idManager.getNextBlockID(this.getID(ctx, "atomic"));
+        let blockid = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "atomic"));
         this.state.addBlock(blockid, STACKBLOCK);
         this.xml = this.xml.ele('block', {
             'id': blockid,
@@ -253,23 +251,25 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
      * @param description
      */
     createDefineBlock(ctx, description) {
+        //stop the previous stack
         this.interruptStack();
         description = description.replace(DEFINE_REGEX, '');
-        let blockid = this.idManager.getNextBlockID(this.getID(ctx, "atomic"));
+        let blockid = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "atomic"));
         this.state.addBlock(blockid, HATBLOCK);
         this.xml = this.xml.ele('block', {
             'type': 'procedures_definition',
             'id': blockid,
-        }).ele('statement', { 
+        }).ele('statement', {
             'name': 'custom_block'
         }).ele('shadow', {
             'type': 'procedures_prototype'
         });
         this.addMutation(ctx, description, blockid, false);
         this.xml = this.xml.up().up();
-        this.state.startStack();
-
+        //start a new stack
+        this.startStack();
     }
+
 
     /**
      * adds a mutation to the xml
@@ -291,12 +291,12 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         //replace %1 by %s or %b corresponding to the block
         let proccode = description.replace(/%[1-9]/g, function (m) {
             let index = m[1] - 1;
-            return thisVisitor.getPlaceholder(ctx.argument[index])
+            return thisVisitor.infoVisitor.getPlaceholder(ctx.argument[index]);
         });
 
         for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
             //make names
-            let name;// = this.getString(ctx.argument[i]);
+            let name;// = this.infoVisitor.getString(ctx.argument[i]);
             if (!name) {
                 name = 'argumentname_' + blockid + '_' + i
             }
@@ -326,67 +326,22 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         }
     }
 
-    /**
-     * returns a string for the given ctx
-     * @param ctx
-     * @param rule explicitly declare the rule that needs to be used:
-     *             this is necessary if this function is called with whole ctx and not with a child
-     */
-    getString(ctx, rule = null) {
-        let x;
-        if (!rule) {
-            x = this.infoVisitor.visit(ctx);
-        } else {
-            x = this.infoVisitor[rule](ctx);
-        }
-        return x.TEXT;
-    }
-
-    getPlaceholder(ctx) {
-        let x = this.infoVisitor.visit(ctx);
-        return x.PLACEHOLDER;
-    }
-
-    getID(ctx, rule = null) {
-        let x;
-        if (!rule) {
-            x = this.infoVisitor.visit(ctx);
-        } else {
-            x = this.infoVisitor[rule](ctx);
-        }
-        return x.ID;
-    }
 
     /*composite(ctx) {
 
     }
-
-    composite$ifelse(ctx) {
-
-    }
-
-    composite$forever(ctx) {
-
-    }
-
-    composite$repeat(ctx) {
-
-    }
-
-    composite$repeatuntil(ctx) {
-
-    }*/
+    */
 
     ifelse(ctx) {
         if (!ctx.Else) {
             this.xml = this.xml.ele('block', {
                 'type': 'control_if',
-                'id': this.idManager.getNextBlockID(this.getID(ctx, "ifelse"))
+                'id': this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "ifelse"))
             });
         } else {
             this.xml = this.xml.ele('block', {
                 'type': 'control_if_else',
-                'id': this.idManager.getNextBlockID(this.getID(ctx, "ifelse"))
+                'id': this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "ifelse"))
             });
         }
         this.xml = this.xml.ele('value', {
@@ -413,7 +368,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     forever(ctx) {
         this.xml = this.xml.ele('block', {
             'type': 'control_forever',
-            'id': this.idManager.getNextBlockID(this.getID(ctx, "forever")),
+            'id': this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "forever")),
         }).ele('statement ', {
             'name': 'SUBSTACK'
         });
@@ -424,7 +379,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     repeat(ctx) {
         this.xml = this.xml.ele('block', {
             'type': 'control_repeat',
-            'id': this.idManager.getNextBlockID(this.getID(ctx, "repeat")),
+            'id': this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "repeat")),
         }).ele('value', {
             'name': 'TIMES'
         });
@@ -439,7 +394,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     repeatuntil(ctx) {
         this.xml = this.xml.ele('block', {
             'type': 'control_repeat_until',
-            'id': this.idManager.getNextBlockID(this.getID(ctx, "repeatuntil")),
+            'id': this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "repeatuntil")),
         }).ele('value', {
             'name': 'CONDITION'
         });
@@ -486,28 +441,28 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     createTextInput(ctx) {
         this.xml.ele('shadow', {
             'type': 'text',
-            'id': this.idManager.getNextInputID(this.state.getLastBlockID(), this.getID(ctx, "argument")),
+            'id': this.idManager.getNextInputID(this.state.getLastBlockID(), this.infoVisitor.getID(ctx, "argument")),
         }).ele('field', {
             'name': 'TEXT',
-        }, this.getString(ctx, "argument"));
+        }, this.infoVisitor.getString(ctx, "argument"));
     }
 
     createColourPickerInput(ctx) {
         this.xml.ele('shadow', {
             'type': 'colour_picker',
-            'id': this.idManager.getNextInputID(this.state.getLastBlockID(), this.getID(ctx, "argument")),
+            'id': this.idManager.getNextInputID(this.state.getLastBlockID(), this.infoVisitor.getID(ctx, "argument")),
         }).ele('field', {
             'name': 'COLOUR',
-        }, this.getString(ctx, "argument"));
+        }, this.infoVisitor.getString(ctx, "argument"));
     }
 
     createMathNumberInput(ctx) {
         this.xml.ele('shadow', {
             'type': 'math_number',
-            'id': this.idManager.getNextInputID(this.state.getLastBlockID(), this.getID(ctx, "argument")),
+            'id': this.idManager.getNextInputID(this.state.getLastBlockID(), this.infoVisitor.getID(ctx, "argument")),
         }).ele('field', {
             'name': 'NUM',
-        }, this.getString(ctx, "argument"));
+        }, this.infoVisitor.getString(ctx, "argument"));
     }
 
     condition(ctx) {
@@ -531,8 +486,8 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     createVariableBlock(ctx, description) {
-        let blockID = this.idManager.getNextBlockID(this.getID(ctx, "atomic"));
-        let varID = this.idManager.acquireVariableID(this.getString(ctx, "atomic"));
+        let blockID = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "atomic"));
+        let varID = this.idManager.acquireVariableID(this.infoVisitor.getString(ctx, "atomic"));
         this.xml.ele('block', {
             'type': 'data_variable',
             'id': blockID,
@@ -543,8 +498,8 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     createListBlock(ctx, description) {
-        let blockID = this.idManager.getNextBlockID(this.getID(ctx, "atomic"));
-        let varID = this.idManager.acquireVariableID(this.getString(ctx, "atomic"), LIST);
+        let blockID = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "atomic"));
+        let varID = this.idManager.acquireVariableID(this.infoVisitor.getString(ctx, "atomic"), LIST);
         this.xml.ele('block', {
             'type': 'data_listcontents',
             'id': blockID,
@@ -556,19 +511,27 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     createCustomReporterBlock(ctx, description) {
         //Todo
-        let blockID = this.idManager.getNextBlockID(this.getID(ctx, "atomic"));
-        let varID = this.idManager.acquireVariableID(this.getString(ctx, "atomic"), LIST);
-        this.xml = this.xml.ele('block', {
-            'type': 'data_variable',
+        let blockID = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "atomic"));
+        let varID = this.idManager.acquireVariableID(this.infoVisitor.getString(ctx, "atomic"), LIST);
+        this.xml = this.xml.ele('block', { 
+            'type': 'argument_reporter_string_number',
             'id': blockID,
         }).ele('field', {
-            'name': 'VARIABLE',
+            'name': 'VALUE',
             'id': varID,
         }, description)
     }
 
     createCustomBooleanBlock(ctx, description) {
-        //todo
+        let blockID = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "atomic"));
+        let varID = this.idManager.acquireVariableID(this.infoVisitor.getString(ctx, "atomic"), LIST);
+        this.xml = this.xml.ele('block', {
+            'type': 'argument_reporter_boolean',
+            'id': blockID,
+        }).ele('field', {
+            'name': 'VALUE',
+            'id': varID,
+        }, description)
     }
 
 }

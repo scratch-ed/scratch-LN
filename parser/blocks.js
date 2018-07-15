@@ -19,7 +19,7 @@ function makeArgument(ctx, visitor, arg, i) {
             'type': arg.menu //this was added to the json and was not default.
         }).ele('field', {
             'name': arg.name
-        }, visitor.getString(ctx.argument[i])); // '_mouse_'
+        }, visitor.infoVisitor.getString(ctx.argument[i])); // '_mouse_'
         visitor.xml = visitor.xml.up();
     } else if (arg.type === 'input_value') {
         visitor.xml = visitor.xml.ele('value', {
@@ -30,7 +30,7 @@ function makeArgument(ctx, visitor, arg, i) {
     } else if (arg.type === 'field_dropdown') {
         visitor.xml = visitor.xml.ele('field', {
             'name': arg.name
-        }, visitor.getString(ctx.argument[i]));
+        }, visitor.infoVisitor.getString(ctx.argument[i]));
         visitor.xml = visitor.xml.up();
     }
 }
@@ -47,7 +47,7 @@ export function universalBlockConverter(ctx, visitor, structure) {
 
 export function addType(ctx,visitor,structure) {
     visitor.xml = visitor.xml.ele('block', {
-        'id': visitor.idManager.getNextBlockID(visitor.getID(ctx, "atomic")),
+        'id': visitor.idManager.getNextBlockID(visitor.infoVisitor.getID(ctx, "atomic")),
         'type': structure.type
     });
     //todo add to state
@@ -60,7 +60,7 @@ export function addType(ctx,visitor,structure) {
 export function variableBlockConverter(ctx, visitor, structure) {
     addType(ctx,visitor,structure);
     //name of the variable
-    let varble = visitor.getString(ctx.argument[0]);
+    let varble = visitor.infoVisitor.getString(ctx.argument[0]);
     //function must be called to register VariableID
     visitor.idManager.acquireVariableID(varble);
     visitor.xml = visitor.xml.ele('field', {
@@ -80,7 +80,7 @@ export function listBlockConverter(ctx, visitor, structure) {
     for (let i = 0; i < ctx.argument.length; i++) {
         let arg = structure.args[i];
         if (arg.name === 'LIST') {
-            let varble = visitor.getString(ctx.argument[i]);
+            let varble = visitor.infoVisitor.getString(ctx.argument[i]);
             visitor.idManager.acquireVariableID(varble, LIST);
             visitor.xml = visitor.xml.ele('field', {
                 'name': 'LIST',
@@ -96,7 +96,7 @@ export function listBlockConverter(ctx, visitor, structure) {
 //todo
 export function messageShadowBlockconverter(ctx, visitor,structure) {
     addType(ctx,visitor,structure);
-    let varble = visitor.getString(ctx.argument[0]);
+    let varble = visitor.infoVisitor.getString(ctx.argument[0]);
     let arg = structure.args[0];
     let id = visitor.idManager.acquireVariableID(varble, BROADCAST);
 
@@ -117,7 +117,7 @@ export function messageShadowBlockconverter(ctx, visitor,structure) {
 export function messageBlockconverter(ctx, visitor,structure) {
     addType(ctx,visitor,structure);
 
-    let varble = visitor.getString(ctx.argument[0]);
+    let varble = visitor.infoVisitor.getString(ctx.argument[0]);
     let arg = structure.args[0];
     let id = visitor.idManager.acquireVariableID(varble, BROADCAST);
 
@@ -134,6 +134,6 @@ export function stopConverter(ctx, visitor,structure) {
     addType(ctx,visitor,structure);
     visitor.xml = visitor.xml.ele('field', {
         'name': "STOP_OPTION"
-    }, visitor.getString(ctx.argument[0]));
+    }, visitor.infoVisitor.getString(ctx.argument[0]));
     visitor.xml = visitor.xml.up();
 }
