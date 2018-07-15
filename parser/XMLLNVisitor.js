@@ -462,9 +462,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     argument(ctx) {
-        console.log(ctx);
         if (ctx.Literal) {
-            console.log(ctx.Literal);
             if (tokenMatcher(ctx.Literal[0], ColorLiteral)) {
                 this.createColourPickerInput(ctx);
             } else {
@@ -477,7 +475,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             this.visit(ctx.predicate)
         } else if (ctx.$empty){
             this.createTextInput(ctx);
-        } 
+        }
     }
 
     createTextInput(ctx) {
@@ -512,15 +510,19 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     expression(ctx) {
+        let before = this.xml;
         this.state.openReporterBlock();
         this.visit(ctx.atomic);
         this.state.closeReporterBlock();
+        this.xml = before;
     }
 
     predicate(ctx) {
+        let before = this.xml;
         this.state.openBooleanBlock();
         this.visit(ctx.atomic);
         this.state.closeBooleanBlock();
+        this.xml = before;
     }
 
     createVariableBlock(ctx, description) {

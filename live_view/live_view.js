@@ -32,8 +32,7 @@ window.onload = function () {
     //text
     editor = document.getElementById('editor');
     editor.addEventListener('input', updateWorkspace);
-    editor.value = 'block \n' +
-        '(a)(b)\n'
+    editor.value =  'block < {< {(a)} = {(b)} >} = {(x)} >'
     ;
 
     updateWorkspace();

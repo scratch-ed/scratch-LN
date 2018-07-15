@@ -8,6 +8,12 @@
  * @author Ellen Vanhove.
  */
 
+const MODUS = {
+    NONE:0,
+    STACK:1,
+    REPORTER:2,
+    BOOLEAN:3,
+}
 
 export class State {
 
@@ -24,26 +30,41 @@ export class State {
         //list of all blocks
         this.blocks = [];
         this.blocks.push({ID:-1,SHAPE:null}); //this should not happen normally but this way nothing breaks during dev
-        this.everythingFalse();
+        this.modus = MODUS.NONE;
         this.interrupted = false;
+        //when opening a new context the previous is stored here
+        this.storage = [];
     }
 
-    everythingFalse(){
-        this.stack = false;
-        this.boolean = false;
-        this.reporter = false;
+
+
+    pushStorage(){
+       this.storage.push(
+            {
+                blocks : this.blocks,
+                modus: this.modus
+            }
+        );
+        console.log(this.modus,this.blocks,this.storage)
+    }
+
+    popStorage(){
+        let stored = this.storage.pop();
+        this.blocks = stored.blocks;
+        this.modus = stored.modus;
+        console.log(this.modus,this.blocks,this.storage)
     }
 
     isBuildingStackBlock(){
-        return this.stack
+        return this.modus === MODUS.STACK;
     }
 
     isBuildingReporterBlock(){
-        return this.reporter
+        return this.modus === MODUS.REPORTER;
     }
 
     isBuildingBooleanBlock(){
-        return this.boolean
+        return this.modus === MODUS.BOOLEAN;
     }
 
     /**
@@ -87,23 +108,20 @@ export class State {
         return this.blocks[this.blocks.length-1].ID;
     }
 
-    /**
-     * todo The start of a new stack
-     */
     startStack(){
-        this.everythingFalse();
-        this.stack = true;
+        console.log("start stack")
+        this.pushStorage();
+        this.modus = MODUS.STACK;
         this.interrupted=false;
     }
 
-    /**
-     * todo The end of the current stack
-     */
     endStack(){
-        this.everythingFalse();
+        console.log("end stack")
+        this.popStorage();
     }
 
     interruptStack(){
+        //todo: go to root
         this.interrupted = true;
     }
 
@@ -112,21 +130,25 @@ export class State {
     }
 
     openBooleanBlock(){
-        this.everythingFalse();
-        this.boolean = true;
+        console.log("start bool")
+        this.pushStorage();
+        this.modus = MODUS.BOOLEAN;
     }
 
     closeBooleanBlock(){
-        this.everythingFalse();
+        console.log("end bool")
+        this.popStorage();
     }
 
     openReporterBlock(){
-        this.everythingFalse();
-        this.reporter = true;
+        console.log("start rep")
+        this.pushStorage();
+        this.modus = MODUS.REPORTER;
     }
 
     closeReporterBlock(){
-        this.everythingFalse();
+        console.log("end rep")
+        this.popStorage();
     }
 
 
