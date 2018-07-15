@@ -163,7 +163,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     atomic(ctx) {
         let description = this.getString(ctx, "atomic");
         let modifiers = this.modifierAnalyser.getMods(ctx.modifiers[0]);
-        if (this.isBuildinBlock(description, ctx, modifiers)) {
+        if (this.isBuildInBlock(description, ctx, modifiers)) {
             //generate block
             blocks[description](ctx, this) //todo: should i add modifiers?
         } else if (description.match(DEFINE_REGEX)) {
@@ -210,7 +210,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         this.xml = this.xmlRoot;
     }
 
-    isBuildinBlock(description, ctx, modifiers) {
+    isBuildInBlock(description, ctx, modifiers) {
         return description in blocks; //todo: check modifier if it is a customblock
     }
 
@@ -462,10 +462,11 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     argument(ctx) {
-        if (ctx.Literal || (!ctx.predicate && !ctx.expression)) {
-            console.log(ctx.Literal)
+        console.log(ctx);
+        if (ctx.Literal) {
+            console.log(ctx.Literal);
             if (tokenMatcher(ctx.Literal[0], ColorLiteral)) {
-                this.createColourPickerInput(ctx)
+                this.createColourPickerInput(ctx);
             } else {
                 this.createTextInput(ctx);
                 //todo: numberinputs + context -> createnumber
@@ -474,7 +475,9 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             this.visit(ctx.expression);
         } else if (ctx.predicate) {
             this.visit(ctx.predicate)
-        }
+        } else if (ctx.$empty){
+            this.createTextInput(ctx);
+        } 
     }
 
     createTextInput(ctx) {
