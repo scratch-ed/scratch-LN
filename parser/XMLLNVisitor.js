@@ -210,6 +210,8 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         this.xml = this.xmlRoot;
     }
 
+
+
     isBuildInBlock(description, ctx, modifiers) {
         return description in blocks; //todo: check modifier if it is a customblock
     }
@@ -251,19 +253,22 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
      * @param description
      */
     createDefineBlock(ctx, description) {
+        this.interruptStack();
         description = description.replace(DEFINE_REGEX, '');
         let blockid = this.idManager.getNextBlockID(this.getID(ctx, "atomic"));
         this.state.addBlock(blockid, HATBLOCK);
         this.xml = this.xml.ele('block', {
             'type': 'procedures_definition',
             'id': blockid,
-        }).ele('statement', {
+        }).ele('statement', { 
             'name': 'custom_block'
         }).ele('shadow', {
             'type': 'procedures_prototype'
         });
         this.addMutation(ctx, description, blockid, false);
         this.xml = this.xml.up().up();
+        this.state.startStack();
+
     }
 
     /**

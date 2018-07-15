@@ -13,7 +13,7 @@ const MODUS = {
     STACK:1,
     REPORTER:2,
     BOOLEAN:3,
-}
+};
 
 export class State {
 
@@ -50,9 +50,12 @@ export class State {
 
     popStorage(){
         let stored = this.storage.pop();
+        this.setBack(stored);
+    }
+
+    setBack(stored) {
         this.blocks = stored.blocks;
         this.modus = stored.modus;
-        console.log(this.modus,this.blocks,this.storage)
     }
 
     isBuildingStackBlock(){
@@ -109,19 +112,19 @@ export class State {
     }
 
     startStack(){
-        console.log("start stack")
         this.pushStorage();
         this.modus = MODUS.STACK;
         this.interrupted=false;
     }
 
     endStack(){
-        console.log("end stack")
         this.popStorage();
     }
 
     interruptStack(){
-        //todo: go to root
+        let stored =  this.storage[0];
+        this.setBack(stored);
+        this.storage = []
         this.interrupted = true;
     }
 
@@ -130,24 +133,20 @@ export class State {
     }
 
     openBooleanBlock(){
-        console.log("start bool")
         this.pushStorage();
         this.modus = MODUS.BOOLEAN;
     }
 
     closeBooleanBlock(){
-        console.log("end bool")
         this.popStorage();
     }
 
     openReporterBlock(){
-        console.log("start rep")
         this.pushStorage();
         this.modus = MODUS.REPORTER;
     }
 
     closeReporterBlock(){
-        console.log("end rep")
         this.popStorage();
     }
 
