@@ -8,8 +8,9 @@
  */
 import {
     universalBlockConverter, listBlockConverter, messageBlockconverter,
-    messageShadowBlockconverter, variableBlockConverter, stopConverter
+    messageShadowBlockconverter, variableBlockConverter, stopConverter, addType
 } from "../parser/blocks";
+import {CHOICE, COLOR} from "../parser/InfoLNVisitor";
 
 /*
  {"template":"",
@@ -22,14 +23,14 @@ import {
 // some frequently used predicates
 
 let looksSoundPredicate = function (ctx, visitor) {
-    let opt = ctx.option?visitor.getString(ctx.option[0]):'';
-    let label = visitor.getString(ctx.argument[0]);
+    let opt = ctx.option?visitor.infoVisitor.getString(ctx.option[0]):'';
+    let label = visitor.infoVisitor.getString(ctx.argument[0]);
     return (opt === 'sound') || (label === "pan left/right" || label === 'pitch');
 };
 
 let listOperatorPredicate = function (ctx, visitor) {
-    let argType = visitor.getType(ctx.argument[0]);
-    return (argType === 'choice');
+    let argType = visitor.infoVisitor.getType(ctx.argument[0]);
+    return (argType === CHOICE);
 };
 // ===============================================================================
 
@@ -48,7 +49,7 @@ export const blockspecifications = [
             },
             "converter": universalBlockConverter,
             "predicate": (ctx, visitor) => {
-                let arg = visitor.getString(ctx.argument[0]);
+                let arg = visitor.infoVisitor.getString(ctx.argument[0]);
                 return (arg === 'front' || arg === 'back');
             }
 
@@ -723,8 +724,8 @@ export const blockspecifications = [
             },
             "converter": universalBlockConverter,
             "predicate": (ctx, visitor) => {
-                let argType = visitor.getType(ctx.argument[0]);
-                return (argType === 'color');
+                let argType = visitor.infoVisitor.getType(ctx.argument[0]);
+                return (argType === COLOR);
             }
         },
         {
@@ -1072,13 +1073,10 @@ export const blockspecifications = [
             },
             "converter": function (ctx, visitor) {
                 //something was weird here...
-                visitor.xml = visitor.xml.ele('block', {
-                    'id': visitor.getNextId(),
-                    'type': 'sensing_of'
-                });
+                addType(ctx,visitor,'sensing_of')
                 visitor.xml = visitor.xml.ele('field', {
                     'name': 'PROPERTY'
-                }, visitor.visit(ctx.argument[0])); //'all around' //this is ugly because 'option' is the only one that returns something... and there is no check whether the option is existing and valid
+                }, visitor.infoVisitor.getString(ctx.argument[0])); //'all around' //this is ugly because 'option' is the only one that returns something... and there is no check whether the option is existing and valid
                 visitor.xml = visitor.xml.up().ele('value', {
                     'name': 'OBJECT'
                 });
@@ -1087,12 +1085,12 @@ export const blockspecifications = [
                     'type': 'sensing_of_object_menu' //this was added to the json and was not default.
                 }).ele('field', {
                     'name': 'OBJECT'
-                }, visitor.visit(ctx.argument[1])); // '_mouse_'
+                }, visitor.infoVisitor.getString(ctx.argument[1])); // '_mouse_'
                 visitor.xml = visitor.xml.up();
             },
             "predicate": function (ctx, visitor) {
-                let argType = visitor.getType(ctx.argument[1]);
-                return (argType === 'choice');
+                let argType = visitor.infoVisitor.getType(ctx.argument[1]);
+                return (argType === CHOICE);
             }
 
         },

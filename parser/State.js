@@ -45,7 +45,6 @@ export class State {
                 modus: this.modus
             }
         );
-        console.log(this.modus,this.blocks,this.storage)
     }
 
     popStorage(){

@@ -149,7 +149,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     /*block(ctx) {
-
+        //nothing to do here
     }*/
 
     atomic(ctx) {
@@ -157,7 +157,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         let modifiers = this.modifierAnalyser.getMods(ctx.modifiers[0]);
         if (this.isBuildInBlock(description, ctx, modifiers)) {
             //generate block
-            blocks[description](ctx, this) //todo: should i add modifiers?
+            blocks[description](ctx, this, modifiers)
         } else if (description.match(DEFINE_REGEX)) {
             this.createDefineBlock(ctx, description);
         } else { //the block is not defined in scratch, so considered it as user-defined
@@ -328,7 +328,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
 
     /*composite(ctx) {
-
+        //nothing to do here
     }
     */
 
@@ -510,10 +510,9 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     createCustomReporterBlock(ctx, description) {
-        //Todo
         let blockID = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "atomic"));
         let varID = this.idManager.acquireVariableID(this.infoVisitor.getString(ctx, "atomic"), LIST);
-        this.xml = this.xml.ele('block', { 
+        this.xml = this.xml.ele('block', {
             'type': 'argument_reporter_string_number',
             'id': blockID,
         }).ele('field', {

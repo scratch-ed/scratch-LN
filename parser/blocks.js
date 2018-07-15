@@ -36,7 +36,7 @@ function makeArgument(ctx, visitor, arg, i) {
 }
 
 export function universalBlockConverter(ctx, visitor, structure) {
-    addType(ctx,visitor,structure);
+    addType(ctx,visitor,structure.type);
     for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
         let arg = structure.args[i];
         makeArgument(ctx, visitor, arg, i);
@@ -45,10 +45,10 @@ export function universalBlockConverter(ctx, visitor, structure) {
 }
 
 
-export function addType(ctx,visitor,structure) {
+export function addType(ctx,visitor,type) {
     visitor.xml = visitor.xml.ele('block', {
         'id': visitor.idManager.getNextBlockID(visitor.infoVisitor.getID(ctx, "atomic")),
-        'type': structure.type
+        'type': type
     });
     //todo add to state
 };
@@ -58,7 +58,7 @@ export function addType(ctx,visitor,structure) {
 //=======================================================================================================================================
 
 export function variableBlockConverter(ctx, visitor, structure) {
-    addType(ctx,visitor,structure);
+    addType(ctx,visitor,structure.type);
     //name of the variable
     let varble = visitor.infoVisitor.getString(ctx.argument[0]);
     //function must be called to register VariableID
@@ -76,7 +76,7 @@ export function variableBlockConverter(ctx, visitor, structure) {
 
 //todo
 export function listBlockConverter(ctx, visitor, structure) {
-    addType(ctx,visitor,structure);
+    addType(ctx,visitor,structure.type);
     for (let i = 0; i < ctx.argument.length; i++) {
         let arg = structure.args[i];
         if (arg.name === 'LIST') {
@@ -95,7 +95,7 @@ export function listBlockConverter(ctx, visitor, structure) {
 
 //todo
 export function messageShadowBlockconverter(ctx, visitor,structure) {
-    addType(ctx,visitor,structure);
+    addType(ctx,visitor,structure.type);
     let varble = visitor.infoVisitor.getString(ctx.argument[0]);
     let arg = structure.args[0];
     let id = visitor.idManager.acquireVariableID(varble, BROADCAST);
@@ -115,7 +115,7 @@ export function messageShadowBlockconverter(ctx, visitor,structure) {
 
 //todo
 export function messageBlockconverter(ctx, visitor,structure) {
-    addType(ctx,visitor,structure);
+    addType(ctx,visitor,structure.type);
 
     let varble = visitor.infoVisitor.getString(ctx.argument[0]);
     let arg = structure.args[0];
@@ -131,7 +131,7 @@ export function messageBlockconverter(ctx, visitor,structure) {
 
 //todo
 export function stopConverter(ctx, visitor,structure) {
-    addType(ctx,visitor,structure);
+    addType(ctx,visitor,structure.type);
     visitor.xml = visitor.xml.ele('field', {
         'name': "STOP_OPTION"
     }, visitor.infoVisitor.getString(ctx.argument[0]));

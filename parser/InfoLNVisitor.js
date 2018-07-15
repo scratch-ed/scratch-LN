@@ -27,16 +27,23 @@ import {lnparser} from "./LNParser"
 
 export const PLACEHOLDER = "placeholder";
 export const OFFSET = "offset";
-export const TEXT = "text";
+
 
 export const TYPE = "type";
 export const EXPRESSION = "expression";
 export const PREDICATE = "predicate";
 export const ATOMIC = "atomic";
 export const EMPTY = "empty";
+export const CHOICE = "choice";
+export const TEXT = "text";
+export const TEXT_OR_NUMBER = "text or number";
+export const COLOR = "color"
+
 export const COMMENT = "comment";
 export const ID = "id";
 export const CBLOCK = "cblock"
+
+
 
 const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
 
@@ -234,6 +241,7 @@ export class InfoLNVisitor extends BaseCstVisitor {
 
 
     argument(ctx) {
+        let type;
         let id;
         if(ctx.ID) {
             id= this.id(ctx.ID[0]).ID;
@@ -244,16 +252,19 @@ export class InfoLNVisitor extends BaseCstVisitor {
             let text = "";
             if(tokenMatcher(ctx.Literal[0],ChoiceLiteral)){
                 text = this.unescapeChoiceLiteral(ctx.Literal[0].image);
+                type= CHOICE;
             }else if(tokenMatcher(ctx.Literal[0],ColorLiteral)){
                 text = this.makeValidColor(ctx.Literal[0].image);
+                type=COLOR
             }else{
                 text = this.unescapeStringLiteral(ctx.Literal[0].image);
+                type = TEXT_OR_NUMBER
             }
             return {
                 PLACEHOLDER: "%s",
                 TEXT: text,
                 OFFSET: ctx.Literal[0].startOffset,
-                TYPE: ctx.Literal[0].tokenName,
+                TYPE: type,
                 ID: id
             }
         } else if (ctx.expression) {
@@ -376,7 +387,12 @@ export class InfoLNVisitor extends BaseCstVisitor {
     }
 
     getPlaceholder(ctx, rule=null) {
-        let x = this.visit(ctx);
+        let x;
+        if (!rule) {
+            x = this.visit(ctx);
+        } else {
+            x = this[rule](ctx);
+        }
         return x.PLACEHOLDER;
     }
 
@@ -388,5 +404,15 @@ export class InfoLNVisitor extends BaseCstVisitor {
             x = this[rule](ctx);
         }
         return x.ID;
+    }
+
+    getType(ctx, rule = null) {
+        let x;
+        if (!rule) {
+            x = this.visit(ctx);
+        } else {
+            x = this[rule](ctx);
+        }
+        return x.TYPE;
     }
 }
