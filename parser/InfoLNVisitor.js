@@ -204,13 +204,13 @@ export class InfoLNVisitor extends BaseCstVisitor {
     }
 
     modifiers(ctx) {
-        if(!ctx.modifier){
+        if(!ctx.Modifier){
             return {
                 MODIFIERS: []
             }
         }
         return {
-            MODIFIERS: ctx.modifier
+            MODIFIERS: ctx.Modifier
         }
     }
 
