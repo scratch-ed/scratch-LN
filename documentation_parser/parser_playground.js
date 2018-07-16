@@ -193,7 +193,7 @@
         pattern: /@[a-z0-9_]+/i
     });
 
-      const MultipleDelimiter = createToken({
+    const MultipleDelimiter = createToken({
         name: "MultipleDelimiter",
         pattern: /((;[ \t]*\n|;[ \t]*(?!\n)|\n)[ \t]*){2,}/,
         line_breaks: true
@@ -284,15 +284,6 @@
             }])
         })
 
-        $.RULE("comments", () => {
-            $.AT_LEAST_ONE(() => {
-                $.CONSUME(Comment);
-                $.SUBRULE($.delimiters,{
-                                LABEL: "trailingCommentsDelimiters"
-                            });
-            });
-        })
-
         $.RULE("stackDelimiter", () => {
             $.AT_LEAST_ONE({
                 DEF: () => {
@@ -309,7 +300,16 @@
                     }]);
                 }
             });
-        })
+        });
+
+        $.RULE("comments", () => {
+            $.AT_LEAST_ONE(() => {
+                $.SUBRULE($.comment);
+                $.SUBRULE($.delimiters, {
+                    LABEL: "trailingCommentsDelimiters"
+                });
+            });
+        });
 
         $.RULE("stack", () => {
             $.SUBRULE($.block);
@@ -353,7 +353,6 @@
                     }
                 }]);
             });
-            $.SUBRULE($.modifiers);
             $.SUBRULE($.annotations);
         });
 
@@ -388,15 +387,17 @@
                 $.CONSUME(Then);
             });
             $.SUBRULE($.annotations);
-            $.SUBRULE($.clause,{
-                    LABEL: "ifClause"
-                });
+            $.SUBRULE($.clause, {
+                LABEL: "ifClause"
+            });
             $.OPTION3(() => {
-                 $.OPTION4(() => {
-                    $.CONSUME2(Delimiter, {LABEL:"trailingIfClauseDelimiter"});
+                $.OPTION4(() => {
+                    $.CONSUME2(Delimiter, {
+                        LABEL: "trailingIfClauseDelimiter"
+                    });
                 });
                 $.CONSUME(Else);
-                $.SUBRULE3($.clause,{
+                $.SUBRULE3($.clause, {
                     LABEL: "elseClause"
                 });
             });
@@ -446,31 +447,33 @@
             })
         });
 
+        $.RULE("annotations", () => {
+            $.SUBRULE($.modifiers);
+
+            $.SUBRULE($.id);
+            $.OPTION(() => {
+                $.SUBRULE($.comment);
+            });
+
+        });
+
         $.RULE("modifiers", () => {
             $.MANY(() => {
                 $.CONSUME(Modifier);
             })
         });
 
-        $.RULE("annotations", () => {
+        $.RULE("id", () => {
             $.OPTION(() => {
-                $.OR([{
-                    ALT: () => {
-                        $.CONSUME(Comment);
-                        $.OPTION2(() => {
-                            $.CONSUME(ID);
-                        });
-                    }
-                }, {
-                    ALT: () => {
-                        $.CONSUME2(ID);
-                        $.OPTION3(() => {
-                            $.CONSUME2(Comment);
-                        });
-                    }
-                }]);
-            })
-        })
+                $.CONSUME(ID);
+            });
+        });
+
+        $.RULE("comment", () => {
+            $.CONSUME(Comment);
+            $.SUBRULE($.modifiers);
+            $.SUBRULE($.id);
+        });
 
         $.RULE("argument", () => {
             $.OR([{
@@ -480,7 +483,7 @@
                         ALT: () => {
                             $.CONSUME(Literal);
                         }
-                    },{
+                    }, {
                         ALT: () => {
                             $.CONSUME(Label);
                         }
@@ -603,17 +606,17 @@
         code(ctx) {
 
         }
-      
-        delimiter(ctx){
-        
+
+        delimiter(ctx) {
+
         }
 
         comments(ctx) {
 
         }
-      
-        stackDelimiter(ctx){
-        
+
+        stackDelimiter(ctx) {
+
         }
 
         stack(ctx) {
@@ -692,11 +695,11 @@
 
         condition(ctx) {
 
-        }      
-      
+        }
+
         condition$empty(ctx) {
 
-        }      
+        }
 
         expression(ctx) {
 
