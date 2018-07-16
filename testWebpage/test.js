@@ -43,6 +43,132 @@ $(document).ready(function() {
         "costume [number];" +
         "backdrop [number];" +
         "size").split(";"), "Looks");
+    makeTable(("start sound [1];" +
+        "play sound [1] until done;" +
+        "stop all sounds;" +
+        "rest for {0.25} beats;" +
+        "play note {30} for {0.3} beats;" +
+        "change [pitch] effect by {10};" +
+        "set [pitch] effect to {100};" +
+        "clear sound effects;" +
+        "change volume by {-10};" +
+        "set volume to {100}%;" +
+        "change tempo by {60};" +
+        "set tempo to {60} bpm;" +
+        "set instrument to [ikook];" +
+        "play drum [ikbenverzonnen] for {0.2} beats;" +
+        "set instrument to [(1) Piano];" +
+        "volume;" +
+        "tempo").split(";"), "Sounds");
+    makeTable(("when greenflag clicked;" +
+        "when [space] key pressed;" +
+        "when this sprite clicked;" +
+        "when backdrop switches to [backdrop 1];" +
+        "when [timer] \\> {10};" +
+        "when I receive [message1];" +
+        "broadcast [message1];" +
+        "broadcast [message1] and wait" +
+        "").split(";"), "Events");
+    makeTable(("wait {1} seconds;" +
+        "wait until <>;" +
+        "stop [all];" +
+        "when I start as a clone;" +
+        "create clone of [myself];" +
+        "delete this clone").split(";"), "Control");
+    makeTable(["if <>",
+        "if <>;" +
+        "block;" +
+        "end;" +
+        "end;" +
+        "block",
+        "if <> else ",
+        "if <>;" +
+        "block;" +
+        "end;" +
+        "else;" +
+        "block;" +
+        "end;" +
+        "block",
+        "forever",
+        "repeat {10}",
+        "repeat until <>",
+        "repeat {10};block;end;block",
+    ], "Control: C-Blocks");
+    makeTable(("touching [mouse-pointer]?;" +
+        "touching color {#123456} ?;" +
+        "color {#123456} is touching {#123456} ?;" +
+        "distance to [mouse-pounter];" +
+        "key [space ] pressed ?;" +
+        "mouse down?;" +
+        "mouse x;" +
+        "mouse y;" +
+        "set drag mode [draggable];" +
+        "loudness;" +
+        "timer;" +
+        "reset timer;" +
+        " [x position] of [Sprite1];" +
+        "current [year];" +
+        "days since 2000").split(";"), "Sensing");
+    makeTable(("{1} + {2};" +
+        "{1} - {2};" +
+        "{1} * {2};" +
+        "{1} / {2};" +
+        "pick random {1} to {10};" +
+        "{1} \\< {2};" +
+        "{1} \\> {2};" +
+        "{1} = {2};" +
+        "<> and <>;" +
+        "<> or <>;" +
+        "not <>;" +
+        "join {\"hello\"} {\"world\"};" +
+        "letter {1} of {\"world\"};" +
+        "length of {\"world\"};" +
+        "{\"hello\"} contains {\"world\"} ?;" +
+        " {3} mod {2};" +
+        "round {2.22};" +
+        " [abs] of {-1}").split(";"), "Operators");
+    makeTable(("set [a] to {\"fds\"};" +
+        "set [a]to {(a)};" +
+        "change [a] by {1};" +
+        "change [a] by {(a)};" +
+        "add {\"thing\"} to [lili];" +
+        "delete {\"thing\"} of [lili];" +
+        "insert {\"thing\"} at {1} of [lili];" +
+        "replace item {1} of [lili] with {\"otherthing\"};" +
+        "item {1} of [lili];" +
+        "length of [lili];" +
+        " [lili] contains {\"thing\"}?;" +
+        " say {(a list::list)};" +
+        " (a list::list);" +
+        " (nolist);").split(";"), "Data");
+
+    makeTable(("length of {};" +
+        "length of {\"fds\"};" +
+        "length of [ddd];" +
+        "length of {(dada)};" +
+        "{\"hello\"} contains {\"world\"} ?;" +
+        " [lili] contains {\"thing\"}?;" +
+        "{(sadfjk)} contains {(x)} ?;" +
+        "[x position] of [Sprite1];" +
+        "[abs] of {-1};" +
+        "[abs] of {};" +
+        "change [color] effect by {10};" +
+        "set [color] effect to {10};" +
+        "change [pitchX] effect by {10}::sound;" +
+        "set [pitchX] effect to {100}::sound;" +
+        "change [pitch] effect by {10};" +
+        "set [pitch] effect to {100}").split(";"), "same text blocks");
+    makeTable(("this is a custom block {1} \"a\" <>;" +
+        "(a::custom);" +
+        "<b::custom>;" +
+        "define (a) <b>").split(";"), "custom blocks");
+    makeTable(["|comment|",
+        "(x |x comment|)",
+        "block |x comment|",
+        "|comment| ; block",
+        "block {(r |r comment|)} |block comment|"
+    ], "comments");
+    //makeTable(("").split(";"), "");
     //scratchify('scratch',true);
     //scroll down #makeUrLifeEasy
     //window.scrollTo(0,document.body.scrollHeight);
@@ -71,8 +197,12 @@ function makeTable(codeArray,title=null){
         let xml = storage[wid];
         let workspace=createWorkspace(wid);
         if(xml) {
-            var dom = ScratchBlocks.Xml.textToDom(xml);
-            ScratchBlocks.Xml.domToWorkspace(dom, workspace);
+            try {
+                var dom = ScratchBlocks.Xml.textToDom(xml);
+                ScratchBlocks.Xml.domToWorkspace(dom, workspace);
+            }catch(err){
+                console.log(err);
+            }
         }
         fitBlocks(workspace, wid);
     }
