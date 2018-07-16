@@ -1,887 +1,691 @@
 module.exports = {
-    myGrammar: function () {
+    myGrammar: function() {
 
         "use strict";
         const chevrotain = require("chevrotain")
-
 
         const createToken = chevrotain.createToken;
         const tokenMatcher = chevrotain.tokenMatcher;
         const Lexer = chevrotain.Lexer;
         const Parser = chevrotain.Parser;
 
+    const Label = createToken({
+        name: "Label",
+        pattern:
+        //necessary to escape: [] {} () " ; \n # | @ \n and whitespace
+        //this cannot contain :: and should not partially match ::
+        //--> :(?!:) : not followed by another :
+        // --> x(?!y) = negative lookahead (matches 'x' when it's not followed by 'y')
 
-        const Label = createToken({
-            name: "Label",
-            pattern:
-            //necessary to escape: [] {} () " ; \n # | @ \n and whitespace
-            //this cannot contain :: and should not partially match ::
-            //--> :(?!:) : not followed by another :
-            // --> x(?!y) = negative lookahead (matches 'x' when it's not followed by 'y')
+        //atleast one character
+        // - a : followed by a not :  = (:(?!:))
+        // - normal - not necessary to escape or whitespace - characters = [^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]
+        // - \ followed by any character or a newline = [^] not
 
-            //atleast one character
-            // - a : followed by a not :  = (:(?!:))
-            // - normal - not necessary to escape or whitespace - characters = [^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]
-            // - \ followed by any character or a newline = \\(.|\n))
+        //no whitespace in the beginning or end -> will be skipped (OR allow whitespace with keywords?)
+        //char (whitespace* char)*
 
-            //no whitespace in the beginning or end -> will be skipped (OR allow whitespace with keywords?)
-            //char (whitespace* char)* char*
+            /((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"#@: \t\n]|\\[^])([ \t]*((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\[^]))*/,
 
-                /((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\(.|\n))([ \t]*((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\(.|\n)))*((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\(.|\n))*/,
+        line_breaks: true
+    });
 
-            line_breaks: true
+    const ScratchLNComment = createToken({
+        name: "ScratchLNComment",
+        pattern: Lexer.NA,
+    })
+
+    const LineComment = createToken({
+        name: "LineComment",
+        pattern: /\/\/[^\n]*[\n]?/,
+        group: Lexer.SKIPPED,
+        categories: [ScratchLNComment],
+    });
+
+    const BlockComment = createToken({
+        name: "BlockComment",
+        //between /**/
+        //allowed to use * and / within text but not after each other
+        //most chars = [^\*]
+        //* followed by /  = /\*(?!\/))
+        pattern: /\/\*([^\*]|\*(?!\/))*\*\//,
+        group: Lexer.SKIPPED,
+        categories: [ScratchLNComment],
+        line_breaks: true
+    });
+
+    const LCurlyBracket = createToken({
+        name: "LCurlyBracket",
+        pattern: /{/
+    });
+
+    const RCurlyBracket = createToken({
+        name: "RCurlyBracket",
+        pattern: /}/
+    });
+
+    const LRoundBracket = createToken({
+        name: "LRoundBracket",
+        pattern: /\(/
+    });
+
+    const RRoundBracket = createToken({
+        name: "RRoundBracket",
+        pattern: /\)/
+    });
+
+    const LAngleBracket = createToken({
+        name: "LAngleBracket",
+        pattern: /</
+    });
+
+    const RAngleBracket = createToken({
+        name: "RAngleBracket",
+        pattern: />/
+    });
+
+    const Literal = createToken({
+        name: "Literal",
+        pattern: Lexer.NA
+    });
+
+    const StringLiteral = createToken({
+        name: "StringLiteral",
+        //"char*" -> "char+" or ""
+        //most characters = [^"]
+        //escaped the " char =  \\"
+        //cannot end with \ so must end with = [^\\"] or \\"
+        //empty is allowed ""
+        pattern: /"([^"\\]|\\.)*"/,
+        categories: [Literal],
+        line_breaks: true
+    });
+
+    const NumberLiteral = createToken({
+        name: "NumberLiteral",
+        pattern: /-?(\d+)(\.\d+)?/,
+        categories: [Literal],
+        longer_alt: Label,
+    });
+
+    const ColorLiteral = createToken({
+        name: "ColorLiteral",
+        //first the 6 , otherwise only 3 will be matched
+        pattern: /#([0-9a-f]{6}|[0-9a-f]{3})/i,
+        categories: [Literal]
+    });
+
+    const ChoiceLiteral = createToken({
+        name: "ChoiceLiteral",
+        //idem stringLiteral
+        pattern: /\[([^\]\\]|\\.)*\]/,
+        categories: [Literal],
+        line_breaks: true
+    });
+
+    const Keyword = createToken({
+        name: "Keyword",
+        pattern: Lexer.NA,
+        //longer_alt: Label //I would expect that this is valid for all keywords but apparently not
+    });
+
+    const If = createToken({
+        name: "If",
+        pattern: /if/i,
+        categories: [Keyword],
+        longer_alt: Label
+    });
+
+    const Then = createToken({
+        name: "Then",
+        pattern: /then/i,
+        categories: [Keyword],
+        longer_alt: Label
+    });
+
+    const Else = createToken({
+        name: "Else",
+        pattern: /else/i,
+        categories: [Keyword],
+        longer_alt: Label
+    });
+
+    const Forever = createToken({
+        name: "Forever",
+        pattern: /forever/i,
+        categories: [Keyword],
+        longer_alt: Label
+    });
+
+    const RepeatUntil = createToken({
+        name: "RepeatUntil",
+        pattern: /repeat[ \t]*until/i,
+        categories: [Keyword],
+        longer_alt: Label
+    });
+
+    const Repeat = createToken({
+        name: "Repeat",
+        pattern: /repeat/i,
+        categories: [Keyword],
+        longer_alt: Label
+    });
+
+
+    const End = createToken({
+        name: "End",
+        pattern: /end/i,
+        categories: [Keyword],
+        longer_alt: Label
+    });
+
+    const Modifier = createToken({
+        name: "Modifier",
+        pattern: /::((:(?!:))|[^\{\|\(\)<>\\#@: \t\n]|\\[^])([ \t]*((:(?!:))|[^\|\(\)<>\\#@: \t]|\\[^]))*/
+    });
+
+    const Comment = createToken({
+        name: "Comment",
+        //similar to stringliteral but between ||
+        pattern: /\|([^\|\\]|\\.)*\|/
+    });
+
+    const ID = createToken({
+        name: "ID",
+        pattern: /@[a-z0-9_]+/i
+    });
+
+
+    const MultipleDelimiters = createToken({
+        name: "MultipleDelimiters",
+        //; \n should always bee seen as a whole 
+        //so a ; alone must explicitly not been followed by a \n
+        pattern: /((;[ \t]*\n|;[ \t]*(?!\n)|\n)[ \t]*){2,}/,
+        line_breaks: true
+    });
+
+    const Delimiter = createToken({
+        name: "Delimiter",
+        pattern: /;[ \t]*\n?|\n/,
+        line_breaks: true,
+        //longer_alt: MultipleDelimiters
+    });
+
+
+
+    // marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
+    const WhiteSpace = createToken({
+        name: "WhiteSpace",
+        pattern: /[ \t]+/,
+        group: Lexer.SKIPPED,
+        line_breaks: false
+    });
+
+    //order matters!
+    const allTokens = [
+        WhiteSpace,
+        LineComment, BlockComment, Comment, //match before anything else
+        Literal, StringLiteral, NumberLiteral, ColorLiteral, ChoiceLiteral,
+        //WARNING: RepeatUntil must be defined before Repeat
+        Forever, End, RepeatUntil, Repeat, If, Else, Then,
+        //WARNING: StackDelimiter must be defined before Delimiter
+        MultipleDelimiters, Delimiter,
+        LCurlyBracket, RCurlyBracket,
+        LRoundBracket, RRoundBracket,
+        RAngleBracket, LAngleBracket,
+        Modifier, ID,
+        //WARNING: Label must be defined after anything else
+        Label
+    ];
+
+    const LNLexer = new Lexer(allTokens);
+
+
+    // ----------------- parser -----------------
+    // Note that this is a Pure grammar, it only describes the grammar
+    // Not any actions (semantics) to perform during parsing.
+    function LNParser(input) {
+        Parser.call(this, input, allTokens, {
+            outputCst: true
         });
 
-        const LineComment = createToken({
-            name: "LineComment",
-            pattern: /\/\/[^\n]*[\n]?/,
-            group: Lexer.SKIPPED,
-        });
+        const $ = this;
 
-        const BlockComment = createToken({
-            name: "BlockComment",
-            //between /**/
-            //allowed to use * and / within text but not after each other
-            //most chars = [^\*]
-            //* followed by not = /\*[^\/]
-            // /***/ should also be allowed, thus optional end with * = \*?
-            pattern: /\/\*([^\*]|\*[^\/])*\*?\*\//,
-            group: Lexer.SKIPPED,
-            line_breaks: true
-        });
-
-        const LCurlyBracket = createToken({
-            name: "LCurlyBracket",
-            pattern: /{/
-        });
-
-        const RCurlyBracket = createToken({
-            name: "RCurlyBracket",
-            pattern: /}/
-        });
-
-        const LRoundBracket = createToken({
-            name: "LRoundBracket",
-            pattern: /\(/
-        });
-
-        const RRoundBracket = createToken({
-            name: "RRoundBracket",
-            pattern: /\)/
-        });
-
-        const RAngleBracket = createToken({
-            name: "RAngleBracket",
-            pattern: />/
-        });
-
-        const LAngleBracket = createToken({
-            name: "LAngleBracket",
-            pattern: /</
-        });
-
-        const LSquareBracket = createToken({
-            name: "LSquareBracket",
-            pattern: /\[/
-        });
-
-        const RSquareBracket = createToken({
-            name: "RSquareBracket",
-            pattern: /\]/
-        });
-
-        const DoubleColon = createToken({
-            name: "DoubleColon",
-            pattern: /::/
-        });
-
-        const Comment = createToken({
-            name: "Comment",
-            //similar to stringliteral but between ||
-            pattern: /(\|([^\|]|\\\|)*([^\\]|\\\|)\||\|\|)/
-        });
-
-
-        const ID = createToken({
-            name: "ID",
-            pattern: /@[a-z0-9_]+/i
-        });
-
-        const Literal = createToken({
-            name: "Literal",
-            pattern: Lexer.NA
-        });
-
-        const StringLiteral = createToken({
-            name: "StringLiteral",
-            //"char*" -> "char+" or ""
-            //most characters = [^"]
-            //escaped the " char =  \\"
-            //cannot end with \ so must end with = [^\\"]
-            //empty is allowed ""
-            pattern: /("([^"]|\\")*([^\\"]|\\")"|"")/,
-            categories: [Literal],
-            line_breaks: true
-        });
-
-        const NumberLiteral = createToken({
-            name: "NumberLiteral",
-            pattern: /-?(\d+)(\.\d+)?/,
-            categories: [Literal],
-            longer_alt: Label,
-        });
-
-        const ColorLiteral = createToken({
-            name: "ColorLiteral",
-            //first the 6 , otherwise only 3 will be matched
-            pattern: /#([0-9a-f]{6}|[0-9a-f]{3})/i,
-            categories: [Literal]
-        });
-
-        const Keyword = createToken({
-            name: "Keyword",
-            pattern: Lexer.NA
-        });
-
-        const Forever = createToken({
-            name: "Forever",
-            pattern: /forever/i,
-            longer_alt: Label,
-            categories: [Keyword]
-        });
-
-        const End = createToken({
-            name: "End",
-            pattern: /end/i,
-            longer_alt: Label,
-            categories: [Keyword]
-        });
-
-        const Then = createToken({
-            name: "Then",
-            pattern: /then/i,
-            longer_alt: Label,
-            categories: [Keyword]
-        });
-
-        const Repeat = createToken({
-            name: "Repeat",
-            pattern: /repeat/i,
-            longer_alt: Label,
-            categories: [Keyword]
-        });
-        const RepeatUntil = createToken({
-            name: "RepeatUntil",
-            pattern: /repeat[ \t]+until/i,
-            longer_alt: Label,
-            categories: [Keyword]
-        });
-
-        const If = createToken({
-            name: "If",
-            pattern: /if/i,
-            longer_alt: Label,
-            categories: [Keyword]
-        });
-
-        const Else = createToken({
-            name: "Else",
-            pattern: /else/i,
-            longer_alt: Label,
-            categories: [Keyword]
-        });
-
-
-// marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
-        const WhiteSpace = createToken({
-            name: "WhiteSpace",
-            pattern: /[ \t]+/,
-            group: Lexer.SKIPPED,
-            line_breaks: false
-        });
-
-        const Delimiter = createToken({
-            name: "Delimiter",
-            pattern: /;[ \t]*\n|;|\n/,
-            line_breaks: true
-        });
-
-        //order matters!
-        const allTokens = [
-            WhiteSpace,
-            LineComment, BlockComment, Comment,  //match before anything else
-            Literal, StringLiteral, NumberLiteral, ColorLiteral,
-            Forever, End, Repeat, If, Else, Then, RepeatUntil,
-            Delimiter,
-            Label,
-            LCurlyBracket, RCurlyBracket,
-            LRoundBracket, RRoundBracket,
-            RAngleBracket, LAngleBracket,
-            LSquareBracket, RSquareBracket,
-            DoubleColon, ID
-        ];
-
-        const LNLexer = new Lexer(allTokens);
-
-
-        // ----------------- parser -----------------
-// Note that this is a Pure grammar, it only describes the grammar
-// Not any actions (semantics) to perform during parsing.
-        function LNParser(input) {
-            Parser.call(this, input, allTokens, {
-                outputCst: true
-            });
-
-            const $ = this;
-
-            $.RULE("code", () => {
-
-                $.MANY({
-                    DEF: () => {
-                        $.CONSUME(Delimiter);
-                    }
-                });
-                $.OPTION3(() => {
-                    $.SUBRULE($.comment);
-                })
-                $.OPTION(() => {
-
+        $.RULE("code", () => {
+            $.SUBRULE($.delimiters);
+            $.OPTION(() => {
+                $.SUBRULE($.comments);
+            })
+            $.OPTION2(() => {
                     $.SUBRULE($.stack);
-
-                    $.MANY2({
+                    $.MANY({
                         DEF: () => {
-                            //$.CONSUME2(Delimiter);
-                            $.AT_LEAST_ONE({
-                                DEF: () => {
-
-                                    $.OR([{
-                                        ALT: () => {
-                                            $.CONSUME3(Delimiter);
-                                        }
-                                    }, {
-                                        ALT: () => {
-                                            $.SUBRULE2($.comment);
-                                        }
-                                    }]);
-                                }
-                            });
-                            $.OPTION2(() => {
+                            $.SUBRULE($.stackDelimiter);
+                            $.OPTION3(() => {
                                 $.SUBRULE2($.stack);
                             })
-
                         }
                     });
-
-                    //$.MANY3(() => {
-                    //   $.CONSUME4(Delimiter);
-                    //})
                 })
-
                 //$.CONSUME(chevrotain.EOF);
+        });
+
+
+        $.RULE("delimiters", () => {
+            $.OR([{
+                ALT: () => {
+                    $.CONSUME(Delimiter, {
+                        LABEL: "leadingCodeDelimiters"
+                    });
+                }
+            }, {
+                ALT: () => {
+                    $.CONSUME(MultipleDelimiters, {
+                        LABEL: "leadingCodeDelimiters"
+                    });
+                },
+            }, {
+                ALT: chevrotain.EMPTY_ALT()
+            }])
+        })
+
+        $.RULE("stackDelimiter", () => {
+            $.AT_LEAST_ONE({
+                DEF: () => {
+                    $.OR([{
+                        ALT: () => {
+                            $.CONSUME(MultipleDelimiters, {
+                                LABEL: "intermediateCodeDelimiters"
+                            });
+                        }
+                    }, {
+                        ALT: () => {
+                            $.SUBRULE($.comments);
+                        }
+                    }]);
+                }
             });
+        });
 
-            $.RULE("comment", () => {
-                $.AT_LEAST_ONE(() => {
-                    $.CONSUME(Comment);
-                    $.MANY2(() => {
-                        $.CONSUME2(Delimiter);
-                    })
+        $.RULE("comments", () => {
+            $.AT_LEAST_ONE(() => {
+                $.SUBRULE($.comment);
+                $.SUBRULE($.delimiters, {
+                    LABEL: "trailingCommentsDelimiters"
                 });
+            });
+        });
 
+        $.RULE("stack", () => {
+            $.SUBRULE($.block);
+            $.MANY(() => {
+                $.CONSUME(Delimiter, {
+                    LABEL: "intermediateStackDelimiter"
+                });
+                $.SUBRULE2($.block);
+            });
+            $.OPTION(() => {
+                $.CONSUME2(Delimiter, {
+                    LABEL: "trailingStackDelimiter"
+                });
             })
+        });
 
-            $.RULE("stack", () => {
-                $.SUBRULE($.block);
+        $.RULE("block", () => {
+            $.OR([{
+                ALT: () => {
+                    $.SUBRULE($.atomic);
+                }
+            }, {
+                ALT: () => {
+                    $.SUBRULE($.composite);
+                }
+            }]);
+        });
 
-
-                $.MANY(() => {
-                    $.CONSUME(Delimiter);
-                    $.SUBRULE2($.block);
-                });
-
-                $.OPTION(() => {
-                    $.CONSUME2(Delimiter);
-                })
-            });
-
-            $.RULE("block", () => {
+        $.RULE("atomic", () => {
+            $.AT_LEAST_ONE(() => {
                 $.OR([{
-                    NAME: "$atomic",
                     ALT: () => {
-                        $.SUBRULE($.atomic);
+                        $.CONSUME(Label);
                     }
                 }, {
-                    NAME: "$composite",
                     ALT: () => {
-                        $.SUBRULE($.composite);
+                        $.SUBRULE($.argument);
                     }
                 }]);
             });
+            $.SUBRULE($.annotations);
+        });
+
+        $.RULE("composite", () => {
+            $.OR([{
+                ALT: () => {
+                    $.SUBRULE($.ifelse);
+                }
+            }, {
+                ALT: () => {
+                    $.SUBRULE($.forever);
+                }
+            }, {
+                ALT: () => {
+                    $.SUBRULE($.repeat);
+                }
+            }, {
+                ALT: () => {
+                    $.SUBRULE($.repeatuntil);
+                }
+            }]);
+        });
+
+        $.RULE("ifelse", () => {
+            $.CONSUME(If);
+            $.SUBRULE($.condition);
+            $.OPTION(() => {
+                $.CONSUME(Then);
+            });
+            $.SUBRULE($.annotations);
+            $.SUBRULE($.clause, {
+                LABEL: "ifClause"
+            });
+            $.OPTION3(() => {
+                $.OPTION4(() => {
+                    $.CONSUME(Delimiter, {
+                        LABEL: "trailingIfClauseDelimiter"
+                    });
+                });
+                $.CONSUME(Else);
+                $.SUBRULE3($.clause, {
+                    LABEL: "elseClause"
+                });
+            });
+        });
+
+        $.RULE("forever", () => {
+            $.CONSUME(Forever);
+            $.SUBRULE($.annotations);
+            $.SUBRULE($.clause);
+        });
 
 
-            $.RULE("atomic", () => {
-                $.AT_LEAST_ONE(() => {
-                    $.OR([{
+        $.RULE("repeat", () => {
+            $.CONSUME(Repeat);
+            $.SUBRULE($.argument);
+            $.SUBRULE($.annotations);
+            $.SUBRULE($.clause);
+        });
+
+        $.RULE("repeatuntil", () => {
+            $.CONSUME(RepeatUntil);
+            $.SUBRULE($.condition);
+            $.SUBRULE($.annotations);
+            $.SUBRULE($.clause);
+        });
+
+
+
+
+        $.RULE("clause", () => {
+            $.OPTION(() => {
+                $.CONSUME(Delimiter, {
+                    LABEL: "leadingClauseDelimiter"
+                });
+            });
+            $.OPTION2(() => {
+                $.SUBRULE($.stack);
+            });
+            $.OPTION3(() => {
+                $.CONSUME(End);
+            })
+        });
+
+        $.RULE("annotations", () => {
+            $.SUBRULE($.modifiers);
+            $.SUBRULE($.id);
+            $.OPTION(() => {
+                $.SUBRULE($.comment);
+            });
+
+        });
+
+        $.RULE("modifiers", () => {
+            $.MANY(() => {
+                $.CONSUME(Modifier);
+            })
+        });
+
+        $.RULE("id", () => {
+            $.OPTION(() => {
+                $.CONSUME(ID);
+            });
+        });
+
+        $.RULE("comment", () => {
+            $.CONSUME(Comment);
+            $.SUBRULE($.modifiers);
+            $.SUBRULE($.id);
+        });
+
+        $.RULE("argument", () => {
+            $.OR([{
+                ALT: () => {
+                    $.CONSUME(LCurlyBracket);
+                    $.OR2([{
+                        ALT: () => {
+                            $.CONSUME(Literal);
+                        }
+                    }, {
                         ALT: () => {
                             $.CONSUME(Label);
                         }
                     }, {
                         ALT: () => {
-                            $.SUBRULE($.argument);
-                        }
-                    }]);
-
-                });
-
-                $.SUBRULE($.modifier);
-
-
-                $.SUBRULE($.annotations);
-
-            });
-
-            $.RULE("annotations", () => {
-                $.OPTION(() => {
-                    $.OR([{
-                        ALT: () => {
-                            $.CONSUME(Comment);
-                            $.OPTION2(() => {
-                                $.CONSUME(ID);
-                            });
-
+                            $.SUBRULE($.expression);
                         }
                     }, {
                         ALT: () => {
-                            $.CONSUME2(ID);
-                            $.OPTION3(() => {
-                                $.CONSUME2(Comment);
+                            $.SUBRULE($.predicate);
+                        }
+                    }, {
+                        NAME: "$empty",
+                        ALT: chevrotain.EMPTY_ALT()
+                    }, ]);
+                    $.SUBRULE($.id);
+                    $.CONSUME(RCurlyBracket);
+                }
+            }, {
+                ALT: () => {
+                    $.OR3([{
+                        ALT: () => {
+                            $.CONSUME(StringLiteral, {
+                                LABEL: "Literal"
                             });
                         }
-                    }]);
-                })
-            })
-
-            $.RULE("composite", () => {
-                $.OR([{
-                    NAME: "$ifelse",
-                    ALT: () => {
-                        $.SUBRULE($.ifelse);
-                    }
-                }, {
-                    NAME: "$forever",
-                    ALT: () => {
-                        $.SUBRULE($.forever);
-                    }
-                }, {
-                    NAME: "$repeat",
-                    ALT: () => {
-                        $.SUBRULE($.repeat);
-                    }
-                }, {
-                    NAME: "$repeatuntil",
-                    ALT: () => {
-                        $.SUBRULE($.repeatuntil);
-                    }
-                }]);
-            });
-
-            $.RULE("ifelse", () => {
-                $.CONSUME(If);
-                $.SUBRULE($.condition);
-                $.OPTION(() => {
-                    $.CONSUME(Then);
-                });
-                $.SUBRULE($.annotations);
-                $.SUBRULE($.clause);
-                $.OPTION3(() => {
-                    $.CONSUME(Else);
-                    $.SUBRULE3($.clause);
-                });
-
-            });
-
-            $.RULE("forever", () => {
-                $.CONSUME(Forever);
-                $.SUBRULE($.annotations);
-                $.SUBRULE($.clause);
-
-            });
-
-
-            $.RULE("repeat", () => {
-                $.CONSUME(Repeat);
-                $.SUBRULE($.argument);
-                $.SUBRULE($.annotations);
-                $.SUBRULE($.clause);
-
-            });
-
-            $.RULE("repeatuntil", () => {
-                $.CONSUME(RepeatUntil);
-                $.SUBRULE($.condition);
-                $.SUBRULE($.annotations);
-                $.SUBRULE($.clause);
-            });
-
-            $.RULE("condition", () => {
-                $.OR([{
-                    ALT: () => {
-                        $.CONSUME(LCurlyBracket);
-                        $.OPTION(() => {
-                            $.SUBRULE($.predicate);
-
-                        });
-                        $.OPTION2(() => {
-                            $.CONSUME(ID);
-                        });
-                        $.CONSUME(RCurlyBracket);
-                    }
-                }, {
-                    ALT: () => {
-                        $.SUBRULE2($.predicate);
-                    }
-                }])
-            })
-
-
-            $.RULE("clause", () => {
-                $.OPTION(() => {
-                    $.CONSUME(Delimiter);
-                });
-                $.OPTION2(() => {
-                    $.SUBRULE($.stack);
-                });
-
-                $.OPTION3(() => {
-                    //$.CONSUME2(Delimiter);
-                    $.CONSUME(End);
-                })
-            });
-
-            $.RULE("modifier", () => {
-                $.OPTION(() => {
-                    $.CONSUME(DoubleColon);
-                    $.CONSUME(Label);
-                })
-            });
-
-            $.RULE("argument", () => {
-                $.OR([{
-                    ALT: () => {
-                        $.CONSUME(LCurlyBracket);
-                        $.OPTION(() => {
-                            $.OR2([{
-                                ALT: () => {
-                                    $.CONSUME(Literal);
-                                }
-                            }, {
-                                ALT: () => {
-                                    $.SUBRULE($.expression);
-                                }
-                            }, {
-                                ALT: () => {
-                                    $.SUBRULE($.predicate);
-                                }
-                            }, {
-                                ALT: () => {
-                                    $.SUBRULE($.choice);
-                                }
-                            }]);
-                        });
-                        $.OPTION2(() => {
-                            $.CONSUME(ID);
-                        });
-                        $.CONSUME(RCurlyBracket);
-                    }
-                }, {
-                    ALT: () => {
-                        $.OR3([{
-                            ALT: () => {
-                                $.CONSUME(StringLiteral);
-                            }
-                        }, {
-                            ALT: () => {
-                                $.CONSUME(ColorLiteral);
-                            }
-                        }, {
-                            ALT: () => {
-                                $.SUBRULE2($.expression);
-                            }
-                        }, {
-                            ALT: () => {
-                                $.SUBRULE2($.predicate);
-                            }
-                        }, {
-                            ALT: () => {
-                                $.SUBRULE2($.choice);
-                            }
-                        }]);
-                    }
-                }])
-
-            });
-
-
-            $.RULE("expression", () => {
-                $.CONSUME(LRoundBracket);
-                $.OPTION(() => {
-                    $.SUBRULE($.atomic);
-                });
-                $.CONSUME(RRoundBracket);
-            });
-
-
-            $.RULE("predicate", () => {
-                $.CONSUME(LAngleBracket);
-                $.OPTION(() => {
-                    $.SUBRULE($.atomic);
-                });
-                $.CONSUME(RAngleBracket);
-            });
-
-            $.RULE("choice", () => {
-                $.CONSUME(LSquareBracket);
-                $.OPTION(() => {
-                    $.CONSUME(Label);
-                });
-                $.CONSUME(RSquareBracket);
-            });
-
-            // very important to call this after all the rules have been defined.
-            // otherwise the parser may not work correctly as it will lack information
-            // derived during the self analysis phase.
-            Parser.performSelfAnalysis(this);
-        }
-
-        LNParser.prototype = Object.create(Parser.prototype);
-        LNParser.prototype.constructor = LNParser;
-
-// wrapping it all together
-// reuse the same parser instance.
-        const lnparser = new LNParser([]);
-
-        // ----------------- Interpreter -----------------
-        const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
-
-        class InformationVisitor extends BaseCstVisitor {
-
-            constructor() {
-                super();
-                // This helper will detect any missing or redundant methods on this visitor
-                this.validateVisitor()
-            }
-
-            scripts(ctx) {
-                let s = [];
-                if (ctx.code) {
-                    for (let i = 0; i < ctx.code.length; i++) {
-                        s.push(this.visit(ctx.code[i]))
-                    }
-                }
-                if (ctx.expression) {
-                    for (let i = 0; i < ctx.expression.length; i++) {
-                        s.push(this.visit(ctx.expression[i]))
-                    }
-                }
-                if (ctx.predicate) {
-                    for (let i = 0; i < ctx.predicate.length; i++) {
-                        s.push(this.visit(ctx.predicate[i]))
-                    }
-                }
-                return s
-            }
-
-            code(ctx) {
-                let s = [];
-                for (let i = 0; ctx.stack && i < ctx.stack.length; i++) {
-                    s.push(this.visit(ctx.stack[i]))
-                }
-                return {
-                    'type': 'multiple stacks',
-                    'stacks': s
-                }
-            }
-
-
-            stack(ctx) {
-                let blocks = [];
-                for (let i = 0; ctx.block && i < ctx.block.length; i++) {
-                    blocks.push(this.visit(ctx.block[i]))
-                }
-                return blocks
-            }
-
-            block(ctx) {
-                let v = ctx;
-                if (ctx.$forever && ctx.$forever.length > 0) {
-                    v = this.visit(ctx.$forever)
-                } else if (ctx.$repeatuntil && ctx.$repeatuntil.length > 0) {
-                    v = this.visit(ctx.$repeatuntil)
-                } else if (ctx.$repeat && ctx.$repeat.length > 0) {
-                    v = this.visit(ctx.$repeat)
-                } else if (ctx.$atomic && ctx.$atomic.length > 0) {
-                    v = this.visit(ctx.$atomic)
-                } else if (ctx.$ifelse && ctx.$ifelse.length > 0) {
-                    v = this.visit(ctx.$ifelse)
-                }
-                return {
-                    'type': 'stackblock',
-                    'value': v
-                }
-            }
-
-            block$forever(ctx) {
-                return {
-                    'type': 'stackblock',
-                    'value': this.visit(ctx.forever)
-                }
-            }
-
-            block$repeat(ctx) {
-                return {
-                    'type': 'stackblock',
-                    'value': this.visit(ctx.repeat)
-                }
-            }
-
-            block$repeatuntil(ctx) {
-                return {
-                    'type': 'stackblock',
-                    'value': this.visit(ctx.repeatuntil)
-                }
-            }
-
-            block$ifelse(ctx) {
-                return {
-                    'type': 'stackblock',
-                    'value': this.visit(ctx.ifelse)
-                }
-            }
-
-            block$atomic(ctx) {
-                return {
-                    'type': 'stackblock',
-                    'value': this.visit(ctx.atomic)
-                }
-            }
-
-            forever(ctx) {
-                return {
-                    'action': 'forever',
-                    'stack': this.visit(ctx.stack),
-                    'id': this.visit(ctx.id),
-                }
-            }
-
-
-            repeat(ctx) {
-                return {
-                    'action': 'repeat',
-                    'amount': this.visit(ctx.countableinput),
-                    'stack': this.visit(ctx.stack),
-                    'id': this.visit(ctx.id),
-                }
-            }
-
-            repeatuntil(ctx) {
-                return {
-                    'action': 'repeat until',
-                    'until': this.visit(ctx.predicate),
-                    'stack': this.visit(ctx.stack),
-                    'id': this.visit(ctx.id),
-                }
-            }
-
-            ifelse(ctx) {
-                if (ctx.else && ctx.else.length > 0) {
-                    return {
-                        'action': 'ifelse',
-                        'until': this.visit(ctx.predicate),
-                        'stack_one': ctx.stack && ctx.stack.length > 0 ? this.visit(ctx.stack[0]) : '',
-                        'stack_two': this.visit(ctx.else)
-                    }
-                } else {
-                    return {
-                        'action': 'if',
-                        'until': this.visit(ctx.predicate),
-                        'stack_one': ctx.stack && ctx.stack.length > 0 ? this.visit(ctx.stack[0]) : ''
-                    }
-                }
-            }
-
-            else(ctx) {
-                return ctx.stack && ctx.stack.length > 0 ? this.visit(ctx.stack[0]) : ''
-            }
-
-            end(ctx) {
-            }
-
-            atomic(ctx) {
-                let text = '';
-                let a = 0;
-                for (let i = 0; ctx.Label && i < ctx.Label.length; i++) {
-                    if (ctx.argument && a < ctx.argument.length) {
-                        while (a < ctx.argument.length && this.getOffsetArgument(ctx.argument[a]) < ctx.Label[i].startOffset) {
-                            text += '{}';//this.getOffsetArgument(ctx.argument[a])
-                            a++;
+                    }, {
+                        ALT: () => {
+                            $.CONSUME(ColorLiteral, {
+                                LABEL: "Literal"
+                            });
                         }
-                    }
-
-                    text += ctx.Label[i].image
+                    }, {
+                        ALT: () => {
+                            $.CONSUME(ChoiceLiteral, {
+                                LABEL: "Literal"
+                            });
+                        }
+                    }, {
+                        ALT: () => {
+                            $.SUBRULE2($.expression);
+                        }
+                    }, {
+                        ALT: () => {
+                            $.SUBRULE2($.predicate);
+                        }
+                    }]);
                 }
-                for (a; ctx.argument && a < ctx.argument.length; a++) {
-                    text += '{}'
+            }])
+
+        });
+
+        $.RULE("condition", () => {
+            $.OR([{
+                ALT: () => {
+                    $.CONSUME(LCurlyBracket);
+                    $.OR2([{
+                        ALT: () => {
+                            $.SUBRULE($.predicate);
+                        }
+                    }, {
+                        NAME: "$empty",
+                        ALT: chevrotain.EMPTY_ALT()
+                    }, ]);
+                    $.OPTION2(() => {
+                        $.CONSUME(ID);
+                    });
+                    $.CONSUME(RCurlyBracket);
                 }
-
-
-                let args = [];
-                for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
-                    args.push(this.visit(ctx.argument[i]))
+            }, {
+                ALT: () => {
+                    $.SUBRULE2($.predicate);
                 }
-                let ofs = 0;
-                if (ctx.Label) {
-                    if (ctx.argument && ctx.argument[0]) {
-                        ofs = this.getOffsetArgument(ctx.argument[0]) < ctx.Label[0].startOffset ? this.getOffsetArgument(ctx.argument[0]) : ctx.Label[0].startOffset
-                    } else {
-                        ofs = ctx.Label[0].startOffset
-                    }
-                } else {
-                    ofs = this.getOffsetArgument(ctx.argument[0])
-                }
-                return {
-                    'text': text,
-                    'argumenten': args,
-                    'modifier': this.visit(ctx.modifier),
-                    'id': this.visit(ctx.id),
-                    'offset': ofs
-                }
-            }
+            }])
+        });
 
-            getOffsetArgument(arg) {
-                if (!arg) {
-                    return Number.MAX_SAFE_INTEGER; //avoid infinite loop
-                }
-                let child = this.visit(arg);
-                return child.offset
-            }
-
-            modifier(ctx) {
-                return {
-                    'text': ctx.Label[0].image,
-                    'type': 'modifier',
-                    'offset': ctx.DoubleColon[0].startOffset,
-                }
-            }
-
-            //TODO
-            id(ctx) {
-                return {
-                    'text': ctx.ID[0].image,
-                    'type': 'ID',
-                    'offset': ctx.startOffset,
-                }
-            }
-
-            argument(ctx) {
-                if (ctx.blabla && ctx.blabla.length > 0) {
-                    return this.visit(ctx.blabla)
-                } else if (ctx.expression && ctx.expression.length > 0) {
-                    return this.visit(ctx.expression)
-                } else if (ctx.predicate && ctx.predicate.length > 0) {
-                    return this.visit(ctx.predicate)
-                } else if (ctx.choice && ctx.choice.length > 0) {
-                    return this.visit(ctx.choice)
-                } else if (ctx.LCurlyBracket) {
-                    //empty
-                    return {
-                        'value': '',
-                        'type': 'empty',
-                        'offset': ctx.LCurlyBracket[0].startOffset,
-                    }
-                } else if (ctx.StringLiteral) { //if (tokenMatcher(ctx, StringLiteral))
-                    return {
-                        'value': ctx.StringLiteral[0].image,
-                        'type': 'StringLiteral',
-                        'offset': ctx.StringLiteral[0].startOffset,
-                    }
-                } else if (ctx.ColorLiteral) { //if (tokenMatcher(ctx, StringLiteral))
-                    return {
-                        'value': ctx.ColorLiteral[0].image,
-                        'type': 'ColorLiteral',
-                        'offset': ctx.ColorLiteral[0].startOffset,
-                    }
-                }
-            }
-
-            blabla(ctx) {
-                if (tokenMatcher(ctx.Literal[0], NumberLiteral)) {
-                    return {
-                        'value': ctx.Literal[0].image,
-                        'type': 'number',
-                        'offset': ctx.Literal[0].startOffset,
-                    };
-                } else if (tokenMatcher(ctx.Literal[0], ColorLiteral)) {
-                    return {
-                        'value': ctx.Literal[0].image,
-                        'type': 'color',
-                        'offset': ctx.Literal[0].startOffset,
-                    };
-                } else {
-                    return {
-                        'value': ctx.Literal[0].image,
-                        'type': 'text',
-                        'offset': ctx.Literal[0].startOffset,
-                    };
-                }
-
-            }
+        $.RULE("expression", () => {
+            $.CONSUME(LRoundBracket);
+            $.OPTION(() => {
+                $.SUBRULE($.atomic);
+            });
+            $.CONSUME(RRoundBracket);
+        });
 
 
-            countableinput(ctx) {
-                if (ctx.blabla && ctx.blabla.length > 0) {
-                    return this.visit(ctx.blabla)
-                } else if (ctx.expression && ctx.expression.length > 0) {
-                    return this.visit(ctx.expression)
-                }
-            }
+        $.RULE("predicate", () => {
+            $.CONSUME(LAngleBracket);
+            $.OPTION(() => {
+                $.SUBRULE($.atomic);
+            });
+            $.CONSUME(RAngleBracket);
+        });
 
-            choice(ctx) {
-                return {
-                    'type': 'choice',
-                    'value': ctx.Label[0].image,
-                    'offset': ctx.LSquareBracket[0].startOffset,
-                    'text': ctx.Label[0].image,
-                };
-            }
 
-            expression(ctx) {
-                let b = this.visit(ctx.atomic);
-                return {
-                    'type': 'expression',
-                    'value': b,
-                    'offset': b.offset,
-                    'text': b.text
-                };
-            }
+        // very important to call this after all the rules have been defined.
+        // otherwise the parser may not work correctly as it will lack information
+        // derived during the self analysis phase.
+        Parser.performSelfAnalysis(this);
+    }
 
-            predicate(ctx) {
-                let b = '';
-                if (ctx.atomic) {
-                    b = this.visit(ctx.atomic);
-                }
-                return {
-                    'type': 'predicate',
-                    'value': b,
-                    'offset': b.offset,
-                    'text': b.text
-                };
-            }
+    LNParser.prototype = Object.create(Parser.prototype);
+    LNParser.prototype.constructor = LNParser;
 
+    // wrapping it all together
+    // reuse the same parser instance.
+    const lnparser = new LNParser([]);
+
+    // ----------------- Interpreter -----------------
+    const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
+    class LNVisitor extends BaseCstVisitor {
+
+        constructor() {
+            super();
+            // This helper will detect any missing or redundant methods on this visitor
+            this.validateVisitor()
+        }
+
+        code(ctx) {
 
         }
 
+        delimiters(ctx) {
 
-        // for the playground to work the returned object must contain these fields
+        }
+
+        stackDelimiter(ctx) {
+
+        }
+
+        comments(ctx) {
+
+        }
+
+        stack(ctx) {
+
+        }
+
+        block(ctx) {
+
+        }
+
+        atomic(ctx) {
+
+        }
+
+        composite(ctx) {
+
+        }
+
+        ifelse(ctx) {
+
+        }
+
+        forever(ctx) {
+
+        }
+
+        repeat(ctx) {
+
+        }
+
+        repeatuntil(ctx) {
+
+        }
+
+        clause(ctx) {
+
+        }
+
+        annotations(ctx) {
+
+        }
+
+        modifiers(ctx) {
+
+        }
+
+        id(ctx) {
+
+        }
+
+        comment(ctx) {
+
+        }
+
+        argument(ctx) {
+
+        }
+
+        argument$empty(ctx) {
+
+        }
+
+        condition(ctx) {
+
+        }
+
+        condition$empty(ctx) {
+
+        }
+
+        expression(ctx) {
+
+        }
+
+        predicate(ctx) {
+
+        }
+
+    }
+    // for the playground to work the returned object must contain these fields
         return {
             lexer: LNLexer,
             parser: LNParser,

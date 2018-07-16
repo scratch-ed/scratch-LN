@@ -25,23 +25,16 @@
     "name": "code",
     "definition": [
       {
-        "type": "Repetition",
-        "definition": [
-          {
-            "type": "Terminal",
-            "name": "Delimiter",
-            "label": "Delimiter",
-            "idx": 0,
-            "pattern": ";[ \\t]*\\n|;|\\n"
-          }
-        ]
+        "type": "NonTerminal",
+        "name": "delimiters",
+        "idx": 0
       },
       {
         "type": "Option",
         "definition": [
           {
             "type": "NonTerminal",
-            "name": "comment",
+            "name": "comments",
             "idx": 0
           }
         ]
@@ -58,36 +51,9 @@
             "type": "Repetition",
             "definition": [
               {
-                "type": "RepetitionMandatory",
-                "definition": [
-                  {
-                    "type": "Alternation",
-                    "definition": [
-                      {
-                        "type": "Flat",
-                        "definition": [
-                          {
-                            "type": "Terminal",
-                            "name": "Delimiter",
-                            "label": "Delimiter",
-                            "idx": 3,
-                            "pattern": ";[ \\t]*\\n|;|\\n"
-                          }
-                        ]
-                      },
-                      {
-                        "type": "Flat",
-                        "definition": [
-                          {
-                            "type": "NonTerminal",
-                            "name": "comment",
-                            "idx": 2
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
+                "type": "NonTerminal",
+                "name": "stackDelimiter",
+                "idx": 0
               },
               {
                 "type": "Option",
@@ -107,29 +73,97 @@
   },
   {
     "type": "Rule",
-    "name": "comment",
+    "name": "delimiters",
     "definition": [
       {
-        "type": "RepetitionMandatory",
+        "type": "Alternation",
         "definition": [
           {
-            "type": "Terminal",
-            "name": "Comment",
-            "label": "Comment",
-            "idx": 0,
-            "pattern": "\\|[^|]*\\|"
-          },
-          {
-            "type": "Repetition",
+            "type": "Flat",
             "definition": [
               {
                 "type": "Terminal",
                 "name": "Delimiter",
                 "label": "Delimiter",
-                "idx": 2,
-                "pattern": ";[ \\t]*\\n|;|\\n"
+                "idx": 0,
+                "pattern": ";[ \\t]*\\n?|\\n"
               }
             ]
+          },
+          {
+            "type": "Flat",
+            "definition": [
+              {
+                "type": "Terminal",
+                "name": "MultipleDelimiters",
+                "label": "MultipleDelimiters",
+                "idx": 0,
+                "pattern": "((;[ \\t]*\\n|;[ \\t]*(?!\\n)|\\n)[ \\t]*){2,}"
+              }
+            ]
+          },
+          {
+            "type": "Flat",
+            "definition": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "Rule",
+    "name": "stackDelimiter",
+    "definition": [
+      {
+        "type": "RepetitionMandatory",
+        "definition": [
+          {
+            "type": "Alternation",
+            "definition": [
+              {
+                "type": "Flat",
+                "definition": [
+                  {
+                    "type": "Terminal",
+                    "name": "MultipleDelimiters",
+                    "label": "MultipleDelimiters",
+                    "idx": 0,
+                    "pattern": "((;[ \\t]*\\n|;[ \\t]*(?!\\n)|\\n)[ \\t]*){2,}"
+                  }
+                ]
+              },
+              {
+                "type": "Flat",
+                "definition": [
+                  {
+                    "type": "NonTerminal",
+                    "name": "comments",
+                    "idx": 0
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "Rule",
+    "name": "comments",
+    "definition": [
+      {
+        "type": "RepetitionMandatory",
+        "definition": [
+          {
+            "type": "NonTerminal",
+            "name": "comment",
+            "idx": 0
+          },
+          {
+            "type": "NonTerminal",
+            "name": "delimiters",
+            "idx": 0
           }
         ]
       }
@@ -152,7 +186,7 @@
             "name": "Delimiter",
             "label": "Delimiter",
             "idx": 0,
-            "pattern": ";[ \\t]*\\n|;|\\n"
+            "pattern": ";[ \\t]*\\n?|\\n"
           },
           {
             "type": "NonTerminal",
@@ -169,7 +203,7 @@
             "name": "Delimiter",
             "label": "Delimiter",
             "idx": 2,
-            "pattern": ";[ \\t]*\\n|;|\\n"
+            "pattern": ";[ \\t]*\\n?|\\n"
           }
         ]
       }
@@ -224,7 +258,7 @@
                     "name": "Label",
                     "label": "Label",
                     "idx": 0,
-                    "pattern": "(:?[^|\\{\\(\\)\\}\\<\\>\\[\\]:;\\\\\"\\n#@]|\\\\[\\{\\|\\(\\)\\}\\<\\>\\[\\]:;\\\\\"\\n#@])+"
+                    "pattern": "((:(?!:))|[^\\{\\|\\(\\)\\}\\<\\>\\[\\];\\\\\"#@: \\t\\n]|\\\\[^])([ \\t]*((:(?!:))|[^\\{\\|\\(\\)\\}\\<\\>\\[\\];\\\\\"\\n#@: \\t]|\\\\[^]))*"
                   }
                 ]
               },
@@ -244,77 +278,8 @@
       },
       {
         "type": "NonTerminal",
-        "name": "modifier",
-        "idx": 0
-      },
-      {
-        "type": "NonTerminal",
         "name": "annotations",
         "idx": 0
-      }
-    ]
-  },
-  {
-    "type": "Rule",
-    "name": "annotations",
-    "definition": [
-      {
-        "type": "Option",
-        "definition": [
-          {
-            "type": "Alternation",
-            "definition": [
-              {
-                "type": "Flat",
-                "definition": [
-                  {
-                    "type": "Terminal",
-                    "name": "Comment",
-                    "label": "Comment",
-                    "idx": 0,
-                    "pattern": "\\|[^|]*\\|"
-                  },
-                  {
-                    "type": "Option",
-                    "definition": [
-                      {
-                        "type": "Terminal",
-                        "name": "ID",
-                        "label": "ID",
-                        "idx": 0,
-                        "pattern": "@[a-z0-9_]*"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "type": "Flat",
-                "definition": [
-                  {
-                    "type": "Terminal",
-                    "name": "ID",
-                    "label": "ID",
-                    "idx": 2,
-                    "pattern": "@[a-z0-9_]*"
-                  },
-                  {
-                    "type": "Option",
-                    "definition": [
-                      {
-                        "type": "Terminal",
-                        "name": "Comment",
-                        "label": "Comment",
-                        "idx": 2,
-                        "pattern": "\\|[^|]*\\|"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
       }
     ]
   },
@@ -411,6 +376,18 @@
         "type": "Option",
         "definition": [
           {
+            "type": "Option",
+            "definition": [
+              {
+                "type": "Terminal",
+                "name": "Delimiter",
+                "label": "Delimiter",
+                "idx": 0,
+                "pattern": ";[ \\t]*\\n?|\\n"
+              }
+            ]
+          },
+          {
             "type": "Terminal",
             "name": "Else",
             "label": "Else",
@@ -486,7 +463,7 @@
         "name": "RepeatUntil",
         "label": "RepeatUntil",
         "idx": 0,
-        "pattern": "repeat[ \\t]+until"
+        "pattern": "repeat[ \\t]*until"
       },
       {
         "type": "NonTerminal",
@@ -507,68 +484,6 @@
   },
   {
     "type": "Rule",
-    "name": "condition",
-    "definition": [
-      {
-        "type": "Alternation",
-        "definition": [
-          {
-            "type": "Flat",
-            "definition": [
-              {
-                "type": "Terminal",
-                "name": "LCurlyBracket",
-                "label": "LCurlyBracket",
-                "idx": 0,
-                "pattern": "{"
-              },
-              {
-                "type": "Option",
-                "definition": [
-                  {
-                    "type": "NonTerminal",
-                    "name": "predicate",
-                    "idx": 0
-                  }
-                ]
-              },
-              {
-                "type": "Option",
-                "definition": [
-                  {
-                    "type": "Terminal",
-                    "name": "ID",
-                    "label": "ID",
-                    "idx": 0,
-                    "pattern": "@[a-z0-9_]*"
-                  }
-                ]
-              },
-              {
-                "type": "Terminal",
-                "name": "RCurlyBracket",
-                "label": "RCurlyBracket",
-                "idx": 0,
-                "pattern": "}"
-              }
-            ]
-          },
-          {
-            "type": "Flat",
-            "definition": [
-              {
-                "type": "NonTerminal",
-                "name": "predicate",
-                "idx": 2
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "type": "Rule",
     "name": "clause",
     "definition": [
       {
@@ -579,7 +494,7 @@
             "name": "Delimiter",
             "label": "Delimiter",
             "idx": 0,
-            "pattern": ";[ \\t]*\\n|;|\\n"
+            "pattern": ";[ \\t]*\\n?|\\n"
           }
         ]
       },
@@ -609,26 +524,86 @@
   },
   {
     "type": "Rule",
-    "name": "modifier",
+    "name": "annotations",
+    "definition": [
+      {
+        "type": "NonTerminal",
+        "name": "modifiers",
+        "idx": 0
+      },
+      {
+        "type": "NonTerminal",
+        "name": "id",
+        "idx": 0
+      },
+      {
+        "type": "Option",
+        "definition": [
+          {
+            "type": "NonTerminal",
+            "name": "comment",
+            "idx": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "Rule",
+    "name": "modifiers",
+    "definition": [
+      {
+        "type": "Repetition",
+        "definition": [
+          {
+            "type": "Terminal",
+            "name": "Modifier",
+            "label": "Modifier",
+            "idx": 0,
+            "pattern": "::((:(?!:))|[^\\{\\|\\(\\)<>\\\\#@: \\t\\n]|\\\\[^])([ \\t]*((:(?!:))|[^\\|\\(\\)<>\\\\#@: \\t]|\\\\[^]))*"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "Rule",
+    "name": "id",
     "definition": [
       {
         "type": "Option",
         "definition": [
           {
             "type": "Terminal",
-            "name": "DoubleColon",
-            "label": "DoubleColon",
+            "name": "ID",
+            "label": "ID",
             "idx": 0,
-            "pattern": "::"
-          },
-          {
-            "type": "Terminal",
-            "name": "Label",
-            "label": "Label",
-            "idx": 0,
-            "pattern": "(:?[^|\\{\\(\\)\\}\\<\\>\\[\\]:;\\\\\"\\n#@]|\\\\[\\{\\|\\(\\)\\}\\<\\>\\[\\]:;\\\\\"\\n#@])+"
+            "pattern": "@[a-z0-9_]+"
           }
         ]
+      }
+    ]
+  },
+  {
+    "type": "Rule",
+    "name": "comment",
+    "definition": [
+      {
+        "type": "Terminal",
+        "name": "Comment",
+        "label": "Comment",
+        "idx": 0,
+        "pattern": "\\|([^\\|\\\\]|\\\\.)*\\|"
+      },
+      {
+        "type": "NonTerminal",
+        "name": "modifiers",
+        "idx": 0
+      },
+      {
+        "type": "NonTerminal",
+        "name": "id",
+        "idx": 0
       }
     ]
   },
@@ -650,68 +625,62 @@
                 "pattern": "{"
               },
               {
-                "type": "Option",
+                "type": "Alternation",
                 "definition": [
                   {
-                    "type": "Alternation",
+                    "type": "Flat",
                     "definition": [
                       {
-                        "type": "Flat",
-                        "definition": [
-                          {
-                            "type": "Terminal",
-                            "name": "Literal",
-                            "label": "Literal",
-                            "idx": 0,
-                            "pattern": "NOT_APPLICABLE"
-                          }
-                        ]
-                      },
-                      {
-                        "type": "Flat",
-                        "definition": [
-                          {
-                            "type": "NonTerminal",
-                            "name": "expression",
-                            "idx": 0
-                          }
-                        ]
-                      },
-                      {
-                        "type": "Flat",
-                        "definition": [
-                          {
-                            "type": "NonTerminal",
-                            "name": "predicate",
-                            "idx": 0
-                          }
-                        ]
-                      },
-                      {
-                        "type": "Flat",
-                        "definition": [
-                          {
-                            "type": "NonTerminal",
-                            "name": "choice",
-                            "idx": 0
-                          }
-                        ]
+                        "type": "Terminal",
+                        "name": "Literal",
+                        "label": "Literal",
+                        "idx": 0,
+                        "pattern": "NOT_APPLICABLE"
                       }
                     ]
+                  },
+                  {
+                    "type": "Flat",
+                    "definition": [
+                      {
+                        "type": "Terminal",
+                        "name": "Label",
+                        "label": "Label",
+                        "idx": 0,
+                        "pattern": "((:(?!:))|[^\\{\\|\\(\\)\\}\\<\\>\\[\\];\\\\\"#@: \\t\\n]|\\\\[^])([ \\t]*((:(?!:))|[^\\{\\|\\(\\)\\}\\<\\>\\[\\];\\\\\"\\n#@: \\t]|\\\\[^]))*"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Flat",
+                    "definition": [
+                      {
+                        "type": "NonTerminal",
+                        "name": "expression",
+                        "idx": 0
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Flat",
+                    "definition": [
+                      {
+                        "type": "NonTerminal",
+                        "name": "predicate",
+                        "idx": 0
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Flat",
+                    "definition": []
                   }
                 ]
               },
               {
-                "type": "Option",
-                "definition": [
-                  {
-                    "type": "Terminal",
-                    "name": "ID",
-                    "label": "ID",
-                    "idx": 0,
-                    "pattern": "@[a-z0-9_]*"
-                  }
-                ]
+                "type": "NonTerminal",
+                "name": "id",
+                "idx": 0
               },
               {
                 "type": "Terminal",
@@ -736,7 +705,7 @@
                         "name": "StringLiteral",
                         "label": "StringLiteral",
                         "idx": 0,
-                        "pattern": "\"([^\"\\\\]|\\\\\")*\""
+                        "pattern": "\"([^\"\\\\]|\\\\.)*\""
                       }
                     ]
                   },
@@ -748,7 +717,19 @@
                         "name": "ColorLiteral",
                         "label": "ColorLiteral",
                         "idx": 0,
-                        "pattern": "#([0-9a-f]{3}|[0-9a-f]{6})"
+                        "pattern": "#([0-9a-f]{6}|[0-9a-f]{3})"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Flat",
+                    "definition": [
+                      {
+                        "type": "Terminal",
+                        "name": "ChoiceLiteral",
+                        "label": "ChoiceLiteral",
+                        "idx": 0,
+                        "pattern": "\\[([^\\]\\\\]|\\\\.)*\\]"
                       }
                     ]
                   },
@@ -771,18 +752,79 @@
                         "idx": 2
                       }
                     ]
-                  },
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "Rule",
+    "name": "condition",
+    "definition": [
+      {
+        "type": "Alternation",
+        "definition": [
+          {
+            "type": "Flat",
+            "definition": [
+              {
+                "type": "Terminal",
+                "name": "LCurlyBracket",
+                "label": "LCurlyBracket",
+                "idx": 0,
+                "pattern": "{"
+              },
+              {
+                "type": "Alternation",
+                "definition": [
                   {
                     "type": "Flat",
                     "definition": [
                       {
                         "type": "NonTerminal",
-                        "name": "choice",
-                        "idx": 2
+                        "name": "predicate",
+                        "idx": 0
                       }
                     ]
+                  },
+                  {
+                    "type": "Flat",
+                    "definition": []
                   }
                 ]
+              },
+              {
+                "type": "Option",
+                "definition": [
+                  {
+                    "type": "Terminal",
+                    "name": "ID",
+                    "label": "ID",
+                    "idx": 0,
+                    "pattern": "@[a-z0-9_]+"
+                  }
+                ]
+              },
+              {
+                "type": "Terminal",
+                "name": "RCurlyBracket",
+                "label": "RCurlyBracket",
+                "idx": 0,
+                "pattern": "}"
+              }
+            ]
+          },
+          {
+            "type": "Flat",
+            "definition": [
+              {
+                "type": "NonTerminal",
+                "name": "predicate",
+                "idx": 2
               }
             ]
           }
@@ -847,38 +889,6 @@
         "label": "RAngleBracket",
         "idx": 0,
         "pattern": ">"
-      }
-    ]
-  },
-  {
-    "type": "Rule",
-    "name": "choice",
-    "definition": [
-      {
-        "type": "Terminal",
-        "name": "LSquareBracket",
-        "label": "LSquareBracket",
-        "idx": 0,
-        "pattern": "\\["
-      },
-      {
-        "type": "Option",
-        "definition": [
-          {
-            "type": "Terminal",
-            "name": "Label",
-            "label": "Label",
-            "idx": 0,
-            "pattern": "(:?[^|\\{\\(\\)\\}\\<\\>\\[\\]:;\\\\\"\\n#@]|\\\\[\\{\\|\\(\\)\\}\\<\\>\\[\\]:;\\\\\"\\n#@])+"
-          }
-        ]
-      },
-      {
-        "type": "Terminal",
-        "name": "RSquareBracket",
-        "label": "RSquareBracket",
-        "idx": 0,
-        "pattern": "\\]"
       }
     ]
   }
