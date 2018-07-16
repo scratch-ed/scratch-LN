@@ -79,7 +79,6 @@ $(document).ready(function() {
         "if <>;" +
         "block;" +
         "end;" +
-        "end;" +
         "block",
         "if <> else ",
         "if <>;" +
