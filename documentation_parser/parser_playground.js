@@ -193,7 +193,7 @@
         pattern: /@[a-z0-9_]+/i
     });
 
-    
+
     const MultipleDelimiters = createToken({
         name: "MultipleDelimiters",
         //; \n should always bee seen as a whole 
@@ -488,9 +488,7 @@
                         NAME: "$empty",
                         ALT: chevrotain.EMPTY_ALT()
                     }, ]);
-                    $.OPTION2(() => {
-                        $.CONSUME(ID);
-                    });
+                    $.SUBRULE($.id);
                     $.CONSUME(RCurlyBracket);
                 }
             }, {
@@ -603,7 +601,7 @@
         stackDelimiter(ctx) {
 
         }
-      
+
         comments(ctx) {
 
         }
@@ -623,7 +621,7 @@
         composite(ctx) {
 
         }
-      
+
         ifelse(ctx) {
 
         }
@@ -647,7 +645,7 @@
         annotations(ctx) {
 
         }
-      
+
         modifiers(ctx) {
 
         }
@@ -655,7 +653,7 @@
         id(ctx) {
 
         }
-      
+
         comment(ctx) {
 
         }
