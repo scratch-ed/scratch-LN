@@ -63,11 +63,11 @@ export const blockspecifications = [
             },
             "converter": universalBlockConverter,
         },
-        {
+        /*{
             "template": ["pen down"],
             "description": {"type": "pen_pendown", "shape": "statement"},
             "converter": universalBlockConverter
-        },
+        },*/
         {
             "template": ["say %1"],
             "description": {
@@ -700,7 +700,7 @@ export const blockspecifications = [
         },
         //=== pen
         //todo -> extensions
-        {
+        /*{
             "template": "clear",
             "description": {"type": "pen_clear", "shape": "statement"},
             "converter": universalBlockConverter
@@ -800,7 +800,7 @@ export const blockspecifications = [
                 "shape": "statement"
             },
             "converter": universalBlockConverter
-        },
+        },*/
         //=== sounds =======================================================
         {
             "template": "start sound %1",

@@ -35,13 +35,11 @@ module.exports = [
             'live_view':'./live_view/live_view.js',
             'live_view_blocks':'./live_view/live_view_blocks.js',
             'test':'./testWebpage/test.js',
-            //'run':'./webtools/run.js',
-            //'example':'./examples/example.js',
+            'run':'./webtools/run.js',
+            'example':'./examples/example.js',
             //'createTest':'./examples/createTest.js',
-        //'nice_live_view':'./examples/nice_live_view.js',
-            //'markdown_scratch':'./webtools/markdown_scratch.js',
             //'exe_test':'./exe_test/exe_test.js',
-           // 'scratchify':'./webtools/scratchify.js'
+
         },
         output: {
             filename: '[name].js',
@@ -56,16 +54,13 @@ module.exports = [
                 from: './live_view/live_view_blocks.html',
                 to: 'blocks.html'
             }]),
-            new CopyWebpackPlugin([{
+            /*new CopyWebpackPlugin([{
                 from: './exe_test/exe_test.html',
                 to: 'exe_test.html'
-            }]),
+            }]),*/
             new CopyWebpackPlugin([{
                 from: './testWebpage/test.html',
                 to: 'test.html'
-            }]),new CopyWebpackPlugin([{
-                from: './examples/nice_live_view.html',
-                to: 'view.html'
             }]),
             new CopyWebpackPlugin([{
                 from: 'examples/example.html',

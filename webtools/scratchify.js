@@ -2,7 +2,7 @@ import $ from "jquery";
 import ScratchBlocks from 'scratch-blocks';
 import parseTextToXML from './../parser/parserUtils.js'
 
-export default function scratchify(clasz='scratch',keepText = false) {
+export function scratchify(clasz='scratch',keepText = false) {
     $('.'+clasz).each(function(i, obj) {
         var id = $(this).attr('id')
         if (!id) {
