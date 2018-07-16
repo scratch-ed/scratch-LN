@@ -1,9 +1,11 @@
 import ScratchBlocks from 'scratch-blocks';
 import parseTextToXML from './../parser/parserUtils.js'
 import generateText from './../generator/generator.js'
+import {parseTextToXMLWithWarnings} from "../parser/parserUtils";
 
 let workspace = null;
 let editor;
+let warnings;
 
 
 window.onload = function () {
@@ -34,8 +36,14 @@ window.onload = function () {
     editor.addEventListener('input', updateWorkspace);
     editor.value =  'define myblock (b) ||\n' +
         'repeat {10} |r|\n' +
-        'myblock < {< {(a @ida |a|)} = {(b ::custom )} >} = {(x)} > @idb |b|'
+        'myblock < {< {(a @ida |a|)} = {(b ::custom )} >} = {(x)} > @idb |b|\n' +
+        'end\n' +
+        'move {10 @idi} steps\n' +
+        'say "hello"'
     ;
+
+    warnings = document.getElementById('warnings');
+
 
     updateWorkspace();
 
@@ -78,7 +86,9 @@ function updateWorkspace() {
     //make xml
     //console.log('----');
     let text = editor.value;
-    let xml = parseTextToXML(text);
+    let r = parseTextToXMLWithWarnings(text);
+    let xml = r.xml;
+
     console.log(xml);
     if (xml) { //clear workspace
         workspace.clear();
@@ -86,7 +96,10 @@ function updateWorkspace() {
         let dom = Blockly.Xml.textToDom(xml);
         Blockly.Xml.domToWorkspace(dom, workspace);
         workspace.cleanUp();
+        r.xml = "";
     }
+
+    warnings.value = JSON.stringify(r);
 
     editor.focus();
     //console.log(getWorkspaceXML())

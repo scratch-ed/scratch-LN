@@ -12,11 +12,16 @@
             padding: 10px;
             display: block;
         }
+
+        #warnings{
+            width: 45%;
+            height: 80%;
+        }
+
         #editor:focus {
             border: 1px solid #51DFE3;
         }
         #control{
-            
             overflow: left;
         }    
         #blocklyDiv{
@@ -70,8 +75,9 @@
             <textarea id="editor"></textarea>
             <div class="highlights" id="highlighter"></div>
             </div>
-        <div>
-		
+        </div>
+
+        <textarea id="warnings"></textarea>
   		
     </body>
 </html>

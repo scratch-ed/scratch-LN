@@ -397,13 +397,10 @@ export function parse(text) {
     lnparser.input = lexResult.tokens;
     // any top level rule may be used as an entry point
     const value = lnparser.code(); //TOP RULE
-    /*console.log(value);
-    console.log(lexResult.errors);
-    console.log(LNParser.errors);*/
     return {
         value: value,
         lexErrors: lexResult.errors,
-        parseErrors: LNParser.errors
+        parseErrors: lnparser.errors
     }
 }
 

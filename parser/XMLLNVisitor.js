@@ -97,9 +97,13 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
                 }
             }
         }
-        return this.xml.end({
-            pretty: true
-        });
+        return {
+            xml: this.xml.end({
+                pretty: true
+            }),
+            warnings: {},
+            errors: {}
+        }
     }
 
 
@@ -449,7 +453,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
                 //todo: numberinputs + context -> createnumber
             }
         } else if (ctx.Label) {
-            this.createTextInput(ctx); 
+            this.createTextInput(ctx);
         } else if (ctx.expression) {
             this.visit(ctx.expression);
         } else if (ctx.predicate) {
