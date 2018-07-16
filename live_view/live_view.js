@@ -32,7 +32,9 @@ window.onload = function () {
     //text
     editor = document.getElementById('editor');
     editor.addEventListener('input', updateWorkspace);
-    editor.value =  'block < {< {(a @ida |a|)} = {(b ::custom )} >} = {(x)} > @idb |b|'
+    editor.value =  'define myblock (b) ||\n' +
+        'repeat {10} |r|\n' +
+        'myblock < {< {(a @ida |a|)} = {(b ::custom )} >} = {(x)} > @idb |b|'
     ;
 
     updateWorkspace();
@@ -196,7 +198,12 @@ let stackGlowOn = function () {
 
 
 function showExample() {
-    let code = 'when gf clicked \nif < {(blub)} contains {"citroen"} ? > \nif < {(length of {(blub)})} = {2} >\nrepeat 10\nrepeat 10\nset pen color to {(pick random {0} to {255})}\nglide {2} secs to x: {(pick random {0} to {240})} y: {(pick random {0} to {180})}\npen up\nend\ngo to x: {0} y: {0}'
+    let code = 'define myblock (b) ||\n' +
+        'repeat {10} |r|\n' +
+        'myblock < {< {(a @ida |a|)} = {(b ::custom )} >} = {(x)} > @idb |b|\n' +
+        'end\n' +
+        'move {10 @idi} steps\n' +
+        'say "hello"'
     editor.value = code;
     updateWorkspace();
 }

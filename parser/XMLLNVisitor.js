@@ -127,9 +127,9 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             this.visit(ctx.block[i]); //opens a block
             //the flow was interrupted by a hat block or stand alone variable
             //so a new stack has to start
-            if(this.state.isInterruptedStack()){
+            if (this.state.isInterruptedStack()) {
                 this.state.startStack();
-            }else { //normal flow
+            } else { //normal flow
                 this.xml = this.xml.ele('next');
             }
         }
@@ -142,7 +142,8 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }*/
 
     atomic(ctx) {
-        let description = this.infoVisitor.getString(ctx, "atomic");;
+        let description = this.infoVisitor.getString(ctx, "atomic");
+        ;
         //todo obtain modifiers
         let modifiers = this.modifierAnalyser.getMods(this.infoVisitor.getModifiers(ctx.annotations));
         if (this.isBuildInBlock(description, ctx, modifiers)) {
@@ -166,12 +167,12 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             } else {
                 //todo
                 //if the label is empty this is a stand alone block so just visit the child
-                if(description.match(VARIABLE_REGEX)){
+                if (description.match(VARIABLE_REGEX)) {
                     this.interruptStack();
-                    for(let a=0;a<ctx.argument.length;a++) {
+                    for (let a = 0; a < ctx.argument.length; a++) {
                         this.visit(ctx.argument[a])
                     }
-                }else{
+                } else {
                     //if this is a stack block
                     this.createProcedureBlock(ctx, description);
                 }
@@ -286,7 +287,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
         for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
             //make names
-            let name;// = this.infoVisitor.getString(ctx.argument[i]);
+            let name = this.infoVisitor.getString(ctx.argument[i]);
             if (!name) {
                 name = 'argumentname_' + blockid + '_' + i
             }
@@ -423,7 +424,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     comment(ctx) {
         let pinned = this.state.isBuildingStackBlock() || this.state.isBuildingBooleanBlock() || this.state.isBuildingReporterBlock()
-        this.createComment(ctx,pinned)
+        this.createComment(ctx, pinned)
     }
 
     /**
@@ -433,10 +434,10 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
      */
     createComment(ctx, pinned) {
         this.xml.ele('comment ', {
-            'id': this.idManager.getNextCommentID(this.infoVisitor.getID(ctx,"comment")),
+            'id': this.idManager.getNextCommentID(this.infoVisitor.getID(ctx, "comment")),
             'pinned': pinned,
             'minimized': false, //todo:should be known from modifier in the ctx
-        }, this.infoVisitor.getString(ctx,"comment"));
+        }, this.infoVisitor.getString(ctx, "comment"));
     }
 
     argument(ctx) {
@@ -451,7 +452,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             this.visit(ctx.expression);
         } else if (ctx.predicate) {
             this.visit(ctx.predicate)
-        } else if (ctx.$empty){
+        } else if (ctx.$empty) {
             this.createTextInput(ctx);
         }
     }

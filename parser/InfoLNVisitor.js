@@ -6,9 +6,9 @@
  * {
  * placeHolder: %b (boolean)| %s (string) ,
  * offset: number,
- * todo:startline?
  * text: "a string",
  * type: "tokename" or "expression" or "predicate"
+ * modifiers: list of tokens
  * }
  * the options are only avaible if they make sense.
  *
@@ -42,7 +42,6 @@ export const COLOR = "color"
 export const COMMENT = "comment";
 export const ID = "id";
 export const CBLOCK = "cblock"
-
 
 
 const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
@@ -87,7 +86,7 @@ export class InfoLNVisitor extends BaseCstVisitor {
             //if there is a label and a argument check which one occurs first
             if (ctx.argument) {
                 offset = this.getOffsetArgument(ctx.argument[0]) < ctx.Label[0].startOffset ?
-                            this.getOffsetArgument(ctx.argument[0]) : ctx.Label[0].startOffset
+                    this.getOffsetArgument(ctx.argument[0]) : ctx.Label[0].startOffset
             } else {
                 offset = ctx.Label[0].startOffset
             }
@@ -204,7 +203,7 @@ export class InfoLNVisitor extends BaseCstVisitor {
     }
 
     modifiers(ctx) {
-        if(!ctx.Modifier){
+        if (!ctx.Modifier) {
             return {
                 MODIFIERS: []
             }
@@ -215,14 +214,14 @@ export class InfoLNVisitor extends BaseCstVisitor {
     }
 
     id(ctx) {
-        if(ctx && ctx.ID) {
+        if (ctx && ctx.ID) {
             return {
                 OFFSET: ctx.ID[0].offset,
                 TEXT: ctx.ID[0].image,
                 ID: ctx.ID[0].image,
                 TYPE: ID
             }
-        }else{
+        } else {
             return {
                 ID: null,
                 TYPE: ID
@@ -239,7 +238,7 @@ export class InfoLNVisitor extends BaseCstVisitor {
     }
 
 
-    unescapeComment(text){
+    unescapeComment(text) {
         return text.replace(/\\\|/g, '|').replace(/^\|(.*(?=\|$))\|$/, '$1');
     }
 
@@ -256,17 +255,17 @@ export class InfoLNVisitor extends BaseCstVisitor {
 
     argument(ctx) {
         let type;
-        let id = this.visit(ctx.id);
+        let id = ctx.id?this.visit(ctx.id).ID:null;
         console.log("id in arg",id); //todo why is it not id.DI???
         if (ctx.Literal) {
             let text = "";
-            if(tokenMatcher(ctx.Literal[0],ChoiceLiteral)){
+            if (tokenMatcher(ctx.Literal[0], ChoiceLiteral)) {
                 text = this.unescapeChoiceLiteral(ctx.Literal[0].image);
-                type= CHOICE;
-            }else if(tokenMatcher(ctx.Literal[0],ColorLiteral)){
+                type = CHOICE;
+            } else if (tokenMatcher(ctx.Literal[0], ColorLiteral)) {
                 text = this.makeValidColor(ctx.Literal[0].image);
-                type=COLOR
-            }else{
+                type = COLOR
+            } else {
                 text = this.unescapeStringLiteral(ctx.Literal[0].image);
                 type = TEXT_OR_NUMBER
             }
@@ -298,10 +297,11 @@ export class InfoLNVisitor extends BaseCstVisitor {
 
     }
 
-    unescapeStringLiteral(text){
+    unescapeStringLiteral(text) {
         return text.replace(/\\"/g, '"').replace(/^"(.*(?="$))"$/, '$1');
     }
-    unescapeChoiceLiteral(text){
+
+    unescapeChoiceLiteral(text) {
         return text.replace(/\\\[/g, '"').replace(/^\[(.*(?=\]$))\]$/, '$1');
     }
 
@@ -309,7 +309,7 @@ export class InfoLNVisitor extends BaseCstVisitor {
      * color has to have 6 digits so ABC -> AABBCC
      * @param text
      */
-    makeValidColor(text){
+    makeValidColor(text) {
         return text.replace(/^#([0-F])([0-F])([0-F])$/i, '#$1$1$2$2$3$3')
     }
 
@@ -326,7 +326,8 @@ export class InfoLNVisitor extends BaseCstVisitor {
             PLACEHOLDER: "%s",
             OFFSET: ctx.LRoundBracket[0].startOffset,
             TYPE: EXPRESSION,
-            ID: this.id(ctx.ID).ID
+            ID: this.id(ctx.ID).ID,
+            TEXT: ctx.atomic?this.visit(ctx.atomic).TEXT:""
         }
     }
 
@@ -335,15 +336,14 @@ export class InfoLNVisitor extends BaseCstVisitor {
             PLACEHOLDER: "%b",
             OFFSET: ctx.LAngleBracket[0].startOffset,
             TYPE: PREDICATE,
-            ID: this.id(ctx.ID).ID
+            ID: this.id(ctx.ID).ID,
+            TEXT: ctx.atomic?this.visit(ctx.atomic).TEXT:""
         }
     }
 
     //////////////////////////////////////////////////
     //// no 'real' visitor methods as they are not rules.
     //////////////////////////////////////////////////
-
-
 
 
     //////////////////////////////////////////////////
@@ -366,7 +366,7 @@ export class InfoLNVisitor extends BaseCstVisitor {
         return x.TEXT;
     }
 
-    getPlaceholder(ctx, rule=null) {
+    getPlaceholder(ctx, rule = null) {
         let x;
         if (!rule) {
             x = this.visit(ctx);
@@ -396,13 +396,13 @@ export class InfoLNVisitor extends BaseCstVisitor {
         return x.TYPE;
     }
 
-    getModifiers(ctx, rule=null){
+    getModifiers(ctx, rule = null) {
         let x;
         if (!rule) {
             x = this.visit(ctx);
         } else {
             x = this[rule](ctx);
         }
-        return x.MODIFIERS;   //todo
+        return x.MODIFIERS;
     }
 }

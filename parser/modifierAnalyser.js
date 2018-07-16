@@ -16,7 +16,7 @@ class ModifierExtractor {
      * @param modifierToken
      * return {boolean} the modifier token contains the key
      */
-    containsKey(modifierToken){
+    containsKey(modifierToken) {
         throw new Error('You have to implement the method containsKey!');
     }
 
@@ -25,61 +25,63 @@ class ModifierExtractor {
      * @param modifierToken
      * returns object
      */
-    extractParameters(modifierToken){
+    extractParameters(modifierToken) {
         throw new Error('You have to implement the method extractParameters!');
     }
 
     /**
      * return a generic name for this extractor
      */
-    getName(){
+    getName() {
         throw new Error('You have to implement the method getName!');
     }
 
 }
 
-class listModifierExtractor extends ModifierExtractor{
-    containsKey(modifierToken){
+class listModifierExtractor extends ModifierExtractor {
+    containsKey(modifierToken) {
         return modifierToken.image.match(/::list/i);
     }
 
-    extractParameters(modifierToken){
+    extractParameters(modifierToken) {
         return {}
     }
-    getName(){
+
+    getName() {
         return "list"
     }
 }
 
-class customModifierExtractor extends ModifierExtractor{
-    containsKey(modifierToken){
+class customModifierExtractor extends ModifierExtractor {
+    containsKey(modifierToken) {
         return modifierToken.image.match(/::custom/i);
     }
 
-    extractParameters(modifierToken){
+    extractParameters(modifierToken) {
         return {}
     }
-    getName(){
+
+    getName() {
         return "custom"
     }
 }
 
-export class ModifierAnalyser{
-    constructor(ctx,informationVisitor) {
+export class ModifierAnalyser {
+    constructor(ctx, informationVisitor) {
         this.infoVisitor = informationVisitor;
         this.modifierExtractors = [];
         this.modifierExtractors.push(new listModifierExtractor());
         this.modifierExtractors.push(new customModifierExtractor());
     }
 
-    getMods(modifierList){
+    getMods(modifierList) {
         let mods = {};
         //let modifierList =  ctx.children.Modifier;
-        if(modifierList) {
-            for (let i = 0;  i < modifierList.length; i++) {
+        if (modifierList) {
+            for (let i = 0; i < modifierList.length; i++) {
                 for (let m = 0; m < this.modifierExtractors.length; m++) {
-                    if(this.modifierExtractors[m].containsKey(modifierList[i])){
-                        mods[this.modifierExtractors[m].getName()] =this.modifierExtractors[m].extractParameters(modifierList[i]);
+                    if (this.modifierExtractors[m].containsKey(modifierList[i])) {
+                        mods[this.modifierExtractors[m].getName()] = this.modifierExtractors[m].extractParameters(modifierList[i]);
                     }
                 }
             }
