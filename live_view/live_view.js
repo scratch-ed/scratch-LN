@@ -34,12 +34,7 @@ window.onload = function () {
     //text
     editor = document.getElementById('editor');
     editor.addEventListener('input', updateWorkspace);
-    editor.value =  'define myblock (b) ||\n' +
-        'repeat {10} |r|\n' +
-        'myblock < {< {(a @ida |a|)} = {(b ::custom )} >} = {(x)} > @idb |b|\n' +
-        'end\n' +
-        'move {10 @idi} steps\n' +
-        'say "hello"'
+    editor.value =  ''
     ;
 
     warnings = document.getElementById('warnings');

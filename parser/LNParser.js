@@ -195,11 +195,11 @@ function LNParser(input) {
             LABEL: "ifClause"
         });
         $.OPTION3(() => {
-            $.OPTION4(() => {
+            /*$.OPTION4(() => {
                 $.CONSUME(Delimiter, {
                     LABEL: "trailingIfClauseDelimiter"
                 });
-            });
+            });*/
             $.CONSUME(Else);
             $.SUBRULE3($.clause, {
                 LABEL: "elseClause"
