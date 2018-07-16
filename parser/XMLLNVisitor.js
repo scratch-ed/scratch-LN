@@ -448,6 +448,8 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
                 this.createTextInput(ctx);
                 //todo: numberinputs + context -> createnumber
             }
+        } else if (ctx.Label) {
+            this.createTextInput(ctx); 
         } else if (ctx.expression) {
             this.visit(ctx.expression);
         } else if (ctx.predicate) {

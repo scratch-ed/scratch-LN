@@ -276,6 +276,14 @@ export class InfoLNVisitor extends BaseCstVisitor {
                 TYPE: type,
                 ID: id
             }
+        }else if (ctx.Label) {
+            return {
+                PLACEHOLDER: "%s",
+                TEXT:  ctx.Label[0].image,
+                OFFSET: ctx.Label[0].startOffset,
+                TYPE: TEXT_OR_NUMBER,
+                ID: id
+            }
         } else if (ctx.expression) {
             return this.visit(ctx.expression);
         } else if (ctx.predicate) {
