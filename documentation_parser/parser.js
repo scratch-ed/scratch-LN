@@ -10,6 +10,7 @@ module.exports = {
         const Parser = chevrotain.Parser;
 
 
+
         const Label = createToken({
             name: "Label",
             pattern:
@@ -182,7 +183,7 @@ module.exports = {
 
         const Modifier = createToken({
             name: "Modifier",
-            pattern: /::((:(?!:))|[^\{\|\\#@: \t\n]|\\[^])([ \t]*((:(?!:))|[^\|\\#@: \t]|\\[^]))*/
+            pattern: /::((:(?!:))|[^\{\|\(\)<>\\#@: \t\n]|\\[^])([ \t]*((:(?!:))|[^\|\(\)<>\\#@: \t]|\\[^]))*/
         });
 
         const Comment = createToken({
@@ -197,17 +198,22 @@ module.exports = {
         });
 
 
-        const Delimiter = createToken({
-            name: "Delimiter",
-            pattern: /;[ \t]*\n|;|\n/,
+        const MultipleDelimiters = createToken({
+            name: "MultipleDelimiters",
+            //; \n should always bee seen as a whole 
+            //so a ; alone must explicitly not been followed by a \n
+            pattern: /((;[ \t]*\n|;[ \t]*(?!\n)|\n)[ \t]*){2,}/,
             line_breaks: true
         });
 
-        const StackDelimiter = createToken({
-            name: "StackDelimiter",
-            pattern: /((;[ \t]*\n|;|\n)[ \t]*){2,}/,
-            line_breaks: true
+        const Delimiter = createToken({
+            name: "Delimiter",
+            pattern: /;[ \t]*\n?|\n/,
+            line_breaks: true,
+            //longer_alt: MultipleDelimiters
         });
+
+
 
         // marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
         const WhiteSpace = createToken({
@@ -225,7 +231,7 @@ module.exports = {
             //WARNING: RepeatUntil must be defined before Repeat
             Forever, End, RepeatUntil, Repeat, If, Else, Then,
             //WARNING: StackDelimiter must be defined before Delimiter
-            StackDelimiter, Delimiter,
+            MultipleDelimiters, Delimiter,
             LCurlyBracket, RCurlyBracket,
             LRoundBracket, RRoundBracket,
             RAngleBracket, LAngleBracket,
@@ -248,7 +254,7 @@ module.exports = {
             const $ = this;
 
             $.RULE("code", () => {
-                $.SUBRULE($.delimiter);
+                $.SUBRULE($.delimiters);
                 $.OPTION(() => {
                     $.SUBRULE($.comments);
                 })
@@ -267,7 +273,7 @@ module.exports = {
             });
 
 
-            $.RULE("delimiter", () => {
+            $.RULE("delimiters", () => {
                 $.OR([{
                     ALT: () => {
                         $.CONSUME(Delimiter, {
@@ -276,7 +282,7 @@ module.exports = {
                     }
                 }, {
                     ALT: () => {
-                        $.CONSUME(StackDelimiter, {
+                        $.CONSUME(MultipleDelimiters, {
                             LABEL: "leadingCodeDelimiters"
                         });
                     },
@@ -285,21 +291,12 @@ module.exports = {
                 }])
             })
 
-            $.RULE("comments", () => {
-                $.AT_LEAST_ONE(() => {
-                    $.CONSUME(Comment);
-                    $.SUBRULE($.delimiter, {
-                        LABEL: "trailingCommentsDelimiters"
-                    });
-                });
-            })
-
             $.RULE("stackDelimiter", () => {
                 $.AT_LEAST_ONE({
                     DEF: () => {
                         $.OR([{
                             ALT: () => {
-                                $.CONSUME(StackDelimiter, {
+                                $.CONSUME(MultipleDelimiters, {
                                     LABEL: "intermediateCodeDelimiters"
                                 });
                             }
@@ -310,7 +307,16 @@ module.exports = {
                         }]);
                     }
                 });
-            })
+            });
+
+            $.RULE("comments", () => {
+                $.AT_LEAST_ONE(() => {
+                    $.SUBRULE($.comment);
+                    $.SUBRULE($.delimiters, {
+                        LABEL: "trailingCommentsDelimiters"
+                    });
+                });
+            });
 
             $.RULE("stack", () => {
                 $.SUBRULE($.block);
@@ -329,18 +335,15 @@ module.exports = {
 
             $.RULE("block", () => {
                 $.OR([{
-                    NAME: "$atomic",
                     ALT: () => {
                         $.SUBRULE($.atomic);
                     }
                 }, {
-                    NAME: "$composite",
                     ALT: () => {
                         $.SUBRULE($.composite);
                     }
                 }]);
             });
-
 
             $.RULE("atomic", () => {
                 $.AT_LEAST_ONE(() => {
@@ -354,28 +357,23 @@ module.exports = {
                         }
                     }]);
                 });
-                $.SUBRULE($.modifiers);
                 $.SUBRULE($.annotations);
             });
 
             $.RULE("composite", () => {
                 $.OR([{
-                    NAME: "$ifelse",
                     ALT: () => {
                         $.SUBRULE($.ifelse);
                     }
                 }, {
-                    NAME: "$forever",
                     ALT: () => {
                         $.SUBRULE($.forever);
                     }
                 }, {
-                    NAME: "$repeat",
                     ALT: () => {
                         $.SUBRULE($.repeat);
                     }
                 }, {
-                    NAME: "$repeatuntil",
                     ALT: () => {
                         $.SUBRULE($.repeatuntil);
                     }
@@ -393,19 +391,22 @@ module.exports = {
                     LABEL: "ifClause"
                 });
                 $.OPTION3(() => {
+                    $.OPTION4(() => {
+                        $.CONSUME(Delimiter, {
+                            LABEL: "trailingIfClauseDelimiter"
+                        });
+                    });
                     $.CONSUME(Else);
                     $.SUBRULE3($.clause, {
                         LABEL: "elseClause"
                     });
                 });
-
             });
 
             $.RULE("forever", () => {
                 $.CONSUME(Forever);
                 $.SUBRULE($.annotations);
                 $.SUBRULE($.clause);
-
             });
 
 
@@ -414,7 +415,6 @@ module.exports = {
                 $.SUBRULE($.argument);
                 $.SUBRULE($.annotations);
                 $.SUBRULE($.clause);
-
             });
 
             $.RULE("repeatuntil", () => {
@@ -438,12 +438,16 @@ module.exports = {
                 });
                 $.OPTION3(() => {
                     $.CONSUME(End);
-                    $.OPTION4(() => {
-                        $.CONSUME2(Delimiter, {
-                            LABEL: "trailingClauseDelimiter"
-                        });
-                    });
                 })
+            });
+
+            $.RULE("annotations", () => {
+                $.SUBRULE($.modifiers);
+                $.SUBRULE($.id);
+                $.OPTION(() => {
+                    $.SUBRULE($.comment);
+                });
+
             });
 
             $.RULE("modifiers", () => {
@@ -452,42 +456,35 @@ module.exports = {
                 })
             });
 
-            $.RULE("annotations", () => {
+            $.RULE("id", () => {
                 $.OPTION(() => {
-                    $.OR([{
-                        ALT: () => {
-                            $.CONSUME(Comment);
-                            $.OPTION2(() => {
-                                $.CONSUME(ID);
-                            });
-                        }
-                    }, {
-                        ALT: () => {
-                            $.CONSUME2(ID);
-                            $.OPTION3(() => {
-                                $.CONSUME2(Comment);
-                            });
-                        }
-                    }]);
-                })
-            })
+                    $.CONSUME(ID);
+                });
+            });
+
+            $.RULE("comment", () => {
+                $.CONSUME(Comment);
+                $.SUBRULE($.modifiers);
+                $.SUBRULE($.id);
+            });
 
             $.RULE("argument", () => {
                 $.OR([{
                     ALT: () => {
                         $.CONSUME(LCurlyBracket);
                         $.OR2([{
-                            NAME: "$literal",
                             ALT: () => {
                                 $.CONSUME(Literal);
                             }
                         }, {
-                            NAME: "$expression",
+                            ALT: () => {
+                                $.CONSUME(Label);
+                            }
+                        }, {
                             ALT: () => {
                                 $.SUBRULE($.expression);
                             }
                         }, {
-                            NAME: "$predicate",
                             ALT: () => {
                                 $.SUBRULE($.predicate);
                             }
@@ -504,32 +501,27 @@ module.exports = {
                     ALT: () => {
                         $.OR3([{
                             ALT: () => {
-                                NAME: "$literal",
                                 $.CONSUME(StringLiteral, {
                                     LABEL: "Literal"
                                 });
                             }
                         }, {
                             ALT: () => {
-                                NAME: "$literal",
                                 $.CONSUME(ColorLiteral, {
                                     LABEL: "Literal"
                                 });
                             }
                         }, {
                             ALT: () => {
-                                NAME: "$literal",
                                 $.CONSUME(ChoiceLiteral, {
                                     LABEL: "Literal"
                                 });
                             }
                         }, {
-                            NAME: "$expression2",
                             ALT: () => {
                                 $.SUBRULE2($.expression);
                             }
                         }, {
-                            NAME: "$predicate2",
                             ALT: () => {
                                 $.SUBRULE2($.predicate);
                             }
@@ -544,7 +536,6 @@ module.exports = {
                     ALT: () => {
                         $.CONSUME(LCurlyBracket);
                         $.OR2([{
-                            NAME: "$predicate",
                             ALT: () => {
                                 $.SUBRULE($.predicate);
                             }
@@ -558,12 +549,11 @@ module.exports = {
                         $.CONSUME(RCurlyBracket);
                     }
                 }, {
-                    NAME: "$predicate2",
                     ALT: () => {
                         $.SUBRULE2($.predicate);
                     }
                 }])
-            })
+            });
 
             $.RULE("expression", () => {
                 $.CONSUME(LRoundBracket);
@@ -610,15 +600,15 @@ module.exports = {
 
             }
 
-            delimiter(ctx) {
-
-            }
-
-            comments(ctx) {
+            delimiters(ctx) {
 
             }
 
             stackDelimiter(ctx) {
+
+            }
+
+            comments(ctx) {
 
             }
 
@@ -630,33 +620,11 @@ module.exports = {
 
             }
 
-            block$atomic(ctx) {
-
-            }
-
-            block$composite(ctx) {
-
-            }
             atomic(ctx) {
 
             }
 
             composite(ctx) {
-
-            }
-            composite$ifelse(ctx) {
-
-            }
-
-            composite$forever(ctx) {
-
-            }
-
-            composite$repeat(ctx) {
-
-            }
-
-            composite$repeatuntil(ctx) {
 
             }
 
@@ -680,11 +648,19 @@ module.exports = {
 
             }
 
+            annotations(ctx) {
+
+            }
+
             modifiers(ctx) {
 
             }
 
-            annotations(ctx) {
+            id(ctx) {
+
+            }
+
+            comment(ctx) {
 
             }
 
@@ -692,48 +668,15 @@ module.exports = {
 
             }
 
-            argument$literal(ctx) {
-
-            }
-
-            argument$predicate(ctx) {
-
-            }
-
-            argument$predicate(ctx) {
-
-            }
-
-            argument$expression(ctx) {
-
-            }
-
             argument$empty(ctx) {
 
             }
-
-            argument$predicate2(ctx) {
-
-            }
-
-            argument$expression2(ctx) {
-
-            }
-
 
             condition(ctx) {
 
             }
 
-            condition$predicate(ctx) {
-
-            }
-
             condition$empty(ctx) {
-
-            }
-
-            condition$predicate2(ctx) {
 
             }
 
@@ -746,7 +689,6 @@ module.exports = {
             }
 
         }
-
         // for the playground to work the returned object must contain these fields
         return {
             lexer: LNLexer,
