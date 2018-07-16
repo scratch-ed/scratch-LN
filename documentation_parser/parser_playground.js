@@ -193,8 +193,11 @@
         pattern: /@[a-z0-9_]+/i
     });
 
+
     const MultipleDelimiter = createToken({
         name: "MultipleDelimiter",
+        //; \n should always bee seen as a whole 
+        //so a ; alone must explicitly not been followed by a \n
         pattern: /((;[ \t]*\n|;[ \t]*(?!\n)|\n)[ \t]*){2,}/,
         line_breaks: true
     });
@@ -328,18 +331,15 @@
 
         $.RULE("block", () => {
             $.OR([{
-                NAME: "$atomic",
                 ALT: () => {
                     $.SUBRULE($.atomic);
                 }
             }, {
-                NAME: "$composite",
                 ALT: () => {
                     $.SUBRULE($.composite);
                 }
             }]);
         });
-
 
         $.RULE("atomic", () => {
             $.AT_LEAST_ONE(() => {
@@ -358,22 +358,18 @@
 
         $.RULE("composite", () => {
             $.OR([{
-                NAME: "$ifelse",
                 ALT: () => {
                     $.SUBRULE($.ifelse);
                 }
             }, {
-                NAME: "$forever",
                 ALT: () => {
                     $.SUBRULE($.forever);
                 }
             }, {
-                NAME: "$repeat",
                 ALT: () => {
                     $.SUBRULE($.repeat);
                 }
             }, {
-                NAME: "$repeatuntil",
                 ALT: () => {
                     $.SUBRULE($.repeatuntil);
                 }
@@ -392,7 +388,7 @@
             });
             $.OPTION3(() => {
                 $.OPTION4(() => {
-                    $.CONSUME2(Delimiter, {
+                    $.CONSUME(Delimiter, {
                         LABEL: "trailingIfClauseDelimiter"
                     });
                 });
@@ -401,14 +397,12 @@
                     LABEL: "elseClause"
                 });
             });
-
         });
 
         $.RULE("forever", () => {
             $.CONSUME(Forever);
             $.SUBRULE($.annotations);
             $.SUBRULE($.clause);
-
         });
 
 
@@ -417,7 +411,6 @@
             $.SUBRULE($.argument);
             $.SUBRULE($.annotations);
             $.SUBRULE($.clause);
-
         });
 
         $.RULE("repeatuntil", () => {
@@ -441,15 +434,11 @@
             });
             $.OPTION3(() => {
                 $.CONSUME(End);
-                /*$.OPTION4(() => {
-                    $.CONSUME2(Delimiter, {LABEL:"trailingClauseDelimiter"});
-                });*/
             })
         });
 
         $.RULE("annotations", () => {
             $.SUBRULE($.modifiers);
-
             $.SUBRULE($.id);
             $.OPTION(() => {
                 $.SUBRULE($.comment);
@@ -607,15 +596,15 @@
 
         }
 
-        delimiter(ctx) {
-
-        }
-
-        comments(ctx) {
+        delimiters(ctx) {
 
         }
 
         stackDelimiter(ctx) {
+
+        }
+
+        comments(ctx) {
 
         }
 
@@ -627,33 +616,11 @@
 
         }
 
-        block$atomic(ctx) {
-
-        }
-
-        block$composite(ctx) {
-
-        }
         atomic(ctx) {
 
         }
 
         composite(ctx) {
-
-        }
-        composite$ifelse(ctx) {
-
-        }
-
-        composite$forever(ctx) {
-
-        }
-
-        composite$repeat(ctx) {
-
-        }
-
-        composite$repeatuntil(ctx) {
 
         }
 
@@ -677,11 +644,19 @@
 
         }
 
+        annotations(ctx) {
+
+        }
+
         modifiers(ctx) {
 
         }
 
-        annotations(ctx) {
+        id(ctx) {
+
+        }
+
+        comment(ctx) {
 
         }
 
@@ -715,7 +690,7 @@
     return {
         lexer: LNLexer,
         parser: LNParser,
-        //visitor: LNVisitor,
+        visitor: LNVisitor,
         defaultRule: "code"
     };
 }())
