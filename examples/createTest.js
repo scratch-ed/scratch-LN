@@ -39,6 +39,7 @@ function toJson() {
 }
 
 window.onload = function () {
+    console.log("stuff");
     const vm = new VM();
 
     createEditor();

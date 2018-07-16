@@ -120,7 +120,7 @@
                 <p>
                     Hieronder vind je wat we vandaag gaan maken:
                     <br>
-                    <iframe allowtransparency="true" width="485" height="402" src="//scratch.mit.edu/projects/embed/187598405/?autostart=false" frameborder="0" allowfullscreen></iframe>
+                    <!--<iframe allowtransparency="true" width="485" height="402" src="//scratch.mit.edu/projects/embed/187598405/?autostart=false" frameborder="0" allowfullscreen></iframe>-->
                     <br>
                     In de volgende stappen zal ik je uitleggen hoe je belangrijke delen van het coderdojo logo tekent,
                     maar het is aan jou om ze allemaal samen te voegen!
@@ -187,7 +187,7 @@
                         We gaan de pen gebruiken om een 1 te tekenen. Ik toon hier alvast hoe het moet, maar probeer het
                         ook eens zelf.
                     </p>
-                    <iframe allowtransparency="true" width="485" height="402" src="//scratch.mit.edu/projects/embed/187676914/?autostart=false" frameborder="0" allowfullscreen></iframe>
+                    <!--<iframe allowtransparency="true" width="485" height="402" src="//scratch.mit.edu/projects/embed/187676914/?autostart=false" frameborder="0" allowfullscreen></iframe>-->
                     <!--  <p>
                      Dit is hoe ik het heb gedaan.
                      </p> -->
@@ -251,8 +251,8 @@
                                 set pen shade to {0}
                                 point in direction {90}
                                 pen down
-                                repeat 2
-                                move {12} steps
+                                repeat {2 @repi} @rep
+                                move {12} steps @move
                                 turn cw {90} degrees
                                 move {22} steps
                                 turn cw {90} degrees
@@ -291,9 +291,9 @@
                                 set pen shade to {0}
                                 point in direction {90}
                                 pen down
-                                repeat 4
+                                repeat {4 @repi}
                                 move {10} steps
-                                turn cw {({360}/{4})} degrees
+                                turn cw {({360}/{4 @divi})} degrees
                                 end
                                 pen up
                             </code>
@@ -351,7 +351,7 @@
                                 pen down
                                 repeat ({30}/{2})
                                 move {5} steps
-                                turn cw {({360}/{30})} degrees
+                                turn cw {({360}/{30 @divi} @div)} degrees @turn
                                 end
                                 pen up
                             </code>
@@ -372,7 +372,7 @@
                                 pen down
                                 repeat ({30}/{2})
                                 move {5} steps
-                                turn ccw {({360}/{30})} degrees
+                                turn ccw {({360}/{30 @divi} @div)} degrees @turn
                                 end
                                 pen up
                             </code>

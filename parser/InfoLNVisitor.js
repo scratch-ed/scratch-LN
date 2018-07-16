@@ -256,7 +256,6 @@ export class InfoLNVisitor extends BaseCstVisitor {
     argument(ctx) {
         let type;
         let id = ctx.id?this.visit(ctx.id).ID:null;
-        console.log("id in arg",id); //todo why is it not id.DI???
         if (ctx.Literal) {
             let text = "";
             if (tokenMatcher(ctx.Literal[0], ChoiceLiteral)) {
