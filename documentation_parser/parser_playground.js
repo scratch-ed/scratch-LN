@@ -193,8 +193,8 @@
         pattern: /@[a-z0-9_]+/i
     });
 
-      const StackDelimiter = createToken({
-        name: "StackDelimiter",
+      const MultipleDelimiter = createToken({
+        name: "MultipleDelimiter",
         pattern: /((;[ \t]*\n|;[ \t]*(?!\n)|\n)[ \t]*){2,}/,
         line_breaks: true
     });
@@ -203,7 +203,7 @@
         name: "Delimiter",
         pattern: /;[ \t]*\n?|\n/,
         line_breaks: true,
-        //longer_alt: StackDelimiter
+        //longer_alt: MultipleDelimiter
     });
 
 
@@ -224,7 +224,7 @@
         //WARNING: RepeatUntil must be defined before Repeat
         Forever, End, RepeatUntil, Repeat, If, Else, Then,
         //WARNING: StackDelimiter must be defined before Delimiter
-        StackDelimiter, Delimiter,
+        MultipleDelimiter, Delimiter,
         LCurlyBracket, RCurlyBracket,
         LRoundBracket, RRoundBracket,
         RAngleBracket, LAngleBracket,
@@ -275,7 +275,7 @@
                 }
             }, {
                 ALT: () => {
-                    $.CONSUME(StackDelimiter, {
+                    $.CONSUME(MultipleDelimiter, {
                         LABEL: "leadingCodeDelimiters"
                     });
                 },
@@ -298,7 +298,7 @@
                 DEF: () => {
                     $.OR([{
                         ALT: () => {
-                            $.CONSUME(StackDelimiter, {
+                            $.CONSUME(MultipleDelimiter, {
                                 LABEL: "intermediateCodeDelimiters"
                             });
                         }
@@ -392,6 +392,9 @@
                     LABEL: "ifClause"
                 });
             $.OPTION3(() => {
+                 $.OPTION4(() => {
+                    $.CONSUME2(Delimiter, {LABEL:"trailingIfClauseDelimiter"});
+                });
                 $.CONSUME(Else);
                 $.SUBRULE3($.clause,{
                     LABEL: "elseClause"
