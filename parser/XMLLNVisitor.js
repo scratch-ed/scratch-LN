@@ -164,10 +164,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         let description = this.infoVisitor.getString(ctx, "atomic");
         console.log(ctx);
         //todo obtain modifiers
-        //if(ctx.annotations && ctx.annotations.children.modifiers) {
-        //    let modifiers = this.modifierAnalyser.getMods(ctx.annotations.children.modifiers[0]);
-        //
-        let modifiers = {}
+        let modifiers = this.modifierAnalyser.getMods(this.infoVisitor.getModifiers(ctx.annotations));
         if (this.isBuildInBlock(description, ctx, modifiers)) {
             //generate block
             blocks[description](ctx, this, modifiers)

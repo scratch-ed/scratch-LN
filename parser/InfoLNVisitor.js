@@ -204,24 +204,29 @@ export class InfoLNVisitor extends BaseCstVisitor {
     }
 
     modifiers(ctx) {
-
-    }
-
-    id(ctx) {
-        console.log(ctx);
-        if(!ctx || !ctx.ID){
+        if(!ctx.modifier){
             return {
-                OFFSET: null,
-                TEXT: null,
-                ID: null,
-                TYPE: ID
+                MODIFIERS: []
             }
         }
         return {
-            OFFSET: ctx.ID[0].offset,
-            TEXT: ctx.ID[0].image,
-            ID: ctx.ID[0].image,
-            TYPE: ID
+            MODIFIERS: ctx.modifier
+        }
+    }
+
+    id(ctx) {
+        if(ctx && ctx.ID) {
+            return {
+                OFFSET: ctx.ID[0].offset,
+                TEXT: ctx.ID[0].image,
+                ID: ctx.ID[0].image,
+                TYPE: ID
+            }
+        }else{
+            return {
+                ID: null,
+                TYPE: ID
+            }
         }
     }
 
@@ -230,23 +235,20 @@ export class InfoLNVisitor extends BaseCstVisitor {
     }
 
     annotations(ctx) {
-        console.log(ctx);
-        if(ctx.id) {
-            return this.visit(ctx.id)
-        }else {
-            return this.id(null);
+        let idinfo = this.visit(ctx.id);
+        let modInfo = this.visit(ctx.modifiers);
+        return {
+            ID: idinfo.ID,
+            MODIFIERS: modInfo.MODIFIERS
         }
+
     }
 
 
     argument(ctx) {
         let type;
-        let id;
-        if(ctx.ID) {
-            id= this.id(ctx.ID[0]).ID;
-        }else {
-            id= this.id(null).ID;
-        }
+        let id = this.visit(ctx.id);
+        console.log("mim",id); //todo why is it not id.DI???
         if (ctx.Literal) {
             let text = "";
             if(tokenMatcher(ctx.Literal[0],ChoiceLiteral)){
@@ -398,7 +400,7 @@ export class InfoLNVisitor extends BaseCstVisitor {
         return x.TYPE;
     }
 
-    getModifiers(ctx, rule=mull){
+    getModifiers(ctx, rule=null){
         let x;
         if (!rule) {
             x = this.visit(ctx);

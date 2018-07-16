@@ -296,9 +296,7 @@ function LNParser(input) {
                     NAME: "$empty",
                     ALT: EMPTY_ALT()
                 }, ]);
-                $.OPTION2(() => {
-                    $.CONSUME(ID);
-                });
+                $.SUBRULE($.id);
                 $.CONSUME(RCurlyBracket);
             }
         }, {

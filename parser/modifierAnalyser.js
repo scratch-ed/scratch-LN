@@ -72,9 +72,9 @@ export class ModifierAnalyser{
         this.modifierExtractors.push(new customModifierExtractor());
     }
 
-    getMods(ctx){
+    getMods(modifierList){
         let mods = {};
-        let modifierList =  ctx.children.Modifier;
+        //let modifierList =  ctx.children.Modifier;
         if(modifierList) {
             for (let i = 0;  i < modifierList.length; i++) {
                 for (let m = 0; m < this.modifierExtractors.length; m++) {
