@@ -2,7 +2,7 @@ import $ from "jquery";
 import ScratchBlocks from 'scratch-blocks';
 import parseTextToXML from './../parser/parserUtils.js'
 
-export function scratchify(clasz='scratch',keepText = false) {
+export default function scratchify(clasz='scratch',keepText = false) {
     $('.'+clasz).each(function(i, obj) {
         var id = $(this).attr('id')
         if (!id) {
@@ -25,7 +25,7 @@ export function scratchify(clasz='scratch',keepText = false) {
         }
         //console.log(text);
         var xml = parseTextToXML(text);
-        //console.log(xml)
+        console.log(xml)
         //only if succesfully parsed
         if (xml) {
             //add to this workspace
@@ -68,7 +68,7 @@ export function changeValue(id, blockID, value) {
     field.setText(value);
 }
 
-function createWorkspace(workspaceName) {
+export function createWorkspace(workspaceName) {
     return ScratchBlocks.inject(workspaceName, {
         toolbox: '<xml></xml>',
         'scrollbars': false,
@@ -84,7 +84,7 @@ function createWorkspace(workspaceName) {
     });
 }
 
-function fitBlocks(workspace, id) {
+export function fitBlocks(workspace, id) {
     var metrics = workspace.getMetrics();
     $('#' + id).css('width', (metrics.contentWidth + 10) + 'px')
     $('#' + id).css('height', (metrics.contentHeight + 10) + 'px')

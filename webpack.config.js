@@ -34,7 +34,7 @@ module.exports = [
         entry: {
             'live_view':'./live_view/live_view.js',
             //'live_view_blocks':'./live_view/live_view_blocks.js',
-            //'test':'./testWebpage/test.js',
+            'test':'./testWebpage/test.js',
             //'run':'./webtools/run.js',
             //'example':'./examples/example.js',
             //'createTest':'./examples/createTest.js',
