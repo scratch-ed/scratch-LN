@@ -38456,7 +38456,7 @@ class ModifierAnalyser {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (immutable) */ __webpack_exports__["default"] = scratchify;
+/* harmony export (immutable) */ __webpack_exports__["scratchify"] = scratchify;
 /* harmony export (immutable) */ __webpack_exports__["getWorkspace"] = getWorkspace;
 /* harmony export (immutable) */ __webpack_exports__["stackGlow"] = stackGlow;
 /* harmony export (immutable) */ __webpack_exports__["glowBlock"] = glowBlock;
@@ -38487,9 +38487,8 @@ function scratchify(clasz='scratch') {
         let workspace = createWorkspace(id);
         //do parsing
         let text = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(this).text();
-        if(!keepText){
-            __WEBPACK_IMPORTED_MODULE_0_jquery___default()(this).remove();
-        }
+        //remove the text
+        __WEBPACK_IMPORTED_MODULE_0_jquery___default()(this).remove();
         //console.log(text);
         let xml = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__parser_parserUtils_js__["a" /* default */])(text);
         //only if succesfully parsed

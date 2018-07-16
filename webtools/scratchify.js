@@ -2,7 +2,7 @@ import $ from "jquery";
 import ScratchBlocks from 'scratch-blocks';
 import parseTextToXML from './../parser/parserUtils.js'
 
-export default function scratchify(clasz='scratch') {
+export function scratchify(clasz='scratch') {
     $('.'+clasz).each(function(i, obj) {
         let id = $(this).attr('id');
         if (!id) {
@@ -16,9 +16,8 @@ export default function scratchify(clasz='scratch') {
         let workspace = createWorkspace(id);
         //do parsing
         let text = $(this).text();
-        if(!keepText){
-            $(this).remove();
-        }
+        //remove the text
+        $(this).remove();
         //console.log(text);
         let xml = parseTextToXML(text);
         //only if succesfully parsed

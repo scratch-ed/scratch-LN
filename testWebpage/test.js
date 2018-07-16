@@ -1,5 +1,5 @@
 import $ from "jquery";
-import scratchify from './../webtools/scratchify.js';
+import {scratchify} from './../webtools/scratchify.js';
 import {parseTextToXMLWithWarnings} from './../parser/parserUtils.js'
 
 import ScratchBlocks from 'scratch-blocks';
