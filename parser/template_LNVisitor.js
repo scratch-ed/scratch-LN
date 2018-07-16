@@ -29,7 +29,7 @@ const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
 
 //DO NOT FORGET THE EXPORT
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
-export class LNVisitor extends BaseCstVisitor {
+export     class LNVisitor extends BaseCstVisitor {
 
     constructor() {
         super();
@@ -41,15 +41,15 @@ export class LNVisitor extends BaseCstVisitor {
 
     }
 
-    delimiter(ctx){
+    delimiters(ctx) {
+
+    }
+
+    stackDelimiter(ctx) {
 
     }
 
     comments(ctx) {
-
-    }
-
-    stackDelimiter(ctx){
 
     }
 
@@ -61,33 +61,11 @@ export class LNVisitor extends BaseCstVisitor {
 
     }
 
-    block$atomic(ctx) {
-
-    }
-
-    block$composite(ctx) {
-
-    }
     atomic(ctx) {
 
     }
 
     composite(ctx) {
-
-    }
-    composite$ifelse(ctx) {
-
-    }
-
-    composite$forever(ctx) {
-
-    }
-
-    composite$repeat(ctx) {
-
-    }
-
-    composite$repeatuntil(ctx) {
 
     }
 
@@ -111,11 +89,19 @@ export class LNVisitor extends BaseCstVisitor {
 
     }
 
+    annotations(ctx) {
+
+    }
+
     modifiers(ctx) {
 
     }
 
-    annotations(ctx) {
+    id(ctx) {
+
+    }
+
+    comment(ctx) {
 
     }
 
@@ -142,6 +128,5 @@ export class LNVisitor extends BaseCstVisitor {
     predicate(ctx) {
 
     }
-
 }
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\

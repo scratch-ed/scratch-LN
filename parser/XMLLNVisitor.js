@@ -107,6 +107,14 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
        //todo: correct order of comments and stacks
     }*/
 
+    /*delimiters(ctx) {
+        //does nothing
+    }
+
+    stackDelimiter(ctx) {
+        //does nothing
+    }*/
+
     /**
      * this comments are always pinned=false i.e. not linkt to a block
      * @param ctx
@@ -154,7 +162,12 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     atomic(ctx) {
         let description = this.infoVisitor.getString(ctx, "atomic");
-        let modifiers = this.modifierAnalyser.getMods(ctx.modifiers[0]);
+        console.log(ctx);
+        //todo obtain modifiers
+        //if(ctx.annotations && ctx.annotations.children.modifiers) {
+        //    let modifiers = this.modifierAnalyser.getMods(ctx.annotations.children.modifiers[0]);
+        //
+        let modifiers = {}
         if (this.isBuildInBlock(description, ctx, modifiers)) {
             //generate block
             blocks[description](ctx, this, modifiers)
@@ -425,6 +438,18 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         }
     }
 
+    /*modifiers(ctx) {
+        // no xml generation
+    }*/
+
+    /*id(ctx) {
+        // no xml generation
+    }*/
+
+    comment(ctx) {
+        //todo
+    }
+
     argument(ctx) {
         if (ctx.Literal) {
             if (tokenMatcher(ctx.Literal[0], ColorLiteral)) {
@@ -472,6 +497,10 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     condition(ctx) {
         this.visit(ctx.predicate);
     }
+
+    /*condition$empty(ctx) {
+        //does nothing
+    }*/
 
     expression(ctx) {
         let before = this.xml;

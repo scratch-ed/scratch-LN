@@ -60,15 +60,15 @@ export class InfoLNVisitor extends BaseCstVisitor {
 
     }
 
-    delimiter(ctx){
+    delimiters(ctx) {
+
+    }
+
+    stackDelimiter(ctx) {
 
     }
 
     comments(ctx) {
-
-    }
-
-    stackDelimiter(ctx){
 
     }
 
@@ -77,14 +77,6 @@ export class InfoLNVisitor extends BaseCstVisitor {
     }
 
     block(ctx) {
-
-    }
-
-    block$atomic(ctx) {
-
-    }
-
-    block$composite(ctx) {
 
     }
 
@@ -167,22 +159,6 @@ export class InfoLNVisitor extends BaseCstVisitor {
 
     }
 
-    composite$ifelse(ctx) {
-
-    }
-
-    composite$forever(ctx) {
-
-    }
-
-    composite$repeat(ctx) {
-
-    }
-
-    composite$repeatuntil(ctx) {
-
-    }
-
     ifelse(ctx) {
         return {
             PLACEHOLDER: "%s",
@@ -231,9 +207,32 @@ export class InfoLNVisitor extends BaseCstVisitor {
 
     }
 
+    id(ctx) {
+        console.log(ctx);
+        if(!ctx || !ctx.ID){
+            return {
+                OFFSET: null,
+                TEXT: null,
+                ID: null,
+                TYPE: ID
+            }
+        }
+        return {
+            OFFSET: ctx.ID[0].offset,
+            TEXT: ctx.ID[0].image,
+            ID: ctx.ID[0].image,
+            TYPE: ID
+        }
+    }
+
+    comment(ctx) {
+
+    }
+
     annotations(ctx) {
-        if(ctx.ID) {
-            return this.id(ctx.ID[0]);
+        console.log(ctx);
+        if(ctx.id) {
+            return this.visit(ctx.id)
         }else {
             return this.id(null);
         }
@@ -336,7 +335,7 @@ export class InfoLNVisitor extends BaseCstVisitor {
     /**
      * @param commentToken
      */
-    comment(commentToken){
+    _comment(commentToken){
         return {
             OFFSET: commentToken.offset,
             TEXT: this.unescapeComment(commentToken.image),
@@ -346,23 +345,6 @@ export class InfoLNVisitor extends BaseCstVisitor {
 
     unescapeComment(text){
         return text.replace(/\\\|/g, '|').replace(/^\|(.*(?=\|$))\|$/, '$1');
-    }
-
-    id(IDToken){
-        if(!IDToken){
-            return {
-                OFFSET: null,
-                TEXT: null,
-                ID: null,
-                TYPE: ID
-            }
-        }
-        return {
-            OFFSET: IDToken.offset,
-            TEXT: IDToken.image,
-            ID: IDToken.image,
-            TYPE: ID
-        }
     }
 
 
@@ -414,5 +396,15 @@ export class InfoLNVisitor extends BaseCstVisitor {
             x = this[rule](ctx);
         }
         return x.TYPE;
+    }
+
+    getModifiers(ctx, rule=mull){
+        let x;
+        if (!rule) {
+            x = this.visit(ctx);
+        } else {
+            x = this[rule](ctx);
+        }
+        return x.MODIFIERS;   //todo
     }
 }

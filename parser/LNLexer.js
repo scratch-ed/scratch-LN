@@ -195,17 +195,22 @@ export const ID = createToken({
 });
 
 
-export const Delimiter = createToken({
-    name: "Delimiter",
-    pattern: /;[ \t]*\n|;|\n/,
+export const MultipleDelimiters = createToken({
+    name: "MultipleDelimiters",
+    //; \n should always bee seen as a whole 
+    //so a ; alone must explicitly not been followed by a \n
+    pattern: /((;[ \t]*\n|;[ \t]*(?!\n)|\n)[ \t]*){2,}/,
     line_breaks: true
 });
 
-export const StackDelimiter = createToken({
-    name: "StackDelimiter",
-    pattern: /((;[ \t]*\n|;|\n)[ \t]*){2,}/,
-    line_breaks: true
+export const Delimiter = createToken({
+    name: "Delimiter",
+    pattern: /;[ \t]*\n?|\n/,
+    line_breaks: true,
+    //longer_alt: MultipleDelimiter
 });
+
+
 
 // marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
 export const WhiteSpace = createToken({
@@ -223,7 +228,7 @@ export const allTokens = [
     //WARNING: RepeatUntil must be defined before Repeat
     Forever, End, RepeatUntil, Repeat, If, Else, Then,
     //WARNING: StackDelimiter must be defined before Delimiter
-    StackDelimiter, Delimiter,
+    MultipleDelimiters, Delimiter,
     LCurlyBracket, RCurlyBracket,
     LRoundBracket, RRoundBracket,
     RAngleBracket, LAngleBracket,
