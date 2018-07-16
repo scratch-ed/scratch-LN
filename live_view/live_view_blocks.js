@@ -31,8 +31,6 @@ window.onload = function () {
     //all events in blockly: https://developers.google.com/blockly/reference/js/Blockly.Events
     //https://developers.google.com/blockly/guides/configure/web/events
     ScratchBlocks.mainWorkspace.addChangeListener((e) => {
-            console.log('change listerener called ####### START');
-            console.log(e);
             //for some reason does type not what i expect for blockchange and blockmove but it is necesaary for var rename...
             if(e instanceof  ScratchBlocks.Events.BlockChange //change value
                         || e instanceof  ScratchBlocks.Events.BlockMove  //move/delete/create block
@@ -40,9 +38,7 @@ window.onload = function () {
                             ){
                 generateTextWorkspace() ;
             }
-
-            console.log('################################# END');
-        }
+    }
     );
 
     //text

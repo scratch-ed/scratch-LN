@@ -61,32 +61,29 @@
       Type scratch-LN text in the editor, the syntax can be found  <a href="documentation.html">here</a>. Not behaving as expected, report it <a href="https://github.com/scratch4d/scratch-LN/issues">here</a> .
       </section>
 
-        <div id="view">
-            <div id="warnings">ok</div>
             <div id="blocklyDiv"></div>
-        </div>
 
-        <div id="control">
-            <p>
-            <input id="blockid" type="number"/>
-            <button id="glowon">glow on</button> 
-            <button id="glowoff">glow off</button>
-            <button id="stackglowon">stack glow on</button> 
-            <button id="stackglowoff">stack glow off</button>
-            <button id="report">report</button>
-    		</p>
+            <div id="control">
+                <p>
+                    <input id="blockid"/>
+                    <button id="glowon">glow on</button>
+                    <button id="glowoff">glow off</button>
+                    <button id="stackglowon">stack glow on</button>
+                    <button id="stackglowoff">stack glow off</button>
+                    <button id="report">report</button>
+                </p>
 
-            <button id="parser">to blocks!</button>
-            <button id="showexample">example</button>
+                <button id="xmlparser">to blocks!</button>
+                <button id="showexample">example</button>
 
-            <div class = "container">
-            <textarea id="editor"></textarea>
-            
+                <!-- <button id="insertxml">insert xml</button>  -->
+                <div class = "container">
+                    <textarea id="editor"></textarea>
+                    <div class="highlights" id="highlighter"></div>
+                </div>
             </div>
-        </div>
-        
-		</div>
 
+            <textarea id="warnings"></textarea>
   		
     </body>
 </html>

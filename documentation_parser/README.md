@@ -1,34 +1,27 @@
-# notes and temporary explanation of the parser, see wiki for more
-
-## tech details
 Used library:
-https://github.com/SAP/chevrotain/tree/master/examples/grammars
+https://sap.github.io/chevrotain/docs/
 
-playground (copy past the content of `temp.js`):
+playground (copy past the content of `parser_playground.js`):
 http://sap.github.io/chevrotain/playground/
 
-the playground is now on version 3.0 i'am using version 1
-https://github.com/SAP/chevrotain/blob/75bc41679367d4057b87f3e1c3bf0ed5d97fab04/CHANGELOG.md
-`if(ctx.iets.length>0)` has to be chagned to `if(ctx.iets)` 
 
-https://github.com/SAP/chevrotain/issues/643
+The most recent generated diagrams can be found in  `generated_diagrams.html`
 
-the most recent generated diagrams can be found in  `generated_diagrams.html`
 
-## problems/remarks
+- longer_alt 
+    - allows if on edge, bounce to be matched as one label
+    - allows numbers to be matched in a label instead of seperate 
 
-- sensitive to the amount of `\n`
-- `:` cannot be at the end of a label -> "go to x:" is not valid and should be "go to x: "
-- Label cannot start with a keyword (`forever`,`repeat`,`if`,`then`,`else`,`repeat`,`until`,`end`)
-- Forever can be used invalidly in the middle of a stack...
-- empty input does not work?
-- make {} optional in case of "" or <>
 
-## todo
+- regex
+    - https://regexper.com/
+    - lookaheads: https://www.stefanjudis.com/today-i-learned/the-complicated-syntax-of-lookaheads-in-javascript-regular-expressions/ 
 
-- {} around reporters and booleans and args can be ignored but than `scripts` is not a valid toprule anymore. See `parser_reducecurlies.js`
-- allow multiple newlines between stacks
-
+- allowing < {} > {} >
+	- backtracking?
+		- https://github.com/SAP/chevrotain/blob/master/examples/parser/backtracking/backtracking.js
+		- https://sap.github.io/chevrotain/docs/guide/syntactic_content_assist.html#gates-predicates
+		- https://github.com/SAP/chevrotain/blob/master/examples/parser/predicate_lookahead/predicate_lookahead.js
 
 
 

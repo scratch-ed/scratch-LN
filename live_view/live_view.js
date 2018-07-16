@@ -1,8 +1,11 @@
 import ScratchBlocks from 'scratch-blocks';
 import parseTextToXML from './../parser/parserUtils.js'
 import generateText from './../generator/generator.js'
+import {parseTextToXMLWithWarnings} from "../parser/parserUtils";
 
 let workspace = null;
+let editor;
+let warnings;
 
 
 window.onload = function () {
@@ -29,9 +32,15 @@ window.onload = function () {
     ScratchBlocks.mainWorkspace.getFlyout().hide();
 
     //text
-    let editor = document.getElementById('editor');
+    editor = document.getElementById('editor');
     editor.addEventListener('input', updateWorkspace);
-    editor.value = 'mimi {}';//' when greenflag clicked;move {456} steps;pen up;'//go to x: {0} y: {0};pen down;repeat (zijde);move {100} steps;turn cw {({360} /{(zijde)})} degrees;end;pen up'//'when gf clicked;repeat 10;pen up;' //'define BLUB {(d)} {<f>}'
+    editor.value =  'when gf clicked\n' +
+        'say "hello"'
+    ;
+
+    warnings = document.getElementById('warnings');
+
+
     updateWorkspace();
 
     //button options
@@ -59,8 +68,9 @@ window.onload = function () {
 
     //insertSomeCodeFromXML();
 
-    generateText(workspace)
+    //generateText(workspace)
 
+    console.log(getWorkspaceXML())
 };
 
 function generateTextWorkspace() {
@@ -72,7 +82,9 @@ function updateWorkspace() {
     //make xml
     //console.log('----');
     let text = editor.value;
-    let xml = parseTextToXML(text);
+    let r = parseTextToXMLWithWarnings(text);
+    let xml = r.xml;
+
     console.log(xml);
     if (xml) { //clear workspace
         workspace.clear();
@@ -80,7 +92,13 @@ function updateWorkspace() {
         let dom = Blockly.Xml.textToDom(xml);
         Blockly.Xml.domToWorkspace(dom, workspace);
         workspace.cleanUp();
+        r.xml = undefined;
     }
+
+    warnings.value = JSON.stringify(r);
+
+    editor.focus();
+    //console.log(getWorkspaceXML())
 }
 
 
@@ -106,22 +124,54 @@ function addBlock(prototypeName, id, x, y) {
 function insertSomeCodeFromXML() {
 
     let xml = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
-        '  <variables> \n' +
-        '    <variable type="arg" id="var08">a</variable>\n' +
-        '  </variables>\n' +
-        '  <block id="0" type="procedures_call" x="10" y="10">\n' +
-        '    <mutation proccode="sayaas %s" argumentnames="[&quot;a&quot;]" warp="false" argumentids="[&quot;var0&quot;]"/>\n' +
-        '    <value name="a">\n' +
-        '      <block type="data_variable" id="1" x="10" y="10">\n' +
-        '        <field name="VARIABLE" id="var0">a</field>\n' +
-        '      </block>\n' +
-        '    </value>\n' +
-        '    <next/>\n' +
-        '  </block>\n' +
-        '</xml>'
-    //console.log(xml);
+        '    <variables></variables>\n' +
+        '            <block id="hQ]-n]g^y*;-^RPV]UQh" type="procedures_call">\n' +
+        '                <mutation proccode="blok %n %s %b after text" argumentids="[&quot;input0&quot;,&quot;input1&quot;,&quot;input2&quot;]"></mutation>\n' +
+        '                <value name="input0">\n' +
+        '                    <shadow id="x]R42mYvrfQ{)T+G@cn/" type="math_number">\n' +
+        '                        <field name="NUM">444</field>\n' +
+        '                    </shadow>\n' +
+        '                </value>\n' +
+        '                <value name="input1">\n' +
+        '                    <shadow id="5PYa?j=YPU7n%{y7KbBe" type="text">\n' +
+        '                        <field name="TEXT">lalala</field>\n' +
+        '                    </shadow>\n' +
+        '                </value>\n' +
+        '                <value name="input2">\n' +
+        '                    <block id="Eo{N.OdXey2sykDl7czU" type="operator_lt">\n' +
+        '                        <value name="OPERAND1">\n' +
+        '                            <shadow id="Fqe=q!wYlSE(aM@8:(g`" type="text">\n' +
+        '                                <field name="TEXT"></field>\n' +
+        '                            </shadow>\n' +
+        '                        </value>\n' +
+        '                        <value name="OPERAND2">\n' +
+        '                            <shadow id="CCQfAT1YY%ukDp!mgxqp" type="text">\n' +
+        '                                <field name="TEXT"></field>\n' +
+        '                            </shadow>\n' +
+        '                        </value>\n' +
+        '                    </block>\n' +
+        '                </value>\n' +
+        '            </block>\n' +
+        '</xml>\n';
+    xml = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
+        '    <variables></variables>\n' +
+        //todo this generates an error when toworkspace is called. somehting with x and y. I am not sure of the cause
+        '    <comment x="0" y="0" w="100" h="100" minimized="false" id="biboba" >sad comment</comment> \n' +
+        '    <comment x="100" y="100" w="100" h="100" minimized="false" id="biboba2" >sad comment2</comment> \n' +
+        '    <block type="procedures_call" id="SaA0RG_sd@{sUN5%SWpW" x="119" y="267">\n' +
+        '        <comment pinned="true">happy comment</comment> \n' + //pinned=true is for attached comments
+        '        <mutation proccode="blok %n" argumentids="[&quot;input0&quot;]" warp="null"></mutation>\n' +
+        '        <value name="input0">\n' +
+        '            <shadow type="math_number" id="xAsO+lm[%y|!-0je(qxh">\n' +
+        '                <field name="NUM">42</field>\n' +
+        '            </shadow>\n' +
+        '        </value>\n' +
+        '    </block>\n' +
+        '</xml>';
+    console.log(xml);
     let dom = Blockly.Xml.textToDom(xml);
     Blockly.Xml.domToWorkspace(dom, workspace);
+    //<comment id="8*/w-@zgZoKksBwJl*dh" pinned="false" x="247" y="275" minimized="false" h="200" w="200">
     //workspace.getById(id) //https://developers.google.com/blockly/reference/js/Blockly.Workspace#.getById
 }
 
@@ -157,7 +207,18 @@ let stackGlowOn = function () {
 
 
 function showExample() {
-    let code = 'when gf clicked \nif < {(blub)} contains {"citroen"} ? > \nif < {(length of {(blub)})} = {2} >\nrepeat 10\nrepeat 10\nset pen color to {(pick random {0} to {255})}\nglide {2} secs to x: {(pick random {0} to {240})} y: {(pick random {0} to {180})}\npen up\nend\ngo to x: {0} y: {0}'
+    let code = 'define myblock (b) ||\n' +
+        'repeat {10} |r|\n' +
+        'myblock < {< {(a @ida |a|)} = {(b ::custom )} >} = {(x)} > @idb |b|\n' +
+        'end\n' +
+        'move {10 @idi} steps\n' +
+        'say "hello"'
     editor.value = code;
     updateWorkspace();
+}
+
+function getWorkspaceXML() {
+    let dom = ScratchBlocks.Xml.workspaceToDom(workspace);
+    let text = new XMLSerializer().serializeToString(dom);
+    return text
 }

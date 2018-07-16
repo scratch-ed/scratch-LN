@@ -1,118 +1,137 @@
 <html>
-    <head>
-        <meta charset="utf-8">
-        <!-- <script type="text/javascript" src="bundle_test.js" charset="utf-8"></script> -->
+<head>
+    <meta charset="utf-8">
+    <!-- <script type="text/javascript" src="bundle_test.js" charset="utf-8"></script> -->
 
-        <script type="text/javascript" src="example.js" charset="utf-8"></script>
-        
-        <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script type="text/javascript" src="example.js" charset="utf-8"></script>
 
 
-        <!-- Optional theme -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-
-        <!-- Latest compiled and minified JavaScript -->
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-        <style>
-            .codeDiv {
-               
-            }
-            .scratch {
-                display: none;
-            }
-            .blocklyDiv {
-                
-            }
-            /*.center-block {
-                display: block;
-                margin-left: auto;
-                margin-right: auto;
-             }*/
-             /*@font-face {
-                font-family:ScratchFont;
-                src: url(http://pulljosh.github.io/files/scr.ttf);
-            }*/
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
 
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
-            p {
-/*                font-family:ScratchFont;
-*/                font-size:150%;
-            }
-            .logo{
-                width: 7%
-            }
-            .mycontent{
-                margin-bottom: 250px;
-            }
-        </style>
-    </head>
-    <body>
-    <div class="page-header">
-     
-  <h1 class="text-center" id="tittletext">
-<img src="cdjlogo.jpeg" class="logo"> 
-  Hoe teken je het CoderDojo logo in Scratch?</h1>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <style>
+        .codeDiv {
+
+        }
+
+        .scratch {
+            display: none;
+        }
+
+        .blocklyDiv {
+
+        }
+
+        /*.center-block {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+         }*/
+        /*@font-face {
+           font-family:ScratchFont;
+           src: url(http://pulljosh.github.io/files/scr.ttf);
+       }*/
+
+        p {
+            /*                font-family:ScratchFont;
+            */
+            font-size: 150%;
+        }
+
+        .logo {
+            width: 7%
+        }
+
+        .mycontent {
+            margin-bottom: 250px;
+        }
+
+        #blocklyDiv {
+            float: left;
+        }
+    </style>
+</head>
+<body>
+<script type="text/javascript" src="createTest.js" charset="utf-8"></script>
+
+<div class="page-header">
+
+    <h1 class="text-center" id="tittletext">
+        <img src="cdjlogo.jpeg" class="logo">
+        Hoe teken je het CoderDojo logo in Scratch?</h1>
 </div>
-        
 
-  <div class="container">
-        <div class="row form-group">
-            <div class="col-xs-12">
-                <ul class="nav nav-pills nav-justified thumbnail setup-panel">
-                    <li class="active"><a href="#step-start">
-                        <h4 class="list-group-item-heading">0</h4>
-                        <p class="list-group-item-text">Start</p>
-                    </a></li>
-                    <li ><a href="#step-1">
-                        <h4 class="list-group-item-heading">1</h4>
-                        <p class="list-group-item-text">Teken een 1</p>
-                    </a></li>
-                    <li ><a href="#step-2">
-                        <h4 class="list-group-item-heading">2</h4>
-                        <p class="list-group-item-text">Teken een 0</p>
-                    </a></li>
-                    <li ><a href="#step-3">
-                        <h4 class="list-group-item-heading">3</h4>
-                        <p class="list-group-item-text">Teken een cirkel</p>
-                    </a></li>
-                    <li ><a href="#step-4">
-                        <h4 class="list-group-item-heading">4</h4>
-                        <p class="list-group-item-text">Teken 2 halve cirkels</p>
-                    </a></li>
-                    <li ><a href="#step-5">
-                        <h4 class="list-group-item-heading">5</h4>
-                        <p class="list-group-item-text">Teken het volledige logo</p>
-                    </a></li>    
-                </ul>
-            </div>
+
+<div class="container">
+    <div class="row form-group">
+        <div class="col-xs-12">
+            <ul class="nav nav-pills nav-justified thumbnail setup-panel">
+                <li class="active"><a href="#step-start">
+                    <h4 class="list-group-item-heading">0</h4>
+                    <p class="list-group-item-text">Start</p>
+                </a></li>
+                <li><a href="#step-A">
+                    <h4 class="list-group-item-heading">A</h4>
+                    <p class="list-group-item-text">Testje</p>
+                </a></li>
+                <li><a href="#step-1">
+                    <h4 class="list-group-item-heading">1</h4>
+                    <p class="list-group-item-text">Teken een 1</p>
+                </a></li>
+                <li><a href="#step-2">
+                    <h4 class="list-group-item-heading">2</h4>
+                    <p class="list-group-item-text">Teken een 0</p>
+                </a></li>
+                <li><a href="#step-3">
+                    <h4 class="list-group-item-heading">3</h4>
+                    <p class="list-group-item-text">Teken een cirkel</p>
+                </a></li>
+                <li><a href="#step-4">
+                    <h4 class="list-group-item-heading">4</h4>
+                    <p class="list-group-item-text">Teken 2 halve cirkels</p>
+                </a></li>
+                <li><a href="#step-5">
+                    <h4 class="list-group-item-heading">5</h4>
+                    <p class="list-group-item-text">Teken het volledige logo</p>
+                </a></li>
+            </ul>
         </div>
-    </div>  
+    </div>
+</div>
 
 <!-- START -->
 <form class="container mycontent">
 
     <div class="row setup-content" id="step-start">
         <div class="col-xs-12">
-            
+
             <div class="col-md-12 well text-center">
                 <h2 class="text-center">Voorbeeld</h2>
                 <p>
-                Hieronder vind je wat we vandaag gaan maken:
-                <br>
-                <iframe allowtransparency="true" width="485" height="402" src="//scratch.mit.edu/projects/embed/187598405/?autostart=false" frameborder="0" allowfullscreen></iframe> 
-                <br>
-                In de volgende stappen zal ik je uitleggen hoe je belangrijke delen van het coderdojo logo tekent, maar het is aan jou om ze allemaal samen te voegen!
-                <br>
-                Ben je er klaar voor?
-                <br>
+                    Hieronder vind je wat we vandaag gaan maken:
+                    <br>
+                    <iframe allowtransparency="true" width="485" height="402" src="//scratch.mit.edu/projects/embed/187598405/?autostart=false" frameborder="0" allowfullscreen></iframe>
+                    <br>
+                    In de volgende stappen zal ik je uitleggen hoe je belangrijke delen van het coderdojo logo tekent,
+                    maar het is aan jou om ze allemaal samen te voegen!
+                    <br>
+                    Ben je er klaar voor?
+                    <br>
                 </p>
-               <button id="activate-step-1" class="btn btn-primary btn-md">
-               Start!
-               </button>
+                <button id="activate-step-A" class="btn btn-primary btn-md">
+                    Start!
+                </button>
             </div>
-
 
 
         </div>
@@ -123,20 +142,56 @@
 <!-- STAP 1 -->
 <form class="container mycontent">
 
+    <div class="row setup-content" id="step-A">
+        <div class="col-xs-12">
+
+            <div class="col-md-12 well">
+                <h2 class="text-center">Testje: test de blokjes!</h2>
+                <p>Dit zijn de blokjes die we gaan gebruiken. Dubbel klik erop om te kijken wat er gebeurd!</p>
+                <div class="text-center">
+
+                    <!--                    <div id="projectButtons">
+                                            <button id="greenflag">Green flag</button>
+                                            <button id="stopall">Stop</button>
+                                        </div>-->
+
+                    <div id="blocklyDiv"></div>
+                    <!--<canvas id="scratch-stage" style="width: 480px; height: 360px;"></canvas>-->
+                    TODO
+                    <br>
+                    <button id="activate-step-1" class="btn btn-primary btn-md">
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        Klaar!
+                    </button>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+
+</form>
+
+
+<!-- STAP 1 -->
+<form class="container mycontent">
+
     <div class="row setup-content" id="step-1">
         <div class="col-xs-12">
 
             <div class="col-md-12 well">
-                <h2 class="text-center" >Teken een 1</h2>
+                <h2 class="text-center">Teken een 1</h2>
                 <div class="text-center">
                     <p>
-                    We gaan de pen gebruiken om een 1 te tekenen. Ik toon hier alvast hoe het moet, maar probeer het ook eens zelf.
+                        We gaan de pen gebruiken om een 1 te tekenen. Ik toon hier alvast hoe het moet, maar probeer het
+                        ook eens zelf.
                     </p>
-                     <iframe allowtransparency="true" width="485" height="402" src="//scratch.mit.edu/projects/embed/187676914/?autostart=false" frameborder="0" allowfullscreen></iframe> 
-                   <!--  <p>
-                    Dit is hoe ik het heb gedaan. 
-                    </p> -->
-                <!-- <div class="row"> -->
+                    <!--<iframe allowtransparency="true" width="485" height="402" src="//scratch.mit.edu/projects/embed/187676914/?autostart=false" frameborder="0" allowfullscreen></iframe>-->
+                    <!--  <p>
+                     Dit is hoe ik het heb gedaan.
+                     </p> -->
+                    <!-- <div class="row"> -->
                     <!-- <div class="col-md-2 col-md-offset-5"> -->
                     <div class="col-md-2 col-md-offset-1">
                         <code class="scratch" id="een">
@@ -149,23 +204,24 @@
                             move {25} steps
                             turn cw {90} degrees
                             move {8} steps
-                            turn cw {180} degrees 
+                            turn cw {180} degrees
                             move {16} steps
                             turn ccw {90} degrees
                             move {8} steps
                             pen up
                         </code>
                     </div>
-                <!-- </div>                           -->
-              <!-- <button id="glow-Div1" class="btn btn-primary btn-md">
-               do stuff
-               </button> -->
+                    <!-- </div>                           -->
+                    <!-- <button id="glow-Div1" class="btn btn-primary btn-md">
+                     do stuff
+                     </button> -->
                     <br>
                     <button id="activate-step-2" class="btn btn-primary btn-md">
-                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                    Klaar!</button>
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        Klaar!
+                    </button>
                 </div>
-            </div>            
+            </div>
 
         </div>
     </div>
@@ -179,38 +235,39 @@
     <div class="row setup-content" id="step-2">
         <div class="col-xs-12">
             <div class="col-md-12 well text-center">
-                <h2 class="text-center" >Teken een 0</h2>
+                <h2 class="text-center">Teken een 0</h2>
                 <div class="text-center">
-                <p>
-                    Kan je nu ook een 0 tekenen? Merk op dat je 2 keer dezelfde blokjes achter elkaar zet, je kan dit vermijden door een
-                    <button id="glow-repeat-div1" class="btn btn-primary btn-md">
-                    repeat
-                    </button> 
-                    blokje te gebruiken. 
+                    <p>
+                        Kan je nu ook een 0 tekenen? Merk op dat je 2 keer dezelfde blokjes achter elkaar zet, je kan
+                        dit vermijden door een
+                        <button id="glow-repeat-div1" class="btn btn-primary btn-md">
+                            repeat
+                        </button>
+                        blokje te gebruiken.
                     <div class="row">
-                    <div class="col-md-2 col-md-offset-5">
-                    <code class="scratch" id="nul">
-                        when gf clicked
-                        set pen shade to {0}
-                        point in direction {90}
-                        pen down 
-                        repeat {2}
-                        move {12} steps
-                        turn cw {90} degrees
-                        move {22} steps
-                        turn cw {90} degrees
-                        end
-                        pen up
-                    </code>
+                        <div class="col-md-2 col-md-offset-5">
+                            <code class="scratch" id="nul">
+                                when gf clicked
+                                set pen shade to {0}
+                                point in direction {90}
+                                pen down
+                                repeat {2 @repi} @rep
+                                move {12} steps @move
+                                turn cw {90} degrees
+                                move {22} steps
+                                turn cw {90} degrees
+                                end
+                                pen up
+                            </code>
+                        </div>
                     </div>
-                    </div>
-                </p>
 
-                <button id="activate-step-3" class="btn btn-primary btn-md">
-                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                Klaar!</button>
+                    <button id="activate-step-3" class="btn btn-primary btn-md">
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        Klaar!
+                    </button>
+                </div>
             </div>
-        </div>
         </div>
     </div>
 
@@ -222,47 +279,48 @@
         <div class="col-xs-12">
             <div class="col-md-12 well text-center">
 
-            <h2 class="text-center">Van een vierkant naar een cirkel</h2>
-            <div class="text-center">
-            <p>
-                Teken nu een vierkant. Ik heb dit zo gedaan:
-                <p>
-                <div class="row">
-                <div class="col-md-2 col-md-offset-5">
-                <code class="scratch" id="vierkant">
-                    when gf clicked
-                    set pen shade to {0}
-                    point in direction {90}
-                    pen down
-                    repeat {4}
-                    move {10} steps
-                    turn cw {({360}/{4})} degrees
-                    end
-                    pen up
-                </code>
-                </div>
-                </div>
-                <p>
-                Wat gebeurt er als je
-                <button id="glow-four-div2" class="btn btn-primary btn-md">
-                4
-                </button>  
-                vervangt door 
-                <button id="glow-five-div2" class="btn btn-primary btn-md">
-                5
-                </button> 
-                ? Wat als we hier nu een groot getal van maken, bijvoorbeeld 
-                <button id="glow-high-div2" class="btn btn-primary btn-md">
-                30
-                </button> 
-                ? 
-                <br>
-                Nu kunnen we een cirkel tekenen!
-            </p>
+                <h2 class="text-center">Van een vierkant naar een cirkel</h2>
+                <div class="text-center">
+                    <p>
+                        Teken nu een vierkant. Ik heb dit zo gedaan:
+                    <p>
+                    <div class="row">
+                        <div class="col-md-2 col-md-offset-5">
+                            <code class="scratch" id="vierkant">
+                                when gf clicked
+                                set pen shade to {0}
+                                point in direction {90}
+                                pen down
+                                repeat {4 @repi}
+                                move {10} steps
+                                turn cw {({360}/{4 @divi})} degrees
+                                end
+                                pen up
+                            </code>
+                        </div>
+                    </div>
+                    <p>
+                        Wat gebeurt er als je
+                        <button id="glow-four-div2" class="btn btn-primary btn-md">
+                            4
+                        </button>
+                        vervangt door
+                        <button id="glow-five-div2" class="btn btn-primary btn-md">
+                            5
+                        </button>
+                        ? Wat als we hier nu een groot getal van maken, bijvoorbeeld
+                        <button id="glow-high-div2" class="btn btn-primary btn-md">
+                            30
+                        </button>
+                        ?
+                        <br>
+                        Nu kunnen we een cirkel tekenen!
+                    </p>
 
-                <button id="activate-step-4" class="btn btn-primary btn-md">
-                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                Klaar!</button>
+                    <button id="activate-step-4" class="btn btn-primary btn-md">
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        Klaar!
+                    </button>
                 </div>
             </div>
         </div>
@@ -271,59 +329,59 @@
 </form>
 
 <form class="container mycontent">
-    
+
     <div class="row setup-content" id="step-4">
         <div class="col-xs-12">
             <div class="col-md-12 well text-center">
 
-                <h2 class="text-center" >Kleinere halve cirkels cirkel</h2>
+                <h2 class="text-center">Kleinere halve cirkels cirkel</h2>
                 <div class="text-center">
-                <p>
-                    Wat zou je kunnen veranderen om een 
-                      <button id="glow-Div3-half" class="btn btn-primary btn-md">
-                       halve
-                       </button>
-                     cirkel te tekenen?
+                    <p>
+                        Wat zou je kunnen veranderen om een
+                        <button id="glow-Div3-half" class="btn btn-primary btn-md">
+                            halve
+                        </button>
+                        cirkel te tekenen?
                     </p>
                     <div class="row">
-                    <div class="col-md-2 col-md-offset-5">
-                    <code class="scratch" id="cwcirkel">
-                        when gf clicked
-                        set pen shade to {0}
-                        pen down
-                        repeat ({30}/{2})
-                        move {5} steps
-                        turn cw {({360}/{30})} degrees
-                        end
-                        pen up
-                    </code>
-                    </div>
+                        <div class="col-md-2 col-md-offset-5">
+                            <code class="scratch" id="cwcirkel">
+                                when gf clicked
+                                set pen shade to {0}
+                                pen down
+                                repeat ({30}/{2})
+                                move {5} steps
+                                turn cw {({360}/{30 @divi} @div)} degrees @turn
+                                end
+                                pen up
+                            </code>
+                        </div>
                     </div>
                     <p>
-                    Wat pas je aan om de halve cirkel in de
-                    <button id="glow-Div3-richting" class="btn btn-primary btn-md">
-                    andere richting
-                    </button>
-                     tekenen? 
+                        Wat pas je aan om de halve cirkel in de
+                        <button id="glow-Div3-richting" class="btn btn-primary btn-md">
+                            andere richting
+                        </button>
+                        tekenen?
                     </p>
                     <div class="row">
-                    <div class="col-md-2 col-md-offset-5">
-                    <code class="scratch" id="ccwcirkel">
-                        when gf clicked
-                        set pen shade to {0}
-                        pen down
-                        repeat ({30}/{2})
-                        move {5} steps
-                        turn ccw {({360}/{30})} degrees
-                        end
-                        pen up
-                    </code>
+                        <div class="col-md-2 col-md-offset-5">
+                            <code class="scratch" id="ccwcirkel">
+                                when gf clicked
+                                set pen shade to {0}
+                                pen down
+                                repeat ({30}/{2})
+                                move {5} steps
+                                turn ccw {({360}/{30 @divi} @div)} degrees @turn
+                                end
+                                pen up
+                            </code>
+                        </div>
                     </div>
-                    </div>
-                <button id="activate-step-5" class="btn btn-primary btn-md">
-                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                Klaar!</button>
-                </p>
+                    <button id="activate-step-5" class="btn btn-primary btn-md">
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        Klaar!
+                    </button>
                 </div>
             </div>
         </div>
@@ -332,21 +390,21 @@
 </form>
 
 <form class="container mycontent">
-    
+
     <div class="row setup-content" id="step-5">
         <div class="col-xs-12">
             <div class="col-md-12 well text-center">
 
-                <h2 class="text-center" >Teken het volledige logo</h2>
+                <h2 class="text-center">Teken het volledige logo</h2>
                 <div class="text-center">
-                <p>
-                    Nu weet je alles om het het CoderDojo logo te kunnen teken!
-                    <br>
-                    Probeer dit eens!
+                    <p>
+                        Nu weet je alles om het het CoderDojo logo te kunnen teken!
+                        <br>
+                        Probeer dit eens!
                     </p>
-                   <!--  <div class="row">
-                    <div class="col-md-2 col-md-offset-5">
- -->
+                    <!--  <div class="row">
+                     <div class="col-md-2 col-md-offset-5">
+  -->
                     <!-- <code class="scratch">
                         when gf clicked
                         clear
@@ -398,14 +456,15 @@
                     <br>
                     <br>
                     <br>
-                    <h2 class="text-center" >Challenge</h2>
-                    <p class="text-center">   
-                    Kan je het logo ook inkleuren?
-                    <br>         
-                     <iframe allowtransparency="true" width="485" height="402" src="//scratch.mit.edu/projects/embed/188259092/?autostart=false" frameborder="0" allowfullscreen></iframe> 
+                    <h2 class="text-center">Challenge</h2>
+                    <p class="text-center">
+                        Kan je het logo ook inkleuren?
+                        <br>
+                        <iframe allowtransparency="true" width="485" height="402" src="//scratch.mit.edu/projects/embed/188259092/?autostart=false" frameborder="0" allowfullscreen></iframe>
+
                     </p>
 
-                
+
                 </div>
             </div>
         </div>
@@ -414,33 +473,32 @@
 </form>
 
 
-        <!-- <h2>Wat kunnen we al?</h2>
-        <p>
-        zet het zelf maar samen
+<!-- <h2>Wat kunnen we al?</h2>
+<p>
+zet het zelf maar samen
 <code class='scratch'>
 when gf clicked
 pen up
 </code>
-        </p>
-        <h2>Halve cirkel inkleuren</h2>
-        <p>
-        dees is een gans gedoe
+</p>
+<h2>Halve cirkel inkleuren</h2>
+<p>
+dees is een gans gedoe
 <code class='scratch'>
 when gf clicked
 pen up
 </code>
 
-        </p>                
-        <h2>Afwerken</h2>
-        <p>
+</p>
+<h2>Afwerken</h2>
+<p>
 <code class='scratch'>
 when gf clicked
 pen up
 </code>
-        Probeer het zelf maar af te werken
-        </p> -->
+Probeer het zelf maar af te werken
+</p> -->
 
-         
 
-    </body>
+</body>
 </html>

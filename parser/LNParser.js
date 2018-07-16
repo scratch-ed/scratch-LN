@@ -1,344 +1,402 @@
 /**
- * Parser: using class, seems not to work, HELP
+ * Parser
  *
- * Define parser rules, see wiki
+ * Define parser rules
  *
  * @file   This files defines the LNParser class and parse function.
  * @author Ellen Vanhove.
  */
 // Using ES6 style imports, this means Webpack 2 can perform tree shaking
-import { Parser } from "chevrotain"
+import {Parser, EMPTY_ALT} from "chevrotain"
 
-/*import {
-    LNLexer,
-    allTokens,
-    WhiteSpace,
-    Literal, StringLiteral, NumberLiteral, ColorLiteral,
-    Forever, End, Until, Repeat, If, Else, Then,
-    StatementTerminator,
-    Label,
-    LCurlyBracket, RCurlyBracket,
-    LRoundBracket, RRoundBracket,
-    RAngleBracket, LAngleBracket,
-    LSquareBracket, RSquareBracket,
-    DoubleColon,
-} from "./LNLexer" */
+const lntokens = require("./LNLexer");
 
-const lntokens = require("./LNLexer")
+let LNLexer = lntokens.LNLexer;
+let allTokens = lntokens.allTokens;
 
-    let LNLexer = lntokens.LNLexer;
-    let allTokens = lntokens.allTokens;
-    let Literal = lntokens.Literal;
-    let Forever = lntokens.Forever;
-    let End = lntokens.End;
-    let RepeatUntil = lntokens.RepeatUntil;
-    let Repeat = lntokens.Repeat;
-    let If = lntokens.If;
-    let Else = lntokens.Else;
-    let Then = lntokens.Then;
-    let StatementTerminator = lntokens.StatementTerminator;
-    let Identifier = lntokens.Identifier;
-    let LCurlyBracket = lntokens.LCurlyBracket;
-    let RCurlyBracket = lntokens.RCurlyBracket;
-    let LRoundBracket = lntokens.LRoundBracket;
-    let RRoundBracket = lntokens.RRoundBracket;
-    let RAngleBracket = lntokens.RAngleBracket;
-    let LAngleBracket = lntokens.LAngleBracket;
-    let LSquareBracket = lntokens.LSquareBracket;
-    let RSquareBracket = lntokens.RSquareBracket;
-    let DoubleColon = lntokens.DoubleColon;
-    let ID = lntokens.ID;
+let Label = lntokens.Label;
+let Delimiter = lntokens.Delimiter;
+let MultipleDelimiters = lntokens.MultipleDelimiters;
 
-export default class LNParser extends Parser {
-    constructor(input) {
-        super(input, allTokens);
+let Literal = lntokens.Literal;
+let StringLiteral = lntokens.StringLiteral;
+let ColorLiteral = lntokens.ColorLiteral;
+let NumberLiteral = lntokens.NumberLiteral;
+let ChoiceLiteral = lntokens.ChoiceLiteral;
 
-        const $ = this;
 
-        $.RULE("multipleStacks", () => {
-            $.AT_LEAST_ONE_SEP({
-                SEP: StatementTerminator,
+let Forever = lntokens.Forever;
+let End = lntokens.End;
+let RepeatUntil = lntokens.RepeatUntil;
+let Repeat = lntokens.Repeat;
+let If = lntokens.If;
+let Else = lntokens.Else;
+let Then = lntokens.Then;
+
+let LCurlyBracket = lntokens.LCurlyBracket;
+let RCurlyBracket = lntokens.RCurlyBracket;
+let LRoundBracket = lntokens.LRoundBracket;
+let RRoundBracket = lntokens.RRoundBracket;
+let RAngleBracket = lntokens.RAngleBracket;
+let LAngleBracket = lntokens.LAngleBracket;
+
+let Modifier = lntokens.Modifier;
+let ID = lntokens.ID;
+
+let Comment = lntokens.Comment;
+
+//REMINDER: remove chevroitain.emptyalt
+//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
+// ----------------- parser -----------------
+// Note that this is a Pure grammar, it only describes the grammar
+// Not any actions (semantics) to perform during parsing.
+function LNParser(input) {
+    Parser.call(this, input, allTokens, {
+        outputCst: true
+    });
+
+    const $ = this;
+
+    $.RULE("code", () => {
+        $.SUBRULE($.delimiters);
+        $.OPTION(() => {
+            $.SUBRULE($.comments);
+        })
+        $.OPTION2(() => {
+            $.SUBRULE($.stack);
+            $.MANY({
                 DEF: () => {
-                    $.SUBRULE($.stack);
+                    $.SUBRULE($.stackDelimiter);
+                    $.OPTION3(() => {
+                        $.SUBRULE2($.stack);
+                    })
                 }
             });
-        });
+        })
+        //$.CONSUME(chevrotain.EOF);
+    });
 
 
-        $.RULE("stack", () => {
-            $.AT_LEAST_ONE(() => {
-                $.SUBRULE($.stackline);
-            });
-        });
+    $.RULE("delimiters", () => {
+        $.OR([{
+            ALT: () => {
+                $.CONSUME(Delimiter, {
+                    LABEL: "leadingCodeDelimiters"
+                });
+            }
+        }, {
+            ALT: () => {
+                $.CONSUME(MultipleDelimiters, {
+                    LABEL: "leadingCodeDelimiters"
+                });
+            },
+        }, {
+            ALT: EMPTY_ALT()
+        }])
+    })
 
-        $.RULE("stackline", () => {
-            $.OR([{
-                NAME: "$block",
-                ALT: () => {
-                    $.SUBRULE($.block);
-                }
-            }, {
-                NAME: "$forever",
-                ALT: () => {
-                    $.SUBRULE($.forever);
-                }
-            }, {
-                NAME: "$repeat",
-                ALT: () => {
-                    $.SUBRULE($.repeat);
-                }
-            }, {
-                NAME: "$repeatuntil",
-                ALT: () => {
-                    $.SUBRULE($.repeatuntil);
-                }
-            }, {
-                NAME: "$ifelse",
-                ALT: () => {
-                    $.SUBRULE($.ifelse);
-                }
-            }]);
-        });
-
-
-        $.RULE("forever", () => {
-            $.CONSUME(Forever);
-            $.OPTION(() => {
-                $.SUBRULE($.id)
-            });
-            $.OPTION2(() => {
-                $.CONSUME(StatementTerminator);
-            });
-            $.OPTION3(() => {
-                $.SUBRULE($.stack);
-            });
-            $.OPTION4(() => {
-                $.SUBRULE($.end);
-            })
-        });
-
-        $.RULE("repeat", () => {
-            $.CONSUME(Repeat);
-            $.SUBRULE($.countableinput);
-            $.OPTION(() => {
-                $.SUBRULE($.id)
-            });
-            $.OPTION2(() => {
-                $.CONSUME(StatementTerminator);
-            });
-            $.OPTION3(() => {
-                $.SUBRULE($.stack);
-            });
-            $.OPTION4(() => {
-                $.SUBRULE($.end);
-            })
-
-        });
-
-        $.RULE("repeatuntil", () => {
-            $.CONSUME(RepeatUntil);
-            $.SUBRULE($.booleanblock);
-            $.OPTION(() => {
-                $.SUBRULE($.id)
-            });
-            $.OPTION2(() => {
-                $.CONSUME(StatementTerminator);
-            });
-            $.OPTION3(() => {
-                $.SUBRULE($.stack);
-            });
-            $.OPTION4(() => {
-                $.SUBRULE($.end);
-            })
-        });
-
-        $.RULE("ifelse", () => {
-            $.CONSUME(If);
-            $.SUBRULE($.booleanblock);
-            $.OPTION(() => {
-                $.CONSUME(Then);
-            });
-            $.OPTION2(() => {
-                $.CONSUME(StatementTerminator);
-            });
-            $.OPTION3(() => {
-                $.SUBRULE($.stack);
-            });
-            $.OPTION4(() => {
-                $.SUBRULE($.else);
-            });
-            $.OPTION5(() => {
-                $.SUBRULE($.end);
-            })
-        });
-        $.RULE("else", () => {
-            $.CONSUME(Else);
-            $.OPTION(() => {
-                $.CONSUME(StatementTerminator);
-            });
-            $.OPTION2(() => {
-                $.SUBRULE($.stack);
-            })
-        });
-
-        $.RULE("end", () => {
-            $.CONSUME(End);
-            $.OPTION(() => {
-                $.CONSUME(StatementTerminator);
-            })
-        });
-
-        $.RULE("block", () => {
-            $.AT_LEAST_ONE(() => {
+    $.RULE("stackDelimiter", () => {
+        $.AT_LEAST_ONE({
+            DEF: () => {
                 $.OR([{
                     ALT: () => {
-                        $.CONSUME1(Identifier);
+                        $.CONSUME(MultipleDelimiters, {
+                            LABEL: "intermediateCodeDelimiters"
+                        });
                     }
                 }, {
                     ALT: () => {
-                        $.SUBRULE($.argument);
+                        $.SUBRULE($.comments);
                     }
                 }]);
-
-            });
-            $.OPTION(() => {
-                $.SUBRULE($.option)
-            });
-            $.OPTION2(() => {
-                $.SUBRULE($.id)
-            });
-            $.OPTION3(() => {
-                $.CONSUME(StatementTerminator);
-            })
-
+            }
         });
+    });
 
-        $.RULE("option", () => {
-            $.CONSUME(DoubleColon);
-            $.CONSUME(Identifier);
+    $.RULE("comments", () => {
+        $.AT_LEAST_ONE(() => {
+            $.SUBRULE($.comment);
+            $.SUBRULE($.delimiters, {
+                LABEL: "trailingCommentsDelimiters"
+            });
         });
-        $.RULE("id", () => {
-            $.CONSUME(ID);
+    });
+
+    $.RULE("stack", () => {
+        $.SUBRULE($.block);
+        $.MANY(() => {
+            $.CONSUME(Delimiter, {
+                LABEL: "intermediateStackDelimiter"
+            });
+            $.SUBRULE2($.block);
         });
-        $.RULE("argument", () => {
+        $.OPTION(() => {
+            $.CONSUME2(Delimiter, {
+                LABEL: "trailingStackDelimiter"
+            });
+        })
+    });
+
+    $.RULE("block", () => {
+        $.OR([{
+            ALT: () => {
+                $.SUBRULE($.atomic);
+            }
+        }, {
+            ALT: () => {
+                $.SUBRULE($.composite);
+            }
+        }]);
+    });
+
+    $.RULE("atomic", () => {
+        $.AT_LEAST_ONE(() => {
             $.OR([{
                 ALT: () => {
-                    $.CONSUME(LCurlyBracket);
-                    $.OPTION(() => {
-                        $.OR2([{
-                            ALT: () => {
-                                $.SUBRULE($.primitive);
-                            }
-                        }, {
-                            ALT: () => {
-                                $.SUBRULE($.reporterblock);
-                            }
-                        }, {
-                            ALT: () => {
-                                $.SUBRULE($.booleanblock);
-                            }
-                        }]);
-                    });
-                    $.CONSUME(RCurlyBracket);
+                    $.CONSUME(Label);
                 }
             }, {
                 ALT: () => {
-                    $.SUBRULE($.choice);
-                }
-            }, {
-                ALT: () => {
-                    $.SUBRULE2($.reporterblock);
-                }
-            }, {
-                ALT: () => {
-                    $.SUBRULE2($.booleanblock);
-                }
-            }, {
-                ALT: () => {
-                    $.CONSUME(StringLiteral);
-                }
-            }, {
-                ALT: () => {
-                    $.CONSUME(ColorLiteral);
-                }
-            }])
-
-        });
-
-
-        $.RULE("countableinput", () => {
-
-            $.OR([{
-                ALT: () => {
-                    $.CONSUME(LCurlyBracket);
-                    $.SUBRULE($.primitive);
-                    $.CONSUME(RCurlyBracket);
-                }
-            },  {
-                ALT: () => {
-                    $.SUBRULE($.reporterblock);
+                    $.SUBRULE($.argument);
                 }
             }]);
-
-
         });
+        $.SUBRULE($.annotations);
+    });
 
-        $.RULE("primitive", () => {
-            $.CONSUME(Literal);
+    $.RULE("composite", () => {
+        $.OR([{
+            ALT: () => {
+                $.SUBRULE($.ifelse);
+            }
+        }, {
+            ALT: () => {
+                $.SUBRULE($.forever);
+            }
+        }, {
+            ALT: () => {
+                $.SUBRULE($.repeat);
+            }
+        }, {
+            ALT: () => {
+                $.SUBRULE($.repeatuntil);
+            }
+        }]);
+    });
+
+    $.RULE("ifelse", () => {
+        $.CONSUME(If);
+        $.SUBRULE($.condition);
+        $.OPTION(() => {
+            $.CONSUME(Then);
         });
-
-        $.RULE("reporterblock", () => {
-            $.CONSUME(LRoundBracket);
-            $.OPTION(() => {
-                $.SUBRULE($.block);
+        $.SUBRULE($.annotations);
+        $.SUBRULE($.clause, {
+            LABEL: "ifClause"
+        });
+        $.OPTION3(() => {
+            /*$.OPTION4(() => {
+                $.CONSUME(Delimiter, {
+                    LABEL: "trailingIfClauseDelimiter"
+                });
+            });*/
+            $.CONSUME(Else);
+            $.SUBRULE3($.clause, {
+                LABEL: "elseClause"
             });
-            $.CONSUME(RRoundBracket);
-
         });
+    });
 
-        $.RULE("choice", () => {
-            $.CONSUME(LSquareBracket);
-            $.OPTION(() => {
-                $.CONSUME(Identifier);
+    $.RULE("forever", () => {
+        $.CONSUME(Forever);
+        $.SUBRULE($.annotations);
+        $.SUBRULE($.clause);
+    });
+
+
+    $.RULE("repeat", () => {
+        $.CONSUME(Repeat);
+        $.SUBRULE($.argument);
+        $.SUBRULE($.annotations);
+        $.SUBRULE($.clause);
+    });
+
+    $.RULE("repeatuntil", () => {
+        $.CONSUME(RepeatUntil);
+        $.SUBRULE($.condition);
+        $.SUBRULE($.annotations);
+        $.SUBRULE($.clause);
+    });
+
+
+
+
+    $.RULE("clause", () => {
+        $.OPTION(() => {
+            $.CONSUME(Delimiter, {
+                LABEL: "leadingClauseDelimiter"
             });
-            $.CONSUME(RSquareBracket);
+        });
+        $.OPTION2(() => {
+            $.SUBRULE($.stack);
+        });
+        $.OPTION3(() => {
+            $.CONSUME(End);
+        })
+    });
+
+    $.RULE("annotations", () => {
+        $.SUBRULE($.modifiers);
+        $.SUBRULE($.id);
+        $.OPTION(() => {
+            $.SUBRULE($.comment);
         });
 
-        $.RULE("booleanblock", () => {
-            $.CONSUME(LAngleBracket);
-            $.OPTION(() => {
-                $.SUBRULE($.block);
-            });
-            $.CONSUME(RAngleBracket);
+    });
 
+    $.RULE("modifiers", () => {
+        $.MANY(() => {
+            $.CONSUME(Modifier);
+        })
+    });
+
+    $.RULE("id", () => {
+        $.OPTION(() => {
+            $.CONSUME(ID);
         });
+    });
+
+    $.RULE("comment", () => {
+        $.CONSUME(Comment);
+        $.SUBRULE($.modifiers);
+        $.SUBRULE($.id);
+    });
+
+    $.RULE("argument", () => {
+        $.OR([{
+            ALT: () => {
+                $.CONSUME(LCurlyBracket);
+                $.OR2([{
+                    ALT: () => {
+                        $.CONSUME(Literal);
+                    }
+                }, {
+                    ALT: () => {
+                        $.CONSUME(Label);
+                    }
+                }, {
+                    ALT: () => {
+                        $.SUBRULE($.expression);
+                    }
+                }, {
+                    ALT: () => {
+                        $.SUBRULE($.predicate);
+                    }
+                }, {
+                    NAME: "$empty",
+                    ALT: EMPTY_ALT()
+                }, ]);
+                $.SUBRULE($.id);
+                $.CONSUME(RCurlyBracket);
+            }
+        }, {
+            ALT: () => {
+                $.OR3([{
+                    ALT: () => {
+                        $.CONSUME(StringLiteral, {
+                            LABEL: "Literal"
+                        });
+                    }
+                }, {
+                    ALT: () => {
+                        $.CONSUME(ColorLiteral, {
+                            LABEL: "Literal"
+                        });
+                    }
+                }, {
+                    ALT: () => {
+                        $.CONSUME(ChoiceLiteral, {
+                            LABEL: "Literal"
+                        });
+                    }
+                }, {
+                    ALT: () => {
+                        $.SUBRULE2($.expression);
+                    }
+                }, {
+                    ALT: () => {
+                        $.SUBRULE2($.predicate);
+                    }
+                }]);
+            }
+        }])
+
+    });
+
+    $.RULE("condition", () => {
+        $.OR([{
+            ALT: () => {
+                $.CONSUME(LCurlyBracket);
+                $.OR2([{
+                    ALT: () => {
+                        $.SUBRULE($.predicate);
+                    }
+                }, {
+                    NAME: "$empty",
+                    ALT: EMPTY_ALT()
+                }, ]);
+                $.OPTION2(() => {
+                    $.CONSUME(ID);
+                });
+                $.CONSUME(RCurlyBracket);
+            }
+        }, {
+            ALT: () => {
+                $.SUBRULE2($.predicate);
+            }
+        }])
+    });
+
+    $.RULE("expression", () => {
+        $.CONSUME(LRoundBracket);
+        $.OPTION(() => {
+            $.SUBRULE($.atomic);
+        });
+        $.CONSUME(RRoundBracket);
+    });
 
 
-        // very important to call this after all the rules have been defined.
-        // otherwise the parser may not work correctly as it will lack information
-        // derived during the self analysis phase.
-        Parser.performSelfAnalysis(this);
-    }
+    $.RULE("predicate", () => {
+        $.CONSUME(LAngleBracket);
+        $.OPTION(() => {
+            $.SUBRULE($.atomic);
+        });
+        $.CONSUME(RAngleBracket);
+    });
+
+
+    // very important to call this after all the rules have been defined.
+    // otherwise the parser may not work correctly as it will lack information
+    // derived during the self analysis phase.
+    Parser.performSelfAnalysis(this);
 }
 
+//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
+LNParser.prototype = Object.create(Parser.prototype);
+LNParser.prototype.constructor = LNParser;
 
-// ----------------- wrapping it all together -----------------
-
-//LNParser.prototype = Object.create(Parser.prototype);
-//LNParser.prototype.constructor = LNParser;
+// wrapping it all together
 // reuse the same parser instance.
 export const lnparser = new LNParser([]);
 
 export function parse(text) {
-    console.log('seperate file, class');
+    //console.log('seperate file, function');
     const lexResult = LNLexer.tokenize(text);
     // setting a new input will RESET the parser instance's state.
+    //console.log(lexResult.tokens);
     lnparser.input = lexResult.tokens;
     // any top level rule may be used as an entry point
-    const value = lnparser.multipleStacks(); //TOP RULE
-    console.log(value);
-    console.log(lexResult.errors);
-    console.log(lnparser.errors);
+    const value = lnparser.code(); //TOP RULE
     return {
         value: value,
         lexErrors: lexResult.errors,

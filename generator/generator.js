@@ -70,10 +70,6 @@ ScratchBlocks.text['event_whenflagclicked'] = function (block) {
     return 'when greenflag clicked;\n' + ScratchBlocks.text.getNextCode(block);
 };
 
-ScratchBlocks.text['pen_penup'] = function (block) {
-    return 'pen up;\n' + ScratchBlocks.text.getNextCode(block);
-};
-
 ScratchBlocks.text['motion_movesteps'] = function (block) {
     let value_name = ScratchBlocks.text.valueToCode(block, 'STEPS', ScratchBlocks.text.ORDER_NONE);
     return 'move %1 steps;\n'.format('{' + value_name + '}') + ScratchBlocks.text.getNextCode(block);
@@ -113,11 +109,23 @@ ScratchBlocks.text['data_variable'] = function (block) {
     //variables are a bit different... getfieldvalue returns the id
     return ['(' + block.getField('VARIABLE').getText() + ')', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
+//========================================
 
+//========= reporter and boolean variables  ===============
 
 ScratchBlocks.text['data_listcontents'] = function (block) {
     //variables are a bit different... getfieldvalue returns the id
     return ['(' + block.getField('LIST').getText() + '::list)', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+};
+
+ScratchBlocks.text['argument_reporter_boolean'] = function (block) {
+    //variables are a bit different... getfieldvalue returns the id
+    return ['<' + block.getField('VALUE').getText() + '::custom>', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+};
+
+ScratchBlocks.text['argument_reporter_string_number'] = function (block) {
+    //variables are a bit different... getfieldvalue returns the id
+    return ['(' + block.getField('VALUE').getText() + '::custom)', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
 //========================================
 
@@ -151,14 +159,14 @@ ScratchBlocks.text['control_repeat_until'] = function (block) {
 ScratchBlocks.text['control_if'] = function (block) {
     let statements = ScratchBlocks.text.statementToCode(block, 'SUBSTACK'); //todo: this automaticly intendents, is this a problem?
     let nr = ScratchBlocks.text.valueToCode(block, 'CONDITION', ScratchBlocks.text.ORDER_NONE);
-    return 'if ' + nr + '\n' + statements + 'end\n' + ScratchBlocks.text.getNextCode(block);
+    return 'if {' + nr + '}\n' + statements + 'end\n' + ScratchBlocks.text.getNextCode(block);
 };
 
 ScratchBlocks.text['control_if_else'] = function (block) {
     let statements = ScratchBlocks.text.statementToCode(block, 'SUBSTACK'); //todo: this automaticly intendents, is this a problem?
     let statements2 = ScratchBlocks.text.statementToCode(block, 'SUBSTACK2'); //todo: this automaticly intendents, is this a problem?
     let nr = ScratchBlocks.text.valueToCode(block, 'CONDITION', ScratchBlocks.text.ORDER_NONE);
-    return 'if ' + nr + '\n' + statements + 'else\n' + statements2 + 'end\n' + ScratchBlocks.text.getNextCode(block);
+    return 'if {' + nr + '}\n' + statements + 'else\n' + statements2 + 'end\n' + ScratchBlocks.text.getNextCode(block);
 };
 
 //========================================
@@ -170,6 +178,12 @@ ScratchBlocks.text['procedures_call'] = function (block) {
     return procCode;
 };
 
+
+ScratchBlocks.text['procedures_definition'] = function (block) {
+    //let procCode = block.getProcCode();
+    //todo
+    return 'define ';//+procCode;
+};
 //========================================
 
 /**

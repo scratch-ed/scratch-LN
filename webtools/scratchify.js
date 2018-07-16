@@ -2,35 +2,28 @@ import $ from "jquery";
 import ScratchBlocks from 'scratch-blocks';
 import parseTextToXML from './../parser/parserUtils.js'
 
-export default function scratchify(clasz='scratch',keepText=false) {
+export function scratchify(clasz='scratch') {
     $('.'+clasz).each(function(i, obj) {
-        var id = $(this).attr('id')
+        let id = $(this).attr('id');
         if (!id) {
             id = "workspace_" + i;
         } else {
             id = "workspace_" + id;
         }
-        //wrap the code div in another idv
-        if(keepText){
-            $(this).wrap("<div class='codeDiv'></div>");
-        }
         //create the div to inject the workspace in
         $(this).parent().append($("<div class=blocklyDiv id=" + id + "></div>"));
 
-        var workspace = createWorkspace(id);
+        let workspace = createWorkspace(id);
         //do parsing
-        var text = $(this).text();
-        if(!keepText){
-            //$(this).text('');
-            $(this).remove();
-        }
+        let text = $(this).text();
+        //remove the text
+        $(this).remove();
         //console.log(text);
-        var xml = parseTextToXML(text);
-        //console.log(xml)
+        let xml = parseTextToXML(text);
         //only if succesfully parsed
         if (xml) {
             //add to this workspace
-            var dom = Blockly.Xml.textToDom(xml);
+            let dom = Blockly.Xml.textToDom(xml);
             Blockly.Xml.domToWorkspace(dom, workspace);
             //workspace.cleanUp();
         }
@@ -40,7 +33,7 @@ export default function scratchify(clasz='scratch',keepText=false) {
     });
 }
 
-const workspaces = {}
+const workspaces = {};
 
 function storeWorkspace(workspaceName, workspace) {
     workspaces[workspaceName] = workspace;
@@ -69,7 +62,7 @@ export function changeValue(id, blockID, value) {
     field.setText(value);
 }
 
-function createWorkspace(workspaceName) {
+export function createWorkspace(workspaceName) {
     return ScratchBlocks.inject(workspaceName, {
         toolbox: '<xml></xml>',
         'scrollbars': false,
@@ -85,7 +78,7 @@ function createWorkspace(workspaceName) {
     });
 }
 
-function fitBlocks(workspace, id) {
+export function fitBlocks(workspace, id) {
     var metrics = workspace.getMetrics();
     $('#' + id).css('width', (metrics.contentWidth + 10) + 'px')
     $('#' + id).css('height', (metrics.contentHeight + 10) + 'px')
