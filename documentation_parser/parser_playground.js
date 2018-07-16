@@ -477,6 +477,10 @@
                         ALT: () => {
                             $.CONSUME(Literal);
                         }
+                    },{
+                        ALT: () => {
+                            $.CONSUME(Label);
+                        }
                     }, {
                         ALT: () => {
                             $.SUBRULE($.expression);
@@ -704,7 +708,7 @@
     // for the playground to work the returned object must contain these fields
     return {
         lexer: LNLexer,
-        //parser: LNParser,
+        parser: LNParser,
         //visitor: LNVisitor,
         defaultRule: "code"
     };
