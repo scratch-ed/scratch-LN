@@ -102,7 +102,6 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
                 pretty: true
             }),
             warnings: {},
-            errors: {}
         }
     }
 

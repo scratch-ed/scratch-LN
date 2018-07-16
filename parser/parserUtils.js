@@ -110,10 +110,9 @@ export function parseTextToXMLWithWarnings(text) {
         let ret = v.getXML(cst);
         return {
             xml: ret.xml,
-            visitorWarnings: ret.warnings,
-            visitorErrors: ret.errors,
             lexErrors: r.lexErrors,
-            parseErrors: r.parseErrors
+            parseErrors: r.parseErrors,
+            visitorWarnings: ret.warnings,
         };
     }else{
         return {
