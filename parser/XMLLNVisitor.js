@@ -115,28 +115,9 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         //does nothing
     }*/
 
-    /**
-     * this comments are always pinned=false i.e. not linkt to a block
-     * @param ctx
-     */
-    comments(ctx) {
-        for (let i = 0; ctx.Comment && i < ctx.Comment.length; i++) {
-            this.createComment(ctx.Comment[i], false);
-        }
-    }
-
-    /**
-     * creates the xml for a comment
-     * @param commentToken
-     * @param pinned (linked to a block)
-     */
-    createComment(commentToken, pinned) {
-        this.xml.ele('comment ', {
-            'id': this.idManager.getNextCommentID(this.infoVisitor.getID(commentToken, "comment")),
-            'pinned': pinned,
-            'minimized': false, //todo:should be known from modifier in the ctx
-        }, this.infoVisitor.getString(commentToken, "comment"));
-    }
+    /*comments(ctx) {
+        //no xml creation here
+    }*/
 
 
     stack(ctx) {
@@ -161,8 +142,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }*/
 
     atomic(ctx) {
-        let description = this.infoVisitor.getString(ctx, "atomic");
-        console.log(ctx);
+        let description = this.infoVisitor.getString(ctx, "atomic");;
         //todo obtain modifiers
         let modifiers = this.modifierAnalyser.getMods(this.infoVisitor.getModifiers(ctx.annotations));
         if (this.isBuildInBlock(description, ctx, modifiers)) {
@@ -429,11 +409,9 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         //will add nothing to the xml
     }*/
 
-    annotations(ctx) {
-        if (ctx.Comment) {
-            this.createComment(ctx.Comment[0], true);
-        }
-    }
+    /*annotations(ctx) {
+       //no xml here
+    }*/
 
     /*modifiers(ctx) {
         // no xml generation
@@ -444,7 +422,21 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }*/
 
     comment(ctx) {
-        //todo
+        let pinned = this.state.isBuildingStackBlock() || this.state.isBuildingBooleanBlock() || this.state.isBuildingReporterBlock()
+        this.createComment(ctx,pinned)
+    }
+
+    /**
+     * creates the xml for a comment
+     * @param ctx
+     * @param pinned (linked to a block)
+     */
+    createComment(ctx, pinned) {
+        this.xml.ele('comment ', {
+            'id': this.idManager.getNextCommentID(this.infoVisitor.getID(ctx,"comment")),
+            'pinned': pinned,
+            'minimized': false, //todo:should be known from modifier in the ctx
+        }, this.infoVisitor.getString(ctx,"comment"));
     }
 
     argument(ctx) {
@@ -518,25 +510,25 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     createVariableBlock(ctx, description) {
         let blockID = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "atomic"));
         let varID = this.idManager.acquireVariableID(this.infoVisitor.getString(ctx, "atomic"));
-        this.xml.ele('block', {
+        this.xml = this.xml.ele('block', {
             'type': 'data_variable',
             'id': blockID,
         }).ele('field', {
             'name': 'VARIABLE',
             'id': varID,
-        }, description)
+        }, description).up()
     }
 
     createListBlock(ctx, description) {
         let blockID = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "atomic"));
         let varID = this.idManager.acquireVariableID(this.infoVisitor.getString(ctx, "atomic"), LIST);
-        this.xml.ele('block', {
+        this.xml = this.xml.ele('block', {
             'type': 'data_listcontents',
             'id': blockID,
         }).ele('field', {
             'name': 'LIST',
             'id': varID,
-        }, description)
+        }, description).up()
     }
 
     createCustomReporterBlock(ctx, description) {
@@ -548,7 +540,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         }).ele('field', {
             'name': 'VALUE',
             'id': varID,
-        }, description)
+        }, description).up()
     }
 
     createCustomBooleanBlock(ctx, description) {
@@ -560,7 +552,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         }).ele('field', {
             'name': 'VALUE',
             'id': varID,
-        }, description)
+        }, description).up()
     }
 
 }

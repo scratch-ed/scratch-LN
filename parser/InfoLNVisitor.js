@@ -231,7 +231,16 @@ export class InfoLNVisitor extends BaseCstVisitor {
     }
 
     comment(ctx) {
+        return {
+            OFFSET: ctx.Comment[0].offset,
+            TEXT: this.unescapeComment(ctx.Comment[0].image),
+            TYPE: COMMENT
+        }
+    }
 
+
+    unescapeComment(text){
+        return text.replace(/\\\|/g, '|').replace(/^\|(.*(?=\|$))\|$/, '$1');
     }
 
     annotations(ctx) {
@@ -248,7 +257,7 @@ export class InfoLNVisitor extends BaseCstVisitor {
     argument(ctx) {
         let type;
         let id = this.visit(ctx.id);
-        console.log("mim",id); //todo why is it not id.DI???
+        console.log("id in arg",id); //todo why is it not id.DI???
         if (ctx.Literal) {
             let text = "";
             if(tokenMatcher(ctx.Literal[0],ChoiceLiteral)){
@@ -334,20 +343,7 @@ export class InfoLNVisitor extends BaseCstVisitor {
     //// no 'real' visitor methods as they are not rules.
     //////////////////////////////////////////////////
 
-    /**
-     * @param commentToken
-     */
-    _comment(commentToken){
-        return {
-            OFFSET: commentToken.offset,
-            TEXT: this.unescapeComment(commentToken.image),
-            TYPE: COMMENT
-        }
-    }
 
-    unescapeComment(text){
-        return text.replace(/\\\|/g, '|').replace(/^\|(.*(?=\|$))\|$/, '$1');
-    }
 
 
     //////////////////////////////////////////////////
