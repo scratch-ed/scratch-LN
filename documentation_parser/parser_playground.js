@@ -193,9 +193,9 @@
         pattern: /@[a-z0-9_]+/i
     });
 
-
-    const MultipleDelimiter = createToken({
-        name: "MultipleDelimiter",
+    
+    const MultipleDelimiters = createToken({
+        name: "MultipleDelimiters",
         //; \n should always bee seen as a whole 
         //so a ; alone must explicitly not been followed by a \n
         pattern: /((;[ \t]*\n|;[ \t]*(?!\n)|\n)[ \t]*){2,}/,
@@ -206,7 +206,7 @@
         name: "Delimiter",
         pattern: /;[ \t]*\n?|\n/,
         line_breaks: true,
-        //longer_alt: MultipleDelimiter
+        //longer_alt: MultipleDelimiters
     });
 
 
@@ -227,7 +227,7 @@
         //WARNING: RepeatUntil must be defined before Repeat
         Forever, End, RepeatUntil, Repeat, If, Else, Then,
         //WARNING: StackDelimiter must be defined before Delimiter
-        MultipleDelimiter, Delimiter,
+        MultipleDelimiters, Delimiter,
         LCurlyBracket, RCurlyBracket,
         LRoundBracket, RRoundBracket,
         RAngleBracket, LAngleBracket,
@@ -278,7 +278,7 @@
                 }
             }, {
                 ALT: () => {
-                    $.CONSUME(MultipleDelimiter, {
+                    $.CONSUME(MultipleDelimiters, {
                         LABEL: "leadingCodeDelimiters"
                     });
                 },
@@ -292,7 +292,7 @@
                 DEF: () => {
                     $.OR([{
                         ALT: () => {
-                            $.CONSUME(MultipleDelimiter, {
+                            $.CONSUME(MultipleDelimiters, {
                                 LABEL: "intermediateCodeDelimiters"
                             });
                         }
@@ -603,7 +603,7 @@
         stackDelimiter(ctx) {
 
         }
-
+      
         comments(ctx) {
 
         }
@@ -623,7 +623,7 @@
         composite(ctx) {
 
         }
-
+      
         ifelse(ctx) {
 
         }
@@ -647,7 +647,7 @@
         annotations(ctx) {
 
         }
-
+      
         modifiers(ctx) {
 
         }
@@ -655,7 +655,7 @@
         id(ctx) {
 
         }
-
+      
         comment(ctx) {
 
         }
