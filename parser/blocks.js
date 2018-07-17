@@ -36,12 +36,17 @@ function makeArgument(ctx, visitor, arg, i) {
 }
 
 export function universalBlockConverter(ctx, visitor, structure) {
+    if(structure.shape === "hatblock" ){
+        visitor.interruptStack();
+    }
     addType(ctx,visitor,structure.type);
     for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
         let arg = structure.args[i];
         makeArgument(ctx, visitor, arg, i);
     }
-
+    if(structure.shape === "hatblock" ){
+        visitor.startStack();
+    }
 }
 
 
