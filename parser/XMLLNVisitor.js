@@ -25,6 +25,7 @@ import {State} from "./State";
 import blocks from "./blocks";
 import {Modifier} from "./LNLexer";
 import {ModifierAnalyser} from "./modifierAnalyser";
+import {WarningsKeeper} from "./warnings";
 
 //const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
 
@@ -76,6 +77,8 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
         //modifiers
         this.modifierAnalyser = new ModifierAnalyser();
+
+        this.warningsKeeper = new WarningsKeeper();
     }
 
     getXML(cst) {
@@ -101,7 +104,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             xml: this.xml.end({
                 pretty: true
             }),
-            warnings: {},
+            warnings: this.warningsKeeper.getList(),
         }
     }
 
@@ -131,6 +134,9 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             //the flow was interrupted by a hat block or stand alone variable
             //so a new stack has to start
             if (this.state.isInterruptedStack()) {
+                if(i<ctx.block.length-1) { //no warning if nothing follows
+                    this.warningsKeeper.add(ctx.block[i], "started a new stack");
+                }
                 this.state.startStack();
             } else { //normal flow
                 this.xml = this.xml.ele('next');
@@ -370,6 +376,8 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         this.visit(ctx.clause);
         this.xml = this.xml.up(); //close statement (stack will close block)
         this.visit(ctx.annotations);
+        this.interruptStack();
+
     }
 
     repeat(ctx) {
