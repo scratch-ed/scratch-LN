@@ -1,3 +1,6 @@
+#v0.3.0
+- 
+
 # v0.2.0
 - arguments of custom block are now generated correctly
 - 'if on edge, bounce' can be used 
