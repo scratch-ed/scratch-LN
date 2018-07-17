@@ -10285,7 +10285,7 @@ class InfoLNVisitor extends BaseCstVisitor {
  * @author Ellen Vanhove.
  */
 
-const MEDIA = '/static/blocks-media/';
+const MEDIA = '/scratch-LN/example/static/blocks-media/';
 /* harmony export (immutable) */ __webpack_exports__["a"] = MEDIA;
 
 
