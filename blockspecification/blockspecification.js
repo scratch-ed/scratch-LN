@@ -152,7 +152,7 @@ export const blockspecifications = [
             "converter": universalBlockConverter
         },
         {
-            "template": "%1 \\< %2",
+            "template": "%1 < %2",
             "description": {
                 "type": "operator_lt",
                 "args": [{"type": "input_value", "name": "OPERAND1"}, {"type": "input_value", "name": "OPERAND2"}],
@@ -170,7 +170,7 @@ export const blockspecifications = [
             "converter": universalBlockConverter
         },
         {
-            "template": "%1 \\> %2",
+            "template": "%1 > %2",
             "description": {
                 "type": "operator_gt",
                 "args": [{"type": "input_value", "name": "OPERAND1"}, {"type": "input_value", "name": "OPERAND2"}],

@@ -96,11 +96,16 @@ export class InfoLNVisitor extends BaseCstVisitor {
         }
 
         return {
-            TEXT: this.getTextAtomic(ctx),
+            TEXT: this.unescapeLabel(this.getTextAtomic(ctx)),
             OFFSET: offset,
             TYPE: ATOMIC,
             ID: this.visit(ctx.annotations).ID
         }
+    }
+
+    unescapeLabel(text){
+        //replace a \ followed by a not nothing character by only the character
+        return text.replace(/\\([^])/g, '$1');
     }
 
     /**
@@ -149,7 +154,6 @@ export class InfoLNVisitor extends BaseCstVisitor {
         //text = text.replace(/ +(?=[\%][^sbn])/g, '');
         //remove spaces at beginning and end
         text = text.trim();
-        //todo: unescape shizzle
 
         return text;
     }
