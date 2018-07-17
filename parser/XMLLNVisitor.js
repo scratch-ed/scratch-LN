@@ -205,7 +205,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
 
     isBuildInBlock(description, ctx, modifiers) {
-        return description in blocks; //todo: check modifier if it is a customblock
+        return description in blocks && !modifiers.custom;
     }
 
     isVariableBlock(ctx, modifiers) {
