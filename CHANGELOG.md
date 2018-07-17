@@ -13,4 +13,4 @@
     - infoVisitor is responsible for all string obtaining, types, placeholders etc.
     - state keeps track of which object is being build
     - modifierAnalyser and modifierExtract provide a more generic way to deal with modifiers
-    
+- a new stack will be started when using a cap,hat, stand-alone reporter or boolean    
