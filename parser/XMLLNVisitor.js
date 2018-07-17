@@ -152,7 +152,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     atomic(ctx) {
         let description = this.infoVisitor.getString(ctx, "atomic");
-        ;
+
         //todo obtain modifiers
         let modifiers = this.modifierAnalyser.getMods(this.infoVisitor.getModifiers(ctx.annotations));
         if (this.isBuildInBlock(description, ctx, modifiers)) {
