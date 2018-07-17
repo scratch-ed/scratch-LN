@@ -29,7 +29,7 @@ const base = {
 };
 
 module.exports = [   
-    defaultsDeep({}, base, {
+    /*defaultsDeep({}, base, {
         target: 'web',
         entry: {
             'live_view':'./live_view/live_view.js',
@@ -77,7 +77,7 @@ module.exports = [
                 to: 'static/blocks-media'
             }])
         ]),
-    }),/*
+    }),*/
      defaultsDeep({}, base, {
         target: 'web',
         entry: {
@@ -94,5 +94,5 @@ module.exports = [
                 to: 'dist/static/blocks-media'
             }])
         ]),
-    })*/
+    })/**/
 ];
