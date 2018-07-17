@@ -32,19 +32,16 @@ describe('define', function() {
         it('should return valid xml', function() {
             let parsed = parseTextToXML('define BLUB {(d)} {<f>}');
             let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
-                '  <variables>\n' +
-                '    <variable type="arg" id="var0">d</variable>\n' +
-                '    <variable type="arg" id="var1">f</variable>\n' +
-                '  </variables>\n' +
+                '  <variables/>\n' +
                 '  <block type="procedures_definition" id="0" x="10" y="10">\n' +
                 '    <statement name="custom_block">\n' +
                 '      <shadow type="procedures_prototype">\n' +
-                '        <mutation proccode=" BLUB %s %b" argumentnames="[&quot;d&quot;,&quot;f&quot;]" warp="false" argumentids="[&quot;var0&quot;,&quot;var1&quot;]"/>\n' +
+                '        <mutation proccode=" BLUB %s %b" argumentnames="[&quot;d&quot;,&quot;f&quot;]" warp="null" argumentids="[&quot;d&quot;,&quot;f&quot;]"/>\n' +
                 '      </shadow>\n' +
                 '    </statement>\n' +
                 '    <next/>\n' +
                 '  </block>\n' +
-                '</xml>';
+                '</xml>\n';
             assert.equalIgnoreSpaces(parsed, expected);
         });
     });
@@ -53,16 +50,11 @@ describe('define', function() {
             let parsed = parseTextToXML('define {<A>} BLA {(D)} {<B>} BLA {(C)} \n' +
                 'pen up');
             let expected = '<xml xmlns="http://www.w3.org/1999/xhtml">\n' +
-                '  <variables>\n' +
-                '    <variable type="arg" id="var0">A</variable>\n' +
-                '    <variable type="arg" id="var1">D</variable>\n' +
-                '    <variable type="arg" id="var2">B</variable>\n' +
-                '    <variable type="arg" id="var3">C</variable>\n' +
-                '  </variables>\n' +
+                '  <variables/>\n' +
                 '  <block type="procedures_definition" id="0" x="10" y="10">\n' +
                 '    <statement name="custom_block">\n' +
                 '      <shadow type="procedures_prototype">\n' +
-                '        <mutation proccode=" %b BLA %s %b BLA %s" argumentnames="[&quot;A&quot;,&quot;D&quot;,&quot;B&quot;,&quot;C&quot;]" warp="false" argumentids="[&quot;var0&quot;,&quot;var1&quot;,&quot;var2&quot;,&quot;var3&quot;]"/>\n' +
+                '        <mutation proccode=" %b BLA %s %b BLA %s" argumentnames="[&quot;A&quot;,&quot;D&quot;,&quot;B&quot;,&quot;C&quot;]" warp="null" argumentids="[&quot;A&quot;,&quot;D&quot;,&quot;B&quot;,&quot;C&quot;]"/>\n' +
                 '      </shadow>\n' +
                 '    </statement>\n' +
                 '    <next>\n' +

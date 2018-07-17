@@ -7,18 +7,17 @@
  * @author Ellen Vanhove.
  */
 
-import {parse} from './LNParserF'
-import {XMLVisitor} from './XMLVisitor'
+import {parse} from './LNParser'
+import {XMLLNVisitor} from './XMLLNVisitor'
 import {blockspecifications} from '../blockspecification/blockspecification'
 import blocks from './blocks'
 
-let visitor = XMLVisitor;
+const visitor = XMLLNVisitor;
 
 /**
  * init blocks with information from blockspecifications
  */
 export function init_parser_utils() {
-    console.log('parser utils called');
     // blockspecifications
     //generate the functions in blocks
     for (let x = 0; x < blockspecifications.length; x++) {
@@ -26,19 +25,9 @@ export function init_parser_utils() {
         if (Array.isArray(b['template'])) {
             let ts = b['template'];
             for (let t = 0; t < ts.length; t++) {
-                //can this differently?
-                /*blocks[b['template'][t]] = function (ctx, visitor) {
-                    return b['converter'](ctx, visitor, b['description']);
-                }*/
                 createBlockEntry(b['template'][t], b)
             }
         } else {
-            //console.log(typeof b['template']);
-            /*blocks[b['template']] = function (ctx, visitor) {
-                if(!b['predicate'] || b['predicate'](ctx,visitor)) {
-                    return b['converter'](ctx, visitor, b['description']);
-                }
-            };*/
             createBlockEntry(b['template'], b)
 
         }
@@ -91,34 +80,45 @@ function createBlockFunction(specification) {
 
 init_parser_utils();
 
+//////////////////////////////////////////////////////////////////
+// public functions
+//////////////////////////////////////////////////////////////////
+
 /**
- * todo: return error message in case something goes wrong
  * @param text
  * @returns xml or undefined
  */
-export default function parseTextToXML(text,location=true) {
-    let cst = getCst(text);
+export default function parseTextToXML(text) {
+    let r = parse(text);
+    let cst = r.value;
     if (cst) {
-        let xml = execXmlVisitor(cst,location);
-        console.log(xml);
+        let v = new visitor();
+        let xml = v.getXML(cst).xml;
         return xml;
     }
 }
 
-function getCst(text) {
-    let r = parse(cleanupText(text));
-    return r.value;
+/**
+ * @param text
+ * @returns object with xml and error/warning information
+ */
+export function parseTextToXMLWithWarnings(text) {
+    let r = parse(text);
+    let cst = r.value;
+    if (cst) {
+        let v = new visitor();
+        let ret = v.getXML(cst);
+        return {
+            xml: ret.xml,
+            lexErrors: r.lexErrors,
+            parseErrors: r.parseErrors,
+            visitorWarnings: ret.warnings,
+        };
+    }else{
+        return {
+            lexErrors: r.lexErrors,
+            parseErrors: r.parseErrors
+        };
+    }
 }
 
-function execXmlVisitor(cst,location) {
-    let v = new visitor({
-        x: 10,
-        y: 10
-    },location);
-    let xml = v.getXML(cst);
-    return xml;
-}
-
-function cleanupText(text){
-    return text.trim();
-}

@@ -29,7 +29,7 @@ const base = {
 };
 
 module.exports = [   
-    defaultsDeep({}, base, {
+    /*defaultsDeep({}, base, {
         target: 'web',
         entry: {
             'live_view':'./live_view/live_view.js',
@@ -37,13 +37,14 @@ module.exports = [
             'test':'./testWebpage/test.js',
             'run':'./webtools/run.js',
             'example':'./examples/example.js',
-            'nice_live_view':'./examples/nice_live_view.js',
-            'markdown_scratch':'./webtools/markdown_scratch.js',
+            //'createTest':'./examples/createTest.js',
+            //'exe_test':'./exe_test/exe_test.js',
+
         },
         output: {
-            filename: '[name].js'
+            filename: '[name].js',
         },
-        plugins: base.plugins.concat([
+       plugins: base.plugins.concat([
             new CopyWebpackPlugin([{
                 from: './live_view/live_view.html',
                 to: 'index.html'
@@ -51,12 +52,13 @@ module.exports = [
                 from: './live_view/live_view_blocks.html',
                 to: 'blocks.html'
             }]),
+            //new CopyWebpackPlugin([{
+             //   from: './exe_test/exe_test.html',
+            //    to: 'exe_test.html'
+            //}]),
             new CopyWebpackPlugin([{
                 from: './testWebpage/test.html',
                 to: 'test.html'
-            }]),new CopyWebpackPlugin([{
-                from: './examples/nice_live_view.html',
-                to: 'view.html'
             }]),
             new CopyWebpackPlugin([{
                 from: 'examples/example.html',
@@ -75,5 +77,22 @@ module.exports = [
                 to: 'static/blocks-media'
             }])
         ]),
-    })
+    }),*/
+     defaultsDeep({}, base, {
+        target: 'web',
+        entry: {
+            'ScratchLN':'./webtools/scratchify.js',
+        },
+        output: {
+            filename: 'dist/[name].js',
+            libraryTarget: 'var',
+            library: 'scratchLN'
+        },
+        plugins: base.plugins.concat([
+            new CopyWebpackPlugin([{
+                from: 'node_modules/scratch-blocks/media',
+                to: 'dist/static/blocks-media'
+            }])
+        ]),
+    })/**/
 ];

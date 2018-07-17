@@ -1,0 +1,46 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <style>
+        #scratch-stage {
+            float: right;
+        }
+
+        #e {
+            float: left;
+            width: 500px
+        }
+    </style>
+</head>
+<body>
+<script src="./exe_test.js"></script>
+
+<div id="vm-devtools">
+    <textarea id="editor_json"></textarea>
+    <div id="projectButtons">
+        <button id="greenflag">Green flag</button>
+        <button id="stopall">Stop</button>
+        <button id="toJson">toJson</button>
+    </div>
+    <div id="e">
+        <div id="blocklyDiv"></div>
+        <select id="selectedTarget" multiple></select>
+        <textarea id="editor"></textarea>
+        <div>
+            <button id="toxml">to xml</button>
+            <textarea id="editor_xml"></textarea>
+        </div>
+        <div>
+            <button id="totext">to text</button>
+            <textarea id="editor_text"></textarea>
+        </div>
+    </div>
+    <div>
+        <canvas id="scratch-stage" style="width: 480px; height: 360px;"></canvas>
+    </div>
+</div>
+
+<div id="blocks"></div>
+
+</body>
+</html>

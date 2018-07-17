@@ -1,12 +1,51 @@
 # scratch LN
-Describe snippets of Scratch 3.0 code in text. The Scratch-LN JavaScript library will dynamically render them as Scratch blocks.
-[Give it a spin](https://scratch4d.github.io/scratch-LN/example/).
+Provide an textual representation of the blocks from scratch 3.0. This text can be used within an html document and using some javascript magic this wil be converted to scratch blocks. Also some function to indicate certain blocks are provided.
 
+<img src="https://scratch4d.github.io/scratch-LN/img/simple_html_and_rendering_en.PNG">
 
-<img src="https://scratch4d.github.io/scratch-LN/img/simple_html_and_rendering.PNG">
+## Usage
+If you are not a developer, you can use the instructions below to use this in your projects. 
+An example can be found: [scripts](https://github.com/scratch4d/scripts).
+ 
+The javascript file `ScratchLN.js` can be found in the `dist` folder.
+It is explained below how to use it.
 
+Scratch 3.0 needs the files inside `static/blocks-media` to render the greenflag,arrows, etc correctly. 
+It must be placed in the root directory of the webserver. (Later, I will add an option to set the location see issue #35) 
 
-## Getting Started
+### Basic `scratchify.js`
+This the typical file where you have to call yourself when scratchify will run. 
+You can give options to the function. Atm  this is only the 'class' of which elements need to be scratchified.
+The default class is `scratch`.
+In the header of the html file add the following.
+```
+  <script type="text/javascript" src="ScratchLN.js" charset="utf-8"></script>
+  
+  <script>
+  window.onload = function() {
+    scratchLN.scratchify();
+  };
+  </script>
+```
+In html use the code like this: 
+```
+<pre class="scratch">
+<code>
+when greenflag clicked
+set [teller] to {4}
+go to x: {0} y: {0}
+pen down
+repeat (counter)
+move {100} steps
+turn cw {({360}/{(counter)})} degrees
+end
+pen up
+</code>
+</pre>
+```
+When you open the page with a browser it will be rendered as Scratchblocks.
+
+## Getting Started - development
 0. open a terminal and clone this project.
 1. run `npm install`
 2. run `npm start` 
@@ -18,24 +57,16 @@ Describe snippets of Scratch 3.0 code in text. The Scratch-LN JavaScript library
 	- `localhost:8008\example.html`  : example exercise (teken het cdj logo)
 	- `localhost:8008\simple.html` : simple html
 
-
-## Usage
-see [[documentation.md]]
-
-### Features
-* generates scratch 3.0 blocks
-* highlight blocks or stacks
-* change value of fields
-* generate text from Scratch blocks
-
-### Planned features
-* add custom id to blocks
-
 ###  Running tests
 0. go to the root folder
 1. run `npm install`
 2. run `npm test` 
 
+### Generating dist
+0. go to the root folder
+1. run `npm install`
+2. open `webpack.config.js`
+3. comment the first part of the export and uncomment the second part. 
 
 ## Authors
 

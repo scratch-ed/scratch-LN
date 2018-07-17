@@ -1,6 +1,7 @@
 import ScratchBlocks from 'scratch-blocks';
 import parseTextToXML from './../parser/parserUtils.js'
 import generateText from './../generator/generator.js'
+import {MEDIA} from "../config/config";
 
 let workspace = null;
 
@@ -12,7 +13,7 @@ window.onload = function () {
         'scrollbars': true,
         'trashcan': false,
         'readOnly': false,
-        media: '/static/blocks-media/', //flag
+        media: MEDIA, //flag
         colours: {
             workspace: '#ffe1eb', //'#e0ffe9',
         },
@@ -31,8 +32,6 @@ window.onload = function () {
     //all events in blockly: https://developers.google.com/blockly/reference/js/Blockly.Events
     //https://developers.google.com/blockly/guides/configure/web/events
     ScratchBlocks.mainWorkspace.addChangeListener((e) => {
-            console.log('change listerener called ####### START');
-            console.log(e);
             //for some reason does type not what i expect for blockchange and blockmove but it is necesaary for var rename...
             if(e instanceof  ScratchBlocks.Events.BlockChange //change value
                         || e instanceof  ScratchBlocks.Events.BlockMove  //move/delete/create block
@@ -40,9 +39,7 @@ window.onload = function () {
                             ){
                 generateTextWorkspace() ;
             }
-
-            console.log('################################# END');
-        }
+    }
     );
 
     //text

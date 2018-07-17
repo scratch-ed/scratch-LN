@@ -15,14 +15,26 @@
             .blocklyDiv {
                 float:left;
             }
+
+            td {
+                border: 1px solid black;
+            }
+
+            td:nth-child(1) {
+                width: 250px;
+            }
         </style>
     </head>
     <body>
         <script type="text/javascript" src="test.js" charset="utf-8"></script>
-         
 
+        <div id="tables">
+
+        </div>
+
+       <!--
 <code class='scratch'>
-pen up
+say "hello"
 </code>
 
 <code class='scratch'>
@@ -98,235 +110,9 @@ else
 if <>
 </code>
 
-<h3>Motion</h3>
+-->
 
-<code class="scratch">
-move {10} steps;
-turn cw {15} degrees;
-turn ccw {15} degrees;
-point in direction {90};
-point towards [mouse-pointer];
-go to x: {0} y: {0};
-go to [mouse-pointer];
-glide {1} secs to x: {0} y: {0};
-glide {1} secs to [mouse-pointer];
-change x by {10};
-set x to {0};
-change y by {10};
-set y to {0};
-set rotation style [left-right];
-</code>
-
-if on edge, bounce;
-if is een keyword...
-<!-- <code class="scratch">
-if on edge, bounce;
-</code>
- -->
-<code class="scratch">
-x position
-</code>
-
-<code class="scratch">
-y position
-</code>
-
-<code class="scratch">
-direction
-</code>
-
-<h3>Looks</h3>
-
-<code class="scratch">
-show;
-hide;
-switch costume to [costume 1];
-next costume;
-next backdrop;
-switch backdrop to [backdrop];
-switch backdrop to [backdrop] and wait;
-change [color] effect by {10};
-set [color] effect to {10};
-change size by {10};
-go to [back];
-go [forward] {1} layers;
-</code>
-
-<code class="scratch">
-costume [number]
-</code>
-
-<code class="scratch">
-backdrop [number]
-</code>
-
-<code class="scratch">
-size
-</code>
-
-<h3>Sounds</h3>
-
-<code class="scratch">
-start sound [1];
-play sound [1] until done;
-stop all sounds;
-rest for {0.25} beats;
-play note {30} for {0.3} beats;
-change [pitch] effect by {10};
-set [pitch] effect to {100};
-clear sound effects;
-change volume by {-10};
-set volume to {100}%;
-change tempo by {60};
-set tempo to {60} bpm;
-</code>
-
-<code class="scratch">
-set instrument to [ikook];
-</code>
-<code class="scratch">
-play drum [ikbenverzonnen] for {0.2} beats
-</code>
-
-note: () can not be parsed directly so it needs to be escaped
-play drum [(1) Snare Drum] for {0.2} beats;
-set instrument to [(1) Piano]
-
-<code class="scratch">
-volume
-</code>
-
-<code class="scratch">
-tempo
-</code>
-
-<h3>Events</h3>
-<code class="scratch">
-when greenflag clicked
-</code>
-
-<code class="scratch">
-when [space] key pressed;
-</code>
-
-<code class="scratch">
-when this sprite clicked;
-</code>
-
-<code class="scratch">
-when backdrop switches to [backdrop 1]
-</code>
-
-<code class="scratch">
-when [timer] \> {10}
-</code>
-
-<code class="scratch">
-when I receive [message1];
-</code>
-
-<code class="scratch">
-broadcast [message1];
-</code>
-
-<code class="scratch">
-broadcast [message1] and wait;
-</code>
-
-<h3>Control</h3>
-<code class="scratch">
-wait {1} seconds
-</code>
-
-<code class="scratch">
-repeat 10
-</code>
-
-<code class="scratch">
-wait until {<<a>aa>}
-</code>
-
-<code class="scratch">
-stop [all]
-</code>
-
-<code class="scratch">
-when I start as a clone
-</code>
-
-<code class="scratch">
-create clone of [myself]
-</code>
-
-<code class="scratch">
-delete this clone
-</code>
-
-<h3>Sensing</h3>
-
-<code class="scratch">
-touching [mouse-pointer]?
-</code>
-
-<code class="scratch">
-touching color {#123456} ?
-</code>
-
-<code class="scratch">
-color {#123456} is touching {#123456} ?
-</code>
-
-
-<code class="scratch">
-distance to [mouse-pounter]
-</code>
-
-<code class="scratch">
-key [space ] pressed ?
-</code>
-
-<code class="scratch">
-mouse down?
-</code>
-
-
-<code class="scratch">
-mouse x
-</code>
-
-<code class="scratch">
-mouse y
-</code>
-
-<code class="scratch">
-set drag mode [draggable]
-</code>
-
-<code class="scratch">
-loudness
-</code>
-
-<code class="scratch">
-timer
-</code>
-
-<code class="scratch">
-reset timer
-</code>
-
-<code class="scratch">
- [x position] of [Sprite1]
-</code>
-
-<code class="scratch">
-current [year]
-</code>
-
-<code class="scratch">
-days since 2000
-</code>
-
-<h3>Pen</h3>
+<!--<h3>Pen</h3>
 
 <code class="scratch">
 clear;
@@ -341,128 +127,12 @@ change pen shade by {10};
 change pen size by {1};
 set pen size to {1};
 change pen transparency by {10};
-</code>
+</code>-->
 
-<h3>Operators</h3>
 
-<code class="scratch">
-{1} + {2}
-</code>
 
-<code class="scratch">
-{1} - {2}
-</code>
 
-<code class="scratch">
-{1} * {2}
-</code>
-
-<code class="scratch">
-{1} / {2}
-</code>
-
-<code class="scratch">
-pick random {1} to {10}
-</code>
-
-<code class="scratch">
-{1} \< {2}
-</code>
-
-<code class="scratch">
-{1} \> {2}
-</code>
-
-<code class="scratch">
-{1} = {2}
-</code>
-
-<code class="scratch">
- {} and {}
-</code>
-
-<code class="scratch">
- {} or {}
-</code>
-
-<code class="scratch">
-not {}
-</code>
-
-<code class="scratch">
-join {"hello"} {"world"}
-</code>
-
-<code class="scratch">
-letter {1} of {"world"}
-</code>
-
-<code class="scratch">
-length of {"world"}
-</code>
-
-<code class="scratch">
-{"hello"} contains {"world"} ?
-</code>
-
-<code class="scratch">
- {3} mod {2}
-</code>
-
-<code class="scratch">
-round {2.22}
-</code>
-
-<code class="scratch">
- [abs] of {-1}
-</code>
-
-<h3>Data: Variable</h3>
-note: uses of a variable has to create the same ID
-
-<code class="scratch">
-set [a]to {"fds"};
-set [a]to {(a)}
-</code>
-
-<code class="scratch">
-change [a] by {1};
-change [a] by {(a)}
-</code>
-
-<h3>Data: List</h3>
-
-<code class="scratch">
-add {"thing"} to [lili];
-delete {"thing"} of [lili];
-insert {"thing"} at {1} of [lili];
-replace item {1} of [lili] with {"otherthing"};
-</code>
-
-<code class="scratch">
-item {1} of [lili]
-</code>
-
-<code class="scratch">
-length of [lili]
-</code>
-
-<code class="scratch">
- [lili] contains {"thing"}?
-</code>
-
-<code class="scratch">
- say {(a dddd::list)}
-</code>
-
-<code class="scratch">
- (a dddd::list)
-</code>
-
-<code class="scratch">
- (nolist)
-</code>
-
+<!--
 <h3>Nesting</h3>
 <code class="scratch">
 say {({1}+{22222})}
@@ -501,93 +171,11 @@ pen up
 <code class="scratch">
 when gf clicked
 if <{<{(length of [lijstje])}={"bad"}>} and {<<k>not {<{(good)}={"bad"}>}>}>
-</code>
+</code>-->
 <!-- when gf clicked
 if <{<{(length of [lijstje])}={"bad"}>} and {<not {<{(good)}={"bad"}>}>}>
 -->
 
-
-<h3>Same text</h3>
-
-this is done based on the type of the arguments.
-
-<code class="scratch">
-length of {}
-</code>
-
-<code class="scratch">
-length of {"fds"}
-</code>
-
-<code class="scratch">
-length of [ddd]
-</code>
-
-<code class="scratch">
-length of {(dada)}
-</code>
-
-<code class="scratch">
-{"hello"} contains {"world"} ?
-</code>
-
-<code class="scratch">
- [lili] contains {"thing"}?
-</code>
-
-<code class="scratch">
-{(sadfjk)} contains {(x)} ?
-</code>
-
-<code class="scratch">
-[x position] of [Sprite1]
-</code>
-
-<code class="scratch">
-[abs] of {-1}
-</code>
-
-<code class="scratch">
-[abs] of {}
-</code>
-
-<h5>looks</h5>
-<code class="scratch">
-change [color] effect by {10};
-set [color] effect to {10};
-</code>
-
-<h5>sound</h5>
-Option can be used because not sure about label. 
-In the code the string is matched.
-
-<code class="scratch">
-change [pitchX] effect by {10}::sound;
-set [pitchX] effect to {100}::sound;
-</code>
-
-<code class="scratch">
-change [pitch] effect by {10};
-set [pitch] effect to {100};
-</code>
-
-<h5>define</h5>
-<code class="scratch">
-define BLUB {(d)} {<<d>f>}
-</code>
-
-<code class="scratch">
-define BLUB {(d)} {<<d>f>}
-pen up
-</code>
-
-<code class="scratch">
-define {<<d>A>} BL {(D)} {<<d>B>} UB {(C)} 
-pen up
-
-define {<<d>A>} BLA {(D)} {<<d>B>} BLA {(C)} 
-pen up
-</code>
 <!-- 
 <code class="scratch">
 </code>

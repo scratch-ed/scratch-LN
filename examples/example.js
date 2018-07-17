@@ -1,6 +1,7 @@
 import $ from "jquery";
 import {stackGlow,glowBlock,report,changeValue} from "./../webtools/scratchify.js"
-import scratchify from './../webtools/scratchify.js';
+import {scratchify} from './../webtools/scratchify.js';
+
 
 $(document).ready(function() {
     scratchify();
@@ -27,18 +28,25 @@ $(document).ready(function() {
             $target.show();
         }
     });
-    
+    $('#activate-step-A').click(function(e)
+    {
+        e.preventDefault();
+    });
+    $('#activate-step-A').on('click', function(e) {
+        //$('ul.setup-panel li:eq(1)').removeClass('disabled');
+        $('ul.setup-panel li a[href="#step-A"]').trigger('click');
+        //$(this).remove();
+    });
     //$('ul.setup-panel li.active a').trigger('click');
     $('#activate-step-1').click(function(e)
     {
         e.preventDefault();
-    })
+    });
     $('#activate-step-1').on('click', function(e) {
         //$('ul.setup-panel li:eq(1)').removeClass('disabled');
         $('ul.setup-panel li a[href="#step-1"]').trigger('click');
         //$(this).remove();
-    })
-
+    });
     $('#activate-step-2').click(function(e)
     {
         e.preventDefault();
@@ -106,8 +114,8 @@ $(document).ready(function() {
     })
     let div1glow = true;
     $("#glow-repeat-div1").on('click', function(e) {
-        stackGlow('nul',8,div1glow); //WHY verdwijnt het hier?????? -> dut is niet als het het eerste is
-        glowBlock('nul',6,div1glow);
+        stackGlow('nul',"@repi",div1glow); //WHY verdwijnt het hier?????? -> dut is niet als het het eerste is
+        glowBlock('nul',"@rep",div1glow);
         div1glow = !div1glow;
     })
    //glow vier
@@ -119,8 +127,8 @@ $(document).ready(function() {
     let div2value = 4;
 
     function changeGlowDiv2(){
-        stackGlow('vierkant',7,div2glow); 
-        stackGlow('vierkant',13,div2glow); 
+        stackGlow('vierkant',"@repi",div2glow);
+        stackGlow('vierkant',"@divi",div2glow);
         //glowBlock('Div1',6,div1glow);
         div2glow = !div2glow;
     }
@@ -131,8 +139,8 @@ $(document).ready(function() {
     }
 
     function setValueDiv2(value){
-        changeValue('vierkant',7, value);
-        changeValue('vierkant',13, value);
+        changeValue('vierkant',"@repi", value);
+        changeValue('vierkant',"@divi", value);
         div2value = value;
     }
 
@@ -180,9 +188,9 @@ $(document).ready(function() {
     })
     let div3glow = true;
     $("#glow-Div3-half").on('click', function(e) {
-        stackGlow('cwcirkel',5,div3glow); 
-        stackGlow('cwcirkel',7,div3glow); 
-        report('cwcirkel',5,'15');
+        stackGlow('cwcirkel',"@divi",div3glow);
+        stackGlow('cwcirkel',"@div",div3glow);
+        report('cwcirkel',"@div",'15');
         //glowBlock('Div1',6,div1glow);
         div3glow = !div3glow;
     })
@@ -195,8 +203,8 @@ $(document).ready(function() {
     $("#glow-Div3-richting").on('click', function(e) {
         //stackGlow('Div3',5,div3glow); 
         //stackGlow('Div3',7,div3glow); 
-        glowBlock('cwcirkel',10,div3glow2);
-        glowBlock('ccwcirkel',10,div3glow2);
+        glowBlock('cwcirkel',"@turn",div3glow2);
+        glowBlock('ccwcirkel',"@turn",div3glow2);
         div3glow2 = !div3glow2;
     })
 
