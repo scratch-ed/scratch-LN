@@ -68,7 +68,7 @@ export function createWorkspace(workspaceName) {
         'scrollbars': false,
         'trashcan': false,
         'readOnly': true,
-        media: '/example/static/blocks-media/', //flag
+        media: '/scratch-LN/example/static/blocks-media/', //flag
         colours: {
             fieldShadow: 'rgba(255, 255, 255, 1)'
         },
