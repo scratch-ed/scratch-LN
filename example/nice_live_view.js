@@ -28368,7 +28368,7 @@ window.onload = function () {
         'scrollbars': true,
         'trashcan': false,
         'readOnly': false,
-        media: '/static/blocks-media/', //flag
+        media: '/example/static/blocks-media/', //flag
         colours: {
             workspace: '#E0FFFF', //'#e0ffe9',
         },

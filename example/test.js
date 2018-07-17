@@ -11754,7 +11754,7 @@ function createWorkspace(workspaceName) {
         'scrollbars': false,
         'trashcan': false,
         'readOnly': true,
-        media: 'static/blocks-media/', //flag
+        media: '/example/static/blocks-media/', //flag
         colours: {
             fieldShadow: 'rgba(255, 255, 255, 1)'
         },
@@ -38658,7 +38658,6 @@ __WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready(function() {
         "if <> else ",
         "if <>;" +
         "block;" +
-        "end;" +
         "else;" +
         "block;" +
         "end;" +

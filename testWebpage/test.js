@@ -83,7 +83,6 @@ $(document).ready(function() {
         "if <> else ",
         "if <>;" +
         "block;" +
-        "end;" +
         "else;" +
         "block;" +
         "end;" +
