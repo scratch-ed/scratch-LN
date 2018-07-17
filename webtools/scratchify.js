@@ -1,6 +1,7 @@
 import $ from "jquery";
 import ScratchBlocks from 'scratch-blocks';
 import parseTextToXML from './../parser/parserUtils.js'
+import {MEDIA} from "../config/config";
 
 export function scratchify(clasz='scratch') {
     $('.'+clasz).each(function(i, obj) {
@@ -68,7 +69,7 @@ export function createWorkspace(workspaceName) {
         'scrollbars': false,
         'trashcan': false,
         'readOnly': true,
-        media: '/scratch-LN/example/static/blocks-media/', //flag
+        media: MEDIA, //flag
         colours: {
             fieldShadow: 'rgba(255, 255, 255, 1)'
         },

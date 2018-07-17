@@ -2,6 +2,7 @@ import ScratchBlocks from 'scratch-blocks';
 import parseTextToXML from './../parser/parserUtils.js'
 import generateText from './../generator/generator.js'
 import {parseTextToXMLWithWarnings} from "../parser/parserUtils";
+import {MEDIA} from "../config/config";
 
 let workspace = null;
 let editor;
@@ -15,7 +16,7 @@ window.onload = function () {
         'scrollbars': true,
         'trashcan': false,
         'readOnly': false,
-        media: '/scratch-LN/example/static/blocks-media/', //flag
+        media: MEDIA, //flag
         colours: {
             workspace: '#E0FFFF', //'#e0ffe9',
         },

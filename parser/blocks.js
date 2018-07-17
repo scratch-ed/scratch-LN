@@ -1,7 +1,7 @@
 let blocks = {};
 export default blocks;
 
-import {BROADCAST,LIST} from "./IDManager";
+import {BROADCAST, LIST} from "./IDManager";
 
 /**
  *
@@ -36,16 +36,24 @@ function makeArgument(ctx, visitor, arg, i) {
 }
 
 export function universalBlockConverter(ctx, visitor, structure) {
-    addType(ctx,visitor,structure.type);
+    if (structure.shape === "hatblock") {
+        visitor.interruptStack();
+    }
+    addType(ctx, visitor, structure.type);
     for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
         let arg = structure.args[i];
         makeArgument(ctx, visitor, arg, i);
     }
-
+    if (structure.shape === "hatblock") {
+        visitor.startStack();
+    }
+    if (structure.shape === "capblock") {
+        visitor.interruptStack();
+    }
 }
 
 
-export function addType(ctx,visitor,type) {
+export function addType(ctx, visitor, type) {
     visitor.xml = visitor.xml.ele('block', {
         'id': visitor.idManager.getNextBlockID(visitor.infoVisitor.getID(ctx, "atomic")),
         'type': type
@@ -58,7 +66,7 @@ export function addType(ctx,visitor,type) {
 //=======================================================================================================================================
 
 export function variableBlockConverter(ctx, visitor, structure) {
-    addType(ctx,visitor,structure.type);
+    addType(ctx, visitor, structure.type);
     //name of the variable
     let varble = visitor.infoVisitor.getString(ctx.argument[0]);
     //function must be called to register VariableID
@@ -76,7 +84,7 @@ export function variableBlockConverter(ctx, visitor, structure) {
 
 //todo
 export function listBlockConverter(ctx, visitor, structure) {
-    addType(ctx,visitor,structure.type);
+    addType(ctx, visitor, structure.type);
     for (let i = 0; i < ctx.argument.length; i++) {
         let arg = structure.args[i];
         if (arg.name === 'LIST') {
@@ -94,8 +102,8 @@ export function listBlockConverter(ctx, visitor, structure) {
 }
 
 //todo
-export function messageShadowBlockconverter(ctx, visitor,structure) {
-    addType(ctx,visitor,structure.type);
+export function messageShadowBlockconverter(ctx, visitor, structure) {
+    addType(ctx, visitor, structure.type);
     let varble = visitor.infoVisitor.getString(ctx.argument[0]);
     let arg = structure.args[0];
     let id = visitor.idManager.acquireVariableID(varble, BROADCAST);
@@ -107,15 +115,18 @@ export function messageShadowBlockconverter(ctx, visitor,structure) {
         'type': "event_broadcast_menu"
     }).ele('field', {
         'name': 'BROADCAST_OPTION',
-        'variabletype':"broadcast_msg",
-        'id':id
+        'variabletype': "broadcast_msg",
+        'id': id
     }, varble);
     visitor.xml = visitor.xml.up();
 }
 
-//todo
-export function messageBlockconverter(ctx, visitor,structure) {
-    addType(ctx,visitor,structure.type);
+// "when I receive %1"
+export function messageBlockconverter(ctx, visitor, structure) {
+    if (structure.shape === "hatblock") {
+        visitor.interruptStack();
+    }
+    addType(ctx, visitor, structure.type);
 
     let varble = visitor.infoVisitor.getString(ctx.argument[0]);
     let arg = structure.args[0];
@@ -123,17 +134,20 @@ export function messageBlockconverter(ctx, visitor,structure) {
 
     visitor.xml.ele('field', {
         'name': "BROADCAST_OPTION",
-        'variabletype':"broadcast_msg",
-        'id':id
+        'variabletype': "broadcast_msg",
+        'id': id
     }, varble);
-
+    if (structure.shape === "hatblock") {
+        visitor.startStack();
+    }
 }
 
 //todo
-export function stopConverter(ctx, visitor,structure) {
-    addType(ctx,visitor,structure.type);
+export function stopConverter(ctx, visitor, structure) {
+    addType(ctx, visitor, structure.type);
     visitor.xml = visitor.xml.ele('field', {
         'name': "STOP_OPTION"
     }, visitor.infoVisitor.getString(ctx.argument[0]));
     visitor.xml = visitor.xml.up();
+    visitor.interruptStack();
 }

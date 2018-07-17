@@ -64,7 +64,7 @@ var scratchLN =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 78);
+/******/ 	return __webpack_require__(__webpack_require__.s = 80);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1545,11 +1545,11 @@ var tokens_public_1 = __webpack_require__(3);
 var exceptions_public_1 = __webpack_require__(36);
 var version_1 = __webpack_require__(29);
 var errors_public_1 = __webpack_require__(24);
-var render_public_1 = __webpack_require__(52);
+var render_public_1 = __webpack_require__(53);
 var gast_visitor_public_1 = __webpack_require__(6);
 var gast_public_1 = __webpack_require__(1);
 var gast_resolver_public_1 = __webpack_require__(38);
-var generate_public_1 = __webpack_require__(54);
+var generate_public_1 = __webpack_require__(55);
 /**
  * defines the public API of
  * changes here may require major version change. (semVer)
@@ -3383,7 +3383,7 @@ const End = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["crea
 
 const Modifier = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
     name: "Modifier",
-    pattern: /::((:(?!:))|[^\{\|\(\)<>\\#@: \t\n]|\\[^])([ \t]*((:(?!:))|[^\|\(\)<>\\#@: \t]|\\[^]))*/
+    pattern: /::((:(?!:))|[^\{\|\(\)<>\\#@: \t\n]|\\[^])([ \t]*((:(?!:))|[^\|\(\)<>\\#@: \t\n]|\\[^]))*/
 });
 /* harmony export (immutable) */ __webpack_exports__["Modifier"] = Modifier;
 
@@ -4350,16 +4350,16 @@ var exceptions_public_1 = __webpack_require__(36);
 var lang_extensions_1 = __webpack_require__(5);
 var checks_1 = __webpack_require__(8);
 var utils_1 = __webpack_require__(0);
-var follow_1 = __webpack_require__(57);
+var follow_1 = __webpack_require__(58);
 var tokens_public_1 = __webpack_require__(3);
 var lookahead_1 = __webpack_require__(40);
-var gast_builder_1 = __webpack_require__(56);
+var gast_builder_1 = __webpack_require__(57);
 var interpreter_1 = __webpack_require__(25);
 var constants_1 = __webpack_require__(34);
 var tokens_1 = __webpack_require__(10);
 var cst_1 = __webpack_require__(35);
 var keys_1 = __webpack_require__(39);
-var cst_visitor_1 = __webpack_require__(55);
+var cst_visitor_1 = __webpack_require__(56);
 var errors_public_1 = __webpack_require__(24);
 var gast_public_1 = __webpack_require__(1);
 var gast_resolver_public_1 = __webpack_require__(38);
@@ -6049,7 +6049,7 @@ InRuleRecoveryException.prototype = Error.prototype;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var lexer_1 = __webpack_require__(59);
+var lexer_1 = __webpack_require__(60);
 var utils_1 = __webpack_require__(0);
 var tokens_1 = __webpack_require__(10);
 var LexerDefinitionErrorType;
@@ -7459,16 +7459,24 @@ function makeArgument(ctx, visitor, arg, i) {
 }
 
 function universalBlockConverter(ctx, visitor, structure) {
-    addType(ctx,visitor,structure.type);
+    if (structure.shape === "hatblock") {
+        visitor.interruptStack();
+    }
+    addType(ctx, visitor, structure.type);
     for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
         let arg = structure.args[i];
         makeArgument(ctx, visitor, arg, i);
     }
-
+    if (structure.shape === "hatblock") {
+        visitor.startStack();
+    }
+    if (structure.shape === "capblock") {
+        visitor.interruptStack();
+    }
 }
 
 
-function addType(ctx,visitor,type) {
+function addType(ctx, visitor, type) {
     visitor.xml = visitor.xml.ele('block', {
         'id': visitor.idManager.getNextBlockID(visitor.infoVisitor.getID(ctx, "atomic")),
         'type': type
@@ -7481,7 +7489,7 @@ function addType(ctx,visitor,type) {
 //=======================================================================================================================================
 
 function variableBlockConverter(ctx, visitor, structure) {
-    addType(ctx,visitor,structure.type);
+    addType(ctx, visitor, structure.type);
     //name of the variable
     let varble = visitor.infoVisitor.getString(ctx.argument[0]);
     //function must be called to register VariableID
@@ -7499,7 +7507,7 @@ function variableBlockConverter(ctx, visitor, structure) {
 
 //todo
 function listBlockConverter(ctx, visitor, structure) {
-    addType(ctx,visitor,structure.type);
+    addType(ctx, visitor, structure.type);
     for (let i = 0; i < ctx.argument.length; i++) {
         let arg = structure.args[i];
         if (arg.name === 'LIST') {
@@ -7517,8 +7525,8 @@ function listBlockConverter(ctx, visitor, structure) {
 }
 
 //todo
-function messageShadowBlockconverter(ctx, visitor,structure) {
-    addType(ctx,visitor,structure.type);
+function messageShadowBlockconverter(ctx, visitor, structure) {
+    addType(ctx, visitor, structure.type);
     let varble = visitor.infoVisitor.getString(ctx.argument[0]);
     let arg = structure.args[0];
     let id = visitor.idManager.acquireVariableID(varble, __WEBPACK_IMPORTED_MODULE_0__IDManager__["b" /* BROADCAST */]);
@@ -7530,15 +7538,18 @@ function messageShadowBlockconverter(ctx, visitor,structure) {
         'type': "event_broadcast_menu"
     }).ele('field', {
         'name': 'BROADCAST_OPTION',
-        'variabletype':"broadcast_msg",
-        'id':id
+        'variabletype': "broadcast_msg",
+        'id': id
     }, varble);
     visitor.xml = visitor.xml.up();
 }
 
-//todo
-function messageBlockconverter(ctx, visitor,structure) {
-    addType(ctx,visitor,structure.type);
+// "when I receive %1"
+function messageBlockconverter(ctx, visitor, structure) {
+    if (structure.shape === "hatblock") {
+        visitor.interruptStack();
+    }
+    addType(ctx, visitor, structure.type);
 
     let varble = visitor.infoVisitor.getString(ctx.argument[0]);
     let arg = structure.args[0];
@@ -7546,19 +7557,22 @@ function messageBlockconverter(ctx, visitor,structure) {
 
     visitor.xml.ele('field', {
         'name': "BROADCAST_OPTION",
-        'variabletype':"broadcast_msg",
-        'id':id
+        'variabletype': "broadcast_msg",
+        'id': id
     }, varble);
-
+    if (structure.shape === "hatblock") {
+        visitor.startStack();
+    }
 }
 
 //todo
-function stopConverter(ctx, visitor,structure) {
-    addType(ctx,visitor,structure.type);
+function stopConverter(ctx, visitor, structure) {
+    addType(ctx, visitor, structure.type);
     visitor.xml = visitor.xml.ele('field', {
         'name': "STOP_OPTION"
     }, visitor.infoVisitor.getString(ctx.argument[0]));
     visitor.xml = visitor.xml.up();
+    visitor.interruptStack();
 }
 
 /***/ }),
@@ -7857,7 +7871,7 @@ exports.firstForTerminal = firstForTerminal;
 Object.defineProperty(exports, "__esModule", { value: true });
 var utils_1 = __webpack_require__(0);
 var lang_extensions_1 = __webpack_require__(5);
-var resolver_1 = __webpack_require__(58);
+var resolver_1 = __webpack_require__(59);
 var checks_1 = __webpack_require__(8);
 var errors_public_1 = __webpack_require__(24);
 var gast_1 = __webpack_require__(9);
@@ -9371,7 +9385,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 /* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(66);
+module.exports = __webpack_require__(67);
 
 
 /***/ }),
@@ -9932,11 +9946,16 @@ class InfoLNVisitor extends BaseCstVisitor {
         }
 
         return {
-            TEXT: this.getTextAtomic(ctx),
+            TEXT: this.unescapeLabel(this.getTextAtomic(ctx)),
             OFFSET: offset,
             TYPE: ATOMIC,
             ID: this.visit(ctx.annotations).ID
         }
+    }
+
+    unescapeLabel(text){
+        //replace a \ followed by a not nothing character by only the character
+        return text.replace(/\\([^])/g, '$1');
     }
 
     /**
@@ -9985,7 +10004,6 @@ class InfoLNVisitor extends BaseCstVisitor {
         //text = text.replace(/ +(?=[\%][^sbn])/g, '');
         //remove spaces at beginning and end
         text = text.trim();
-        //todo: unescape shizzle
 
         return text;
     }
@@ -10255,6 +10273,24 @@ class InfoLNVisitor extends BaseCstVisitor {
 
 /***/ }),
 /* 48 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/**
+ * config.
+ *
+ * Configuration parameters for developers
+ *
+ * @file   This files defines the consts.
+ * @author Ellen Vanhove.
+ */
+
+const MEDIA = '/static/blocks-media/';
+/* harmony export (immutable) */ __webpack_exports__["a"] = MEDIA;
+
+
+/***/ }),
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -20625,14 +20661,14 @@ return jQuery;
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(63);
+module.exports = __webpack_require__(64);
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -20640,8 +20676,8 @@ module.exports = __webpack_require__(63);
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseTextToXML;
 /* unused harmony export parseTextToXMLWithWarnings */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__LNParser__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__XMLLNVisitor__ = __webpack_require__(76);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__blockspecification_blockspecification__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__XMLLNVisitor__ = __webpack_require__(77);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__blockspecification_blockspecification__ = __webpack_require__(52);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__blocks__ = __webpack_require__(33);
 /**
  * Provide high level function to transform text to XML
@@ -20770,7 +20806,7 @@ function parseTextToXMLWithWarnings(text) {
 
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -20927,7 +20963,7 @@ const blockspecifications = [
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
         },
         {
-            "template": "%1 \\< %2",
+            "template": "%1 < %2",
             "description": {
                 "type": "operator_lt",
                 "args": [{"type": "input_value", "name": "OPERAND1"}, {"type": "input_value", "name": "OPERAND2"}],
@@ -20945,7 +20981,7 @@ const blockspecifications = [
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
         },
         {
-            "template": "%1 \\> %2",
+            "template": "%1 > %2",
             "description": {
                 "type": "operator_gt",
                 "args": [{"type": "input_value", "name": "OPERAND1"}, {"type": "input_value", "name": "OPERAND2"}],
@@ -22038,7 +22074,7 @@ const blockspecifications = [
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22059,7 +22095,7 @@ exports.createSyntaxDiagramsCode = createSyntaxDiagramsCode;
 //# sourceMappingURL=render_public.js.map
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22209,13 +22245,13 @@ function indent(howMuch, text) {
 //# sourceMappingURL=generate.js.map
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var generate_1 = __webpack_require__(53);
+var generate_1 = __webpack_require__(54);
 function generateParserFactory(options) {
     var wrapperText = generate_1.genWrapperFunction({
         name: options.name,
@@ -22236,7 +22272,7 @@ exports.generateParserModule = generateParserModule;
 //# sourceMappingURL=generate_public.js.map
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22371,13 +22407,13 @@ exports.validateRedundantMethods = validateRedundantMethods;
 //# sourceMappingURL=cst_visitor.js.map
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var range_1 = __webpack_require__(61);
+var range_1 = __webpack_require__(62);
 var utils_1 = __webpack_require__(0);
 var gast_public_1 = __webpack_require__(1);
 var ProdType;
@@ -22827,7 +22863,7 @@ exports.deserializeProduction = deserializeProduction;
 //# sourceMappingURL=gast_builder.js.map
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22899,7 +22935,7 @@ exports.buildInProdFollowPrefix = buildInProdFollowPrefix;
 //# sourceMappingURL=follow.js.map
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22961,7 +22997,7 @@ exports.GastRefResolverVisitor = GastRefResolverVisitor;
 //# sourceMappingURL=resolver.js.map
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22981,7 +23017,7 @@ var regexp_to_ast_1 = __webpack_require__(41);
 var tokens_public_1 = __webpack_require__(3);
 var lexer_public_1 = __webpack_require__(28);
 var utils_1 = __webpack_require__(0);
-var reg_exp_1 = __webpack_require__(60);
+var reg_exp_1 = __webpack_require__(61);
 var regExpParser = new regexp_to_ast_1.RegExpParser();
 var PATTERN = "PATTERN";
 exports.DEFAULT_MODE = "defaultMode";
@@ -23795,7 +23831,7 @@ function getCharCodes(charsOrCodes) {
 //# sourceMappingURL=lexer.js.map
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23993,7 +24029,7 @@ exports.canMatchCharCode = canMatchCharCode;
 //# sourceMappingURL=reg_exp.js.map
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24032,11 +24068,11 @@ exports.isValidRange = isValidRange;
 //# sourceMappingURL=range.js.map
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
-var Blockly = __webpack_require__(70);
+var Blockly = __webpack_require__(71);
 var goog = __webpack_require__(30);
 
 /**
@@ -24389,11 +24425,11 @@ module.exports = Blockly;
 
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
-var Blockly = __webpack_require__(69);
+var Blockly = __webpack_require__(70);
 var goog = __webpack_require__(30);
 
 // This file was automatically generated.  Do not modify.
@@ -34347,11 +34383,11 @@ module.exports = Blockly;
 
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
-var Blockly = __webpack_require__(68);
+var Blockly = __webpack_require__(69);
 
 // Do not edit this file; automatically generated by build.py.
 'use strict';
@@ -34395,12 +34431,12 @@ module.exports = Blockly;
 
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
 var goog = __webpack_require__(30);
-var Blockly = __webpack_require__(67);
+var Blockly = __webpack_require__(68);
 
 // Do not edit this file; automatically generated by build.py.
 'use strict';
@@ -34607,7 +34643,7 @@ module.exports = Blockly;
 
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -36770,35 +36806,35 @@ exports["goog"] = (goog);
 }.call(window));
 
 /***/ }),
-/* 67 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(64);
-
-
-/***/ }),
 /* 68 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(42).Blockly;
-
-
-/***/ }),
-/* 69 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(62);
-
-
-/***/ }),
-/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(65);
 
 
 /***/ }),
+/* 69 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(42).Blockly;
+
+
+/***/ }),
+/* 70 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(63);
+
+
+/***/ }),
 /* 71 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(66);
+
+
+/***/ }),
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -36852,7 +36888,7 @@ module.exports = __webpack_require__(65);
 
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -37260,7 +37296,7 @@ module.exports = __webpack_require__(65);
 
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -37545,7 +37581,7 @@ module.exports = __webpack_require__(65);
 
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -37554,13 +37590,13 @@ module.exports = __webpack_require__(65);
 
   ref = __webpack_require__(4), assign = ref.assign, isFunction = ref.isFunction;
 
-  XMLDocument = __webpack_require__(71);
+  XMLDocument = __webpack_require__(72);
 
-  XMLDocumentCB = __webpack_require__(72);
+  XMLDocumentCB = __webpack_require__(73);
 
   XMLStringWriter = __webpack_require__(31);
 
-  XMLStreamWriter = __webpack_require__(73);
+  XMLStreamWriter = __webpack_require__(74);
 
   module.exports.create = function(name, xmldec, doctype, options) {
     var doc, root;
@@ -37604,7 +37640,7 @@ module.exports = __webpack_require__(65);
 
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -37766,7 +37802,7 @@ class State {
 
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -37774,13 +37810,14 @@ class State {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_chevrotain__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__LNParser__ = __webpack_require__(32);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__InfoLNVisitor__ = __webpack_require__(47);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_xmlbuilder__ = __webpack_require__(74);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_xmlbuilder__ = __webpack_require__(75);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_xmlbuilder___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_xmlbuilder__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__IDManager__ = __webpack_require__(46);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__State__ = __webpack_require__(75);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__State__ = __webpack_require__(76);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__blocks__ = __webpack_require__(33);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__LNLexer__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__modifierAnalyser__ = __webpack_require__(77);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__modifierAnalyser__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__warnings__ = __webpack_require__(79);
 /**
  * Template for the visitor.
  *
@@ -37802,6 +37839,7 @@ let ChoiceLiteral = lntokens.ChoiceLiteral;
 
 
 //xml
+
 
 
 
@@ -37859,6 +37897,8 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
         //modifiers
         this.modifierAnalyser = new __WEBPACK_IMPORTED_MODULE_8__modifierAnalyser__["a" /* ModifierAnalyser */]();
+
+        this.warningsKeeper = new __WEBPACK_IMPORTED_MODULE_9__warnings__["a" /* WarningsKeeper */]();
     }
 
     getXML(cst) {
@@ -37884,7 +37924,7 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             xml: this.xml.end({
                 pretty: true
             }),
-            warnings: {},
+            warnings: this.warningsKeeper.getList(),
         }
     }
 
@@ -37914,6 +37954,9 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             //the flow was interrupted by a hat block or stand alone variable
             //so a new stack has to start
             if (this.state.isInterruptedStack()) {
+                if(i<ctx.block.length-1) { //no warning if nothing follows
+                    this.warningsKeeper.add(ctx.block[i], "started a new stack");
+                }
                 this.state.startStack();
             } else { //normal flow
                 this.xml = this.xml.ele('next');
@@ -37929,7 +37972,7 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     atomic(ctx) {
         let description = this.infoVisitor.getString(ctx, "atomic");
-        ;
+
         //todo obtain modifiers
         let modifiers = this.modifierAnalyser.getMods(this.infoVisitor.getModifiers(ctx.annotations));
         if (this.isBuildInBlock(description, ctx, modifiers)) {
@@ -37988,7 +38031,7 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
 
     isBuildInBlock(description, ctx, modifiers) {
-        return description in __WEBPACK_IMPORTED_MODULE_6__blocks__["a" /* default */]; //todo: check modifier if it is a customblock
+        return description in __WEBPACK_IMPORTED_MODULE_6__blocks__["a" /* default */] && !modifiers.custom;
     }
 
     isVariableBlock(ctx, modifiers) {
@@ -38153,6 +38196,8 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         this.visit(ctx.clause);
         this.xml = this.xml.up(); //close statement (stack will close block)
         this.visit(ctx.annotations);
+        this.interruptStack();
+
     }
 
     repeat(ctx) {
@@ -38351,7 +38396,7 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -38451,7 +38496,46 @@ class ModifierAnalyser {
 
 
 /***/ }),
-/* 78 */
+/* 79 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/**
+ * Warnings.
+ *
+ * An object that determines the structure of the warnings.
+ *
+ * @file   This files defines the WarningsKeeper class.
+ * @author Ellen Vanhove.
+ */
+
+class WarningsKeeper {
+
+    constructor(informationVisitor) {
+        this.reset();
+    }
+
+    reset(){
+        this.list = [];
+    }
+
+    add(ctx,msg){
+        this.list.push({
+            msg:msg,
+            ctx:ctx,
+        })
+    }
+
+    getList(){
+        return this.list;
+    }
+
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = WarningsKeeper;
+
+
+/***/ }),
+/* 80 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -38464,11 +38548,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["changeValue"] = changeValue;
 /* harmony export (immutable) */ __webpack_exports__["createWorkspace"] = createWorkspace;
 /* harmony export (immutable) */ __webpack_exports__["fitBlocks"] = fitBlocks;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(48);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(49);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_scratch_blocks__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_scratch_blocks__ = __webpack_require__(50);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_scratch_blocks___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_scratch_blocks__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parser_parserUtils_js__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parser_parserUtils_js__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__config_config__ = __webpack_require__(48);
+
 
 
 
@@ -38539,7 +38625,7 @@ function createWorkspace(workspaceName) {
         'scrollbars': false,
         'trashcan': false,
         'readOnly': true,
-        media: '/static/blocks-media/', //flag
+        media: __WEBPACK_IMPORTED_MODULE_3__config_config__["a" /* MEDIA */], //flag
         colours: {
             fieldShadow: 'rgba(255, 255, 255, 1)'
         },
