@@ -3,6 +3,15 @@ import ScratchBlocks from 'scratch-blocks';
 import parseTextToXML from './../parser/parserUtils.js'
 import {MEDIA} from "../config/config";
 
+
+const LOCALE_ATTR ="blocks-locale";
+const SCALE_ATTR ="blocks-scale"
+
+/**
+ *
+ * @param selector see: https://www.w3schools.com/jquery/jquery_ref_selectors.asp
+ * @param properties see: DEFAULT_PROPERTIES
+ */
 export function scratchify(selector='.scratch',properties={}) {
     let userDefaultProperties=mergeProperties(properties,DEFAULT_PROPERTIES);
     $(selector).each(function(i, obj) {
@@ -16,6 +25,10 @@ export function scratchify(selector='.scratch',properties={}) {
         $(this).parent().append($("<div class=blocklyDiv id=" + id + "></div>"));
         //todo extract stuff from html and add it to properties
         let extracted = {};
+        extracted.locale=$(this).attr(LOCALE_ATTR);
+        extracted.zoom = {
+            startScale: $(this).attr(SCALE_ATTR)
+        };
         let prop=mergeProperties(extracted,userDefaultProperties);
         let workspace = createWorkspace(id,prop);
         //do parsing
