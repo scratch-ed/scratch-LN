@@ -81,14 +81,13 @@ export function createWorkspace(workspaceName) {
 }
 
 export function fitBlocks(workspace, id) {
-
+    let isHead = false;
     //get the topblocks, this are the beginning of stacks. they are ordered by location.
     let topBlocks=workspace.getTopBlocks(true);
-    let isHead = false;
     if(topBlocks[0]) {
         isHead = topBlocks[0].startHat_;
     }
-    let metrics = workspace.getMetrics();
+    let metrics = workspace.getMetrics(); //is not dependent on the location of the workspace
     if(isHead){
         $('#' + id).css('height', (metrics.contentHeight + 20) + 'px');
         //translate the whole workspace (like dragging in the live view)

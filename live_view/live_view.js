@@ -104,11 +104,11 @@ function updateWorkspace() {
     editor.focus();
     //console.log(getWorkspaceXML())
 
-    let topBlocks=workspace.getTopBlocks(true);
-    if(topBlocks[0]) {
-        let x = topBlocks[0].startHat_;
-        console.log(x)
-    }
+    //let topBlocks=workspace.getTopBlocks(true);
+    //if(topBlocks[0]) {
+    //    let x = topBlocks[0].startHat_;
+    //    console.log(x)
+    //}
 }
 
 
