@@ -245,6 +245,7 @@ function makeTable(codeArray,title=null){
             try {
                 var dom = ScratchBlocks.Xml.textToDom(xml);
                 ScratchBlocks.Xml.domToWorkspace(dom, workspace);
+                workspace.cleanUp();
             }catch(err){
                 console.log(err);
             }

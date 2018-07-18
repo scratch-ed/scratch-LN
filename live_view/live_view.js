@@ -103,6 +103,12 @@ function updateWorkspace() {
 
     editor.focus();
     //console.log(getWorkspaceXML())
+
+    let topBlocks=workspace.getTopBlocks(true);
+    if(topBlocks[0]) {
+        let x = topBlocks[0].startHat_;
+        console.log(x)
+    }
 }
 
 
@@ -232,9 +238,10 @@ function translate() {
     setLocale(locale);
 }
 
+//copy paste from test in scratchblocks.
 function setLocale(locale) {
     workspace.getFlyout().setRecyclingEnabled(false);
-    var xml = ScratchBlocks.Xml.workspaceToDom(workspace);
+    let xml = ScratchBlocks.Xml.workspaceToDom(workspace);
     ScratchBlocks.ScratchMsgs.setLocale(locale);
     ScratchBlocks.Xml.clearWorkspaceAndLoadFromXml(xml, workspace);
     workspace.getFlyout().setRecyclingEnabled(true);

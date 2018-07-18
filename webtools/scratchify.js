@@ -26,7 +26,7 @@ export function scratchify(clasz='scratch') {
             //add to this workspace
             let dom = Blockly.Xml.textToDom(xml);
             Blockly.Xml.domToWorkspace(dom, workspace);
-            //workspace.cleanUp();
+            workspace.cleanUp();
         }
         //rescale the workspace to fit to the blocks
         fitBlocks(workspace, id);
@@ -69,6 +69,7 @@ export function createWorkspace(workspaceName) {
         'scrollbars': false,
         'trashcan': false,
         'readOnly': true,
+        'comments': true,
         media: MEDIA, //flag
         colours: {
             fieldShadow: 'rgba(255, 255, 255, 1)'
@@ -80,8 +81,22 @@ export function createWorkspace(workspaceName) {
 }
 
 export function fitBlocks(workspace, id) {
-    var metrics = workspace.getMetrics();
-    $('#' + id).css('width', (metrics.contentWidth + 10) + 'px')
-    $('#' + id).css('height', (metrics.contentHeight + 10) + 'px')
+
+    //get the topblocks, this are the beginning of stacks. they are ordered by location.
+    let topBlocks=workspace.getTopBlocks(true);
+    let isHead = false;
+    if(topBlocks[0]) {
+        isHead = topBlocks[0].startHat_;
+    }
+    let metrics = workspace.getMetrics();
+    if(isHead){
+        $('#' + id).css('height', (metrics.contentHeight + 20) + 'px');
+        //translate the whole workspace (like dragging in the live view)
+        workspace.translate(5,12);
+    }else{
+        $('#' + id).css('height', (metrics.contentHeight + 10) + 'px');
+        workspace.translate(5,5);
+    }
+    $('#' + id).css('width', (metrics.contentWidth + 10) + 'px');
     ScratchBlocks.svgResize(workspace);
 }
