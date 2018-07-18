@@ -11,7 +11,16 @@ let workspaceCounter =0;
 $(document).ready(function() {
     makeTable(['say "hello"','move {10} steps','x {', 'x |'], "a test");
     makeTable(("move {10} steps;" +
+        "turn right {15} degrees;"+
+        "turn clockwise {15} degrees;"+
+        "turn \u21BB {15} degrees;"+
         "turn cw {15} degrees;" +
+        "turn left {15} degrees;"+
+        "turn ccw {15} degrees;"+
+        "turn counterclockwise {15} degrees;"+
+        "turn anticlockwise {15} degrees;"+
+        "turn acw {15} degrees;"+
+        "turn \u21BA {15} degrees;"+
         "turn ccw {15} degrees;" +
         "point in direction {90};" +
         "point towards [mouse-pointer];" +
@@ -61,6 +70,10 @@ $(document).ready(function() {
         "volume;" +
         "tempo").split(";"), "Sounds");
     makeTable(("when greenflag clicked;" +
+        "when gf clicked;"+
+        "when green flag clicked;"+
+        "when \u2691 clicked;"+
+        "when flag clicked;"+
         "when [space] key pressed;" +
         "when this sprite clicked;" +
         "when backdrop switches to [backdrop 1];" +
@@ -119,7 +132,11 @@ $(document).ready(function() {
         "{1} / {2};" +
         "pick random {1} to {10};" +
         "{1} \\< {2};" +
+        "{1} lt {2};"+
+        "{1} less than {2};"+
         "{1} \\> {2};" +
+        "{1} gt {2};"+
+        "{1} greater than {2};"+
         "{1} = {2};" +
         "<> and <>;" +
         "<> or <>;" +
@@ -181,7 +198,7 @@ $(document).ready(function() {
 function makeTable(codeArray,title=null){
     var table = $('<table>');
     if(title){
-        table.append( '<th>' + title +'</th>' );
+        $('#tables').append("<h1 id='"+title+"'><a href='#"+title+"'>"+title+"</a></h1>");
     }
     let startCounter = workspaceCounter;
     let storage = {};
