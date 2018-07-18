@@ -37,7 +37,12 @@ $(document).ready(function() {
         "x position;" +
         "y position;" +
         "direction;").split(";"), "Motion");
-    makeTable(("show;" +
+    makeTable((
+        "say \"hello\";"+
+        "say \"hello\" for {2} seconds;"+
+        "think \"hello\";"+
+        "think \"hello\" for {2} seconds;"+
+        "show;" +
         "hide;" +
         "switch costume to [costume 1];" +
         "next costume;" +
@@ -51,7 +56,9 @@ $(document).ready(function() {
         "go [forward] {1} layers;" +
         "costume [number];" +
         "backdrop [number];" +
-        "size").split(";"), "Looks");
+        "size;"+
+        "clear graphic effects;"+
+        "set size to {100} %").split(";"), "Looks");
     makeTable(("start sound [1];" +
         "play sound [1] until done;" +
         "stop all sounds;" +
@@ -78,6 +85,8 @@ $(document).ready(function() {
         "when this sprite clicked;" +
         "when backdrop switches to [backdrop 1];" +
         "when [timer] \\> {10};" +
+        "when [timer] gt {10};" +
+        "when [timer] greater than {10};" +
         "when I receive [message1];" +
         "broadcast [message1];" +
         "broadcast [message1] and wait" +
@@ -125,7 +134,10 @@ $(document).ready(function() {
         "reset timer;" +
         " [x position] of [Sprite1];" +
         "current [year];" +
-        "days since 2000").split(";"), "Sensing");
+        "days since 2000;"+
+        "username;"+
+        "answer;"+
+        "ask \"what is your favorite muffin?\" and wait").split(";"), "Sensing");
     makeTable(("{1} + {2};" +
         "{1} - {2};" +
         "{1} * {2};" +
@@ -161,7 +173,11 @@ $(document).ready(function() {
         " [lili] contains {\"thing\"}?;" +
         " say {(a list::list)};" +
         " (a list::list);" +
-        " (nolist);").split(";"), "Data");
+        " (nolist);"+
+        " hide list [lala];" +
+        "show list [lala];" +
+        "show variable [vivi];" +
+        "hide variable [vivi];").split(";"), "Data");
 
     makeTable(("length of {};" +
         "length of {\"fds\"};" +
@@ -178,7 +194,8 @@ $(document).ready(function() {
         "change [pitchX] effect by {10}::sound;" +
         "set [pitchX] effect to {100}::sound;" +
         "change [pitch] effect by {10};" +
-        "set [pitch] effect to {100}").split(";"), "same text blocks");
+        "set [pitch] effect to {100};"+
+        "move {10} steps ::custom").split(";"), "same text blocks");
     makeTable(("this is a custom block {1} \"a\" <>;" +
         "(a::custom);" +
         "<b::custom>;" +
@@ -189,6 +206,13 @@ $(document).ready(function() {
         "|comment| ; block",
         "block {(r |r comment|)} |block comment|"
     ], "comments");
+
+    makeTable(["forever;\n" +
+    "bla;\n" +
+    "end;\n" +
+    "bla",
+    ], "warnings");
+
     //makeTable(("").split(";"), "");
     //scratchify('scratch',true);
     //scroll down #makeUrLifeEasy

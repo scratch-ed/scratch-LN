@@ -74,9 +74,11 @@ export function variableBlockConverter(ctx, visitor, structure) {
     visitor.xml = visitor.xml.ele('field', {
         'name': 'VARIABLE'
     }, varble);
-    visitor.xml = visitor.xml.up().ele('value', {
-        'name': 'VALUE'
-    });
+    if(structure.args.length>1) {
+        visitor.xml = visitor.xml.up().ele('value', {
+            'name': 'VALUE'
+        });
+    }
     //the second argument.
     visitor.visit(ctx.argument[1]);
     visitor.xml = visitor.xml.up();
