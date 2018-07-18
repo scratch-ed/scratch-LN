@@ -2,6 +2,10 @@
 - update block specifications
 - add locale
 - add warnings
+- change `scratchify` arguments
+    - selecter instead of class
+    - add workspace properties
+    - locale
 
 # v0.2.0
 - arguments of custom block are now generated correctly

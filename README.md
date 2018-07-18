@@ -13,7 +13,7 @@ It is explained below how to use it.
 Scratch 3.0 needs the files inside `static/blocks-media` to render the greenflag,arrows, etc correctly. 
 It must be placed in the root directory of the webserver. (Later, I will add an option to set the location see issue #35) 
 
-### Basic `scratchify.js`
+### Basic `scratchify`
 This the typical file where you have to call yourself when scratchify will run. 
 You can give options to the function. Atm  this is only the 'class' of which elements need to be scratchified.
 The default class is `scratch`.
@@ -44,6 +44,47 @@ pen up
 </pre>
 ```
 When you open the page with a browser it will be rendered as Scratchblocks.
+
+### Modifications `scratchify` with arguments
+The `scratchify`-function takes 2 arguments. First, the selector see: https://www.w3schools.com/jquery/jquery_ref_selectors.asp for all possible options.
+Second a properties object, which can overwrite the default properties of the workspace. 
+The default properties are given below.
+```
+{
+    //this is exactly the same as blockly/scratchblocks properties
+    readOnly: true,
+    toolbox: '<xml></xml>',
+    scrollbars: false,
+    trashcan: false,
+    comments: true,
+    media: '/static/blocks-media/', //location of the images.
+    colours: {
+        fieldShadow: 'rgba(255, 255, 255, 1)' //workspace/background color
+    },
+    zoom: {
+        startScale: 0.5    //zoomlevel
+    },
+    // ----
+    //extra locale
+    locale: "en",  //natural language of the blocks
+}
+```
+This are the properties for the workspace as defined in Scratchblocks. 
+An extra property `locale` is added, to define the language of the blocks.
+
+In html some of these properties can be overwritten, 
+namely the locale i.e. the natural language of the blocks, and  
+the scale this is the size of the blocks.
+An example:
+```
+<code class='scratch' blocks-locale="nl" blocks-scale="1">
+    say "hello"
+    say {1222};
+    say {(varie)};
+</code>
+```
+
+
 
 ## Getting Started - development
 0. open a terminal and clone this project.

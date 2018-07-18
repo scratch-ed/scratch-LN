@@ -23,7 +23,6 @@ export function scratchify(selector='.scratch',properties={}) {
         }
         //create the div to inject the workspace in
         $(this).parent().append($("<div class=blocklyDiv id=" + id + "></div>"));
-        //todo extract stuff from html and add it to properties
         let extracted = {};
         extracted.locale=$(this).attr(LOCALE_ATTR);
         extracted.zoom = {
@@ -93,6 +92,7 @@ export const DEFAULT_PROPERTIES = {
     zoom: {
         startScale: 0.5
     },
+    // ----
     //extra locale
     locale: "en",
 };
