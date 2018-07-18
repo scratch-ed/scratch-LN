@@ -10,12 +10,15 @@ let warnings;
 
 
 window.onload = function () {
+
+    //ScratchBlocks.ScratchMsgs.setLocale("nl");
     //scratch-blocks
     workspace = ScratchBlocks.inject('blocklyDiv', {
         toolbox: '<xml></xml>',
         'scrollbars': true,
         'trashcan': false,
         'readOnly': false,
+        'comments': true,
         media: MEDIA, //flag
         colours: {
             workspace: '#E0FFFF', //'#e0ffe9',
@@ -52,6 +55,7 @@ window.onload = function () {
     document.getElementById('report').addEventListener('click', report);
     document.getElementById('stackglowon').addEventListener('click', stackGlowOn);
     document.getElementById('stackglowoff').addEventListener('click', stackGlowOff);
+    document.getElementById('translate').addEventListener('click', translate);
 
     //resizing workspace
     //https://developers.google.com/blockly/guides/configure/web/resizable
@@ -221,4 +225,17 @@ function getWorkspaceXML() {
     let dom = ScratchBlocks.Xml.workspaceToDom(workspace);
     let text = new XMLSerializer().serializeToString(dom);
     return text
+}
+
+function translate() {
+    let locale = document.getElementById('locale').value;
+    setLocale(locale);
+}
+
+function setLocale(locale) {
+    workspace.getFlyout().setRecyclingEnabled(false);
+    var xml = ScratchBlocks.Xml.workspaceToDom(workspace);
+    ScratchBlocks.ScratchMsgs.setLocale(locale);
+    ScratchBlocks.Xml.clearWorkspaceAndLoadFromXml(xml, workspace);
+    workspace.getFlyout().setRecyclingEnabled(true);
 }
