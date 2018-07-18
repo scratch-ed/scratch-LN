@@ -152,7 +152,7 @@ export const blockspecifications = [
             "converter": universalBlockConverter
         },
         {
-            "template": "%1 < %2",
+            "template": ["%1 lt %2","%1 < %2", "%1 less than %2"],
             "description": {
                 "type": "operator_lt",
                 "args": [{"type": "input_value", "name": "OPERAND1"}, {"type": "input_value", "name": "OPERAND2"}],
@@ -170,7 +170,7 @@ export const blockspecifications = [
             "converter": universalBlockConverter
         },
         {
-            "template": "%1 > %2",
+            "template": ["%1 gt %2","%1 > %2", "%1 greater than %2"],
             "description": {
                 "type": "operator_gt",
                 "args": [{"type": "input_value", "name": "OPERAND1"}, {"type": "input_value", "name": "OPERAND2"}],
@@ -449,7 +449,7 @@ export const blockspecifications = [
             "converter": universalBlockConverter
         },
         {
-            "template": ["turn cw %1 degrees", "turn right %1 degrees"],
+            "template": ["turn right %1 degrees","turn cw %1 degrees", "turn clockwise %1 degrees","turn \u21BB %1 degrees"],
             "description": {
                 "type": "motion_turnright",
                 "args": [{"type": "input_value", "name": "DEGREES"}],
@@ -458,7 +458,8 @@ export const blockspecifications = [
             "converter": universalBlockConverter
         },
         {
-            "template": ["turn ccw %1 degrees", "turn left %1 degrees"],
+            "template": ["turn left %1 degrees", "turn ccw %1 degrees", "turn counterclockwise %1 degrees",
+                "turn anticlockwise %1 degrees", "turn acw %1 degrees", "turn \u21BA %1 degrees",  ],
             "description": {
                 "type": "motion_turnleft",
                 "args": [{"type": "input_value", "name": "DEGREES"}],
@@ -856,7 +857,7 @@ export const blockspecifications = [
         },
         //=== events =============================================================
         {
-            "template": ["when gf clicked", "when greenflag clicked", "when green flag clicked", "when \u2691 clicked"],
+            "template": ["when gf clicked", "when greenflag clicked", "when green flag clicked", "when \u2691 clicked","when flag clicked",],
             "description": {"type": "event_whenflagclicked", "args": [], "shape": "hatblock"},
             "converter": universalBlockConverter
         },
