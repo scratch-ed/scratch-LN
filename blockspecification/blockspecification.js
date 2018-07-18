@@ -856,7 +856,7 @@ export const blockspecifications = [
         },
         //=== events =============================================================
         {
-            "template": ["when gf clicked", "when greenflag clicked"],
+            "template": ["when gf clicked", "when greenflag clicked", "when green flag clicked", "when \u2691 clicked"],
             "description": {"type": "event_whenflagclicked", "args": [], "shape": "hatblock"},
             "converter": universalBlockConverter
         },
