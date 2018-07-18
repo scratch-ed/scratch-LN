@@ -94,11 +94,16 @@ $(document).ready(function() {
         "repeat {10};block;end;block",
     ], "Control: C-Blocks");
     makeTable(("touching [mouse-pointer]?;" +
+        "touching [mouse-pointer];" +
         "touching color {#123456} ?;" +
+        "touching color {#123456} ;" +
         "color {#123456} is touching {#123456} ?;" +
+        "color {#123456} is touching {#123456} ;" +
         "distance to [mouse-pounter];" +
         "key [space ] pressed ?;" +
+        "key [space ] pressed ;" +
         "mouse down?;" +
+        "mouse down;" +
         "mouse x;" +
         "mouse y;" +
         "set drag mode [draggable];" +
