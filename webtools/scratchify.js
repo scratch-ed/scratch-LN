@@ -3,8 +3,9 @@ import ScratchBlocks from 'scratch-blocks';
 import parseTextToXML from './../parser/parserUtils.js'
 import {MEDIA} from "../config/config";
 
-export function scratchify(clasz='scratch') {
-    $('.'+clasz).each(function(i, obj) {
+export function scratchify(selector='.scratch',properties={}) {
+    let userDefaultProperties=mergeProperties(properties,DEFAULT_PROPERTIES);
+    $(selector).each(function(i, obj) {
         let id = $(this).attr('id');
         if (!id) {
             id = "workspace_" + i;
@@ -13,8 +14,10 @@ export function scratchify(clasz='scratch') {
         }
         //create the div to inject the workspace in
         $(this).parent().append($("<div class=blocklyDiv id=" + id + "></div>"));
-
-        let workspace = createWorkspace(id);
+        //todo extract stuff from html and add it to properties
+        let extracted = {};
+        let prop=mergeProperties(extracted,userDefaultProperties);
+        let workspace = createWorkspace(id,prop);
         //do parsing
         let text = $(this).text();
         //remove the text
@@ -63,21 +66,39 @@ export function changeValue(id, blockID, value) {
     field.setText(value);
 }
 
-export function createWorkspace(workspaceName) {
-    return ScratchBlocks.inject(workspaceName, {
-        toolbox: '<xml></xml>',
-        'scrollbars': false,
-        'trashcan': false,
-        'readOnly': true,
-        'comments': true,
-        media: MEDIA, //flag
-        colours: {
-            fieldShadow: 'rgba(255, 255, 255, 1)'
-        },
-        zoom: {
-            startScale: 0.5
+export const DEFAULT_PROPERTIES = {
+    //this is exactly the same as blockly/scratchblocks properties
+    readOnly: true,
+    toolbox: '<xml></xml>',
+    scrollbars: false,
+    trashcan: false,
+    comments: true,
+    media: MEDIA,
+    colours: {
+        fieldShadow: 'rgba(255, 255, 255, 1)'
+    },
+    zoom: {
+        startScale: 0.5
+    },
+    //extra locale
+    locale: "en",
+};
+
+export function createWorkspace(workspaceName,properties=DEFAULT_PROPERTIES) {
+    ScratchBlocks.ScratchMsgs.setLocale(properties.locale);
+    return ScratchBlocks.inject(workspaceName, properties);
+}
+
+function mergeProperties(properties, defaultprops){
+    let prop = {};
+    for(let p in defaultprops){
+        if(properties.hasOwnProperty(p)){
+            prop[p] = properties[p];
+        }else{
+            prop[p] = defaultprops[p];
         }
-    });
+    }
+    return prop;
 }
 
 export function fitBlocks(workspace, id) {
