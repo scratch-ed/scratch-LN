@@ -62,18 +62,6 @@ String.prototype.format = function () {
     });
 };
 
-String.prototype.formatPlaceholder = function () {
-    let args = arguments;
-    if (Array.isArray(args[0])) { //if an array is passed as argument
-        args = args[0];
-    }
-
-    let c=0;
-    return this.replace(/%([snb])/g, function (x, m) {
-        return args[c++];
-    });
-};
-
 //====examples
 ScratchBlocks.text['event_whenflagclicked'] = function (block) {
     return 'when greenflag clicked;\n' + ScratchBlocks.text.getNextCode(block);
@@ -188,21 +176,33 @@ ScratchBlocks.text['control_if_else'] = function (block) {
 ScratchBlocks.text['procedures_call'] = function (block) {
     let procCode = block.getProcCode();
     //todo <> is not a child ..., so find a better way to handle this
-    //console.log(block);
+    console.log(block);
     let args=block.childBlocks_;
     let textargs = [];
     for(let i=0; i<args.length;i++){
         textargs.push(ScratchBlocks.text.blockToCode(args[i])[0]);
     }
-    //console.log(textargs,args);
-    return procCode.formatPlaceholder(textargs) + '\n' + ScratchBlocks.text.getNextCode(block);
+    let ids=block.argumentIds_;
+    console.log(textargs,args,ids);
+    return formatPlaceholder(procCode,textargs,ids) + '\n' + ScratchBlocks.text.getNextCode(block);
 };
 
+function formatPlaceholder(text,args,ids) {
+    let argscounter=0;
+    let idcounter = 0;
+    return text.replace(/%([snb])/g, function (x, m) {
+        //console.log(args[argscounter],ids[idcounter]);
+        //if(args[argscounter]==ids[idcounter]) {
+            return args[argscounter++];
+
+        /*    idcounter++;
+        }else{
+            return "<>"
+        }*/
+    });
+};
 
 ScratchBlocks.text['procedures_definition'] = function (block) {
-    //let procCode = block.getProcCode();
-    //todo
-    console.log(block);
     let prodecureblock=block.childBlocks_[0];
     let procCode = prodecureblock.getProcCode();
     let argumentsIds = prodecureblock.argumentIds_;
