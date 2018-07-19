@@ -6,6 +6,8 @@ import ScratchBlocks from 'scratch-blocks';
 import {createWorkspace, fitBlocks} from "../webtools/scratchify";
 import parseTextToXML from "../parser/parserUtils";
 
+import generateText from "../generator/generator"
+
 let workspaceCounter =0;
 
 $(document).ready(function() {
@@ -223,7 +225,7 @@ $(document).ready(function() {
 function makeTable(codeArray,title=null){
     var table = $('<table>');
     if(title){
-        $('#tables').append("<h1 id='"+title+"'><a href='#"+title+"'>"+title+"</a></h1>");
+        $('#tables').append("<h2 id='"+title+"'><a href='#"+title+"'>"+title+"</a></h2>");
     }
     let startCounter = workspaceCounter;
     let storage = {};
@@ -235,6 +237,7 @@ function makeTable(codeArray,title=null){
         table.append( '<tr><td>' + codeArray[i] + '</td>' +
             '<td>'+ "<div class=blocklyDiv id=" + id + "></div>"+'</td>' +
             '<td>'+JSON.stringify(ret)+'</td>' +
+            '<td id="text_'+id+'">'+""+'</td>' +
             '</tr>' );
     }
     $('#tables').append(table);
@@ -247,6 +250,8 @@ function makeTable(codeArray,title=null){
                 var dom = ScratchBlocks.Xml.textToDom(xml);
                 ScratchBlocks.Xml.domToWorkspace(dom, workspace);
                 workspace.cleanUp();
+                let text = generateText(workspace);
+                $("#text_"+wid).html(text);
             }catch(err){
                 console.log(err);
             }

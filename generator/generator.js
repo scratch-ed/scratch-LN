@@ -12,9 +12,6 @@ import {blockspecifications} from "../blockspecification/blockspecification";
 
 export default function generateText(workspace) {
     let u = ScratchBlocks.text.workspaceToCode(workspace);
-    console.log('_____________');
-    console.log(u);
-    console.log('_____________');
     return u
 }
 
