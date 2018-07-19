@@ -38,7 +38,7 @@ window.onload = function () {
     //text
     editor = document.getElementById('editor');
     editor.addEventListener('input', updateWorkspace);
-    editor.value =  ''
+    editor.value =  'block {1} "hello" <>'
     ;
 
     warnings = document.getElementById('warnings');

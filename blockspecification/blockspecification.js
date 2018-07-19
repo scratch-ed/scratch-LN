@@ -539,7 +539,7 @@ export const blockspecifications = [
             "converter": universalBlockConverter
         },
         {
-            "template": ["bounce on edge", "if on edge, bounce"],
+            "template": ["if on edge, bounce","bounce on edge"],
             "description": {"type": "motion_ifonedgebounce", "shape": "statement"},
             "converter": universalBlockConverter
         },
