@@ -9,8 +9,7 @@ import parseTextToXML from "../parser/parserUtils";
 let workspaceCounter =0;
 
 $(document).ready(function() {
-    scratchify('.scratch');
-/*
+    //scratchify('.scratch');
     makeTable(['say "hello"','move {10} steps','x {', 'x |'], "a test");
     makeTable(("move {10} steps;" +
         "turn right {15} degrees;"+
@@ -219,7 +218,6 @@ $(document).ready(function() {
     //
     //scroll down #makeUrLifeEasy
     //window.scrollTo(0,document.body.scrollHeight);
-    */
 });
 
 function makeTable(codeArray,title=null){
