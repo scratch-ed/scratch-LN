@@ -69,8 +69,7 @@ String.prototype.formatPlaceholder = function () {
     }
 
     let c=0;
-    return this.replace(/%([sn])/g, function (x, m) {
-        console.log("format",args,c)
+    return this.replace(/%([snb])/g, function (x, m) {
         return args[c++];
     });
 };
@@ -188,14 +187,14 @@ ScratchBlocks.text['control_if_else'] = function (block) {
 //======= custom blocks ==================
 ScratchBlocks.text['procedures_call'] = function (block) {
     let procCode = block.getProcCode();
-    //todo
-    console.log(block);
+    //todo <> is not a child ..., so find a better way to handle this
+    //console.log(block);
     let args=block.childBlocks_;
     let textargs = [];
     for(let i=0; i<args.length;i++){
         textargs.push(ScratchBlocks.text.blockToCode(args[i])[0]);
     }
-    console.log(textargs,args);
+    //console.log(textargs,args);
     return procCode.formatPlaceholder(textargs) + '\n' + ScratchBlocks.text.getNextCode(block);
 };
 
@@ -203,7 +202,22 @@ ScratchBlocks.text['procedures_call'] = function (block) {
 ScratchBlocks.text['procedures_definition'] = function (block) {
     //let procCode = block.getProcCode();
     //todo
-    return 'define '+'\n' + ScratchBlocks.text.getNextCode(block);
+    console.log(block);
+    let prodecureblock=block.childBlocks_[0];
+    let procCode = prodecureblock.getProcCode();
+    let argumentsIds = prodecureblock.argumentIds_;
+    return 'define '+replaceArgs(procCode,argumentsIds)+'\n' + ScratchBlocks.text.getNextCode(block);
+};
+
+function replaceArgs(text,args) {
+    let c=0;
+    return text.replace(/%([snb])/g, function (x, m) {
+        if(m === 'b'){
+            return '<'+args[c++]+'>';
+        }else {
+            return '('+args[c++]+')';
+        }
+    });
 };
 //========================================
 
