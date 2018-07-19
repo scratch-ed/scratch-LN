@@ -7,10 +7,10 @@ import {MEDIA} from "../config/config";
 let workspace = null;
 let editor;
 let warnings;
+let generatorField;
 
 
 window.onload = function () {
-
     //ScratchBlocks.ScratchMsgs.setLocale("nl");
     //scratch-blocks
     workspace = ScratchBlocks.inject('blocklyDiv', {
@@ -43,6 +43,7 @@ window.onload = function () {
 
     warnings = document.getElementById('warnings');
 
+    generatorField = document.getElementById('generatorOutput');
 
     updateWorkspace();
 
@@ -56,13 +57,15 @@ window.onload = function () {
     document.getElementById('stackglowon').addEventListener('click', stackGlowOn);
     document.getElementById('stackglowoff').addEventListener('click', stackGlowOff);
     document.getElementById('translate').addEventListener('click', translate);
+    document.getElementById('generate').addEventListener('click', generateTextWorkspace);
+
 
     //resizing workspace
     //https://developers.google.com/blockly/guides/configure/web/resizable
     let blocklyDiv = document.getElementById('blocklyDiv');
     let blocklyArea = document.getElementById('blocklyArea');
     blocklyDiv.style.width = '50%';
-    blocklyDiv.style.height = '90%';
+    blocklyDiv.style.height = '80%';
     ScratchBlocks.svgResize(workspace);
 
     //addBlock('looks_say','aaa',1,1);
@@ -78,7 +81,8 @@ window.onload = function () {
 };
 
 function generateTextWorkspace() {
-    generateText(workspace);
+    let text = generateText(workspace);
+    generatorField.value = text;
 }
 
 
@@ -109,6 +113,7 @@ function updateWorkspace() {
     //    let x = topBlocks[0].startHat_;
     //    console.log(x)
     //}
+    generateTextWorkspace();
 }
 
 

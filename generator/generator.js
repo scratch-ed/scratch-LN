@@ -175,14 +175,14 @@ ScratchBlocks.text['control_if_else'] = function (block) {
 ScratchBlocks.text['procedures_call'] = function (block) {
     let procCode = block.getProcCode();
     //todo
-    return procCode;
+    return procCode + '\n' + ScratchBlocks.text.getNextCode(block);
 };
 
 
 ScratchBlocks.text['procedures_definition'] = function (block) {
     //let procCode = block.getProcCode();
     //todo
-    return 'define ';//+procCode;
+    return 'define '+'\n' + ScratchBlocks.text.getNextCode(block);
 };
 //========================================
 
