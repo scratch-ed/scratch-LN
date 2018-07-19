@@ -54,11 +54,12 @@ export function universalBlockConverter(ctx, visitor, structure) {
 
 
 export function addType(ctx, visitor, type) {
+    let blockid = visitor.idManager.getNextBlockID(visitor.infoVisitor.getID(ctx, "atomic"));
     visitor.xml = visitor.xml.ele('block', {
-        'id': visitor.idManager.getNextBlockID(visitor.infoVisitor.getID(ctx, "atomic")),
+        'id': blockid,
         'type': type
     });
-    //todo add to state
+    visitor.state.addBlock(blockid);
 };
 
 //=======================================================================================================================================

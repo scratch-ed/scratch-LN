@@ -29,7 +29,7 @@ export class State {
     reset() {
         //list of all blocks
         this.blocks = [];
-        this.blocks.push({ID:-1,SHAPE:null}); //this should not happen normally but this way nothing breaks during dev
+        this.blocks.push({ID:-1}); //this should not happen normally but this way nothing breaks during dev
         this.modus = MODUS.NONE;
         this.interrupted = false;
         //when opening a new context the previous is stored here
@@ -74,17 +74,10 @@ export class State {
      * @param id the id of the block
      * @param shape the shape of the block
      */
-    addBlock(id,shape){
-        this.blocks.push({ID:id,SHAPE:shape})
+    addBlock(id){
+        this.blocks.push({ID:id})
     }
 
-    /**
-     * return the type of the last added block
-     * @returns {string}
-     */
-    getFirstBlockType(){
-        return this.blocks[0].SHAPE;
-    }
 
     /**
      * return the id of the last added block
@@ -94,13 +87,6 @@ export class State {
         return this.blocks[0].ID;
     }
 
-    /**
-     * return the type of the last added block
-     * @returns {string}
-     */
-    getLastBlockType(){
-        return this.blocks[this.blocks.length-1].SHAPE;
-    }
 
     /**
      * return the id of the last added block
