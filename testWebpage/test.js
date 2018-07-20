@@ -3,7 +3,7 @@ import {scratchify} from './../webtools/scratchify.js';
 import {parseTextToXMLWithWarnings} from './../parser/parserUtils.js'
 
 import ScratchBlocks from 'scratch-blocks';
-import {createWorkspace, fitBlocks} from "../webtools/scratchify";
+import {createWorkspace, fitBlocks,DEFAULT_PROPERTIES} from "../webtools/scratchify";
 import parseTextToXML from "../parser/parserUtils";
 
 import generateText from "../generator/generator"
@@ -256,7 +256,7 @@ function makeTable(codeArray,title=null){
                 console.log(err);
             }
         }
-        fitBlocks(workspace, wid);
+        fitBlocks(workspace, wid,DEFAULT_PROPERTIES);
     }
 }
 
