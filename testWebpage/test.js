@@ -12,7 +12,7 @@ let workspaceCounter =0;
 
 $(document).ready(function() {
     //scratchify('.scratch');
-    /*makeTable(['say "hello"','move {10} steps','x {', 'x |'], "a test");
+    makeTable(['say "hello"','move {10} steps','x {', 'x |'], "a test");
     makeTable(("move {10} steps;" +
         "turn right {15} degrees;"+
         "turn clockwise {15} degrees;"+
@@ -198,12 +198,12 @@ $(document).ready(function() {
         "set [pitchX] effect to {100}::sound;" +
         "change [pitch] effect by {10};" +
         "set [pitch] effect to {100};"+
-        "move {10} steps ::custom").split(";"), "same text blocks"); */
+        "move {10} steps ::custom").split(";"), "same text blocks");
     makeTable(("this is a custom block {1} \"a\" <>;" +
         "(a::custom);" +
         "<b::custom>;" +
         "define (a) <b>").split(";"), "custom blocks");
-    /*makeTable(["|comment|",
+    makeTable(["|comment|",
         "(x |x comment|)",
         "block |x comment|",
         "|comment| ; block",
@@ -214,7 +214,7 @@ $(document).ready(function() {
     "bla;\n" +
     "end;\n" +
     "bla",
-    ], "warnings"); */
+    ], "warnings");
 
     //makeTable(("").split(";"), "");
     //
