@@ -11,7 +11,8 @@ The javascript file `ScratchLN.js` can be found in the `dist` folder.
 It is explained below how to use it.
 
 Scratch 3.0 needs the files inside `static/blocks-media` to render the greenflag,arrows, etc correctly. 
-It must be placed in the root directory of the webserver. (Later, I will add an option to set the location see issue #35) 
+Therefore, the media property must be set correctly, see below.  
+ 
 
 ### Basic `scratchify`
 This the typical file where you have to call yourself when scratchify will run. 
