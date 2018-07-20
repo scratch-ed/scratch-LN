@@ -3,15 +3,27 @@ import {scratchify} from './../webtools/scratchify.js';
 import {parseTextToXMLWithWarnings} from './../parser/parserUtils.js'
 
 import ScratchBlocks from 'scratch-blocks';
-import {createWorkspace, fitBlocks} from "../webtools/scratchify";
+import {createWorkspace, fitBlocks,DEFAULT_PROPERTIES} from "../webtools/scratchify";
 import parseTextToXML from "../parser/parserUtils";
+
+import generateText from "../generator/generator"
 
 let workspaceCounter =0;
 
 $(document).ready(function() {
+    //scratchify('.scratch');
     makeTable(['say "hello"','move {10} steps','x {', 'x |'], "a test");
     makeTable(("move {10} steps;" +
+        "turn right {15} degrees;"+
+        "turn clockwise {15} degrees;"+
+        "turn \u21BB {15} degrees;"+
         "turn cw {15} degrees;" +
+        "turn left {15} degrees;"+
+        "turn ccw {15} degrees;"+
+        "turn counterclockwise {15} degrees;"+
+        "turn anticlockwise {15} degrees;"+
+        "turn acw {15} degrees;"+
+        "turn \u21BA {15} degrees;"+
         "turn ccw {15} degrees;" +
         "point in direction {90};" +
         "point towards [mouse-pointer];" +
@@ -28,7 +40,12 @@ $(document).ready(function() {
         "x position;" +
         "y position;" +
         "direction;").split(";"), "Motion");
-    makeTable(("show;" +
+    makeTable((
+        "say \"hello\";"+
+        "say \"hello\" for {2} seconds;"+
+        "think \"hello\";"+
+        "think \"hello\" for {2} seconds;"+
+        "show;" +
         "hide;" +
         "switch costume to [costume 1];" +
         "next costume;" +
@@ -42,7 +59,9 @@ $(document).ready(function() {
         "go [forward] {1} layers;" +
         "costume [number];" +
         "backdrop [number];" +
-        "size").split(";"), "Looks");
+        "size;"+
+        "clear graphic effects;"+
+        "set size to {100} %").split(";"), "Looks");
     makeTable(("start sound [1];" +
         "play sound [1] until done;" +
         "stop all sounds;" +
@@ -61,10 +80,16 @@ $(document).ready(function() {
         "volume;" +
         "tempo").split(";"), "Sounds");
     makeTable(("when greenflag clicked;" +
+        "when gf clicked;"+
+        "when green flag clicked;"+
+        "when \u2691 clicked;"+
+        "when flag clicked;"+
         "when [space] key pressed;" +
         "when this sprite clicked;" +
         "when backdrop switches to [backdrop 1];" +
         "when [timer] \\> {10};" +
+        "when [timer] gt {10};" +
+        "when [timer] greater than {10};" +
         "when I receive [message1];" +
         "broadcast [message1];" +
         "broadcast [message1] and wait" +
@@ -94,11 +119,16 @@ $(document).ready(function() {
         "repeat {10};block;end;block",
     ], "Control: C-Blocks");
     makeTable(("touching [mouse-pointer]?;" +
+        "touching [mouse-pointer];" +
         "touching color {#123456} ?;" +
+        "touching color {#123456} ;" +
         "color {#123456} is touching {#123456} ?;" +
+        "color {#123456} is touching {#123456} ;" +
         "distance to [mouse-pounter];" +
         "key [space ] pressed ?;" +
+        "key [space ] pressed ;" +
         "mouse down?;" +
+        "mouse down;" +
         "mouse x;" +
         "mouse y;" +
         "set drag mode [draggable];" +
@@ -107,14 +137,21 @@ $(document).ready(function() {
         "reset timer;" +
         " [x position] of [Sprite1];" +
         "current [year];" +
-        "days since 2000").split(";"), "Sensing");
+        "days since 2000;"+
+        "username;"+
+        "answer;"+
+        "ask \"what is your favorite muffin?\" and wait").split(";"), "Sensing");
     makeTable(("{1} + {2};" +
         "{1} - {2};" +
         "{1} * {2};" +
         "{1} / {2};" +
         "pick random {1} to {10};" +
         "{1} \\< {2};" +
+        "{1} lt {2};"+
+        "{1} less than {2};"+
         "{1} \\> {2};" +
+        "{1} gt {2};"+
+        "{1} greater than {2};"+
         "{1} = {2};" +
         "<> and <>;" +
         "<> or <>;" +
@@ -139,7 +176,11 @@ $(document).ready(function() {
         " [lili] contains {\"thing\"}?;" +
         " say {(a list::list)};" +
         " (a list::list);" +
-        " (nolist);").split(";"), "Data");
+        " (nolist);"+
+        " hide list [lala];" +
+        "show list [lala];" +
+        "show variable [vivi];" +
+        "hide variable [vivi];").split(";"), "Data");
 
     makeTable(("length of {};" +
         "length of {\"fds\"};" +
@@ -156,7 +197,8 @@ $(document).ready(function() {
         "change [pitchX] effect by {10}::sound;" +
         "set [pitchX] effect to {100}::sound;" +
         "change [pitch] effect by {10};" +
-        "set [pitch] effect to {100}").split(";"), "same text blocks");
+        "set [pitch] effect to {100};"+
+        "move {10} steps ::custom").split(";"), "same text blocks");
     makeTable(("this is a custom block {1} \"a\" <>;" +
         "(a::custom);" +
         "<b::custom>;" +
@@ -167,8 +209,15 @@ $(document).ready(function() {
         "|comment| ; block",
         "block {(r |r comment|)} |block comment|"
     ], "comments");
+
+    makeTable(["forever;\n" +
+    "bla;\n" +
+    "end;\n" +
+    "bla",
+    ], "warnings");
+
     //makeTable(("").split(";"), "");
-    //scratchify('scratch',true);
+    //
     //scroll down #makeUrLifeEasy
     //window.scrollTo(0,document.body.scrollHeight);
 });
@@ -176,7 +225,7 @@ $(document).ready(function() {
 function makeTable(codeArray,title=null){
     var table = $('<table>');
     if(title){
-        table.append( '<th>' + title +'</th>' );
+        $('#tables').append("<h2 id='"+title+"'><a href='#"+title+"'>"+title+"</a></h2>");
     }
     let startCounter = workspaceCounter;
     let storage = {};
@@ -188,6 +237,7 @@ function makeTable(codeArray,title=null){
         table.append( '<tr><td>' + codeArray[i] + '</td>' +
             '<td>'+ "<div class=blocklyDiv id=" + id + "></div>"+'</td>' +
             '<td>'+JSON.stringify(ret)+'</td>' +
+            '<td id="text_'+id+'">'+""+'</td>' +
             '</tr>' );
     }
     $('#tables').append(table);
@@ -199,11 +249,14 @@ function makeTable(codeArray,title=null){
             try {
                 var dom = ScratchBlocks.Xml.textToDom(xml);
                 ScratchBlocks.Xml.domToWorkspace(dom, workspace);
+                workspace.cleanUp();
+                let text = generateText(workspace);
+                $("#text_"+wid).text(text);
             }catch(err){
                 console.log(err);
             }
         }
-        fitBlocks(workspace, wid);
+        fitBlocks(workspace, wid,DEFAULT_PROPERTIES);
     }
 }
 

@@ -4,7 +4,9 @@ import {scratchify} from './../webtools/scratchify.js';
 
 
 $(document).ready(function() {
-    scratchify();
+    scratchify(".scratch",{locale:"nl",    zoom: {
+            startScale: 0.75
+        },});
 });
 
 $(document).ready(function() {

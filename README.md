@@ -11,12 +11,10 @@ The javascript file `ScratchLN.js` can be found in the `dist` folder.
 It is explained below how to use it.
 
 Scratch 3.0 needs the files inside `static/blocks-media` to render the greenflag,arrows, etc correctly. 
-It must be placed in the root directory of the webserver. (Later, I will add an option to set the location see issue #35) 
+Therefore, the media property must be set correctly, see below.  
+ 
 
-### Basic `scratchify.js`
-This the typical file where you have to call yourself when scratchify will run. 
-You can give options to the function. Atm  this is only the 'class' of which elements need to be scratchified.
-The default class is `scratch`.
+### Basic `scratchify`
 In the header of the html file add the following.
 ```
   <script type="text/javascript" src="ScratchLN.js" charset="utf-8"></script>
@@ -45,6 +43,47 @@ pen up
 ```
 When you open the page with a browser it will be rendered as Scratchblocks.
 
+### `scratchify` with arguments
+The `scratchify`-function takes 2 arguments. First, the selector see: https://www.w3schools.com/jquery/jquery_ref_selectors.asp for all possible options.
+Second a properties object, which can overwrite the default properties of the workspace. 
+The default properties are given below.
+```
+{
+    //this is exactly the same as blockly/scratchblocks properties
+    readOnly: true,
+    toolbox: '<xml></xml>',
+    scrollbars: false,
+    trashcan: false,
+    comments: true,
+    media: '/static/blocks-media/', //location of the images, sounds, etc.
+    colours: {
+        fieldShadow: 'rgba(255, 255, 255, 1)' //workspace color
+    },
+    zoom: {
+        startScale: 0.5    //zoomlevel
+    },
+    
+    //extra locale
+    locale: "en",  //natural language of the blocks
+}
+```
+This are the properties for the workspace as defined in Scratchblocks. 
+An extra property `locale` is added, to define the language of the blocks.
+
+In html some of these properties can be overwritten, 
+namely the locale i.e. the natural language of the blocks, and  
+the scale this is the size of the blocks.
+An example:
+```
+<code class='scratch' blocks-locale="nl" blocks-scale="1">
+    say "hello"
+    say {1222};
+    say {(varie)};
+</code>
+```
+
+
+
 ## Getting Started - development
 0. open a terminal and clone this project.
 1. run `npm install`
@@ -52,8 +91,8 @@ When you open the page with a browser it will be rendered as Scratchblocks.
 3. in the webbrowser go to:
 	
 	- `localhost:8008` : live preview: debug
-	- `localhost:8008\view.html` : live preview: clean
 	- `localhost:8008\test.html` : list of text and the result
+	- `localhost:8008\blocks.html`: generates Scratch-LN text from blocks
 	- `localhost:8008\example.html`  : example exercise (teken het cdj logo)
 	- `localhost:8008\simple.html` : simple html
 
@@ -67,6 +106,7 @@ When you open the page with a browser it will be rendered as Scratchblocks.
 1. run `npm install`
 2. open `webpack.config.js`
 3. comment the first part of the export and uncomment the second part. 
+3. run `webpack`
 
 ## Authors
 

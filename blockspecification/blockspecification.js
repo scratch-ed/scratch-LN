@@ -23,7 +23,7 @@ import {CHOICE, COLOR} from "../parser/InfoLNVisitor";
 // some frequently used predicates
 
 let looksSoundPredicate = function (ctx, visitor) {
-    let opt = ctx.option?visitor.infoVisitor.getString(ctx.option[0]):'';
+    let opt = ctx.option ? visitor.infoVisitor.getString(ctx.option[0]) : '';
     let label = visitor.infoVisitor.getString(ctx.argument[0]);
     return (opt === 'sound') || (label === "pan left/right" || label === 'pitch');
 };
@@ -152,7 +152,7 @@ export const blockspecifications = [
             "converter": universalBlockConverter
         },
         {
-            "template": "%1 < %2",
+            "template": ["%1 lt %2", "%1 < %2", "%1 less than %2"],
             "description": {
                 "type": "operator_lt",
                 "args": [{"type": "input_value", "name": "OPERAND1"}, {"type": "input_value", "name": "OPERAND2"}],
@@ -170,7 +170,7 @@ export const blockspecifications = [
             "converter": universalBlockConverter
         },
         {
-            "template": "%1 > %2",
+            "template": ["%1 gt %2", "%1 > %2", "%1 greater than %2"],
             "description": {
                 "type": "operator_gt",
                 "args": [{"type": "input_value", "name": "OPERAND1"}, {"type": "input_value", "name": "OPERAND2"}],
@@ -280,7 +280,7 @@ export const blockspecifications = [
         },
 //=== sensing ===============================================================
         {
-            "template": "touching %1?",
+            "template": ["touching %1?", "touching %1"],
             "description": {
                 "type": "sensing_touchingobject",
                 "args": [{"type": "input_value", "name": "TOUCHINGOBJECTMENU", "menu": "sensing_touchingobjectmenu"}],
@@ -289,7 +289,7 @@ export const blockspecifications = [
             "converter": universalBlockConverter
         },
         {
-            "template": "touching color %1?",
+            "template": ["touching color %1?", "touching color %1"],
             "description": {
                 "type": "sensing_touchingcolor",
                 "args": [{"type": "input_value", "name": "COLOR"}],
@@ -298,7 +298,7 @@ export const blockspecifications = [
             "converter": universalBlockConverter
         },
         {
-            "template": "color %1 is touching %2?",
+            "template": ["color %1 is touching %2?", "color %1 is touching %2"],
             "description": {
                 "type": "sensing_coloristouchingcolor",
                 "args": [{"type": "input_value", "name": "COLOR"}, {"type": "input_value", "name": "COLOR2"}],
@@ -330,20 +330,21 @@ export const blockspecifications = [
             "converter": universalBlockConverter
         },
         {
-            "template": "key %1 pressed?",
+            "template": ["key %1 pressed?", "key %1 pressed"],
             "description": {
                 "type": "sensing_keypressed",
                 "args": [{
-                    "type": "field_dropdown",
+                    "type": "input_value",
                     "name": "KEY_OPTION",
-                    "options": [["space", "space"], ["left arrow", "left arrow"], ["right arrow", "right arrow"], ["down arrow", "down arrow"], ["up arrow", "up arrow"], ["any", "any"], ["a", "a"], ["b", "b"], ["c", "c"], ["d", "d"], ["e", "e"], ["f", "f"], ["g", "g"], ["h", "h"], ["i", "i"], ["j", "j"], ["k", "k"], ["l", "l"], ["m", "m"], ["n", "n"], ["o", "o"], ["p", "p"], ["q", "q"], ["r", "r"], ["s", "s"], ["t", "t"], ["u", "u"], ["v", "v"], ["w", "w"], ["x", "x"], ["y", "y"], ["z", "z"], ["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"]]
+                    "options": [["space", "space"], ["left arrow", "left arrow"], ["right arrow", "right arrow"], ["down arrow", "down arrow"], ["up arrow", "up arrow"], ["any", "any"], ["a", "a"], ["b", "b"], ["c", "c"], ["d", "d"], ["e", "e"], ["f", "f"], ["g", "g"], ["h", "h"], ["i", "i"], ["j", "j"], ["k", "k"], ["l", "l"], ["m", "m"], ["n", "n"], ["o", "o"], ["p", "p"], ["q", "q"], ["r", "r"], ["s", "s"], ["t", "t"], ["u", "u"], ["v", "v"], ["w", "w"], ["x", "x"], ["y", "y"], ["z", "z"], ["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"]],
+                    "menu": "sensing_keyoptions"
                 }],
                 "shape": "booleanblock"
             },
             "converter": universalBlockConverter
         },
         {
-            "template": "mouse down?",
+            "template": ["mouse down?", "mouse down"],
             "description": {"type": "sensing_mousedown", "shape": "booleanblock"},
             "converter": universalBlockConverter
         },
@@ -448,7 +449,7 @@ export const blockspecifications = [
             "converter": universalBlockConverter
         },
         {
-            "template": ["turn cw %1 degrees", "turn right %1 degrees"],
+            "template": ["turn right %1 degrees", "turn cw %1 degrees", "turn clockwise %1 degrees", "turn \u21BB %1 degrees"],
             "description": {
                 "type": "motion_turnright",
                 "args": [{"type": "input_value", "name": "DEGREES"}],
@@ -457,7 +458,8 @@ export const blockspecifications = [
             "converter": universalBlockConverter
         },
         {
-            "template": ["turn ccw %1 degrees", "turn left %1 degrees"],
+            "template": ["turn left %1 degrees", "turn ccw %1 degrees", "turn counterclockwise %1 degrees",
+                "turn anticlockwise %1 degrees", "turn acw %1 degrees", "turn \u21BA %1 degrees",],
             "description": {
                 "type": "motion_turnleft",
                 "args": [{"type": "input_value", "name": "DEGREES"}],
@@ -537,7 +539,7 @@ export const blockspecifications = [
             "converter": universalBlockConverter
         },
         {
-            "template": ["bounce on edge","if on edge, bounce"],
+            "template": ["if on edge, bounce","bounce on edge"],
             "description": {"type": "motion_ifonedgebounce", "shape": "statement"},
             "converter": universalBlockConverter
         },
@@ -826,47 +828,8 @@ export const blockspecifications = [
             "converter": universalBlockConverter
         },
         {
-            "template": "play drum %1 for %2 beats",
-            "description": {
-                "type": "sound_playdrumforbeats",
-                "args": [{"type": "input_value", "name": "DRUM", "menu": "sound_drums_menu"}, {
-                    "type": "input_value",
-                    "name": "BEATS"
-                }],
-                "shape": "statement"
-            },
-            "converter": universalBlockConverter
-        },
-        {
-            "template": "rest for %1 beats",
-            "description": {
-                "type": "sound_restforbeats",
-                "args": [{"type": "input_value", "name": "BEATS"}],
-                "shape": "statement"
-            },
-            "converter": universalBlockConverter
-        },
-        {
-            "template": "play note %1 for %2 beats",
-            "description": {
-                "type": "sound_playnoteforbeats",
-                "args": [{"type": "input_value", "name": "NOTE"}, {"type": "input_value", "name": "BEATS"}],
-                "shape": "statement"
-            },
-            "converter": universalBlockConverter
-        },
-        {
             "template": "clear sound effects",
             "description": {"type": "sound_cleareffects", "shape": "statement"},
-            "converter": universalBlockConverter
-        },
-        {
-            "template": "set instrument to %1",
-            "description": {
-                "type": "sound_setinstrumentto",
-                "args": [{"type": "input_value", "name": "INSTRUMENT", "menu": "sound_instruments_menu"}],
-                "shape": "statement"
-            },
             "converter": universalBlockConverter
         },
         {
@@ -892,32 +855,9 @@ export const blockspecifications = [
             "description": {"type": "sound_volume", "shape": "reporterblock"},
             "converter": universalBlockConverter
         },
-        {
-            "template": "change tempo by %1",
-            "description": {
-                "type": "sound_changetempoby",
-                "args": [{"type": "input_value", "name": "TEMPO"}],
-                "shape": "statement"
-            },
-            "converter": universalBlockConverter
-        },
-        {
-            "template": "set tempo to %1 bpm",
-            "description": {
-                "type": "sound_settempotobpm",
-                "args": [{"type": "input_value", "name": "TEMPO"}],
-                "shape": "statement"
-            },
-            "converter": universalBlockConverter
-        },
-        {
-            "template": "tempo",
-            "description": {"type": "sound_tempo", "shape": "reporterblock"},
-            "converter": universalBlockConverter
-        },
         //=== events =============================================================
         {
-            "template": ["when gf clicked", "when greenflag clicked"],
+            "template": ["when gf clicked", "when greenflag clicked", "when green flag clicked", "when \u2691 clicked", "when flag clicked",],
             "description": {"type": "event_whenflagclicked", "args": [], "shape": "hatblock"},
             "converter": universalBlockConverter
         },
@@ -936,7 +876,7 @@ export const blockspecifications = [
             "converter": universalBlockConverter
         },
         {
-            "template": "when %1 \\> %2",
+            "template": ["when %1 gt %2", "when %1 greater than %2", "when %1 > %2"],
             "description": {
                 "type": "event_whengreaterthan",
                 "args": [{
@@ -981,8 +921,7 @@ export const blockspecifications = [
         {
             "template": "set %1 effect to %2",
             "description": {
-                "type"
-                    : "looks_seteffectto",
+                "type": "looks_seteffectto",
                 "args": [{
                     "type": "field_dropdown",
                     "name": "EFFECT",
@@ -1038,7 +977,7 @@ export const blockspecifications = [
             "converter": universalBlockConverter
         },
         {
-            "template": "%1 contains %2?",
+            "template": ["%1 contains %2?", "%1 contains %2"],
             "description": {
                 "type": "data_listcontainsitem",
                 "args": [{"type": "field_variable", "name": "LIST", "variabletypes": ["list"]}, {
@@ -1051,7 +990,7 @@ export const blockspecifications = [
             "predicate": listOperatorPredicate
         },
         {
-            "template": "%1 contains %2?",
+            "template": ["%1 contains %2?", "%1 contains %2"],
             "description": {
                 "type": "operator_contains",
                 "args": [{"type": "input_value", "name": "STRING1"}, {"type": "input_value", "name": "STRING2"}],
@@ -1068,12 +1007,12 @@ export const blockspecifications = [
                     "name": "PROPERTY",
                     "options": [["x position", "x position"], ["y position", "y position"], ["direction", "direction"], ["costume #", "costume #"], ["costume name", "costume name"], ["size", "size"], ["volume", "volume"], ["backdrop #", "backdrop #"], ["backdrop name", "backdrop name"]],
 
-                }, {"type": "input_value", "name": "OBJECT",'menu': 'sensing_of_object_menu'}],
+                }, {"type": "input_value", "name": "OBJECT", 'menu': 'sensing_of_object_menu'}],
                 "shape": "booleans"
             },
             "converter": function (ctx, visitor) {
                 //something was weird here...
-                addType(ctx,visitor,'sensing_of')
+                addType(ctx, visitor, 'sensing_of')
                 visitor.xml = visitor.xml.ele('field', {
                     'name': 'PROPERTY'
                 }, visitor.infoVisitor.getString(ctx.argument[0])); //'all around' //this is ugly because 'option' is the only one that returns something... and there is no check whether the option is existing and valid
@@ -1157,7 +1096,24 @@ export const blockspecifications = [
             },
             "converter": variableBlockConverter
         },
-
+        {
+            "template": "show variable %1",
+            "description": {
+                "type": "data_showvariable",
+                "args": [{"type": "field_variable","name": "VARIABLE"}],
+                "shape": "statement"
+            },
+            "converter": variableBlockConverter
+        },
+        {
+            "template": "hide variable %1",
+            "description": {
+                "type": "data_hidevariable",
+                "args": [{"type": "field_variable","name": "VARIABLE"}],
+                "shape": "statement"
+            },
+            "converter": variableBlockConverter
+        },
         {
             "template": "add %1 to %2",
             "description": {

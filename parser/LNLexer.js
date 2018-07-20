@@ -103,7 +103,7 @@ export const StringLiteral = createToken({
 export const NumberLiteral = createToken({
     name: "NumberLiteral",
     pattern: /-?(\d+)(\.\d+)?/,
-    categories: [Literal],
+    categories: [Literal,Label],
     longer_alt: Label,
 });
 

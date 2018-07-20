@@ -7,15 +7,18 @@ import {MEDIA} from "../config/config";
 let workspace = null;
 let editor;
 let warnings;
+let generatorField;
 
 
 window.onload = function () {
+    //ScratchBlocks.ScratchMsgs.setLocale("nl");
     //scratch-blocks
     workspace = ScratchBlocks.inject('blocklyDiv', {
         toolbox: '<xml></xml>',
         'scrollbars': true,
         'trashcan': false,
         'readOnly': false,
+        'comments': true,
         media: MEDIA, //flag
         colours: {
             workspace: '#E0FFFF', //'#e0ffe9',
@@ -35,11 +38,12 @@ window.onload = function () {
     //text
     editor = document.getElementById('editor');
     editor.addEventListener('input', updateWorkspace);
-    editor.value =  ''
+    editor.value =  '(mouse x::var)'
     ;
 
     warnings = document.getElementById('warnings');
 
+    generatorField = document.getElementById('generatorOutput');
 
     updateWorkspace();
 
@@ -52,13 +56,16 @@ window.onload = function () {
     document.getElementById('report').addEventListener('click', report);
     document.getElementById('stackglowon').addEventListener('click', stackGlowOn);
     document.getElementById('stackglowoff').addEventListener('click', stackGlowOff);
+    document.getElementById('translate').addEventListener('click', translate);
+    document.getElementById('generate').addEventListener('click', generateTextWorkspace);
+
 
     //resizing workspace
     //https://developers.google.com/blockly/guides/configure/web/resizable
     let blocklyDiv = document.getElementById('blocklyDiv');
     let blocklyArea = document.getElementById('blocklyArea');
     blocklyDiv.style.width = '50%';
-    blocklyDiv.style.height = '90%';
+    blocklyDiv.style.height = '80%';
     ScratchBlocks.svgResize(workspace);
 
     //addBlock('looks_say','aaa',1,1);
@@ -74,7 +81,8 @@ window.onload = function () {
 };
 
 function generateTextWorkspace() {
-    generateText(workspace);
+    let text = generateText(workspace);
+    generatorField.value = text;
 }
 
 
@@ -99,6 +107,13 @@ function updateWorkspace() {
 
     editor.focus();
     //console.log(getWorkspaceXML())
+
+    //let topBlocks=workspace.getTopBlocks(true);
+    //if(topBlocks[0]) {
+    //    let x = topBlocks[0].startHat_;
+    //    console.log(x)
+    //}
+    generateTextWorkspace();
 }
 
 
@@ -221,4 +236,18 @@ function getWorkspaceXML() {
     let dom = ScratchBlocks.Xml.workspaceToDom(workspace);
     let text = new XMLSerializer().serializeToString(dom);
     return text
+}
+
+function translate() {
+    let locale = document.getElementById('locale').value;
+    setLocale(locale);
+}
+
+//copy paste from test in scratchblocks.
+function setLocale(locale) {
+    workspace.getFlyout().setRecyclingEnabled(false);
+    let xml = ScratchBlocks.Xml.workspaceToDom(workspace);
+    ScratchBlocks.ScratchMsgs.setLocale(locale);
+    ScratchBlocks.Xml.clearWorkspaceAndLoadFromXml(xml, workspace);
+    workspace.getFlyout().setRecyclingEnabled(true);
 }

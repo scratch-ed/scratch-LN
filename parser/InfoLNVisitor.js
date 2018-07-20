@@ -243,7 +243,7 @@ export class InfoLNVisitor extends BaseCstVisitor {
 
 
     unescapeComment(text) {
-        return text.replace(/\\\|/g, '|').replace(/^\|(.*(?=\|$))\|$/, '$1');
+        return text.replace(/\\([^])/g, '$1').replace(/^\|(.*(?=\|$))\|$/, '$1');
     }
 
     annotations(ctx) {
@@ -309,11 +309,11 @@ export class InfoLNVisitor extends BaseCstVisitor {
     }
 
     unescapeStringLiteral(text) {
-        return text.replace(/\\"/g, '"').replace(/^"(.*(?="$))"$/, '$1');
+        return text.replace(/\\([^])/g, '$1').replace(/^"(.*(?="$))"$/, '$1');
     }
 
     unescapeChoiceLiteral(text) {
-        return text.replace(/\\\[/g, '"').replace(/^\[(.*(?=\]$))\]$/, '$1');
+        return text.replace(/\\([^])/g, '$1').replace(/^\[(.*(?=\]$))\]$/, '$1');
     }
 
     /**

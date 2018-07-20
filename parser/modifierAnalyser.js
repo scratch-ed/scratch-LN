@@ -66,12 +66,27 @@ class customModifierExtractor extends ModifierExtractor {
     }
 }
 
+class varModifierExtractor extends ModifierExtractor {
+    containsKey(modifierToken) {
+        return modifierToken.image.match(/::user-defined/i);
+    }
+
+    extractParameters(modifierToken) {
+        return {}
+    }
+
+    getName() {
+        return "user"
+    }
+}
+
 export class ModifierAnalyser {
     constructor(ctx, informationVisitor) {
         this.infoVisitor = informationVisitor;
         this.modifierExtractors = [];
         this.modifierExtractors.push(new listModifierExtractor());
         this.modifierExtractors.push(new customModifierExtractor());
+        this.modifierExtractors.push(new varModifierExtractor());
     }
 
     getMods(modifierList) {

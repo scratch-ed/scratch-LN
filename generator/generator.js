@@ -12,9 +12,6 @@ import {blockspecifications} from "../blockspecification/blockspecification";
 
 export default function generateText(workspace) {
     let u = ScratchBlocks.text.workspaceToCode(workspace);
-    console.log('_____________');
-    console.log(u);
-    console.log('_____________');
     return u
 }
 
@@ -72,37 +69,41 @@ ScratchBlocks.text['event_whenflagclicked'] = function (block) {
 
 ScratchBlocks.text['motion_movesteps'] = function (block) {
     let value_name = ScratchBlocks.text.valueToCode(block, 'STEPS', ScratchBlocks.text.ORDER_NONE);
-    return 'move %1 steps;\n'.format('{' + value_name + '}') + ScratchBlocks.text.getNextCode(block);
+    return 'move %1 steps;\n'.format(value_name) + ScratchBlocks.text.getNextCode(block);
 };
 //====examples
 
+function surroundWithCurlyBrackets(text) {
+    return "{"+text+"}";
+}
+
 //=========== arguments =================
 ScratchBlocks.text['math_number'] = function (block) {
-    return [block.getFieldValue('NUM'), ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+    return [surroundWithCurlyBrackets(block.getFieldValue('NUM')), ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
 
 ScratchBlocks.text['math_integer'] = function (block) {
-    return [block.getFieldValue('NUM'), ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+    return [surroundWithCurlyBrackets(block.getFieldValue('NUM')), ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
 
 ScratchBlocks.text['math_positive_number'] = function (block) {
-    return [block.getFieldValue('NUM'), ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+    return [surroundWithCurlyBrackets(block.getFieldValue('NUM')), ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
 
 ScratchBlocks.text['math_whole_number'] = function (block) {
-    return [block.getFieldValue('NUM'), ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+    return [surroundWithCurlyBrackets(block.getFieldValue('NUM')), ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+};
+
+ScratchBlocks.text['math_angle'] = function (block) {
+    return [surroundWithCurlyBrackets(block.getFieldValue('NUM')), ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
 
 ScratchBlocks.text['colour_picker'] = function (block) {
     return [block.getFieldValue('COLOUR'), ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
 
-ScratchBlocks.text['math_angle'] = function (block) {
-    return [block.getFieldValue('NUM'), ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
-};
-
 ScratchBlocks.text['text'] = function (block) {
-    return [block.getFieldValue('TEXT'), ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+    return ['"'+block.getFieldValue('TEXT')+'"', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
 
 ScratchBlocks.text['data_variable'] = function (block) {
@@ -139,34 +140,34 @@ ScratchBlocks.text['event_broadcast_menu'] = function (block) {
 //========= controls =====================
 
 ScratchBlocks.text['control_forever'] = function (block) {
-    let statements = ScratchBlocks.text.statementToCode(block, 'SUBSTACK'); //todo: this automaticly intendents, is this a problem?
+    let statements = ScratchBlocks.text.statementToCode(block, 'SUBSTACK');
     return 'forever\n' + statements;
 
 };
 
 ScratchBlocks.text['control_repeat'] = function (block) {
-    let statements = ScratchBlocks.text.statementToCode(block, 'SUBSTACK'); //todo: this automaticly intendents, is this a problem?
+    let statements = ScratchBlocks.text.statementToCode(block, 'SUBSTACK');
     let nr = ScratchBlocks.text.valueToCode(block, 'TIMES', ScratchBlocks.text.ORDER_NONE);
-    return 'repeat {' + nr + '}\n' + statements + 'end\n' + ScratchBlocks.text.getNextCode(block);
+    return 'repeat ' + nr + '\n' + statements + 'end\n' + ScratchBlocks.text.getNextCode(block);
 };
 
 ScratchBlocks.text['control_repeat_until'] = function (block) {
-    let statements = ScratchBlocks.text.statementToCode(block, 'SUBSTACK'); //todo: this automaticly intendents, is this a problem?
+    let statements = ScratchBlocks.text.statementToCode(block, 'SUBSTACK');
     let nr = ScratchBlocks.text.valueToCode(block, 'CONDITION', ScratchBlocks.text.ORDER_NONE);
     return 'repeat until ' + nr + '\n' + statements + 'end\n' + ScratchBlocks.text.getNextCode(block);
 };
 
 ScratchBlocks.text['control_if'] = function (block) {
-    let statements = ScratchBlocks.text.statementToCode(block, 'SUBSTACK'); //todo: this automaticly intendents, is this a problem?
+    let statements = ScratchBlocks.text.statementToCode(block, 'SUBSTACK');
     let nr = ScratchBlocks.text.valueToCode(block, 'CONDITION', ScratchBlocks.text.ORDER_NONE);
     return 'if {' + nr + '}\n' + statements + 'end\n' + ScratchBlocks.text.getNextCode(block);
 };
 
 ScratchBlocks.text['control_if_else'] = function (block) {
-    let statements = ScratchBlocks.text.statementToCode(block, 'SUBSTACK'); //todo: this automaticly intendents, is this a problem?
-    let statements2 = ScratchBlocks.text.statementToCode(block, 'SUBSTACK2'); //todo: this automaticly intendents, is this a problem?
+    let statements = ScratchBlocks.text.statementToCode(block, 'SUBSTACK');
+    let statements2 = ScratchBlocks.text.statementToCode(block, 'SUBSTACK2');
     let nr = ScratchBlocks.text.valueToCode(block, 'CONDITION', ScratchBlocks.text.ORDER_NONE);
-    return 'if {' + nr + '}\n' + statements + 'else\n' + statements2 + 'end\n' + ScratchBlocks.text.getNextCode(block);
+    return 'if ' + nr + '\n' + statements + 'else\n' + statements2 + 'end\n' + ScratchBlocks.text.getNextCode(block);
 };
 
 //========================================
@@ -174,15 +175,49 @@ ScratchBlocks.text['control_if_else'] = function (block) {
 //======= custom blocks ==================
 ScratchBlocks.text['procedures_call'] = function (block) {
     let procCode = block.getProcCode();
-    //todo
-    return procCode;
+    //todo <> is not a child ..., so find a better way to handle this
+    console.log(block);
+    let args=block.childBlocks_;
+    let textargs = [];
+    for(let i=0; i<args.length;i++){
+        textargs.push(ScratchBlocks.text.blockToCode(args[i])[0]);
+    }
+    let ids=block.argumentIds_;
+    console.log(textargs,args,ids);
+    return formatPlaceholder(procCode,textargs,ids) + '\n' + ScratchBlocks.text.getNextCode(block);
 };
 
+function formatPlaceholder(text,args,ids) {
+    let argscounter=0;
+    let idcounter = 0;
+    return text.replace(/%([snb])/g, function (x, m) {
+        //console.log(args[argscounter],ids[idcounter]);
+        //if(args[argscounter]==ids[idcounter]) {
+            return args[argscounter++];
+
+        /*    idcounter++;
+        }else{
+            return "<>"
+        }*/
+    });
+};
 
 ScratchBlocks.text['procedures_definition'] = function (block) {
-    //let procCode = block.getProcCode();
-    //todo
-    return 'define ';//+procCode;
+    let prodecureblock=block.childBlocks_[0];
+    let procCode = prodecureblock.getProcCode();
+    let argumentsIds = prodecureblock.argumentIds_;
+    return 'define '+replaceArgs(procCode,argumentsIds)+'\n' + ScratchBlocks.text.getNextCode(block);
+};
+
+function replaceArgs(text,args) {
+    let c=0;
+    return text.replace(/%([snb])/g, function (x, m) {
+        if(m === 'b'){
+            return '<'+args[c++]+'>';
+        }else {
+            return '('+args[c++]+')';
+        }
+    });
 };
 //========================================
 
@@ -216,7 +251,7 @@ export function init_generator() {
                     default:
                         v = ScratchBlocks.text.valueToCode(block, args[i].name, ScratchBlocks.text.ORDER_NONE); //returns undefined if empty
                         if (!args[i].menu) {
-                            v = '{' + v + '}'; //results is {} if empty
+                            v = '' + v + ''; //results is {} if empty
                         }
                 }
                 values.push(v);
