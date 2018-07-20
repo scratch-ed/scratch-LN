@@ -38536,7 +38536,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 const LOCALE_ATTR ="blocks-locale";
-const SCALE_ATTR ="blocks-scale"
+const SCALE_ATTR ="blocks-scale";
 
 /**
  *
@@ -38555,10 +38555,16 @@ function scratchify(selector='.scratch',properties={}) {
         //create the div to inject the workspace in
         __WEBPACK_IMPORTED_MODULE_0_jquery___default()(this).parent().append(__WEBPACK_IMPORTED_MODULE_0_jquery___default()("<div class=blocklyDiv id=" + id + "></div>"));
         let extracted = {};
-        extracted.locale=__WEBPACK_IMPORTED_MODULE_0_jquery___default()(this).attr(LOCALE_ATTR);
-        extracted.zoom = {
-            startScale: __WEBPACK_IMPORTED_MODULE_0_jquery___default()(this).attr(SCALE_ATTR)
-        };
+        let locale = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(this).attr(LOCALE_ATTR);
+        if(locale) {
+            extracted.locale = locale;
+        }
+        let scale = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(this).attr(SCALE_ATTR);
+        if(scale) {
+            extracted.zoom = {
+                startScale: scale
+            };
+        }
         let prop=mergeProperties(extracted,userDefaultProperties);
         let workspace = createWorkspace(id,prop);
         //do parsing
@@ -38575,7 +38581,7 @@ function scratchify(selector='.scratch',properties={}) {
             workspace.cleanUp();
         }
         //rescale the workspace to fit to the blocks
-        fitBlocks(workspace, id);
+        fitBlocks(workspace, id,prop);
         storeWorkspace(id, workspace);
     });
 }
@@ -38647,7 +38653,7 @@ function mergeProperties(properties, defaultprops){
     return prop;
 }
 
-function fitBlocks(workspace, id) {
+function fitBlocks(workspace, id,properties) {
     let isHead = false;
     //get the topblocks, this are the beginning of stacks. they are ordered by location.
     let topBlocks=workspace.getTopBlocks(true);
@@ -38656,9 +38662,9 @@ function fitBlocks(workspace, id) {
     }
     let metrics = workspace.getMetrics(); //is not dependent on the location of the workspace
     if(isHead){
-        __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#' + id).css('height', (metrics.contentHeight + 20) + 'px');
+        __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#' + id).css('height', (metrics.contentHeight + 20*properties.zoom.startScale) + 'px');
         //translate the whole workspace (like dragging in the live view)
-        workspace.translate(5,12);
+        workspace.translate(5,20*properties.zoom.startScale);
     }else{
         __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#' + id).css('height', (metrics.contentHeight + 10) + 'px');
         workspace.translate(5,5);
