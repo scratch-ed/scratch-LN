@@ -5,7 +5,7 @@ import {MEDIA} from "../config/config";
 
 
 const LOCALE_ATTR ="blocks-locale";
-const SCALE_ATTR ="blocks-scale"
+const SCALE_ATTR ="blocks-scale";
 
 /**
  *
@@ -24,10 +24,16 @@ export function scratchify(selector='.scratch',properties={}) {
         //create the div to inject the workspace in
         $(this).parent().append($("<div class=blocklyDiv id=" + id + "></div>"));
         let extracted = {};
-        extracted.locale=$(this).attr(LOCALE_ATTR);
-        extracted.zoom = {
-            startScale: $(this).attr(SCALE_ATTR)
-        };
+        let locale = $(this).attr(LOCALE_ATTR);
+        if(locale) {
+            extracted.locale = locale;
+        }
+        let scale = $(this).attr(SCALE_ATTR);
+        if(scale) {
+            extracted.zoom = {
+                startScale: scale
+            };
+        }
         let prop=mergeProperties(extracted,userDefaultProperties);
         let workspace = createWorkspace(id,prop);
         //do parsing
@@ -44,7 +50,7 @@ export function scratchify(selector='.scratch',properties={}) {
             workspace.cleanUp();
         }
         //rescale the workspace to fit to the blocks
-        fitBlocks(workspace, id);
+        fitBlocks(workspace, id,prop);
         storeWorkspace(id, workspace);
     });
 }
@@ -114,7 +120,7 @@ function mergeProperties(properties, defaultprops){
     return prop;
 }
 
-export function fitBlocks(workspace, id) {
+export function fitBlocks(workspace, id,properties) {
     let isHead = false;
     //get the topblocks, this are the beginning of stacks. they are ordered by location.
     let topBlocks=workspace.getTopBlocks(true);
@@ -123,9 +129,9 @@ export function fitBlocks(workspace, id) {
     }
     let metrics = workspace.getMetrics(); //is not dependent on the location of the workspace
     if(isHead){
-        $('#' + id).css('height', (metrics.contentHeight + 20) + 'px');
+        $('#' + id).css('height', (metrics.contentHeight + 20*properties.zoom.startScale) + 'px');
         //translate the whole workspace (like dragging in the live view)
-        workspace.translate(5,12);
+        workspace.translate(5,20*properties.zoom.startScale);
     }else{
         $('#' + id).css('height', (metrics.contentHeight + 10) + 'px');
         workspace.translate(5,5);

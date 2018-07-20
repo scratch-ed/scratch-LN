@@ -1,11 +1,14 @@
 # v0.3.0
-- update block specifications
+- update block specifications: remove and add some blocks + add alternatives
 - add locale
 - add warnings
 - change `scratchify` arguments
     - selecter instead of class
     - add workspace properties
     - locale
+    - scale
+- some improvements to generators 
+- modifier for built-in variable vs. user-defined variable with the same name  
 
 # v0.2.0
 - arguments of custom block are now generated correctly

@@ -15,9 +15,6 @@ Therefore, the media property must be set correctly, see below.
  
 
 ### Basic `scratchify`
-This the typical file where you have to call yourself when scratchify will run. 
-You can give options to the function. Atm  this is only the 'class' of which elements need to be scratchified.
-The default class is `scratch`.
 In the header of the html file add the following.
 ```
   <script type="text/javascript" src="ScratchLN.js" charset="utf-8"></script>
@@ -46,7 +43,7 @@ pen up
 ```
 When you open the page with a browser it will be rendered as Scratchblocks.
 
-### Modifications `scratchify` with arguments
+### `scratchify` with arguments
 The `scratchify`-function takes 2 arguments. First, the selector see: https://www.w3schools.com/jquery/jquery_ref_selectors.asp for all possible options.
 Second a properties object, which can overwrite the default properties of the workspace. 
 The default properties are given below.
@@ -94,8 +91,8 @@ An example:
 3. in the webbrowser go to:
 	
 	- `localhost:8008` : live preview: debug
-	- `localhost:8008\view.html` : live preview: clean
 	- `localhost:8008\test.html` : list of text and the result
+	- `localhost:8008\blocks.html`: generates Scratch-LN text from blocks
 	- `localhost:8008\example.html`  : example exercise (teken het cdj logo)
 	- `localhost:8008\simple.html` : simple html
 
@@ -109,6 +106,7 @@ An example:
 1. run `npm install`
 2. open `webpack.config.js`
 3. comment the first part of the export and uncomment the second part. 
+3. run `webpack`
 
 ## Authors
 
