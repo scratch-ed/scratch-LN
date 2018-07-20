@@ -11784,7 +11784,7 @@ const DEFAULT_PROPERTIES = {
     //extra locale
     locale: "en",
 };
-/* unused harmony export DEFAULT_PROPERTIES */
+/* harmony export (immutable) */ __webpack_exports__["h"] = DEFAULT_PROPERTIES;
 
 
 function createWorkspace(workspaceName,properties=DEFAULT_PROPERTIES) {

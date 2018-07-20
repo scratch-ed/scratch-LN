@@ -11784,7 +11784,7 @@ const DEFAULT_PROPERTIES = {
     //extra locale
     locale: "en",
 };
-/* unused harmony export DEFAULT_PROPERTIES */
+/* harmony export (immutable) */ __webpack_exports__["h"] = DEFAULT_PROPERTIES;
 
 
 function createWorkspace(workspaceName,properties=DEFAULT_PROPERTIES) {
@@ -39240,7 +39240,7 @@ function makeTable(codeArray,title=null){
                 console.log(err);
             }
         }
-        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_4__webtools_scratchify__["g" /* fitBlocks */])(workspace, wid);
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_4__webtools_scratchify__["g" /* fitBlocks */])(workspace, wid,__WEBPACK_IMPORTED_MODULE_4__webtools_scratchify__["h" /* DEFAULT_PROPERTIES */]);
     }
 }
 
