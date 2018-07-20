@@ -57,7 +57,7 @@ window.onload = function () {
     document.getElementById('report').addEventListener('click', report);
     document.getElementById('stackglowon').addEventListener('click', stackGlowOn);
     document.getElementById('stackglowoff').addEventListener('click', stackGlowOff);
-    //document.getElementById('translate').addEventListener('click', translate);
+    document.getElementById('translate').addEventListener('click', translate);
     //document.getElementById('generate').addEventListener('click', generateTextWorkspace);
 
 
