@@ -171,6 +171,9 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
                 this.createVariableBlock(ctx, description);
 
             } else if (this.isBooleanBlock(ctx, modifiers)) {
+                if(!modifiers.custom){
+                    this.warningsKeeper.add(ctx, "unkown boolean block, add ::custom if you want a custom block")
+                }
                 this.createCustomBooleanBlock(ctx, description);
 
             } else {
@@ -211,7 +214,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
 
     isBuildInBlock(description, ctx, modifiers) {
-        return description in blocks && !modifiers.custom;
+        return !modifiers.user && !modifiers.custom && description in blocks;
     }
 
     isVariableBlock(ctx, modifiers) {
@@ -333,17 +336,19 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     */
 
     ifelse(ctx) {
+        let blockid = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "ifelse"));
         if (!ctx.Else) {
             this.xml = this.xml.ele('block', {
                 'type': 'control_if',
-                'id': this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "ifelse"))
+                'id': blockid,
             });
         } else {
             this.xml = this.xml.ele('block', {
                 'type': 'control_if_else',
-                'id': this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "ifelse"))
+                'id': blockid,
             });
         }
+        this.state.addBlock(blockid);
         this.xml = this.xml.ele('value', {
             'name': 'CONDITION'
         });
@@ -367,12 +372,14 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     forever(ctx) {
+        let blockid = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "forever"));
         this.xml = this.xml.ele('block', {
             'type': 'control_forever',
-            'id': this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "forever")),
+            'id': blockid,
         }).ele('statement ', {
             'name': 'SUBSTACK'
         });
+        this.state.addBlock(blockid);
         this.visit(ctx.clause);
         this.xml = this.xml.up(); //close statement (stack will close block)
         this.visit(ctx.annotations);
@@ -381,12 +388,14 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     repeat(ctx) {
+        let blockid = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "repeat"));
         this.xml = this.xml.ele('block', {
             'type': 'control_repeat',
-            'id': this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "repeat")),
+            'id': blockid,
         }).ele('value', {
             'name': 'TIMES'
         });
+        this.state.addBlock(blockid);
         this.visit(ctx.argument);
         this.xml = this.xml.up().ele('statement ', {
             'name': 'SUBSTACK'
@@ -397,12 +406,14 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     repeatuntil(ctx) {
+        let blockid = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "repeatuntil"));
         this.xml = this.xml.ele('block', {
             'type': 'control_repeat_until',
-            'id': this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "repeatuntil")),
+            'id': blockid,
         }).ele('value', {
             'name': 'CONDITION'
         });
+        this.state.addBlock(blockid);
         this.visit(ctx.condition);
         this.xml = this.xml.up().ele('statement ', {
             'name': 'SUBSTACK'
@@ -530,7 +541,8 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         }).ele('field', {
             'name': 'VARIABLE',
             'id': varID,
-        }, description).up()
+        }, description).up();
+        this.state.addBlock(blockID);
     }
 
     createListBlock(ctx, description) {
@@ -542,7 +554,8 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         }).ele('field', {
             'name': 'LIST',
             'id': varID,
-        }, description).up()
+        }, description).up();
+        this.state.addBlock(blockID);
     }
 
     createCustomReporterBlock(ctx, description) {
@@ -554,7 +567,8 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         }).ele('field', {
             'name': 'VALUE',
             'id': varID,
-        }, description).up()
+        }, description).up();
+        this.state.addBlock(blockID);
     }
 
     createCustomBooleanBlock(ctx, description) {
@@ -566,7 +580,8 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         }).ele('field', {
             'name': 'VALUE',
             'id': varID,
-        }, description).up()
+        }, description).up();
+        this.state.addBlock(blockID);
     }
 
 }

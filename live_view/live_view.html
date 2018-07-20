@@ -1,38 +1,42 @@
 <html>
-    <head>
-        <meta charset="utf-8">
-        <script type="text/javascript" src="live_view.js" charset="utf-8"></script>
-        <style type="text/css">
-        #editor{
+<head>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="live_view.js" charset="utf-8"></script>
+    <style type="text/css">
+        #editor {
             width: 45%;
-            height: 80%;
-            font-size: 25px; 
-            resize: none; 
+            height: 73%;
+            font-size: 25px;
+            resize: none;
             border: 1px solid;
             padding: 10px;
             display: block;
         }
 
-        #warnings{
-            width: 45%;
-            height: 80%;
+        #warnings {
+            width: 100%;
+            height: 100%;
         }
 
         #editor:focus {
             border: 1px solid #51DFE3;
         }
-        #control{
+
+        #control {
             overflow: left;
-        }    
-        #blocklyDiv{
+        }
+
+        #blocklyDiv {
             float: left;
             margin-right: 2%;
         }
+
         mark {
-              border-radius: 3px;
-              /*color: transparent;*/
-              background-color: #b1d5e5;
-            }
+            border-radius: 3px;
+            /*color: transparent;*/
+            background-color: #b1d5e5;
+        }
+
         .highlights {
             /*color: transparent;*/
             /*position: absolute;*/
@@ -44,40 +48,102 @@
             padding: 10px;*/
             display: block;
         }
+
         .container {
-              /*display: block;
-              margin: 0 auto;
-              transform: translateZ(0);
-              -webkit-text-size-adjust: none;*/
-            }
-        </style>
-        
-    </head>
-    <body>
-        
+            /*display: block;
+            margin: 0 auto;
+            transform: translateZ(0);
+            -webkit-text-size-adjust: none;*/
+        }
+
+        #errorOutput{
+            width: 45%;
+            height: 20%;
+            display: block;
+            float: left;
+        }
+
+        #generatorControl{
+            display: block;
+            float: left;
+            width: 45%;
+            height: 20%;
+            margin-left: 7%;
+        }
+
+        #generatorOutput{
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+
+</head>
+<body>
+
         <div id="blocklyDiv"></div>
 
         <div id="control">
             <p>
-            <input id="blockid"/>
-            <button id="glowon">glow on</button> 
-            <button id="glowoff">glow off</button>
-            <button id="stackglowon">stack glow on</button> 
-            <button id="stackglowoff">stack glow off</button>
-            <button id="report">report</button>
-    		</p>
+                <input id="blockid"/>
+                <button id="glowon">glow on</button>
+                <button id="glowoff">glow off</button>
+                <button id="stackglowon">stack glow on</button>
+                <button id="stackglowoff">stack glow off</button>
+                <button id="report">report</button>
+            </p>
 
+            <select id="locale">
+                <option value="en">English</option>
+                <option value="nl">Dutch</option>
+
+                <option value="ca">Catalan</option>
+                <option value="cs">Czech</option>
+                <option value="da">Danish</option>
+                <option value="fi">Finnish</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <option value="el">Greek</option>
+                <option value="he">Hebrew</option>
+                <option value="hu">Hungarian</option>
+                <option value="id">Indonesian</option>
+                <option value="ga">Irish Gaelic</option>
+                <option value="it">Italian</option>
+                <option value="ja">Japanese</option>
+                <option value="ja-Hira">Japanese(Hira)</option>
+                <option value="mi">Maori</option>
+                <option value="nb">Norwegian (Bokmal)</option>
+                <option value="pt">Portuguese</option>
+                <option value="pt-br">Portuguese (Brazil)</option>
+                <option value="gd">Scottish Gaelic</option>
+                <option value="sr">Serbian</option>
+                <option value="sl">Slovenian</option>
+                <option value="es">Spanish</option>
+                <option value="es-419">Spanish (Latin America)</option>
+                <option value="sv">Swedish</option>
+                <option value="tr">Turkish</option>
+                <option value="uk">Ukranian</option>
+                <option value="vi">Vietnamese</option>
+                <option value="cy">Welsh</option>
+                <option value="zh-cn">Chinese (China)</option>
+                <option value="zh-tw">Chinese (TW)</option>
+            </select>
+            <button id="translate">translate</button>
             <button id="xmlparser">to blocks!</button>
             <button id="showexample">example</button>
 
-    		<!-- <button id="insertxml">insert xml</button>  -->
-            <div class = "container">
-            <textarea id="editor"></textarea>
-            <div class="highlights" id="highlighter"></div>
+            <!-- <button id="insertxml">insert xml</button>  -->
+            <div class="container">
+                <textarea id="editor"></textarea>
+                <div class="highlights" id="highlighter"></div>
             </div>
         </div>
 
-        <textarea id="warnings"></textarea>
-  		
-    </body>
+        <div id="errorOutput">
+            <textarea id="warnings"></textarea>
+        </div>
+        <div id="generatorControl">
+            <button id="generate">generate text</button>
+            <textarea id="generatorOutput"></textarea>
+        </div>
+</body>
 </html>

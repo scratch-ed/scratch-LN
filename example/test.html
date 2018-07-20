@@ -21,13 +21,42 @@
             }
 
             td:nth-child(1) {
+                width: 300px;
+            }
+
+            td:nth-child(4) {
                 width: 250px;
+            }
+
+            a {
+                text-decoration: none;
+                color: black;
             }
         </style>
     </head>
     <body>
         <script type="text/javascript" src="test.js" charset="utf-8"></script>
 
+<!--        <div>
+            <code class='scratch' blocks-locale="nl" blocks-scale="1">
+                say "hello"
+                say {1222};
+                say {(varie)};
+            </code>
+            <code class='scratch' blocks-locale="en" blocks-scale="0.7">
+                say "hello"
+                say {1222};
+                say {(varie)};
+            </code>
+        </div>-->
+        <div id="infotables">
+            <h1>Test of all blocks & special cases</h1>
+            <p>The first column is the input.
+                The second column is the result in Scratch 3.0 blocks.
+                The third column is the json of the object containing the errors and warnings.
+                The fourth column is generator applied to the workspace created in second column.
+            </p>
+        </div>
         <div id="tables">
 
         </div>

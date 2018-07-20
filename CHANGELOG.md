@@ -1,3 +1,15 @@
+# v0.3.0
+- update block specifications: remove and add some blocks + add alternatives
+- add locale
+- add warnings
+- change `scratchify` arguments
+    - selecter instead of class
+    - add workspace properties
+    - locale
+    - scale
+- some improvements to generators 
+- modifier for built-in variable vs. user-defined variable with the same name  
+
 # v0.2.0
 - arguments of custom block are now generated correctly
 - 'if on edge, bounce' can be used 
@@ -13,4 +25,4 @@
     - infoVisitor is responsible for all string obtaining, types, placeholders etc.
     - state keeps track of which object is being build
     - modifierAnalyser and modifierExtract provide a more generic way to deal with modifiers
-    
+- a new stack will be started when using a cap,hat, stand-alone reporter or boolean    

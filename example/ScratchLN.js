@@ -3284,7 +3284,7 @@ const StringLiteral = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrota
 const NumberLiteral = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
     name: "NumberLiteral",
     pattern: /-?(\d+)(\.\d+)?/,
-    categories: [Literal],
+    categories: [Literal,Label],
     longer_alt: Label,
 });
 /* harmony export (immutable) */ __webpack_exports__["NumberLiteral"] = NumberLiteral;
@@ -7477,11 +7477,12 @@ function universalBlockConverter(ctx, visitor, structure) {
 
 
 function addType(ctx, visitor, type) {
+    let blockid = visitor.idManager.getNextBlockID(visitor.infoVisitor.getID(ctx, "atomic"));
     visitor.xml = visitor.xml.ele('block', {
-        'id': visitor.idManager.getNextBlockID(visitor.infoVisitor.getID(ctx, "atomic")),
+        'id': blockid,
         'type': type
     });
-    //todo add to state
+    visitor.state.addBlock(blockid);
 };
 
 //=======================================================================================================================================
@@ -7497,9 +7498,11 @@ function variableBlockConverter(ctx, visitor, structure) {
     visitor.xml = visitor.xml.ele('field', {
         'name': 'VARIABLE'
     }, varble);
-    visitor.xml = visitor.xml.up().ele('value', {
-        'name': 'VALUE'
-    });
+    if(structure.args.length>1) {
+        visitor.xml = visitor.xml.up().ele('value', {
+            'name': 'VALUE'
+        });
+    }
     //the second argument.
     visitor.visit(ctx.argument[1]);
     visitor.xml = visitor.xml.up();
@@ -10093,7 +10096,7 @@ class InfoLNVisitor extends BaseCstVisitor {
 
 
     unescapeComment(text) {
-        return text.replace(/\\\|/g, '|').replace(/^\|(.*(?=\|$))\|$/, '$1');
+        return text.replace(/\\([^])/g, '$1').replace(/^\|(.*(?=\|$))\|$/, '$1');
     }
 
     annotations(ctx) {
@@ -10159,11 +10162,11 @@ class InfoLNVisitor extends BaseCstVisitor {
     }
 
     unescapeStringLiteral(text) {
-        return text.replace(/\\"/g, '"').replace(/^"(.*(?="$))"$/, '$1');
+        return text.replace(/\\([^])/g, '$1').replace(/^"(.*(?="$))"$/, '$1');
     }
 
     unescapeChoiceLiteral(text) {
-        return text.replace(/\\\[/g, '"').replace(/^\[(.*(?=\]$))\]$/, '$1');
+        return text.replace(/\\([^])/g, '$1').replace(/^\[(.*(?=\]$))\]$/, '$1');
     }
 
     /**
@@ -10285,7 +10288,7 @@ class InfoLNVisitor extends BaseCstVisitor {
  * @author Ellen Vanhove.
  */
 
-const MEDIA = '/scratch-LN/example/static/blocks-media/';
+const MEDIA = '/static/blocks-media/';
 /* harmony export (immutable) */ __webpack_exports__["a"] = MEDIA;
 
 
@@ -20834,7 +20837,7 @@ function parseTextToXMLWithWarnings(text) {
 // some frequently used predicates
 
 let looksSoundPredicate = function (ctx, visitor) {
-    let opt = ctx.option?visitor.infoVisitor.getString(ctx.option[0]):'';
+    let opt = ctx.option ? visitor.infoVisitor.getString(ctx.option[0]) : '';
     let label = visitor.infoVisitor.getString(ctx.argument[0]);
     return (opt === 'sound') || (label === "pan left/right" || label === 'pitch');
 };
@@ -20963,7 +20966,7 @@ const blockspecifications = [
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
         },
         {
-            "template": "%1 < %2",
+            "template": ["%1 lt %2", "%1 < %2", "%1 less than %2"],
             "description": {
                 "type": "operator_lt",
                 "args": [{"type": "input_value", "name": "OPERAND1"}, {"type": "input_value", "name": "OPERAND2"}],
@@ -20981,7 +20984,7 @@ const blockspecifications = [
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
         },
         {
-            "template": "%1 > %2",
+            "template": ["%1 gt %2", "%1 > %2", "%1 greater than %2"],
             "description": {
                 "type": "operator_gt",
                 "args": [{"type": "input_value", "name": "OPERAND1"}, {"type": "input_value", "name": "OPERAND2"}],
@@ -21091,7 +21094,7 @@ const blockspecifications = [
         },
 //=== sensing ===============================================================
         {
-            "template": "touching %1?",
+            "template": ["touching %1?", "touching %1"],
             "description": {
                 "type": "sensing_touchingobject",
                 "args": [{"type": "input_value", "name": "TOUCHINGOBJECTMENU", "menu": "sensing_touchingobjectmenu"}],
@@ -21100,7 +21103,7 @@ const blockspecifications = [
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
         },
         {
-            "template": "touching color %1?",
+            "template": ["touching color %1?", "touching color %1"],
             "description": {
                 "type": "sensing_touchingcolor",
                 "args": [{"type": "input_value", "name": "COLOR"}],
@@ -21109,7 +21112,7 @@ const blockspecifications = [
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
         },
         {
-            "template": "color %1 is touching %2?",
+            "template": ["color %1 is touching %2?", "color %1 is touching %2"],
             "description": {
                 "type": "sensing_coloristouchingcolor",
                 "args": [{"type": "input_value", "name": "COLOR"}, {"type": "input_value", "name": "COLOR2"}],
@@ -21141,20 +21144,21 @@ const blockspecifications = [
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
         },
         {
-            "template": "key %1 pressed?",
+            "template": ["key %1 pressed?", "key %1 pressed"],
             "description": {
                 "type": "sensing_keypressed",
                 "args": [{
-                    "type": "field_dropdown",
+                    "type": "input_value",
                     "name": "KEY_OPTION",
-                    "options": [["space", "space"], ["left arrow", "left arrow"], ["right arrow", "right arrow"], ["down arrow", "down arrow"], ["up arrow", "up arrow"], ["any", "any"], ["a", "a"], ["b", "b"], ["c", "c"], ["d", "d"], ["e", "e"], ["f", "f"], ["g", "g"], ["h", "h"], ["i", "i"], ["j", "j"], ["k", "k"], ["l", "l"], ["m", "m"], ["n", "n"], ["o", "o"], ["p", "p"], ["q", "q"], ["r", "r"], ["s", "s"], ["t", "t"], ["u", "u"], ["v", "v"], ["w", "w"], ["x", "x"], ["y", "y"], ["z", "z"], ["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"]]
+                    "options": [["space", "space"], ["left arrow", "left arrow"], ["right arrow", "right arrow"], ["down arrow", "down arrow"], ["up arrow", "up arrow"], ["any", "any"], ["a", "a"], ["b", "b"], ["c", "c"], ["d", "d"], ["e", "e"], ["f", "f"], ["g", "g"], ["h", "h"], ["i", "i"], ["j", "j"], ["k", "k"], ["l", "l"], ["m", "m"], ["n", "n"], ["o", "o"], ["p", "p"], ["q", "q"], ["r", "r"], ["s", "s"], ["t", "t"], ["u", "u"], ["v", "v"], ["w", "w"], ["x", "x"], ["y", "y"], ["z", "z"], ["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"]],
+                    "menu": "sensing_keyoptions"
                 }],
                 "shape": "booleanblock"
             },
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
         },
         {
-            "template": "mouse down?",
+            "template": ["mouse down?", "mouse down"],
             "description": {"type": "sensing_mousedown", "shape": "booleanblock"},
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
         },
@@ -21259,7 +21263,7 @@ const blockspecifications = [
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
         },
         {
-            "template": ["turn cw %1 degrees", "turn right %1 degrees"],
+            "template": ["turn right %1 degrees", "turn cw %1 degrees", "turn clockwise %1 degrees", "turn \u21BB %1 degrees"],
             "description": {
                 "type": "motion_turnright",
                 "args": [{"type": "input_value", "name": "DEGREES"}],
@@ -21268,7 +21272,8 @@ const blockspecifications = [
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
         },
         {
-            "template": ["turn ccw %1 degrees", "turn left %1 degrees"],
+            "template": ["turn left %1 degrees", "turn ccw %1 degrees", "turn counterclockwise %1 degrees",
+                "turn anticlockwise %1 degrees", "turn acw %1 degrees", "turn \u21BA %1 degrees",],
             "description": {
                 "type": "motion_turnleft",
                 "args": [{"type": "input_value", "name": "DEGREES"}],
@@ -21348,7 +21353,7 @@ const blockspecifications = [
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
         },
         {
-            "template": ["bounce on edge","if on edge, bounce"],
+            "template": ["if on edge, bounce","bounce on edge"],
             "description": {"type": "motion_ifonedgebounce", "shape": "statement"},
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
         },
@@ -21637,47 +21642,8 @@ const blockspecifications = [
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
         },
         {
-            "template": "play drum %1 for %2 beats",
-            "description": {
-                "type": "sound_playdrumforbeats",
-                "args": [{"type": "input_value", "name": "DRUM", "menu": "sound_drums_menu"}, {
-                    "type": "input_value",
-                    "name": "BEATS"
-                }],
-                "shape": "statement"
-            },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
-        },
-        {
-            "template": "rest for %1 beats",
-            "description": {
-                "type": "sound_restforbeats",
-                "args": [{"type": "input_value", "name": "BEATS"}],
-                "shape": "statement"
-            },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
-        },
-        {
-            "template": "play note %1 for %2 beats",
-            "description": {
-                "type": "sound_playnoteforbeats",
-                "args": [{"type": "input_value", "name": "NOTE"}, {"type": "input_value", "name": "BEATS"}],
-                "shape": "statement"
-            },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
-        },
-        {
             "template": "clear sound effects",
             "description": {"type": "sound_cleareffects", "shape": "statement"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
-        },
-        {
-            "template": "set instrument to %1",
-            "description": {
-                "type": "sound_setinstrumentto",
-                "args": [{"type": "input_value", "name": "INSTRUMENT", "menu": "sound_instruments_menu"}],
-                "shape": "statement"
-            },
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
         },
         {
@@ -21703,32 +21669,9 @@ const blockspecifications = [
             "description": {"type": "sound_volume", "shape": "reporterblock"},
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
         },
-        {
-            "template": "change tempo by %1",
-            "description": {
-                "type": "sound_changetempoby",
-                "args": [{"type": "input_value", "name": "TEMPO"}],
-                "shape": "statement"
-            },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
-        },
-        {
-            "template": "set tempo to %1 bpm",
-            "description": {
-                "type": "sound_settempotobpm",
-                "args": [{"type": "input_value", "name": "TEMPO"}],
-                "shape": "statement"
-            },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
-        },
-        {
-            "template": "tempo",
-            "description": {"type": "sound_tempo", "shape": "reporterblock"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
-        },
         //=== events =============================================================
         {
-            "template": ["when gf clicked", "when greenflag clicked"],
+            "template": ["when gf clicked", "when greenflag clicked", "when green flag clicked", "when \u2691 clicked", "when flag clicked",],
             "description": {"type": "event_whenflagclicked", "args": [], "shape": "hatblock"},
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
         },
@@ -21747,7 +21690,7 @@ const blockspecifications = [
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
         },
         {
-            "template": "when %1 \\> %2",
+            "template": ["when %1 gt %2", "when %1 greater than %2", "when %1 > %2"],
             "description": {
                 "type": "event_whengreaterthan",
                 "args": [{
@@ -21792,8 +21735,7 @@ const blockspecifications = [
         {
             "template": "set %1 effect to %2",
             "description": {
-                "type"
-                    : "looks_seteffectto",
+                "type": "looks_seteffectto",
                 "args": [{
                     "type": "field_dropdown",
                     "name": "EFFECT",
@@ -21849,7 +21791,7 @@ const blockspecifications = [
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
         },
         {
-            "template": "%1 contains %2?",
+            "template": ["%1 contains %2?", "%1 contains %2"],
             "description": {
                 "type": "data_listcontainsitem",
                 "args": [{"type": "field_variable", "name": "LIST", "variabletypes": ["list"]}, {
@@ -21862,7 +21804,7 @@ const blockspecifications = [
             "predicate": listOperatorPredicate
         },
         {
-            "template": "%1 contains %2?",
+            "template": ["%1 contains %2?", "%1 contains %2"],
             "description": {
                 "type": "operator_contains",
                 "args": [{"type": "input_value", "name": "STRING1"}, {"type": "input_value", "name": "STRING2"}],
@@ -21879,12 +21821,12 @@ const blockspecifications = [
                     "name": "PROPERTY",
                     "options": [["x position", "x position"], ["y position", "y position"], ["direction", "direction"], ["costume #", "costume #"], ["costume name", "costume name"], ["size", "size"], ["volume", "volume"], ["backdrop #", "backdrop #"], ["backdrop name", "backdrop name"]],
 
-                }, {"type": "input_value", "name": "OBJECT",'menu': 'sensing_of_object_menu'}],
+                }, {"type": "input_value", "name": "OBJECT", 'menu': 'sensing_of_object_menu'}],
                 "shape": "booleans"
             },
             "converter": function (ctx, visitor) {
                 //something was weird here...
-                __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__parser_blocks__["d" /* addType */])(ctx,visitor,'sensing_of')
+                __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__parser_blocks__["d" /* addType */])(ctx, visitor, 'sensing_of')
                 visitor.xml = visitor.xml.ele('field', {
                     'name': 'PROPERTY'
                 }, visitor.infoVisitor.getString(ctx.argument[0])); //'all around' //this is ugly because 'option' is the only one that returns something... and there is no check whether the option is existing and valid
@@ -21968,7 +21910,24 @@ const blockspecifications = [
             },
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["g" /* variableBlockConverter */]
         },
-
+        {
+            "template": "show variable %1",
+            "description": {
+                "type": "data_showvariable",
+                "args": [{"type": "field_variable","name": "VARIABLE"}],
+                "shape": "statement"
+            },
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["g" /* variableBlockConverter */]
+        },
+        {
+            "template": "hide variable %1",
+            "description": {
+                "type": "data_hidevariable",
+                "args": [{"type": "field_variable","name": "VARIABLE"}],
+                "shape": "statement"
+            },
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["g" /* variableBlockConverter */]
+        },
         {
             "template": "add %1 to %2",
             "description": {
@@ -37675,7 +37634,7 @@ class State {
     reset() {
         //list of all blocks
         this.blocks = [];
-        this.blocks.push({ID:-1,SHAPE:null}); //this should not happen normally but this way nothing breaks during dev
+        this.blocks.push({ID:-1}); //this should not happen normally but this way nothing breaks during dev
         this.modus = MODUS.NONE;
         this.interrupted = false;
         //when opening a new context the previous is stored here
@@ -37720,17 +37679,10 @@ class State {
      * @param id the id of the block
      * @param shape the shape of the block
      */
-    addBlock(id,shape){
-        this.blocks.push({ID:id,SHAPE:shape})
+    addBlock(id){
+        this.blocks.push({ID:id})
     }
 
-    /**
-     * return the type of the last added block
-     * @returns {string}
-     */
-    getFirstBlockType(){
-        return this.blocks[0].SHAPE;
-    }
 
     /**
      * return the id of the last added block
@@ -37740,13 +37692,6 @@ class State {
         return this.blocks[0].ID;
     }
 
-    /**
-     * return the type of the last added block
-     * @returns {string}
-     */
-    getLastBlockType(){
-        return this.blocks[this.blocks.length-1].SHAPE;
-    }
 
     /**
      * return the id of the last added block
@@ -37991,6 +37936,9 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
                 this.createVariableBlock(ctx, description);
 
             } else if (this.isBooleanBlock(ctx, modifiers)) {
+                if(!modifiers.custom){
+                    this.warningsKeeper.add(ctx, "unkown boolean block, add ::custom if you want a custom block")
+                }
                 this.createCustomBooleanBlock(ctx, description);
 
             } else {
@@ -38031,7 +37979,7 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
 
     isBuildInBlock(description, ctx, modifiers) {
-        return description in __WEBPACK_IMPORTED_MODULE_6__blocks__["a" /* default */] && !modifiers.custom;
+        return !modifiers.user && !modifiers.custom && description in __WEBPACK_IMPORTED_MODULE_6__blocks__["a" /* default */];
     }
 
     isVariableBlock(ctx, modifiers) {
@@ -38153,17 +38101,19 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     */
 
     ifelse(ctx) {
+        let blockid = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "ifelse"));
         if (!ctx.Else) {
             this.xml = this.xml.ele('block', {
                 'type': 'control_if',
-                'id': this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "ifelse"))
+                'id': blockid,
             });
         } else {
             this.xml = this.xml.ele('block', {
                 'type': 'control_if_else',
-                'id': this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "ifelse"))
+                'id': blockid,
             });
         }
+        this.state.addBlock(blockid);
         this.xml = this.xml.ele('value', {
             'name': 'CONDITION'
         });
@@ -38187,12 +38137,14 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     forever(ctx) {
+        let blockid = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "forever"));
         this.xml = this.xml.ele('block', {
             'type': 'control_forever',
-            'id': this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "forever")),
+            'id': blockid,
         }).ele('statement ', {
             'name': 'SUBSTACK'
         });
+        this.state.addBlock(blockid);
         this.visit(ctx.clause);
         this.xml = this.xml.up(); //close statement (stack will close block)
         this.visit(ctx.annotations);
@@ -38201,12 +38153,14 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     repeat(ctx) {
+        let blockid = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "repeat"));
         this.xml = this.xml.ele('block', {
             'type': 'control_repeat',
-            'id': this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "repeat")),
+            'id': blockid,
         }).ele('value', {
             'name': 'TIMES'
         });
+        this.state.addBlock(blockid);
         this.visit(ctx.argument);
         this.xml = this.xml.up().ele('statement ', {
             'name': 'SUBSTACK'
@@ -38217,12 +38171,14 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     repeatuntil(ctx) {
+        let blockid = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "repeatuntil"));
         this.xml = this.xml.ele('block', {
             'type': 'control_repeat_until',
-            'id': this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "repeatuntil")),
+            'id': blockid,
         }).ele('value', {
             'name': 'CONDITION'
         });
+        this.state.addBlock(blockid);
         this.visit(ctx.condition);
         this.xml = this.xml.up().ele('statement ', {
             'name': 'SUBSTACK'
@@ -38350,7 +38306,8 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         }).ele('field', {
             'name': 'VARIABLE',
             'id': varID,
-        }, description).up()
+        }, description).up();
+        this.state.addBlock(blockID);
     }
 
     createListBlock(ctx, description) {
@@ -38362,7 +38319,8 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         }).ele('field', {
             'name': 'LIST',
             'id': varID,
-        }, description).up()
+        }, description).up();
+        this.state.addBlock(blockID);
     }
 
     createCustomReporterBlock(ctx, description) {
@@ -38374,7 +38332,8 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         }).ele('field', {
             'name': 'VALUE',
             'id': varID,
-        }, description).up()
+        }, description).up();
+        this.state.addBlock(blockID);
     }
 
     createCustomBooleanBlock(ctx, description) {
@@ -38386,7 +38345,8 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         }).ele('field', {
             'name': 'VALUE',
             'id': varID,
-        }, description).up()
+        }, description).up();
+        this.state.addBlock(blockID);
     }
 
 }
@@ -38468,12 +38428,27 @@ class customModifierExtractor extends ModifierExtractor {
     }
 }
 
+class varModifierExtractor extends ModifierExtractor {
+    containsKey(modifierToken) {
+        return modifierToken.image.match(/::user-defined/i);
+    }
+
+    extractParameters(modifierToken) {
+        return {}
+    }
+
+    getName() {
+        return "user"
+    }
+}
+
 class ModifierAnalyser {
     constructor(ctx, informationVisitor) {
         this.infoVisitor = informationVisitor;
         this.modifierExtractors = [];
         this.modifierExtractors.push(new listModifierExtractor());
         this.modifierExtractors.push(new customModifierExtractor());
+        this.modifierExtractors.push(new varModifierExtractor());
     }
 
     getMods(modifierList) {
@@ -38559,8 +38534,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
-function scratchify(clasz='scratch') {
-    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('.'+clasz).each(function(i, obj) {
+
+const LOCALE_ATTR ="blocks-locale";
+const SCALE_ATTR ="blocks-scale";
+
+/**
+ *
+ * @param selector see: https://www.w3schools.com/jquery/jquery_ref_selectors.asp
+ * @param properties see: DEFAULT_PROPERTIES
+ */
+function scratchify(selector='.scratch',properties={}) {
+    let userDefaultProperties=mergeProperties(properties,DEFAULT_PROPERTIES);
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default()(selector).each(function(i, obj) {
         let id = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(this).attr('id');
         if (!id) {
             id = "workspace_" + i;
@@ -38569,8 +38554,19 @@ function scratchify(clasz='scratch') {
         }
         //create the div to inject the workspace in
         __WEBPACK_IMPORTED_MODULE_0_jquery___default()(this).parent().append(__WEBPACK_IMPORTED_MODULE_0_jquery___default()("<div class=blocklyDiv id=" + id + "></div>"));
-
-        let workspace = createWorkspace(id);
+        let extracted = {};
+        let locale = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(this).attr(LOCALE_ATTR);
+        if(locale) {
+            extracted.locale = locale;
+        }
+        let scale = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(this).attr(SCALE_ATTR);
+        if(scale) {
+            extracted.zoom = {
+                startScale: scale
+            };
+        }
+        let prop=mergeProperties(extracted,userDefaultProperties);
+        let workspace = createWorkspace(id,prop);
         //do parsing
         let text = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(this).text();
         //remove the text
@@ -38582,10 +38578,10 @@ function scratchify(clasz='scratch') {
             //add to this workspace
             let dom = Blockly.Xml.textToDom(xml);
             Blockly.Xml.domToWorkspace(dom, workspace);
-            //workspace.cleanUp();
+            workspace.cleanUp();
         }
         //rescale the workspace to fit to the blocks
-        fitBlocks(workspace, id);
+        fitBlocks(workspace, id,prop);
         storeWorkspace(id, workspace);
     });
 }
@@ -38619,26 +38615,61 @@ function changeValue(id, blockID, value) {
     field.setText(value);
 }
 
-function createWorkspace(workspaceName) {
-    return __WEBPACK_IMPORTED_MODULE_1_scratch_blocks___default.a.inject(workspaceName, {
-        toolbox: '<xml></xml>',
-        'scrollbars': false,
-        'trashcan': false,
-        'readOnly': true,
-        media: __WEBPACK_IMPORTED_MODULE_3__config_config__["a" /* MEDIA */], //flag
-        colours: {
-            fieldShadow: 'rgba(255, 255, 255, 1)'
-        },
-        zoom: {
-            startScale: 0.5
-        }
-    });
+const DEFAULT_PROPERTIES = {
+    //this is exactly the same as blockly/scratchblocks properties
+    readOnly: true,
+    toolbox: '<xml></xml>',
+    scrollbars: false,
+    trashcan: false,
+    comments: true,
+    media: __WEBPACK_IMPORTED_MODULE_3__config_config__["a" /* MEDIA */],
+    colours: {
+        fieldShadow: 'rgba(255, 255, 255, 1)'
+    },
+    zoom: {
+        startScale: 0.5
+    },
+    // ----
+    //extra locale
+    locale: "en",
+};
+/* harmony export (immutable) */ __webpack_exports__["DEFAULT_PROPERTIES"] = DEFAULT_PROPERTIES;
+
+
+function createWorkspace(workspaceName,properties=DEFAULT_PROPERTIES) {
+    __WEBPACK_IMPORTED_MODULE_1_scratch_blocks___default.a.ScratchMsgs.setLocale(properties.locale);
+    return __WEBPACK_IMPORTED_MODULE_1_scratch_blocks___default.a.inject(workspaceName, properties);
 }
 
-function fitBlocks(workspace, id) {
-    var metrics = workspace.getMetrics();
-    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#' + id).css('width', (metrics.contentWidth + 10) + 'px')
-    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#' + id).css('height', (metrics.contentHeight + 10) + 'px')
+function mergeProperties(properties, defaultprops){
+    let prop = {};
+    for(let p in defaultprops){
+        if(properties.hasOwnProperty(p)){
+            prop[p] = properties[p];
+        }else{
+            prop[p] = defaultprops[p];
+        }
+    }
+    return prop;
+}
+
+function fitBlocks(workspace, id,properties) {
+    let isHead = false;
+    //get the topblocks, this are the beginning of stacks. they are ordered by location.
+    let topBlocks=workspace.getTopBlocks(true);
+    if(topBlocks[0]) {
+        isHead = topBlocks[0].startHat_;
+    }
+    let metrics = workspace.getMetrics(); //is not dependent on the location of the workspace
+    if(isHead){
+        __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#' + id).css('height', (metrics.contentHeight + 20*properties.zoom.startScale) + 'px');
+        //translate the whole workspace (like dragging in the live view)
+        workspace.translate(5,20*properties.zoom.startScale);
+    }else{
+        __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#' + id).css('height', (metrics.contentHeight + 10) + 'px');
+        workspace.translate(5,5);
+    }
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#' + id).css('width', (metrics.contentWidth + 10) + 'px');
     __WEBPACK_IMPORTED_MODULE_1_scratch_blocks___default.a.svgResize(workspace);
 }
 

@@ -14,7 +14,9 @@ Advantages of textual embedding in ebooks and websites:
 * internationalization: blocks auto-translate to multiple natural languages
 * supports copy-paste and drag-and-drop of Scratch-blocks
 
+
 ## Examples
+
 
 - [live preview](https://scratch4d.github.io/scratch-LN/example/)
 - [reverse](https://scratch4d.github.io/scratch-LN/example/reverse.html): generate Scratch-LN form Scratch-blocks.
@@ -25,6 +27,7 @@ Advantages of textual embedding in ebooks and websites:
     - [simple example in English](https://scratch4d.github.io/scratch-LN/example/simple_en.html)
     - [simple example in Dutch](https://scratch4d.github.io/scratch-LN/example/simple.html)
 - [more complicated example in Dutch](https://scratch4d.github.io/scratch-LN/example/example.html): use the buttons to indicate/change the blocks.
+
 
 
 

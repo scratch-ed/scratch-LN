@@ -1544,11 +1544,11 @@ var tokens_public_1 = __webpack_require__(3);
 var exceptions_public_1 = __webpack_require__(38);
 var version_1 = __webpack_require__(29);
 var errors_public_1 = __webpack_require__(24);
-var render_public_1 = __webpack_require__(53);
+var render_public_1 = __webpack_require__(54);
 var gast_visitor_public_1 = __webpack_require__(6);
 var gast_public_1 = __webpack_require__(1);
 var gast_resolver_public_1 = __webpack_require__(40);
-var generate_public_1 = __webpack_require__(55);
+var generate_public_1 = __webpack_require__(56);
 /**
  * defines the public API of
  * changes here may require major version change. (semVer)
@@ -3283,7 +3283,7 @@ const StringLiteral = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrota
 const NumberLiteral = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
     name: "NumberLiteral",
     pattern: /-?(\d+)(\.\d+)?/,
-    categories: [Literal],
+    categories: [Literal,Label],
     longer_alt: Label,
 });
 /* harmony export (immutable) */ __webpack_exports__["NumberLiteral"] = NumberLiteral;
@@ -4349,16 +4349,16 @@ var exceptions_public_1 = __webpack_require__(38);
 var lang_extensions_1 = __webpack_require__(5);
 var checks_1 = __webpack_require__(8);
 var utils_1 = __webpack_require__(0);
-var follow_1 = __webpack_require__(58);
+var follow_1 = __webpack_require__(59);
 var tokens_public_1 = __webpack_require__(3);
 var lookahead_1 = __webpack_require__(42);
-var gast_builder_1 = __webpack_require__(57);
+var gast_builder_1 = __webpack_require__(58);
 var interpreter_1 = __webpack_require__(25);
 var constants_1 = __webpack_require__(36);
 var tokens_1 = __webpack_require__(10);
 var cst_1 = __webpack_require__(37);
 var keys_1 = __webpack_require__(41);
-var cst_visitor_1 = __webpack_require__(56);
+var cst_visitor_1 = __webpack_require__(57);
 var errors_public_1 = __webpack_require__(24);
 var gast_public_1 = __webpack_require__(1);
 var gast_resolver_public_1 = __webpack_require__(40);
@@ -6048,7 +6048,7 @@ InRuleRecoveryException.prototype = Error.prototype;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var lexer_1 = __webpack_require__(60);
+var lexer_1 = __webpack_require__(61);
 var utils_1 = __webpack_require__(0);
 var tokens_1 = __webpack_require__(10);
 var LexerDefinitionErrorType;
@@ -7476,11 +7476,12 @@ function universalBlockConverter(ctx, visitor, structure) {
 
 
 function addType(ctx, visitor, type) {
+    let blockid = visitor.idManager.getNextBlockID(visitor.infoVisitor.getID(ctx, "atomic"));
     visitor.xml = visitor.xml.ele('block', {
-        'id': visitor.idManager.getNextBlockID(visitor.infoVisitor.getID(ctx, "atomic")),
+        'id': blockid,
         'type': type
     });
-    //todo add to state
+    visitor.state.addBlock(blockid);
 };
 
 //=======================================================================================================================================
@@ -7496,9 +7497,11 @@ function variableBlockConverter(ctx, visitor, structure) {
     visitor.xml = visitor.xml.ele('field', {
         'name': 'VARIABLE'
     }, varble);
-    visitor.xml = visitor.xml.up().ele('value', {
-        'name': 'VALUE'
-    });
+    if(structure.args.length>1) {
+        visitor.xml = visitor.xml.up().ele('value', {
+            'name': 'VALUE'
+        });
+    }
     //the second argument.
     visitor.visit(ctx.argument[1]);
     visitor.xml = visitor.xml.up();
@@ -7583,7 +7586,7 @@ function stopConverter(ctx, visitor, structure) {
 /* harmony export (immutable) */ __webpack_exports__["b"] = parseTextToXML;
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseTextToXMLWithWarnings;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__LNParser__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__XMLLNVisitor__ = __webpack_require__(77);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__XMLLNVisitor__ = __webpack_require__(78);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__blockspecification_blockspecification__ = __webpack_require__(50);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__blocks__ = __webpack_require__(33);
 /**
@@ -7717,7 +7720,7 @@ function parseTextToXMLWithWarnings(text) {
 /* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(64);
+module.exports = __webpack_require__(65);
 
 
 /***/ }),
@@ -8016,7 +8019,7 @@ exports.firstForTerminal = firstForTerminal;
 Object.defineProperty(exports, "__esModule", { value: true });
 var utils_1 = __webpack_require__(0);
 var lang_extensions_1 = __webpack_require__(5);
-var resolver_1 = __webpack_require__(59);
+var resolver_1 = __webpack_require__(60);
 var checks_1 = __webpack_require__(8);
 var errors_public_1 = __webpack_require__(24);
 var gast_1 = __webpack_require__(9);
@@ -9530,7 +9533,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 /* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(67);
+module.exports = __webpack_require__(68);
 
 
 /***/ }),
@@ -10238,7 +10241,7 @@ class InfoLNVisitor extends BaseCstVisitor {
 
 
     unescapeComment(text) {
-        return text.replace(/\\\|/g, '|').replace(/^\|(.*(?=\|$))\|$/, '$1');
+        return text.replace(/\\([^])/g, '$1').replace(/^\|(.*(?=\|$))\|$/, '$1');
     }
 
     annotations(ctx) {
@@ -10304,11 +10307,11 @@ class InfoLNVisitor extends BaseCstVisitor {
     }
 
     unescapeStringLiteral(text) {
-        return text.replace(/\\"/g, '"').replace(/^"(.*(?="$))"$/, '$1');
+        return text.replace(/\\([^])/g, '$1').replace(/^"(.*(?="$))"$/, '$1');
     }
 
     unescapeChoiceLiteral(text) {
-        return text.replace(/\\\[/g, '"').replace(/^\[(.*(?=\]$))\]$/, '$1');
+        return text.replace(/\\([^])/g, '$1').replace(/^\[(.*(?=\]$))\]$/, '$1');
     }
 
     /**
@@ -10445,7 +10448,7 @@ class InfoLNVisitor extends BaseCstVisitor {
 // some frequently used predicates
 
 let looksSoundPredicate = function (ctx, visitor) {
-    let opt = ctx.option?visitor.infoVisitor.getString(ctx.option[0]):'';
+    let opt = ctx.option ? visitor.infoVisitor.getString(ctx.option[0]) : '';
     let label = visitor.infoVisitor.getString(ctx.argument[0]);
     return (opt === 'sound') || (label === "pan left/right" || label === 'pitch');
 };
@@ -10574,7 +10577,7 @@ const blockspecifications = [
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["a" /* universalBlockConverter */]
         },
         {
-            "template": "%1 < %2",
+            "template": ["%1 lt %2", "%1 < %2", "%1 less than %2"],
             "description": {
                 "type": "operator_lt",
                 "args": [{"type": "input_value", "name": "OPERAND1"}, {"type": "input_value", "name": "OPERAND2"}],
@@ -10592,7 +10595,7 @@ const blockspecifications = [
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["a" /* universalBlockConverter */]
         },
         {
-            "template": "%1 > %2",
+            "template": ["%1 gt %2", "%1 > %2", "%1 greater than %2"],
             "description": {
                 "type": "operator_gt",
                 "args": [{"type": "input_value", "name": "OPERAND1"}, {"type": "input_value", "name": "OPERAND2"}],
@@ -10702,7 +10705,7 @@ const blockspecifications = [
         },
 //=== sensing ===============================================================
         {
-            "template": "touching %1?",
+            "template": ["touching %1?", "touching %1"],
             "description": {
                 "type": "sensing_touchingobject",
                 "args": [{"type": "input_value", "name": "TOUCHINGOBJECTMENU", "menu": "sensing_touchingobjectmenu"}],
@@ -10711,7 +10714,7 @@ const blockspecifications = [
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["a" /* universalBlockConverter */]
         },
         {
-            "template": "touching color %1?",
+            "template": ["touching color %1?", "touching color %1"],
             "description": {
                 "type": "sensing_touchingcolor",
                 "args": [{"type": "input_value", "name": "COLOR"}],
@@ -10720,7 +10723,7 @@ const blockspecifications = [
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["a" /* universalBlockConverter */]
         },
         {
-            "template": "color %1 is touching %2?",
+            "template": ["color %1 is touching %2?", "color %1 is touching %2"],
             "description": {
                 "type": "sensing_coloristouchingcolor",
                 "args": [{"type": "input_value", "name": "COLOR"}, {"type": "input_value", "name": "COLOR2"}],
@@ -10752,20 +10755,21 @@ const blockspecifications = [
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["a" /* universalBlockConverter */]
         },
         {
-            "template": "key %1 pressed?",
+            "template": ["key %1 pressed?", "key %1 pressed"],
             "description": {
                 "type": "sensing_keypressed",
                 "args": [{
-                    "type": "field_dropdown",
+                    "type": "input_value",
                     "name": "KEY_OPTION",
-                    "options": [["space", "space"], ["left arrow", "left arrow"], ["right arrow", "right arrow"], ["down arrow", "down arrow"], ["up arrow", "up arrow"], ["any", "any"], ["a", "a"], ["b", "b"], ["c", "c"], ["d", "d"], ["e", "e"], ["f", "f"], ["g", "g"], ["h", "h"], ["i", "i"], ["j", "j"], ["k", "k"], ["l", "l"], ["m", "m"], ["n", "n"], ["o", "o"], ["p", "p"], ["q", "q"], ["r", "r"], ["s", "s"], ["t", "t"], ["u", "u"], ["v", "v"], ["w", "w"], ["x", "x"], ["y", "y"], ["z", "z"], ["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"]]
+                    "options": [["space", "space"], ["left arrow", "left arrow"], ["right arrow", "right arrow"], ["down arrow", "down arrow"], ["up arrow", "up arrow"], ["any", "any"], ["a", "a"], ["b", "b"], ["c", "c"], ["d", "d"], ["e", "e"], ["f", "f"], ["g", "g"], ["h", "h"], ["i", "i"], ["j", "j"], ["k", "k"], ["l", "l"], ["m", "m"], ["n", "n"], ["o", "o"], ["p", "p"], ["q", "q"], ["r", "r"], ["s", "s"], ["t", "t"], ["u", "u"], ["v", "v"], ["w", "w"], ["x", "x"], ["y", "y"], ["z", "z"], ["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"]],
+                    "menu": "sensing_keyoptions"
                 }],
                 "shape": "booleanblock"
             },
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["a" /* universalBlockConverter */]
         },
         {
-            "template": "mouse down?",
+            "template": ["mouse down?", "mouse down"],
             "description": {"type": "sensing_mousedown", "shape": "booleanblock"},
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["a" /* universalBlockConverter */]
         },
@@ -10870,7 +10874,7 @@ const blockspecifications = [
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["a" /* universalBlockConverter */]
         },
         {
-            "template": ["turn cw %1 degrees", "turn right %1 degrees"],
+            "template": ["turn right %1 degrees", "turn cw %1 degrees", "turn clockwise %1 degrees", "turn \u21BB %1 degrees"],
             "description": {
                 "type": "motion_turnright",
                 "args": [{"type": "input_value", "name": "DEGREES"}],
@@ -10879,7 +10883,8 @@ const blockspecifications = [
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["a" /* universalBlockConverter */]
         },
         {
-            "template": ["turn ccw %1 degrees", "turn left %1 degrees"],
+            "template": ["turn left %1 degrees", "turn ccw %1 degrees", "turn counterclockwise %1 degrees",
+                "turn anticlockwise %1 degrees", "turn acw %1 degrees", "turn \u21BA %1 degrees",],
             "description": {
                 "type": "motion_turnleft",
                 "args": [{"type": "input_value", "name": "DEGREES"}],
@@ -10959,7 +10964,7 @@ const blockspecifications = [
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["a" /* universalBlockConverter */]
         },
         {
-            "template": ["bounce on edge","if on edge, bounce"],
+            "template": ["if on edge, bounce","bounce on edge"],
             "description": {"type": "motion_ifonedgebounce", "shape": "statement"},
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["a" /* universalBlockConverter */]
         },
@@ -11248,47 +11253,8 @@ const blockspecifications = [
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["a" /* universalBlockConverter */]
         },
         {
-            "template": "play drum %1 for %2 beats",
-            "description": {
-                "type": "sound_playdrumforbeats",
-                "args": [{"type": "input_value", "name": "DRUM", "menu": "sound_drums_menu"}, {
-                    "type": "input_value",
-                    "name": "BEATS"
-                }],
-                "shape": "statement"
-            },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["a" /* universalBlockConverter */]
-        },
-        {
-            "template": "rest for %1 beats",
-            "description": {
-                "type": "sound_restforbeats",
-                "args": [{"type": "input_value", "name": "BEATS"}],
-                "shape": "statement"
-            },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["a" /* universalBlockConverter */]
-        },
-        {
-            "template": "play note %1 for %2 beats",
-            "description": {
-                "type": "sound_playnoteforbeats",
-                "args": [{"type": "input_value", "name": "NOTE"}, {"type": "input_value", "name": "BEATS"}],
-                "shape": "statement"
-            },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["a" /* universalBlockConverter */]
-        },
-        {
             "template": "clear sound effects",
             "description": {"type": "sound_cleareffects", "shape": "statement"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["a" /* universalBlockConverter */]
-        },
-        {
-            "template": "set instrument to %1",
-            "description": {
-                "type": "sound_setinstrumentto",
-                "args": [{"type": "input_value", "name": "INSTRUMENT", "menu": "sound_instruments_menu"}],
-                "shape": "statement"
-            },
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["a" /* universalBlockConverter */]
         },
         {
@@ -11314,32 +11280,9 @@ const blockspecifications = [
             "description": {"type": "sound_volume", "shape": "reporterblock"},
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["a" /* universalBlockConverter */]
         },
-        {
-            "template": "change tempo by %1",
-            "description": {
-                "type": "sound_changetempoby",
-                "args": [{"type": "input_value", "name": "TEMPO"}],
-                "shape": "statement"
-            },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["a" /* universalBlockConverter */]
-        },
-        {
-            "template": "set tempo to %1 bpm",
-            "description": {
-                "type": "sound_settempotobpm",
-                "args": [{"type": "input_value", "name": "TEMPO"}],
-                "shape": "statement"
-            },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["a" /* universalBlockConverter */]
-        },
-        {
-            "template": "tempo",
-            "description": {"type": "sound_tempo", "shape": "reporterblock"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["a" /* universalBlockConverter */]
-        },
         //=== events =============================================================
         {
-            "template": ["when gf clicked", "when greenflag clicked"],
+            "template": ["when gf clicked", "when greenflag clicked", "when green flag clicked", "when \u2691 clicked", "when flag clicked",],
             "description": {"type": "event_whenflagclicked", "args": [], "shape": "hatblock"},
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["a" /* universalBlockConverter */]
         },
@@ -11358,7 +11301,7 @@ const blockspecifications = [
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["a" /* universalBlockConverter */]
         },
         {
-            "template": "when %1 \\> %2",
+            "template": ["when %1 gt %2", "when %1 greater than %2", "when %1 > %2"],
             "description": {
                 "type": "event_whengreaterthan",
                 "args": [{
@@ -11403,8 +11346,7 @@ const blockspecifications = [
         {
             "template": "set %1 effect to %2",
             "description": {
-                "type"
-                    : "looks_seteffectto",
+                "type": "looks_seteffectto",
                 "args": [{
                     "type": "field_dropdown",
                     "name": "EFFECT",
@@ -11460,7 +11402,7 @@ const blockspecifications = [
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["a" /* universalBlockConverter */]
         },
         {
-            "template": "%1 contains %2?",
+            "template": ["%1 contains %2?", "%1 contains %2"],
             "description": {
                 "type": "data_listcontainsitem",
                 "args": [{"type": "field_variable", "name": "LIST", "variabletypes": ["list"]}, {
@@ -11473,7 +11415,7 @@ const blockspecifications = [
             "predicate": listOperatorPredicate
         },
         {
-            "template": "%1 contains %2?",
+            "template": ["%1 contains %2?", "%1 contains %2"],
             "description": {
                 "type": "operator_contains",
                 "args": [{"type": "input_value", "name": "STRING1"}, {"type": "input_value", "name": "STRING2"}],
@@ -11490,12 +11432,12 @@ const blockspecifications = [
                     "name": "PROPERTY",
                     "options": [["x position", "x position"], ["y position", "y position"], ["direction", "direction"], ["costume #", "costume #"], ["costume name", "costume name"], ["size", "size"], ["volume", "volume"], ["backdrop #", "backdrop #"], ["backdrop name", "backdrop name"]],
 
-                }, {"type": "input_value", "name": "OBJECT",'menu': 'sensing_of_object_menu'}],
+                }, {"type": "input_value", "name": "OBJECT", 'menu': 'sensing_of_object_menu'}],
                 "shape": "booleans"
             },
             "converter": function (ctx, visitor) {
                 //something was weird here...
-                __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__parser_blocks__["c" /* addType */])(ctx,visitor,'sensing_of')
+                __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__parser_blocks__["c" /* addType */])(ctx, visitor, 'sensing_of')
                 visitor.xml = visitor.xml.ele('field', {
                     'name': 'PROPERTY'
                 }, visitor.infoVisitor.getString(ctx.argument[0])); //'all around' //this is ugly because 'option' is the only one that returns something... and there is no check whether the option is existing and valid
@@ -11579,7 +11521,24 @@ const blockspecifications = [
             },
             "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["f" /* variableBlockConverter */]
         },
-
+        {
+            "template": "show variable %1",
+            "description": {
+                "type": "data_showvariable",
+                "args": [{"type": "field_variable","name": "VARIABLE"}],
+                "shape": "statement"
+            },
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["f" /* variableBlockConverter */]
+        },
+        {
+            "template": "hide variable %1",
+            "description": {
+                "type": "data_hidevariable",
+                "args": [{"type": "field_variable","name": "VARIABLE"}],
+                "shape": "statement"
+            },
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["f" /* variableBlockConverter */]
+        },
         {
             "template": "add %1 to %2",
             "description": {
@@ -11705,6 +11664,299 @@ const MEDIA = '/scratch-LN/example/static/blocks-media/';
 /***/ }),
 /* 52 */,
 /* 53 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = generateText;
+/* unused harmony export init_generator */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_scratch_blocks__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_scratch_blocks__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__blockspecification_blockspecification__ = __webpack_require__(50);
+/**
+ * scratch-ln generators.
+ *
+ * Generator, using the blockly generator stuff to transform blocks -> text
+ *
+ * @file   This files defines the blockspecifications const.
+ * @author Ellen Vanhove.
+ */
+
+
+
+
+function generateText(workspace) {
+    let u = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.workspaceToCode(workspace);
+    return u
+}
+
+// scratch LN
+//====================================================== 
+//generator
+//======================================================
+
+__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text = new __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.Generator('text');
+
+
+//some basis function that are necessary but do not do anything here
+__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.init = function (workspace) {
+    //nope
+};
+
+__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.scrub_ = function (block, code) {
+    return code
+};
+
+__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.finish = function (code) {
+    return code
+};
+
+/**
+ * Based on something from blockly, see python generator example.
+ * @param block
+ * @returns {string|Array}
+ */
+__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.getNextCode = function (block) {
+    let nextBlock = block.nextConnection && block.nextConnection.targetBlock();
+    let nextCode = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.blockToCode(nextBlock); //returns '' if not existing
+    return nextCode
+};
+
+/**
+ * arguments list where the first one is not an array -> args are replaced in order of occurrence
+ * or one array -> content of this array is used to replace
+ * @returns {string}
+ */
+String.prototype.format = function () {
+    let args = arguments;
+    if (Array.isArray(args[0])) { //if an array is passed as argument
+        args = args[0];
+    }
+    return this.replace(/%(\d+)/g, function (_, m) {
+        return args[--m];
+    });
+};
+
+//====examples
+__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['event_whenflagclicked'] = function (block) {
+    return 'when greenflag clicked;\n' + __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.getNextCode(block);
+};
+
+__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['motion_movesteps'] = function (block) {
+    let value_name = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.valueToCode(block, 'STEPS', __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE);
+    return 'move %1 steps;\n'.format(value_name) + __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.getNextCode(block);
+};
+//====examples
+
+function surroundWithCurlyBrackets(text) {
+    return "{"+text+"}";
+}
+
+//=========== arguments =================
+__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['math_number'] = function (block) {
+    return [surroundWithCurlyBrackets(block.getFieldValue('NUM')), __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+};
+
+__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['math_integer'] = function (block) {
+    return [surroundWithCurlyBrackets(block.getFieldValue('NUM')), __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+};
+
+__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['math_positive_number'] = function (block) {
+    return [surroundWithCurlyBrackets(block.getFieldValue('NUM')), __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+};
+
+__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['math_whole_number'] = function (block) {
+    return [surroundWithCurlyBrackets(block.getFieldValue('NUM')), __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+};
+
+__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['math_angle'] = function (block) {
+    return [surroundWithCurlyBrackets(block.getFieldValue('NUM')), __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+};
+
+__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['colour_picker'] = function (block) {
+    return [block.getFieldValue('COLOUR'), __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+};
+
+__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['text'] = function (block) {
+    return ['"'+block.getFieldValue('TEXT')+'"', __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+};
+
+__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['data_variable'] = function (block) {
+    //variables are a bit different... getfieldvalue returns the id
+    return ['(' + block.getField('VARIABLE').getText() + ')', __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+};
+//========================================
+
+//========= reporter and boolean variables  ===============
+
+__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['data_listcontents'] = function (block) {
+    //variables are a bit different... getfieldvalue returns the id
+    return ['(' + block.getField('LIST').getText() + '::list)', __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+};
+
+__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['argument_reporter_boolean'] = function (block) {
+    //variables are a bit different... getfieldvalue returns the id
+    return ['<' + block.getField('VALUE').getText() + '::custom>', __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+};
+
+__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['argument_reporter_string_number'] = function (block) {
+    //variables are a bit different... getfieldvalue returns the id
+    return ['(' + block.getField('VALUE').getText() + '::custom)', __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+};
+//========================================
+
+//========= special cases  ===============
+__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['event_broadcast_menu'] = function (block) {
+    //variables are a bit different... getfieldvalue returns the id
+    return [block.getField('BROADCAST_OPTION').getText(), __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+};
+//========================================
+
+//========= controls =====================
+
+__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['control_forever'] = function (block) {
+    let statements = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.statementToCode(block, 'SUBSTACK');
+    return 'forever\n' + statements;
+
+};
+
+__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['control_repeat'] = function (block) {
+    let statements = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.statementToCode(block, 'SUBSTACK');
+    let nr = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.valueToCode(block, 'TIMES', __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE);
+    return 'repeat ' + nr + '\n' + statements + 'end\n' + __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.getNextCode(block);
+};
+
+__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['control_repeat_until'] = function (block) {
+    let statements = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.statementToCode(block, 'SUBSTACK');
+    let nr = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.valueToCode(block, 'CONDITION', __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE);
+    return 'repeat until ' + nr + '\n' + statements + 'end\n' + __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.getNextCode(block);
+};
+
+__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['control_if'] = function (block) {
+    let statements = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.statementToCode(block, 'SUBSTACK');
+    let nr = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.valueToCode(block, 'CONDITION', __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE);
+    return 'if {' + nr + '}\n' + statements + 'end\n' + __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.getNextCode(block);
+};
+
+__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['control_if_else'] = function (block) {
+    let statements = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.statementToCode(block, 'SUBSTACK');
+    let statements2 = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.statementToCode(block, 'SUBSTACK2');
+    let nr = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.valueToCode(block, 'CONDITION', __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE);
+    return 'if ' + nr + '\n' + statements + 'else\n' + statements2 + 'end\n' + __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.getNextCode(block);
+};
+
+//========================================
+
+//======= custom blocks ==================
+__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['procedures_call'] = function (block) {
+    let procCode = block.getProcCode();
+    //todo <> is not a child ..., so find a better way to handle this
+    console.log(block);
+    let args=block.childBlocks_;
+    let textargs = [];
+    for(let i=0; i<args.length;i++){
+        textargs.push(__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.blockToCode(args[i])[0]);
+    }
+    let ids=block.argumentIds_;
+    console.log(textargs,args,ids);
+    return formatPlaceholder(procCode,textargs,ids) + '\n' + __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.getNextCode(block);
+};
+
+function formatPlaceholder(text,args,ids) {
+    let argscounter=0;
+    let idcounter = 0;
+    return text.replace(/%([snb])/g, function (x, m) {
+        //console.log(args[argscounter],ids[idcounter]);
+        //if(args[argscounter]==ids[idcounter]) {
+            return args[argscounter++];
+
+        /*    idcounter++;
+        }else{
+            return "<>"
+        }*/
+    });
+};
+
+__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['procedures_definition'] = function (block) {
+    let prodecureblock=block.childBlocks_[0];
+    let procCode = prodecureblock.getProcCode();
+    let argumentsIds = prodecureblock.argumentIds_;
+    return 'define '+replaceArgs(procCode,argumentsIds)+'\n' + __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.getNextCode(block);
+};
+
+function replaceArgs(text,args) {
+    let c=0;
+    return text.replace(/%([snb])/g, function (x, m) {
+        if(m === 'b'){
+            return '<'+args[c++]+'>';
+        }else {
+            return '('+args[c++]+')';
+        }
+    });
+};
+//========================================
+
+/**
+ * init the generator with information from blockspecifications
+ *
+ */
+function init_generator() {
+    //generate the functions
+    for (let x = 0; x < __WEBPACK_IMPORTED_MODULE_1__blockspecification_blockspecification__["a" /* blockspecifications */].length; x++) {
+        let b = __WEBPACK_IMPORTED_MODULE_1__blockspecification_blockspecification__["a" /* blockspecifications */][x];
+        let template;
+        if (Array.isArray(b['template'])) {
+            template = b['template'][0];
+        } else {
+            template = b['template'];
+        }
+        let type = b['description']['type'];
+        let args = b['description']['args'];
+        let shape = b['description']['shape'];
+        //add function to text
+        __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text[type] = function (block) {
+            let values = [];
+            for (let i = 0; args && i < args.length; i++) {
+                let v;
+                switch (args[i].type) {
+                    case "field_dropdown":
+                        v = block.getFieldValue(args[i].name);
+                        v = '[' + v + ']';
+                        break;
+                    default:
+                        v = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.valueToCode(block, args[i].name, __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE); //returns undefined if empty
+                        if (!args[i].menu) {
+                            v = '' + v + ''; //results is {} if empty
+                        }
+                }
+                values.push(v);
+            }
+
+
+            switch (shape) { // ({}+{({}+{})})
+                case 'reporterblock':
+                    return ['(' + template.format(values) + ')' + __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.getNextCode(block), __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE];
+                case 'booleanblock':
+                    return ['<' + template.format(values) + '>' + __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.getNextCode(block), __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE];
+                default:
+                    return template.format(values) + '\n' + __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.getNextCode(block);
+            }
+
+        };
+
+        for (let i = 0; args && i < args.length; i++) {
+            if (args[i].menu) {
+                __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text[args[i].menu] = function (block) {
+                    return ['['+block.getFieldValue(args[i].name)+']', __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE];
+                };
+            }
+        }
+    }
+}
+
+init_generator();
+
+/***/ }),
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11725,7 +11977,7 @@ exports.createSyntaxDiagramsCode = createSyntaxDiagramsCode;
 //# sourceMappingURL=render_public.js.map
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11875,13 +12127,13 @@ function indent(howMuch, text) {
 //# sourceMappingURL=generate.js.map
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var generate_1 = __webpack_require__(54);
+var generate_1 = __webpack_require__(55);
 function generateParserFactory(options) {
     var wrapperText = generate_1.genWrapperFunction({
         name: options.name,
@@ -11902,7 +12154,7 @@ exports.generateParserModule = generateParserModule;
 //# sourceMappingURL=generate_public.js.map
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12037,13 +12289,13 @@ exports.validateRedundantMethods = validateRedundantMethods;
 //# sourceMappingURL=cst_visitor.js.map
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var range_1 = __webpack_require__(62);
+var range_1 = __webpack_require__(63);
 var utils_1 = __webpack_require__(0);
 var gast_public_1 = __webpack_require__(1);
 var ProdType;
@@ -12493,7 +12745,7 @@ exports.deserializeProduction = deserializeProduction;
 //# sourceMappingURL=gast_builder.js.map
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12565,7 +12817,7 @@ exports.buildInProdFollowPrefix = buildInProdFollowPrefix;
 //# sourceMappingURL=follow.js.map
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12627,7 +12879,7 @@ exports.GastRefResolverVisitor = GastRefResolverVisitor;
 //# sourceMappingURL=resolver.js.map
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12647,7 +12899,7 @@ var regexp_to_ast_1 = __webpack_require__(43);
 var tokens_public_1 = __webpack_require__(3);
 var lexer_public_1 = __webpack_require__(28);
 var utils_1 = __webpack_require__(0);
-var reg_exp_1 = __webpack_require__(61);
+var reg_exp_1 = __webpack_require__(62);
 var regExpParser = new regexp_to_ast_1.RegExpParser();
 var PATTERN = "PATTERN";
 exports.DEFAULT_MODE = "defaultMode";
@@ -13461,7 +13713,7 @@ function getCharCodes(charsOrCodes) {
 //# sourceMappingURL=lexer.js.map
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13659,7 +13911,7 @@ exports.canMatchCharCode = canMatchCharCode;
 //# sourceMappingURL=reg_exp.js.map
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13698,11 +13950,11 @@ exports.isValidRange = isValidRange;
 //# sourceMappingURL=range.js.map
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
-var Blockly = __webpack_require__(71);
+var Blockly = __webpack_require__(72);
 var goog = __webpack_require__(30);
 
 /**
@@ -14055,11 +14307,11 @@ module.exports = Blockly;
 
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
-var Blockly = __webpack_require__(70);
+var Blockly = __webpack_require__(71);
 var goog = __webpack_require__(30);
 
 // This file was automatically generated.  Do not modify.
@@ -24013,11 +24265,11 @@ module.exports = Blockly;
 
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
-var Blockly = __webpack_require__(69);
+var Blockly = __webpack_require__(70);
 
 // Do not edit this file; automatically generated by build.py.
 'use strict';
@@ -24061,12 +24313,12 @@ module.exports = Blockly;
 
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
 var goog = __webpack_require__(30);
-var Blockly = __webpack_require__(68);
+var Blockly = __webpack_require__(69);
 
 // Do not edit this file; automatically generated by build.py.
 'use strict';
@@ -24273,7 +24525,7 @@ module.exports = Blockly;
 
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -26436,35 +26688,35 @@ exports["goog"] = (goog);
 }.call(window));
 
 /***/ }),
-/* 68 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(65);
-
-
-/***/ }),
 /* 69 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(44).Blockly;
-
-
-/***/ }),
-/* 70 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(63);
-
-
-/***/ }),
-/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(66);
 
 
 /***/ }),
+/* 70 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(44).Blockly;
+
+
+/***/ }),
+/* 71 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(64);
+
+
+/***/ }),
 /* 72 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(67);
+
+
+/***/ }),
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -26518,7 +26770,7 @@ module.exports = __webpack_require__(66);
 
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -26926,7 +27178,7 @@ module.exports = __webpack_require__(66);
 
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -27211,7 +27463,7 @@ module.exports = __webpack_require__(66);
 
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -27220,13 +27472,13 @@ module.exports = __webpack_require__(66);
 
   ref = __webpack_require__(4), assign = ref.assign, isFunction = ref.isFunction;
 
-  XMLDocument = __webpack_require__(72);
+  XMLDocument = __webpack_require__(73);
 
-  XMLDocumentCB = __webpack_require__(73);
+  XMLDocumentCB = __webpack_require__(74);
 
   XMLStringWriter = __webpack_require__(31);
 
-  XMLStreamWriter = __webpack_require__(74);
+  XMLStreamWriter = __webpack_require__(75);
 
   module.exports.create = function(name, xmldec, doctype, options) {
     var doc, root;
@@ -27270,7 +27522,7 @@ module.exports = __webpack_require__(66);
 
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -27305,7 +27557,7 @@ class State {
     reset() {
         //list of all blocks
         this.blocks = [];
-        this.blocks.push({ID:-1,SHAPE:null}); //this should not happen normally but this way nothing breaks during dev
+        this.blocks.push({ID:-1}); //this should not happen normally but this way nothing breaks during dev
         this.modus = MODUS.NONE;
         this.interrupted = false;
         //when opening a new context the previous is stored here
@@ -27350,17 +27602,10 @@ class State {
      * @param id the id of the block
      * @param shape the shape of the block
      */
-    addBlock(id,shape){
-        this.blocks.push({ID:id,SHAPE:shape})
+    addBlock(id){
+        this.blocks.push({ID:id})
     }
 
-    /**
-     * return the type of the last added block
-     * @returns {string}
-     */
-    getFirstBlockType(){
-        return this.blocks[0].SHAPE;
-    }
 
     /**
      * return the id of the last added block
@@ -27370,13 +27615,6 @@ class State {
         return this.blocks[0].ID;
     }
 
-    /**
-     * return the type of the last added block
-     * @returns {string}
-     */
-    getLastBlockType(){
-        return this.blocks[this.blocks.length-1].SHAPE;
-    }
 
     /**
      * return the id of the last added block
@@ -27432,7 +27670,7 @@ class State {
 
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -27440,14 +27678,14 @@ class State {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_chevrotain__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__LNParser__ = __webpack_require__(32);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__InfoLNVisitor__ = __webpack_require__(49);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_xmlbuilder__ = __webpack_require__(75);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_xmlbuilder__ = __webpack_require__(76);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_xmlbuilder___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_xmlbuilder__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__IDManager__ = __webpack_require__(48);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__State__ = __webpack_require__(76);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__State__ = __webpack_require__(77);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__blocks__ = __webpack_require__(33);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__LNLexer__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__modifierAnalyser__ = __webpack_require__(78);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__warnings__ = __webpack_require__(79);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__modifierAnalyser__ = __webpack_require__(79);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__warnings__ = __webpack_require__(80);
 /**
  * Template for the visitor.
  *
@@ -27621,6 +27859,9 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
                 this.createVariableBlock(ctx, description);
 
             } else if (this.isBooleanBlock(ctx, modifiers)) {
+                if(!modifiers.custom){
+                    this.warningsKeeper.add(ctx, "unkown boolean block, add ::custom if you want a custom block")
+                }
                 this.createCustomBooleanBlock(ctx, description);
 
             } else {
@@ -27661,7 +27902,7 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
 
     isBuildInBlock(description, ctx, modifiers) {
-        return description in __WEBPACK_IMPORTED_MODULE_6__blocks__["h" /* default */] && !modifiers.custom;
+        return !modifiers.user && !modifiers.custom && description in __WEBPACK_IMPORTED_MODULE_6__blocks__["h" /* default */];
     }
 
     isVariableBlock(ctx, modifiers) {
@@ -27783,17 +28024,19 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     */
 
     ifelse(ctx) {
+        let blockid = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "ifelse"));
         if (!ctx.Else) {
             this.xml = this.xml.ele('block', {
                 'type': 'control_if',
-                'id': this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "ifelse"))
+                'id': blockid,
             });
         } else {
             this.xml = this.xml.ele('block', {
                 'type': 'control_if_else',
-                'id': this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "ifelse"))
+                'id': blockid,
             });
         }
+        this.state.addBlock(blockid);
         this.xml = this.xml.ele('value', {
             'name': 'CONDITION'
         });
@@ -27817,12 +28060,14 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     forever(ctx) {
+        let blockid = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "forever"));
         this.xml = this.xml.ele('block', {
             'type': 'control_forever',
-            'id': this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "forever")),
+            'id': blockid,
         }).ele('statement ', {
             'name': 'SUBSTACK'
         });
+        this.state.addBlock(blockid);
         this.visit(ctx.clause);
         this.xml = this.xml.up(); //close statement (stack will close block)
         this.visit(ctx.annotations);
@@ -27831,12 +28076,14 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     repeat(ctx) {
+        let blockid = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "repeat"));
         this.xml = this.xml.ele('block', {
             'type': 'control_repeat',
-            'id': this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "repeat")),
+            'id': blockid,
         }).ele('value', {
             'name': 'TIMES'
         });
+        this.state.addBlock(blockid);
         this.visit(ctx.argument);
         this.xml = this.xml.up().ele('statement ', {
             'name': 'SUBSTACK'
@@ -27847,12 +28094,14 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     repeatuntil(ctx) {
+        let blockid = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "repeatuntil"));
         this.xml = this.xml.ele('block', {
             'type': 'control_repeat_until',
-            'id': this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "repeatuntil")),
+            'id': blockid,
         }).ele('value', {
             'name': 'CONDITION'
         });
+        this.state.addBlock(blockid);
         this.visit(ctx.condition);
         this.xml = this.xml.up().ele('statement ', {
             'name': 'SUBSTACK'
@@ -27980,7 +28229,8 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         }).ele('field', {
             'name': 'VARIABLE',
             'id': varID,
-        }, description).up()
+        }, description).up();
+        this.state.addBlock(blockID);
     }
 
     createListBlock(ctx, description) {
@@ -27992,7 +28242,8 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         }).ele('field', {
             'name': 'LIST',
             'id': varID,
-        }, description).up()
+        }, description).up();
+        this.state.addBlock(blockID);
     }
 
     createCustomReporterBlock(ctx, description) {
@@ -28004,7 +28255,8 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         }).ele('field', {
             'name': 'VALUE',
             'id': varID,
-        }, description).up()
+        }, description).up();
+        this.state.addBlock(blockID);
     }
 
     createCustomBooleanBlock(ctx, description) {
@@ -28016,7 +28268,8 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         }).ele('field', {
             'name': 'VALUE',
             'id': varID,
-        }, description).up()
+        }, description).up();
+        this.state.addBlock(blockID);
     }
 
 }
@@ -28026,7 +28279,7 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -28098,12 +28351,27 @@ class customModifierExtractor extends ModifierExtractor {
     }
 }
 
+class varModifierExtractor extends ModifierExtractor {
+    containsKey(modifierToken) {
+        return modifierToken.image.match(/::user-defined/i);
+    }
+
+    extractParameters(modifierToken) {
+        return {}
+    }
+
+    getName() {
+        return "user"
+    }
+}
+
 class ModifierAnalyser {
     constructor(ctx, informationVisitor) {
         this.infoVisitor = informationVisitor;
         this.modifierExtractors = [];
         this.modifierExtractors.push(new listModifierExtractor());
         this.modifierExtractors.push(new customModifierExtractor());
+        this.modifierExtractors.push(new varModifierExtractor());
     }
 
     getMods(modifierList) {
@@ -28126,7 +28394,7 @@ class ModifierAnalyser {
 
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -28165,265 +28433,7 @@ class WarningsKeeper {
 
 
 /***/ }),
-/* 80 */,
-/* 81 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = generateText;
-/* unused harmony export init_generator */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_scratch_blocks__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_scratch_blocks__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__blockspecification_blockspecification__ = __webpack_require__(50);
-/**
- * scratch-ln generators.
- *
- * Generator, using the blockly generator stuff to transform blocks -> text
- *
- * @file   This files defines the blockspecifications const.
- * @author Ellen Vanhove.
- */
-
-
-
-
-function generateText(workspace) {
-    let u = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.workspaceToCode(workspace);
-    console.log('_____________');
-    console.log(u);
-    console.log('_____________');
-    return u
-}
-
-// scratch LN
-//====================================================== 
-//generator
-//======================================================
-
-__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text = new __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.Generator('text');
-
-
-//some basis function that are necessary but do not do anything here
-__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.init = function (workspace) {
-    //nope
-};
-
-__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.scrub_ = function (block, code) {
-    return code
-};
-
-__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.finish = function (code) {
-    return code
-};
-
-/**
- * Based on something from blockly, see python generator example.
- * @param block
- * @returns {string|Array}
- */
-__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.getNextCode = function (block) {
-    let nextBlock = block.nextConnection && block.nextConnection.targetBlock();
-    let nextCode = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.blockToCode(nextBlock); //returns '' if not existing
-    return nextCode
-};
-
-/**
- * arguments list where the first one is not an array -> args are replaced in order of occurrence
- * or one array -> content of this array is used to replace
- * @returns {string}
- */
-String.prototype.format = function () {
-    let args = arguments;
-    if (Array.isArray(args[0])) { //if an array is passed as argument
-        args = args[0];
-    }
-    return this.replace(/%(\d+)/g, function (_, m) {
-        return args[--m];
-    });
-};
-
-//====examples
-__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['event_whenflagclicked'] = function (block) {
-    return 'when greenflag clicked;\n' + __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.getNextCode(block);
-};
-
-__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['motion_movesteps'] = function (block) {
-    let value_name = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.valueToCode(block, 'STEPS', __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE);
-    return 'move %1 steps;\n'.format('{' + value_name + '}') + __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.getNextCode(block);
-};
-//====examples
-
-//=========== arguments =================
-__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['math_number'] = function (block) {
-    return [block.getFieldValue('NUM'), __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
-};
-
-__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['math_integer'] = function (block) {
-    return [block.getFieldValue('NUM'), __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
-};
-
-__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['math_positive_number'] = function (block) {
-    return [block.getFieldValue('NUM'), __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
-};
-
-__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['math_whole_number'] = function (block) {
-    return [block.getFieldValue('NUM'), __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
-};
-
-__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['colour_picker'] = function (block) {
-    return [block.getFieldValue('COLOUR'), __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
-};
-
-__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['math_angle'] = function (block) {
-    return [block.getFieldValue('NUM'), __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
-};
-
-__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['text'] = function (block) {
-    return [block.getFieldValue('TEXT'), __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
-};
-
-__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['data_variable'] = function (block) {
-    //variables are a bit different... getfieldvalue returns the id
-    return ['(' + block.getField('VARIABLE').getText() + ')', __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
-};
-//========================================
-
-//========= reporter and boolean variables  ===============
-
-__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['data_listcontents'] = function (block) {
-    //variables are a bit different... getfieldvalue returns the id
-    return ['(' + block.getField('LIST').getText() + '::list)', __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
-};
-
-__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['argument_reporter_boolean'] = function (block) {
-    //variables are a bit different... getfieldvalue returns the id
-    return ['<' + block.getField('VALUE').getText() + '::custom>', __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
-};
-
-__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['argument_reporter_string_number'] = function (block) {
-    //variables are a bit different... getfieldvalue returns the id
-    return ['(' + block.getField('VALUE').getText() + '::custom)', __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
-};
-//========================================
-
-//========= special cases  ===============
-__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['event_broadcast_menu'] = function (block) {
-    //variables are a bit different... getfieldvalue returns the id
-    return [block.getField('BROADCAST_OPTION').getText(), __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
-};
-//========================================
-
-//========= controls =====================
-
-__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['control_forever'] = function (block) {
-    let statements = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.statementToCode(block, 'SUBSTACK'); //todo: this automaticly intendents, is this a problem?
-    return 'forever\n' + statements;
-
-};
-
-__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['control_repeat'] = function (block) {
-    let statements = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.statementToCode(block, 'SUBSTACK'); //todo: this automaticly intendents, is this a problem?
-    let nr = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.valueToCode(block, 'TIMES', __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE);
-    return 'repeat {' + nr + '}\n' + statements + 'end\n' + __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.getNextCode(block);
-};
-
-__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['control_repeat_until'] = function (block) {
-    let statements = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.statementToCode(block, 'SUBSTACK'); //todo: this automaticly intendents, is this a problem?
-    let nr = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.valueToCode(block, 'CONDITION', __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE);
-    return 'repeat until ' + nr + '\n' + statements + 'end\n' + __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.getNextCode(block);
-};
-
-__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['control_if'] = function (block) {
-    let statements = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.statementToCode(block, 'SUBSTACK'); //todo: this automaticly intendents, is this a problem?
-    let nr = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.valueToCode(block, 'CONDITION', __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE);
-    return 'if {' + nr + '}\n' + statements + 'end\n' + __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.getNextCode(block);
-};
-
-__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['control_if_else'] = function (block) {
-    let statements = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.statementToCode(block, 'SUBSTACK'); //todo: this automaticly intendents, is this a problem?
-    let statements2 = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.statementToCode(block, 'SUBSTACK2'); //todo: this automaticly intendents, is this a problem?
-    let nr = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.valueToCode(block, 'CONDITION', __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE);
-    return 'if {' + nr + '}\n' + statements + 'else\n' + statements2 + 'end\n' + __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.getNextCode(block);
-};
-
-//========================================
-
-//======= custom blocks ==================
-__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['procedures_call'] = function (block) {
-    let procCode = block.getProcCode();
-    //todo
-    return procCode;
-};
-
-
-__WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text['procedures_definition'] = function (block) {
-    //let procCode = block.getProcCode();
-    //todo
-    return 'define ';//+procCode;
-};
-//========================================
-
-/**
- * init the generator with information from blockspecifications
- *
- */
-function init_generator() {
-    //generate the functions
-    for (let x = 0; x < __WEBPACK_IMPORTED_MODULE_1__blockspecification_blockspecification__["a" /* blockspecifications */].length; x++) {
-        let b = __WEBPACK_IMPORTED_MODULE_1__blockspecification_blockspecification__["a" /* blockspecifications */][x];
-        let template;
-        if (Array.isArray(b['template'])) {
-            template = b['template'][0];
-        } else {
-            template = b['template'];
-        }
-        let type = b['description']['type'];
-        let args = b['description']['args'];
-        let shape = b['description']['shape'];
-        //add function to text
-        __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text[type] = function (block) {
-            let values = [];
-            for (let i = 0; args && i < args.length; i++) {
-                let v;
-                switch (args[i].type) {
-                    case "field_dropdown":
-                        v = block.getFieldValue(args[i].name);
-                        v = '[' + v + ']';
-                        break;
-                    default:
-                        v = __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.valueToCode(block, args[i].name, __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE); //returns undefined if empty
-                        if (!args[i].menu) {
-                            v = '{' + v + '}'; //results is {} if empty
-                        }
-                }
-                values.push(v);
-            }
-
-
-            switch (shape) { // ({}+{({}+{})})
-                case 'reporterblock':
-                    return ['(' + template.format(values) + ')' + __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.getNextCode(block), __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE];
-                case 'booleanblock':
-                    return ['<' + template.format(values) + '>' + __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.getNextCode(block), __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE];
-                default:
-                    return template.format(values) + '\n' + __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.getNextCode(block);
-            }
-
-        };
-
-        for (let i = 0; args && i < args.length; i++) {
-            if (args[i].menu) {
-                __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text[args[i].menu] = function (block) {
-                    return ['['+block.getFieldValue(args[i].name)+']', __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default.a.text.ORDER_NONE];
-                };
-            }
-        }
-    }
-}
-
-init_generator();
-
-/***/ }),
+/* 81 */,
 /* 82 */,
 /* 83 */,
 /* 84 */
@@ -28434,7 +28444,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_scratch_blocks__ = __webpack_require__(35);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_scratch_blocks___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_scratch_blocks__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parser_parserUtils_js__ = __webpack_require__(34);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__generator_generator_js__ = __webpack_require__(81);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__generator_generator_js__ = __webpack_require__(53);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__config_config__ = __webpack_require__(51);
 
 

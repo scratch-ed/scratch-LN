@@ -1,8 +1,9 @@
 <script type="text/javascript" src="ScratchLN.js" charset="utf-8"></script>
+
 <script>
-  window.onload = function() {
-    scratchLN.scratchify();
-  };
+    window.onload = function() {
+        scratchLN.scratchify(".scratch",{media: '/scratch-LN/example/static/blocks-media/'});
+    };
 </script>
 
 # Markdown example

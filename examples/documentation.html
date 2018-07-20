@@ -3,7 +3,13 @@
         <meta charset="utf-8">
        <!--  <link rel="stylesheet" type="text/css" media="screen" href="/scratch-LN/assets/css/style.css?v=d68aed45b03457b0f1b368aced7ef7a77e028874"> -->
         <link rel="stylesheet" type="text/css" media="screen" href="https://scratch4d.github.io/scratch-LN/assets/css/style.css?v=d68aed45b03457b0f1b368aced7ef7a77e028874">
-        <script type="text/javascript" src="run.js" charset="utf-8"></script>
+        <script type="text/javascript" src="ScratchLN.js" charset="utf-8"></script>
+
+        <script>
+            window.onload = function() {
+                scratchLN.scratchify(".scratch",{media: '/scratch-LN/example/static/blocks-media/'});
+            };
+        </script>
         <style type="text/css">
 
         </style>
@@ -58,8 +64,8 @@
               <td>list are variables where the type is specified with the decorator '::list'</td>
             </tr>  
            <tr>
-              <td><{} and {}></td>
-              <td><code class='scratch'>{} and {}</code></td>
+              <td><<> and <>></td>
+              <td><code class='scratch'><> and <></code></td>
               <td>boolean blocks are notated between "<" and ">"</td>
             </tr>            
             <tr>

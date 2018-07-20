@@ -3,8 +3,18 @@ import ScratchBlocks from 'scratch-blocks';
 import parseTextToXML from './../parser/parserUtils.js'
 import {MEDIA} from "../config/config";
 
-export function scratchify(clasz='scratch') {
-    $('.'+clasz).each(function(i, obj) {
+
+const LOCALE_ATTR ="blocks-locale";
+const SCALE_ATTR ="blocks-scale";
+
+/**
+ *
+ * @param selector see: https://www.w3schools.com/jquery/jquery_ref_selectors.asp
+ * @param properties see: DEFAULT_PROPERTIES
+ */
+export function scratchify(selector='.scratch',properties={}) {
+    let userDefaultProperties=mergeProperties(properties,DEFAULT_PROPERTIES);
+    $(selector).each(function(i, obj) {
         let id = $(this).attr('id');
         if (!id) {
             id = "workspace_" + i;
@@ -13,8 +23,19 @@ export function scratchify(clasz='scratch') {
         }
         //create the div to inject the workspace in
         $(this).parent().append($("<div class=blocklyDiv id=" + id + "></div>"));
-
-        let workspace = createWorkspace(id);
+        let extracted = {};
+        let locale = $(this).attr(LOCALE_ATTR);
+        if(locale) {
+            extracted.locale = locale;
+        }
+        let scale = $(this).attr(SCALE_ATTR);
+        if(scale) {
+            extracted.zoom = {
+                startScale: scale
+            };
+        }
+        let prop=mergeProperties(extracted,userDefaultProperties);
+        let workspace = createWorkspace(id,prop);
         //do parsing
         let text = $(this).text();
         //remove the text
@@ -26,10 +47,10 @@ export function scratchify(clasz='scratch') {
             //add to this workspace
             let dom = Blockly.Xml.textToDom(xml);
             Blockly.Xml.domToWorkspace(dom, workspace);
-            //workspace.cleanUp();
+            workspace.cleanUp();
         }
         //rescale the workspace to fit to the blocks
-        fitBlocks(workspace, id);
+        fitBlocks(workspace, id,prop);
         storeWorkspace(id, workspace);
     });
 }
@@ -63,25 +84,58 @@ export function changeValue(id, blockID, value) {
     field.setText(value);
 }
 
-export function createWorkspace(workspaceName) {
-    return ScratchBlocks.inject(workspaceName, {
-        toolbox: '<xml></xml>',
-        'scrollbars': false,
-        'trashcan': false,
-        'readOnly': true,
-        media: MEDIA, //flag
-        colours: {
-            fieldShadow: 'rgba(255, 255, 255, 1)'
-        },
-        zoom: {
-            startScale: 0.5
-        }
-    });
+export const DEFAULT_PROPERTIES = {
+    //this is exactly the same as blockly/scratchblocks properties
+    readOnly: true,
+    toolbox: '<xml></xml>',
+    scrollbars: false,
+    trashcan: false,
+    comments: true,
+    media: MEDIA,
+    colours: {
+        fieldShadow: 'rgba(255, 255, 255, 1)'
+    },
+    zoom: {
+        startScale: 0.5
+    },
+    // ----
+    //extra locale
+    locale: "en",
+};
+
+export function createWorkspace(workspaceName,properties=DEFAULT_PROPERTIES) {
+    ScratchBlocks.ScratchMsgs.setLocale(properties.locale);
+    return ScratchBlocks.inject(workspaceName, properties);
 }
 
-export function fitBlocks(workspace, id) {
-    var metrics = workspace.getMetrics();
-    $('#' + id).css('width', (metrics.contentWidth + 10) + 'px')
-    $('#' + id).css('height', (metrics.contentHeight + 10) + 'px')
+function mergeProperties(properties, defaultprops){
+    let prop = {};
+    for(let p in defaultprops){
+        if(properties.hasOwnProperty(p)){
+            prop[p] = properties[p];
+        }else{
+            prop[p] = defaultprops[p];
+        }
+    }
+    return prop;
+}
+
+export function fitBlocks(workspace, id,properties) {
+    let isHead = false;
+    //get the topblocks, this are the beginning of stacks. they are ordered by location.
+    let topBlocks=workspace.getTopBlocks(true);
+    if(topBlocks[0]) {
+        isHead = topBlocks[0].startHat_;
+    }
+    let metrics = workspace.getMetrics(); //is not dependent on the location of the workspace
+    if(isHead){
+        $('#' + id).css('height', (metrics.contentHeight + 20*properties.zoom.startScale) + 'px');
+        //translate the whole workspace (like dragging in the live view)
+        workspace.translate(5,20*properties.zoom.startScale);
+    }else{
+        $('#' + id).css('height', (metrics.contentHeight + 10) + 'px');
+        workspace.translate(5,5);
+    }
+    $('#' + id).css('width', (metrics.contentWidth + 10) + 'px');
     ScratchBlocks.svgResize(workspace);
 }
