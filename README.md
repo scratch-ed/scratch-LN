@@ -57,14 +57,14 @@ The default properties are given below.
     scrollbars: false,
     trashcan: false,
     comments: true,
-    media: '/static/blocks-media/', //location of the images.
+    media: '/static/blocks-media/', //location of the images, sounds, etc.
     colours: {
-        fieldShadow: 'rgba(255, 255, 255, 1)' //workspace/background color
+        fieldShadow: 'rgba(255, 255, 255, 1)' //workspace color
     },
     zoom: {
         startScale: 0.5    //zoomlevel
     },
-    // ----
+    
     //extra locale
     locale: "en",  //natural language of the blocks
 }
