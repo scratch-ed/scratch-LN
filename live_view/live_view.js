@@ -38,7 +38,7 @@ window.onload = function () {
     //text
     editor = document.getElementById('editor');
     editor.addEventListener('input', updateWorkspace);
-    editor.value =  'block {1} "y" <>'
+    editor.value =  '(mouse x::var)'
     ;
 
     warnings = document.getElementById('warnings');

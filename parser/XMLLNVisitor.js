@@ -171,6 +171,9 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
                 this.createVariableBlock(ctx, description);
 
             } else if (this.isBooleanBlock(ctx, modifiers)) {
+                if(!modifiers.custom){
+                    this.warningsKeeper.add(ctx, "unkown boolean block, add ::custom if you want a custom block")
+                }
                 this.createCustomBooleanBlock(ctx, description);
 
             } else {
@@ -211,7 +214,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
 
     isBuildInBlock(description, ctx, modifiers) {
-        return description in blocks && !modifiers.custom;
+        return !modifiers.user && !modifiers.custom && description in blocks;
     }
 
     isVariableBlock(ctx, modifiers) {

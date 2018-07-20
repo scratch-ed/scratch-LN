@@ -3284,7 +3284,7 @@ const StringLiteral = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrota
 const NumberLiteral = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
     name: "NumberLiteral",
     pattern: /-?(\d+)(\.\d+)?/,
-    categories: [Literal],
+    categories: [Literal,Label],
     longer_alt: Label,
 });
 /* harmony export (immutable) */ __webpack_exports__["NumberLiteral"] = NumberLiteral;
@@ -10096,7 +10096,7 @@ class InfoLNVisitor extends BaseCstVisitor {
 
 
     unescapeComment(text) {
-        return text.replace(/\\\|/g, '|').replace(/^\|(.*(?=\|$))\|$/, '$1');
+        return text.replace(/\\([^])/g, '$1').replace(/^\|(.*(?=\|$))\|$/, '$1');
     }
 
     annotations(ctx) {
@@ -10162,11 +10162,11 @@ class InfoLNVisitor extends BaseCstVisitor {
     }
 
     unescapeStringLiteral(text) {
-        return text.replace(/\\"/g, '"').replace(/^"(.*(?="$))"$/, '$1');
+        return text.replace(/\\([^])/g, '$1').replace(/^"(.*(?="$))"$/, '$1');
     }
 
     unescapeChoiceLiteral(text) {
-        return text.replace(/\\\[/g, '"').replace(/^\[(.*(?=\]$))\]$/, '$1');
+        return text.replace(/\\([^])/g, '$1').replace(/^\[(.*(?=\]$))\]$/, '$1');
     }
 
     /**
@@ -37936,6 +37936,9 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
                 this.createVariableBlock(ctx, description);
 
             } else if (this.isBooleanBlock(ctx, modifiers)) {
+                if(!modifiers.custom){
+                    this.warningsKeeper.add(ctx, "unkown boolean block, add ::custom if you want a custom block")
+                }
                 this.createCustomBooleanBlock(ctx, description);
 
             } else {
@@ -37976,7 +37979,7 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
 
     isBuildInBlock(description, ctx, modifiers) {
-        return description in __WEBPACK_IMPORTED_MODULE_6__blocks__["a" /* default */] && !modifiers.custom;
+        return !modifiers.user && !modifiers.custom && description in __WEBPACK_IMPORTED_MODULE_6__blocks__["a" /* default */];
     }
 
     isVariableBlock(ctx, modifiers) {
@@ -38425,12 +38428,27 @@ class customModifierExtractor extends ModifierExtractor {
     }
 }
 
+class varModifierExtractor extends ModifierExtractor {
+    containsKey(modifierToken) {
+        return modifierToken.image.match(/::user-defined/i);
+    }
+
+    extractParameters(modifierToken) {
+        return {}
+    }
+
+    getName() {
+        return "user"
+    }
+}
+
 class ModifierAnalyser {
     constructor(ctx, informationVisitor) {
         this.infoVisitor = informationVisitor;
         this.modifierExtractors = [];
         this.modifierExtractors.push(new listModifierExtractor());
         this.modifierExtractors.push(new customModifierExtractor());
+        this.modifierExtractors.push(new varModifierExtractor());
     }
 
     getMods(modifierList) {
