@@ -2,7 +2,7 @@
 
 <script>
     window.onload = function() {
-        scratchLN.scratchify(".scratch",{media: '/scratch-LN/example/static/blocks-media/'});
+        scratchLN.scratchify(".language-scratch",{media: '/scratch-LN/example/static/blocks-media/'});
     };
 </script>
 
