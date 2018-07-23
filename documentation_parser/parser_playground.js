@@ -101,8 +101,9 @@
 
     const NumberLiteral = createToken({
         name: "NumberLiteral",
-        pattern: /-?(\d+)(\.\d+)?/,
-        categories: [Literal],
+        //pattern: /-?(\d+)(\.\d+)?/, todo test of dit werkt met een *
+        pattern: /-?(\d*)(\.\d+)?/,
+        categories: [Literal,Label],
         longer_alt: Label,
     });
 
