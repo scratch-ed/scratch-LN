@@ -15,12 +15,12 @@ function makeArgument(ctx, visitor, arg, i) {
     } else {
         visitor.state.expectNothing();
     }
+    let type = visitor.infoVisitor.getType(ctx.argument[i]);
     //check menu first, because round dropdwons are also inputvalues
     if (arg.menu) { //can be replaced -> round dropdown
         visitor.xml = visitor.xml.ele('value', {
             'name': arg.name
         });
-        let type = visitor.infoVisitor.getType(ctx.argument[i]);
         if (type === EXPRESSION || type === PREDICATE) {
             visitor.visit(ctx.argument[i]);
             //generate an empty dropdown below
@@ -41,16 +41,36 @@ function makeArgument(ctx, visitor, arg, i) {
             }, visitor.infoVisitor.getString(ctx.argument[i])); // '_mouse_'
         }
         visitor.xml = visitor.xml.up();
+
     } else if (arg.type === 'input_value') { //normal input
         visitor.xml = visitor.xml.ele('value', {
             'name': arg.name
         });
         visitor.visit(ctx.argument[i]);
         visitor.xml = visitor.xml.up();
+
     } else if (arg.type === 'field_dropdown') { //limited options -> rectangle dropdwon
+        let option = visitor.infoVisitor.getString(ctx.argument[i]);
+        let key;
+        for(let i=0; i<arg.options.length;i++){
+            let text = arg.options[i][0];
+            if(text === option){
+                key = arg.options[i][1];
+                break;
+            }
+        }
+        if(!key){
+            visitor.warningsKeeper.add(ctx,"unknown option: " + option);
+            key=option;
+        }
+        if(type !== CHOICE){
+            visitor.warningsKeeper.add(ctx,"expected a choice but found " + type);
+        }
+
+
         visitor.xml = visitor.xml.ele('field', {
             'name': arg.name
-        }, visitor.infoVisitor.getString(ctx.argument[i]));
+        }, key);
         visitor.xml = visitor.xml.up();
     }
 }

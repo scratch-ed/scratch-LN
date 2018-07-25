@@ -38,7 +38,7 @@ window.onload = function () {
     //text
     editor = document.getElementById('editor');
     editor.addEventListener('input', updateWorkspace);
-    editor.value =  'switch backdrop to {}'
+    editor.value =  'set rotation style [left-right]'
     ;
 
     warnings = document.getElementById('warnings');
