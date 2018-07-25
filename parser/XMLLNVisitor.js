@@ -10,11 +10,11 @@
 //parser
 import {tokenMatcher} from 'chevrotain'
 import {lnparser} from "./LNParser"
-import {InfoLNVisitor} from './InfoLNVisitor';
+import {InfoLNVisitor} from './infoLNVisitor';
 //xml
 import builder from 'xmlbuilder';
 import {ARG, BasicIDManager, LIST} from "./IDManager";
-import {State} from "./State";
+import {State} from "./state";
 import blocks from "./blockConverterUtils";
 import {ModifierAnalyser} from "./modifierAnalyser";
 import {WarningsKeeper} from "./warnings";
@@ -23,7 +23,7 @@ const lntokens = require("./LNLexer");
 let NumberLiteral = lntokens.NumberLiteral;
 let ColorLiteral = lntokens.ColorLiteral;
 let StringLiteral = lntokens.StringLiteral;
-let ChoiceLiteral = lntokens.ChoiceLiteral; 
+let ChoiceLiteral = lntokens.ChoiceLiteral;
 
 //const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
 
@@ -76,7 +76,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         this.warningsKeeper = new WarningsKeeper();
 
         //defenition
-        this.buildinBlocksConverter = blocks;
+        this.buildinBlocksConverters = blocks;
     }
 
     getXML(cst) {
@@ -174,7 +174,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
         if (this.isBuildInBlock(description, ctx, modifiers)) {
             //generate block
-            this.buildinBlocksConverter[description].converter(ctx, this, modifiers)
+            this.buildinBlocksConverters[description].converter(ctx, this, modifiers)
         } else if (description.match(DEFINE_REGEX)) {
             this.createDefineBlock(ctx, description);
         } else { //the block is not defined in scratch, so considered it as user-defined
@@ -241,12 +241,18 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
 
     isBuildInBlock(description, ctx, modifiers) {
-        let check = !modifiers.user && !modifiers.myblock && description in this.buildinBlocksConverter;
+        let check = !modifiers.user && !modifiers.myblock && description in this.buildinBlocksConverters;
         //it is defined as build in block.
         //is it used correctly?
         if(check){
-            //todo
-            return check;
+            if(this.buildinBlocksConverters[description].modus === this.state.getModus()){
+                return true; //no problems
+            }else{
+                //the text matches a buildin block but the modus is not right
+                //so a for example mouse down instead of <mouse down>
+                this.warningsKeeper.add(ctx,"try to use a build-in block in the wrong context/modus");
+                return false;
+            }
         }
         return false;
     }

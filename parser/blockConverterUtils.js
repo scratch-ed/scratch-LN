@@ -1,14 +1,24 @@
 /**
- * Summary.
+ * Functions that structure the functions that generate the xml of the build-in blocks;.
  *
- * Description.
- *
- * @file   This files defines the MyClass class.
+ * @file   This files defines the functions
  * @author Ellen Vanhove.
  */
 import {blockspecifications} from "../blockspecification/blockspecification";
+import {MODUS} from "./typeConfig";
 
 let blocks = {};
+//map of strings -> objects that look like
+/**
+ * WARNING: blocks with the same text are wrapped in the converter.
+ * WARNING: currently only one modus for each block,
+ * so should be relooked in case same string in two modusses can be used.
+ * {
+ *  converter: function that generates xml
+ *  modus: see typeConfig, in which context can this block been build.
+ * }
+ */
+
 export default blocks;
 
 /**
@@ -43,14 +53,20 @@ function createBlockEntry(templateString, specification) {
     if (!blocks[templateString]) {
         blocks[templateString] = {};
         blocks[templateString].converter = createBlockFunction(specification);
-        /*let shape = "";
-        switch (specification.shape){
+        let modus;
+        switch (specification.shape) {
             case "booleanblock":
-                shape =
+                modus = MODUS.BOOLEAN;
+                break;
+            case "reporterblock":
+                modus=MODUS.REPORTER;
+                break;
+            default:
+                modus = MODUS.STACK;
         }
 
-        blocks[templateString].shape = shape;
-            */
+        blocks[templateString].modus = modus;
+
     } else {
         let higherDefinedSpecification = blocks[templateString].converter;
         //wrap the previous one

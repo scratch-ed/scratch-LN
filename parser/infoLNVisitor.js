@@ -28,7 +28,7 @@ import {lnparser} from "./LNParser"
 export const PLACEHOLDER = "placeholder";
 export const OFFSET = "offset";
 
-
+//todo make this an enum or something
 export const TYPE = "type";
 export const EXPRESSION = "expression";
 export const PREDICATE = "predicate";

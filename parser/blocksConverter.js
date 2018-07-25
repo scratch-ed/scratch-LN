@@ -1,4 +1,4 @@
-import {CHOICE, EXPRESSION, PREDICATE} from "./InfoLNVisitor";
+import {CHOICE, EXPRESSION, PREDICATE} from "./infoLNVisitor";
 
 import {BROADCAST, LIST} from "./IDManager";
 

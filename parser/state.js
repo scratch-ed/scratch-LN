@@ -7,7 +7,7 @@
  * @file   This files defines the State class.
  * @author Ellen Vanhove.
  */
-import {INPUTTYPE, MODUS} from "./TypeConfig";
+import {INPUTTYPE, MODUS} from "./typeConfig";
 
 
 export class State {
@@ -65,6 +65,10 @@ export class State {
 
     isBuildingBooleanBlock(){
         return this.modus === MODUS.BOOLEAN;
+    }
+
+    getModus(){
+        return this.modus;
     }
 
     /**

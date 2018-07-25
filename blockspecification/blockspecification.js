@@ -10,7 +10,7 @@ import {
     universalBlockConverter, listBlockConverter, messageBlockconverter,
     messageShadowBlockconverter, variableBlockConverter, stopConverter, addType
 } from "../parser/blocksConverter";
-import {CHOICE, COLOR} from "../parser/InfoLNVisitor";
+import {CHOICE, COLOR} from "../parser/infoLNVisitor";
 
 /*
  {"template":"",
