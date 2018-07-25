@@ -23,7 +23,7 @@ const lntokens = require("./LNLexer");
 let NumberLiteral = lntokens.NumberLiteral;
 let ColorLiteral = lntokens.ColorLiteral;
 let StringLiteral = lntokens.StringLiteral;
-let ChoiceLiteral = lntokens.ChoiceLiteral;
+let ChoiceLiteral = lntokens.ChoiceLiteral; 
 
 //const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
 
