@@ -54,8 +54,8 @@ class listModifierExtractor extends ModifierExtractor {
 
 class myBlockModifierExtractor extends ModifierExtractor {
     containsKey(modifierToken) {
-        return modifierToken.image.match(/::myblock/i)
-            || modifierToken.image.match(/::local/i)
+        return modifierToken.image.match(/::local/i)
+            || modifierToken.image.match(/::myblock/i)
             || modifierToken.image.match(/::custom-arg/i);
     }
 
@@ -70,7 +70,9 @@ class myBlockModifierExtractor extends ModifierExtractor {
 
 class varModifierExtractor extends ModifierExtractor {
     containsKey(modifierToken) {
-        return modifierToken.image.match(/::user-defined/i)
+        return modifierToken.image.match(/::user/i)
+            || modifierToken.image.match(/::var/i)
+            || modifierToken.image.match(/::user-defined/i)
             || modifierToken.image.match(/::custom/i)
             || modifierToken.image.match(/::variable/i);
     }
