@@ -178,8 +178,8 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         } else if (description.match(DEFINE_REGEX)) {
             this.createDefineBlock(ctx, description);
         } else { //the block is not defined in scratch, so considered it as user-defined
-            if (this.isCustomReporterblock(description,ctx, modifiers)) {
-                this.createCustomReporterBlock(ctx, description);
+            if (this.isMyBlockReporterblock(description,ctx, modifiers)) {
+                this.createMyBlockReporterBlock(ctx, description);
 
             } else if (this.isListBlock(description,ctx, modifiers)) {
                 this.createListBlock(ctx, description);
@@ -192,10 +192,13 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
                 this.createVariableBlock(ctx, description);
 
             } else if (this.isBooleanBlock(description,ctx, modifiers)) {
-                if(!modifiers.custom){
-                    this.warningsKeeper.add(ctx, "unkown boolean block, add ::custom if you want a custom block")
+                if(description.match(UNKNOWN_REGEX)){
+                    this.warningsKeeper.add(ctx, "unkown boolean block, generated variable");
+                }else if(!modifiers.custom){
+                    this.warningsKeeper.add(ctx, "unkown boolean block, add the correct modifier if you want this block");
                 }
-                this.createCustomBooleanBlock(ctx, description);
+
+                this.createMyBlockBooleanBlock(ctx, description);
 
             } else {
                 //if the label is empty this is a stand alone block so just visit the child
@@ -238,7 +241,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
 
     isBuildInBlock(description, ctx, modifiers) {
-        let check = !modifiers.user && !modifiers.custom && description in this.buildinBlocksConverter;
+        let check = !modifiers.user && !modifiers.myblock && description in this.buildinBlocksConverter;
         //it is defined as build in block.
         //is it used correctly?
         if(check){
@@ -257,8 +260,8 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         return this.isVariableBlock(ctx, modifiers) && modifiers.list;
     }
 
-    isCustomReporterblock(description,ctx, modifiers) {
-        return this.isVariableBlock(ctx, modifiers) && modifiers.custom;
+    isMyBlockReporterblock(description, ctx, modifiers) {
+        return this.isVariableBlock(ctx, modifiers) && modifiers.myblock;
     }
 
     isBooleanBlock(description,ctx, modifiers) {
@@ -603,7 +606,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         this.state.addBlock(blockID);
     }
 
-    createCustomReporterBlock(ctx, description) {
+    createMyBlockReporterBlock(ctx, description) {
         let blockID = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "atomic"));
         let varID = this.idManager.acquireVariableID(this.infoVisitor.getString(ctx, "atomic"));
         this.xml = this.xml.ele('block', {
@@ -616,7 +619,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         this.state.addBlock(blockID);
     }
 
-    createCustomBooleanBlock(ctx, description) {
+    createMyBlockBooleanBlock(ctx, description) {
         let blockID = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "atomic"));
         let varID = this.idManager.acquireVariableID(this.infoVisitor.getString(ctx, "atomic"));
         this.xml = this.xml.ele('block', {

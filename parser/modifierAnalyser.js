@@ -52,9 +52,11 @@ class listModifierExtractor extends ModifierExtractor {
     }
 }
 
-class customModifierExtractor extends ModifierExtractor {
+class myBlockModifierExtractor extends ModifierExtractor {
     containsKey(modifierToken) {
-        return modifierToken.image.match(/::custom/i);
+        return modifierToken.image.match(/::myblock/i)
+            || modifierToken.image.match(/::local/i)
+            || modifierToken.image.match(/::custom-arg/i);
     }
 
     extractParameters(modifierToken) {
@@ -62,13 +64,15 @@ class customModifierExtractor extends ModifierExtractor {
     }
 
     getName() {
-        return "custom"
+        return "myblock"
     }
 }
 
 class varModifierExtractor extends ModifierExtractor {
     containsKey(modifierToken) {
-        return modifierToken.image.match(/::user-defined/i);
+        return modifierToken.image.match(/::user-defined/i)
+            || modifierToken.image.match(/::custom/i)
+            || modifierToken.image.match(/::variable/i);
     }
 
     extractParameters(modifierToken) {
@@ -85,7 +89,7 @@ export class ModifierAnalyser {
         this.infoVisitor = informationVisitor;
         this.modifierExtractors = [];
         this.modifierExtractors.push(new listModifierExtractor());
-        this.modifierExtractors.push(new customModifierExtractor());
+        this.modifierExtractors.push(new myBlockModifierExtractor());
         this.modifierExtractors.push(new varModifierExtractor());
     }
 
