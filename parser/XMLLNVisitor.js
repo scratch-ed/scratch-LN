@@ -249,7 +249,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             if(this.buildinBlocksConverters[description].modus === this.state.getModus()){
                 return true; //no problems
             }else{
-                //the text matches a buildin block but the modus is not right
+                //the text matches a builtin block but the modus is not right
                 //so a for example mouse down instead of <mouse down>
                 this.warningsKeeper.add(ctx,"try to use a built-in block in the wrong context/modus");
                 return false;
@@ -341,7 +341,10 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
         for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
             //make names
-            let name = this.infoVisitor.getString(ctx.argument[i]);
+            let name;
+            if(!visitArgs) {
+                name = this.infoVisitor.getString(ctx.argument[i]);
+            }
             if (!name) {
                 name = 'argumentname_' + blockid + '_' + i
             }
