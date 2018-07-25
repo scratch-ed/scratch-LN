@@ -54,7 +54,7 @@ function createBlockEntry(templateString, specification) {
         blocks[templateString] = {};
         blocks[templateString].converter = createBlockFunction(specification);
         let modus;
-        switch (specification.shape) {
+        switch (specification.description.shape) {
             case "booleanblock":
                 modus = MODUS.BOOLEAN;
                 break;

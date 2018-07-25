@@ -245,12 +245,13 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         //it is defined as build in block.
         //is it used correctly?
         if(check){
+            console.log(this.buildinBlocksConverters[description].modus);
             if(this.buildinBlocksConverters[description].modus === this.state.getModus()){
                 return true; //no problems
             }else{
                 //the text matches a buildin block but the modus is not right
                 //so a for example mouse down instead of <mouse down>
-                this.warningsKeeper.add(ctx,"try to use a build-in block in the wrong context/modus");
+                this.warningsKeeper.add(ctx,"try to use a built-in block in the wrong context/modus");
                 return false;
             }
         }
