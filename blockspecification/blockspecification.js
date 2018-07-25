@@ -9,7 +9,7 @@
 import {
     universalBlockConverter, listBlockConverter, messageBlockconverter,
     messageShadowBlockconverter, variableBlockConverter, stopConverter, addType
-} from "../parser/blocks";
+} from "../parser/blocksConverter";
 import {CHOICE, COLOR} from "../parser/InfoLNVisitor";
 
 /*

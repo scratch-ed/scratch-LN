@@ -15,7 +15,7 @@ import {InfoLNVisitor} from './InfoLNVisitor';
 import builder from 'xmlbuilder';
 import {ARG, BasicIDManager, LIST} from "./IDManager";
 import {State} from "./State";
-import blocks from "./blocks";
+import blocks from "./blockConverterUtils";
 import {ModifierAnalyser} from "./modifierAnalyser";
 import {WarningsKeeper} from "./warnings";
 //import {NumberLiteral, ColorLiteral} from "./LNLexer";

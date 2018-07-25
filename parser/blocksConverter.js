@@ -1,8 +1,5 @@
 import {CHOICE, EXPRESSION, PREDICATE} from "./InfoLNVisitor";
 
-let blocks = {};
-export default blocks;
-
 import {BROADCAST, LIST} from "./IDManager";
 
 /**
