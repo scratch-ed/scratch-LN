@@ -9,7 +9,7 @@
  * @file   This files defines the BasicIDManager class.
  * @author Ellen Vanhove.
  */
-
+export const ARG = 'arg';
 export const BROADCAST = 'broadcast_msg';
 export const LIST = '';
 
@@ -35,7 +35,7 @@ export class BasicIDManager{
 
     /**
      * generates an unique id for every block
-     * todo: if an id is defined in the ctx this one should be used
+     * if an id is defined in the ctx this one should be used
      * todo: waring in case an id is used twice.
      * @param definedID the id defiend by the user, null incase the id is not defined
      * @returns {string}
@@ -57,7 +57,7 @@ export class BasicIDManager{
 
     /**
      * generates an unique id for every block
-     * todo: if an id is defined in the ctx this one should be used
+     * if an id is defined in the ctx this one should be used
      * todo: waring in case an id is used twice.
      * @param definedID the id defiend by the user, null incase the id is not defined
      * @param parentID the id of the parent block that contains this input
@@ -92,7 +92,7 @@ export class BasicIDManager{
 
     /**
      * generates an unique id for every coment
-     * todo: if an id is defined in the ctx this one should be used
+     * if an id is defined in the ctx this one should be used
      * todo: waring in case an id is used twice.
      * @param definedID
      * @param {boolean} pinned is it a stand alone block?
@@ -108,3 +108,4 @@ export class BasicIDManager{
         return id;
     }
 }
+

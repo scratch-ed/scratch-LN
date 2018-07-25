@@ -9,23 +9,21 @@
 
 //parser
 import {tokenMatcher} from 'chevrotain'
+import {lnparser} from "./LNParser"
+import {InfoLNVisitor} from './InfoLNVisitor';
+//xml
+import builder from 'xmlbuilder';
+import {ARG, BasicIDManager, LIST} from "./IDManager";
+import {State} from "./State";
+import blocks from "./blocks";
+import {ModifierAnalyser} from "./modifierAnalyser";
+import {WarningsKeeper} from "./warnings";
 //import {NumberLiteral, ColorLiteral} from "./LNLexer";
 const lntokens = require("./LNLexer");
 let NumberLiteral = lntokens.NumberLiteral;
 let ColorLiteral = lntokens.ColorLiteral;
 let StringLiteral = lntokens.StringLiteral;
 let ChoiceLiteral = lntokens.ChoiceLiteral;
-import {lnparser} from "./LNParser"
-import {InfoLNVisitor} from './InfoLNVisitor';
-
-//xml
-import builder from 'xmlbuilder';
-import {BasicIDManager, LIST} from "./IDManager";
-import {State} from "./State";
-import blocks from "./blocks";
-import {Modifier} from "./LNLexer";
-import {ModifierAnalyser} from "./modifierAnalyser";
-import {WarningsKeeper} from "./warnings";
 
 //const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
 
@@ -38,7 +36,7 @@ import {WarningsKeeper} from "./warnings";
 const BaseCstVisitorWithDefaults = lnparser.getBaseCstVisitorConstructorWithDefaults();
 
 //variable types
-const ARG = 'arg';
+
 
 //regexen
 const DEFINE_REGEX = /^[ \t]*define/i;
