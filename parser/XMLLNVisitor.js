@@ -40,11 +40,6 @@ const BaseCstVisitorWithDefaults = lnparser.getBaseCstVisitorConstructorWithDefa
 //variable types
 const ARG = 'arg';
 
-//shapes
-const STACKBLOCK = "statement";
-const BOOLEANBLOCK = "blooleanblock";
-const REPORTERBLOCK = "reporterblock";
-const HATBLOCK = "hatblock";
 //regexen
 const DEFINE_REGEX = /^[ \t]*define/i;
 const VARIABLE_REGEX = /^([ \t]*%[0-9][ \t]*)*$/i;
@@ -181,7 +176,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
         if (this.isBuildInBlock(description, ctx, modifiers)) {
             //generate block
-            this.buildinBlocksConverter[description](ctx, this, modifiers)
+            this.buildinBlocksConverter[description].converter(ctx, this, modifiers)
         } else if (description.match(DEFINE_REGEX)) {
             this.createDefineBlock(ctx, description);
         } else { //the block is not defined in scratch, so considered it as user-defined
@@ -282,7 +277,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
      */
     createProcedureBlock(ctx, description) {
         let blockid = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "atomic"));
-        this.state.addBlock(blockid, STACKBLOCK);
+        this.state.addBlock(blockid);
         this.xml = this.xml.ele('block', {
             'id': blockid,
         });
@@ -300,7 +295,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         this.interruptStack(ctx,true);
         description = description.replace(DEFINE_REGEX, '');
         let blockid = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "atomic"));
-        this.state.addBlock(blockid, HATBLOCK);
+        this.state.addBlock(blockid);
         this.xml = this.xml.ele('block', {
             'type': 'procedures_definition',
             'id': blockid,

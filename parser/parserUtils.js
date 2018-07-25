@@ -44,11 +44,20 @@ export function init_parser_utils() {
 function createBlockEntry(templateString, specification) {
     //if the template has no converter assigned yet, there is no problem, just create it
     if (!blocks[templateString]) {
-        blocks[templateString] = createBlockFunction(specification);
+        blocks[templateString] = {};
+        blocks[templateString].converter = createBlockFunction(specification);
+        /*let shape = "";
+        switch (specification.shape){
+            case "booleanblock":
+                shape =
+        }
+
+        blocks[templateString].shape = shape;
+            */
     } else {
-        let higherDefinedSpecification = blocks[templateString];
+        let higherDefinedSpecification = blocks[templateString].converter;
         //wrap the previous one
-        blocks[templateString] = function (ctx, visitor) {
+        blocks[templateString].converter = function (ctx, visitor) {
             //if it not succeeds
             let first_call_executed = higherDefinedSpecification(ctx, visitor);
             if (!first_call_executed) {

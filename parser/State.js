@@ -7,22 +7,8 @@
  * @file   This files defines the State class.
  * @author Ellen Vanhove.
  */
+import {INPUTTYPE, MODUS} from "./TypeConfig";
 
-const MODUS = {
-    NONE:0,
-    STACK:1,
-    REPORTER:2,
-    BOOLEAN:3,
-};
-
-const INPUTTYPE = {
-    NONE:0,
-    BOOLEAN:1,
-    TEXT:2,
-    NUMBER:3,
-    COLOR:4,
-    DROPDOWN:5,
-};
 
 export class State {
 
