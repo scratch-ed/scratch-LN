@@ -463,6 +463,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             'name': 'CONDITION'
         });
         this.state.addBlock(blockid);
+        this.state.expectBoolean();
         this.visit(ctx.condition);
         this.xml = this.xml.up().ele('statement ', {
             'name': 'SUBSTACK'
@@ -532,7 +533,11 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         } else if (ctx.predicate) {
             this.visit(ctx.predicate)
         } else if (ctx.$empty) {
-            this.createTextInput(ctx);
+            if(this.state.isExpectingBoolean()){
+                //do nothing
+            }else {
+                this.createTextInput(ctx);
+            }
         }
     }
 

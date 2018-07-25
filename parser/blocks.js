@@ -11,6 +11,11 @@ import {BROADCAST, LIST} from "./IDManager";
  * @param i the index of the argument in the ctx
  */
 function makeArgument(ctx, visitor, arg, i) {
+    if (arg.check === "Boolean") {
+        visitor.state.expectBoolean();
+    } else {
+        visitor.state.expectNothing();
+    }
     if (arg.menu) {
         visitor.xml = visitor.xml.ele('value', {
             'name': arg.name
@@ -37,7 +42,7 @@ function makeArgument(ctx, visitor, arg, i) {
 
 export function universalBlockConverter(ctx, visitor, structure) {
     if (structure.shape === "hatblock") {
-        visitor.interruptStack(ctx,true);
+        visitor.interruptStack(ctx, true);
     }
     addType(ctx, visitor, structure.type);
     for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
@@ -48,7 +53,7 @@ export function universalBlockConverter(ctx, visitor, structure) {
         visitor.startStack(ctx);
     }
     if (structure.shape === "capblock") {
-        visitor.interruptStack(ctx,false);
+        visitor.interruptStack(ctx, false);
     }
 }
 
@@ -75,7 +80,7 @@ export function variableBlockConverter(ctx, visitor, structure) {
     visitor.xml = visitor.xml.ele('field', {
         'name': 'VARIABLE'
     }, varble);
-    if(structure.args.length>1) {
+    if (structure.args.length > 1) {
         visitor.xml = visitor.xml.up().ele('value', {
             'name': 'VALUE'
         });
@@ -152,5 +157,5 @@ export function stopConverter(ctx, visitor, structure) {
         'name': "STOP_OPTION"
     }, visitor.infoVisitor.getString(ctx.argument[0]));
     visitor.xml = visitor.xml.up();
-    visitor.interruptStack(ctx,false);
+    visitor.interruptStack(ctx, false);
 }

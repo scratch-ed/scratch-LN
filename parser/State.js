@@ -15,6 +15,15 @@ const MODUS = {
     BOOLEAN:3,
 };
 
+const INPUTTYPE = {
+    NONE:0,
+    BOOLEAN:1,
+    TEXT:2,
+    NUMBER:3,
+    COLOR:4,
+    DROPDOWN:5,
+};
+
 export class State {
 
     constructor() {
@@ -33,6 +42,7 @@ export class State {
         this.interrupted = false;
         //when opening a new context the previous is stored here
         this.storage = [];
+        this.expectedInput = INPUTTYPE.NONE;
     }
 
 
@@ -149,6 +159,29 @@ export class State {
 
     hasPreviousConnectedBlocks(){
         return this.hasPreviousBlocksOnStack() || this.storage.length > 1;
+    }
+
+    isExpectingBoolean(){
+        return this.expectedInput === INPUTTYPE.BOOLEAN;
+    }
+
+    isExpectingNumber(){
+        return this.expectedInput === INPUTTYPE.NUMBER;
+    }
+
+    setExpectingInput(type){
+        if(! type in INPUTTYPE){
+            throw new Error("type not valid");
+        }
+        this.expectedInput = type;
+    }
+
+    expectBoolean(){
+        this.expectedInput=INPUTTYPE.BOOLEAN;
+    }
+
+    expectNothing(){
+        this.expectedInput = INPUTTYPE.NONE;
     }
 
 }

@@ -106,13 +106,14 @@ ScratchBlocks.text['text'] = function (block) {
     return ['"'+block.getFieldValue('TEXT')+'"', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
 
+
+//========================================
+
+//========= reporter and boolean variables  ===============
 ScratchBlocks.text['data_variable'] = function (block) {
     //variables are a bit different... getfieldvalue returns the id
     return ['(' + block.getField('VARIABLE').getText() + ')', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
-//========================================
-
-//========= reporter and boolean variables  ===============
 
 ScratchBlocks.text['data_listcontents'] = function (block) {
     //variables are a bit different... getfieldvalue returns the id
