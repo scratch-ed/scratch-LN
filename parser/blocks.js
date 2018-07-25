@@ -1,3 +1,5 @@
+import {CHOICE, EXPRESSION, PREDICATE} from "./InfoLNVisitor";
+
 let blocks = {};
 export default blocks;
 
@@ -16,23 +18,39 @@ function makeArgument(ctx, visitor, arg, i) {
     } else {
         visitor.state.expectNothing();
     }
-    if (arg.menu) {
+    //check menu first, because round dropdwons are also inputvalues
+    if (arg.menu) { //can be replaced -> round dropdown
         visitor.xml = visitor.xml.ele('value', {
             'name': arg.name
         });
-        visitor.xml.ele('shadow', {
-            'type': arg.menu //this was added to the json and was not default.
-        }).ele('field', {
-            'name': arg.name
-        }, visitor.infoVisitor.getString(ctx.argument[i])); // '_mouse_'
+        let type = visitor.infoVisitor.getType(ctx.argument[i]);
+        if (type === EXPRESSION || type === PREDICATE) {
+            visitor.visit(ctx.argument[i]);
+            //generate an empty dropdown below
+            visitor.xml.ele('shadow', {
+                'type': arg.menu //this was added to the json and was not default.
+            }).ele('field', {
+                'name': arg.name
+            }); // '_mouse_'
+        } else {
+            //wrong input type
+            if (type !== CHOICE) {
+                visitor.warningsKeeper.add(ctx,"expected a choice but found " + type);
+            }
+            visitor.xml.ele('shadow', {
+                'type': arg.menu //this was added to the json and was not default.
+            }).ele('field', {
+                'name': arg.name
+            }, visitor.infoVisitor.getString(ctx.argument[i])); // '_mouse_'
+        }
         visitor.xml = visitor.xml.up();
-    } else if (arg.type === 'input_value') {
+    } else if (arg.type === 'input_value') { //normal input
         visitor.xml = visitor.xml.ele('value', {
             'name': arg.name
         });
         visitor.visit(ctx.argument[i]);
         visitor.xml = visitor.xml.up();
-    } else if (arg.type === 'field_dropdown') {
+    } else if (arg.type === 'field_dropdown') { //limited options -> rectangle dropdwon
         visitor.xml = visitor.xml.ele('field', {
             'name': arg.name
         }, visitor.infoVisitor.getString(ctx.argument[i]));

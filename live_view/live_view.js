@@ -38,7 +38,7 @@ window.onload = function () {
     //text
     editor = document.getElementById('editor');
     editor.addEventListener('input', updateWorkspace);
-    editor.value =  '(mouse x::var)'
+    editor.value =  'switch backdrop to {}'
     ;
 
     warnings = document.getElementById('warnings');
