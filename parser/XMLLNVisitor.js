@@ -172,6 +172,13 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     atomic(ctx) {
         let description = this.infoVisitor.getString(ctx, "atomic");
         let modifiers = this.modifierAnalyser.getMods(this.infoVisitor.getModifiers(ctx.annotations));
+        if((modifiers.user && modifiers.myblock)||
+            (modifiers.user && modifiers.list) ||
+            (modifiers.myblock && modifiers.list)
+        ){
+            this.warningsKeeper.add(ctx, "multiple modifiers with conflicting meaning")
+        }
+
         if (this.isBuildInBlock(description, ctx, modifiers)) {
             //generate block
             this.buildinBlocksConverter[description](ctx, this, modifiers)
