@@ -81,8 +81,8 @@ window.onload = function () {
 };
 
 function generateTextWorkspace() {
-    let text = generateText(workspace);
-    generatorField.value = text;
+    //let text = generateText(workspace);
+    //generatorField.value = text;
 }
 
 

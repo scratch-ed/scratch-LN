@@ -37,7 +37,7 @@ function makeArgument(ctx, visitor, arg, i) {
 
 export function universalBlockConverter(ctx, visitor, structure) {
     if (structure.shape === "hatblock") {
-        visitor.interruptStack();
+        visitor.interruptStack(ctx,true);
     }
     addType(ctx, visitor, structure.type);
     for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
@@ -45,10 +45,10 @@ export function universalBlockConverter(ctx, visitor, structure) {
         makeArgument(ctx, visitor, arg, i);
     }
     if (structure.shape === "hatblock") {
-        visitor.startStack();
+        visitor.startStack(ctx);
     }
     if (structure.shape === "capblock") {
-        visitor.interruptStack();
+        visitor.interruptStack(ctx,false);
     }
 }
 
@@ -141,7 +141,7 @@ export function messageBlockconverter(ctx, visitor, structure) {
         'id': id
     }, varble);
     if (structure.shape === "hatblock") {
-        visitor.startStack();
+        visitor.startStack(ctx);
     }
 }
 
@@ -152,5 +152,5 @@ export function stopConverter(ctx, visitor, structure) {
         'name': "STOP_OPTION"
     }, visitor.infoVisitor.getString(ctx.argument[0]));
     visitor.xml = visitor.xml.up();
-    visitor.interruptStack();
+    visitor.interruptStack(ctx,false);
 }

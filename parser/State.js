@@ -17,8 +17,7 @@ const MODUS = {
 
 export class State {
 
-    constructor(informationVisitor) {
-        this.infoVisitor = informationVisitor;
+    constructor() {
         this.reset();
     }
 
@@ -29,7 +28,7 @@ export class State {
     reset() {
         //list of all blocks
         this.blocks = [];
-        this.blocks.push({ID:-1}); //this should not happen normally but this way nothing breaks during dev
+        //this.blocks.push({ID:-1}); //this should not happen normally but this way nothing breaks during dev
         this.modus = MODUS.NONE;
         this.interrupted = false;
         //when opening a new context the previous is stored here
@@ -45,11 +44,14 @@ export class State {
                 modus: this.modus
             }
         );
+       this.blocks = [];
     }
 
     popStorage(){
-        let stored = this.storage.pop();
-        this.setBack(stored);
+        if(this.storage.length>0) {
+            let stored = this.storage.pop();
+            this.setBack(stored);
+        }
     }
 
     setBack(stored) {
@@ -107,9 +109,11 @@ export class State {
     }
 
     interruptStack(){
-        let stored =  this.storage[0];
-        this.setBack(stored);
-        this.storage = []
+        if(this.storage.length>0) {
+            let stored = this.storage[0];
+            this.setBack(stored);
+            this.storage = [];
+        }
         this.interrupted = true;
     }
 
@@ -135,6 +139,16 @@ export class State {
         this.popStorage();
     }
 
+    amountOfPreviousBlocksOnStack(){
+        return this.blocks.length;
+    }
 
+    hasPreviousBlocksOnStack(){
+        return this.blocks.length > 0;
+    }
+
+    hasPreviousConnectedBlocks(){
+        return this.hasPreviousBlocksOnStack() || this.storage.length > 1;
+    }
 
 }
