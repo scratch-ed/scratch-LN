@@ -24,7 +24,7 @@ export const Label = createToken({
     //no whitespace in the beginning or end -> will be skipped (OR allow whitespace with keywords?)
     //char (whitespace* char)*
 
-        /((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"#@: \t\n]|\\[^])([ \t]*((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\[^]))*/,
+        /((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"#@: \t\n/]|\\[^])([ \t]*((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t/]|\\[^]))*/,
 
     line_breaks: true
 });
@@ -36,7 +36,7 @@ export const ScratchLNComment = createToken({
 
 export const LineComment = createToken({
     name: "LineComment",
-    pattern: /\/\/[^\n]*[\n]?/,
+    pattern: /\/\/[^\n]*/,
     group: Lexer.SKIPPED,
     categories: [ScratchLNComment],
 });

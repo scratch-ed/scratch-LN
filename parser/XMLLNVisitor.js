@@ -536,7 +536,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         } else if (ctx.Label) {
             if(this.state.isExpectingBoolean()){
                 this.warningsKeeper.add(ctx, "a boolean block is expected");
-                return; 
+                return;
             }
             this.createTextInput(ctx);
         } else if (ctx.expression) {
