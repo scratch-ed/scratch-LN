@@ -161,7 +161,7 @@ export const blockspecifications = [
             "converter": universalBlockConverter
         },
         {
-            "template": "%1 = %2",
+            "template": ["%1 = %2","%1 eq %2","%1 equals %2",],
             "description": {
                 "type": "operator_equals",
                 "args": [{"type": "input_value", "name": "OPERAND1"}, {"type": "input_value", "name": "OPERAND2"}],

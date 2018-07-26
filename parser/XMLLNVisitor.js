@@ -174,7 +174,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
         if (this.isBuildInBlock(description, ctx, modifiers)) {
             //generate block
-            this.buildinBlocksConverters[description].converter(ctx, this, modifiers)
+            this.buildinBlocksConverters[description.toLowerCase()].converter(ctx, this, modifiers)
         } else if (description.match(DEFINE_REGEX)) {
             this.createDefineBlock(ctx, description);
         } else { //the block is not defined in scratch, so considered it as user-defined
@@ -241,12 +241,11 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
 
     isBuildInBlock(description, ctx, modifiers) {
-        let check = !modifiers.user && !modifiers.myblock && description in this.buildinBlocksConverters;
+        let check = !modifiers.user && !modifiers.myblock && description.toLowerCase() in this.buildinBlocksConverters;
         //it is defined as build in block.
         //is it used correctly?
         if(check){
-            console.log(this.buildinBlocksConverters[description].modus);
-            if(this.buildinBlocksConverters[description].modus.includes(this.state.getModus())){
+            if(this.buildinBlocksConverters[description.toLowerCase()].modus.includes(this.state.getModus())){
                 return true; //no problems
             }else{
                 //the text matches a builtin block but the modus is not right

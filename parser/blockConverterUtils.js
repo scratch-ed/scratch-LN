@@ -32,10 +32,10 @@ export function init_parser_utils() {
         if (Array.isArray(b['template'])) {
             let ts = b['template'];
             for (let t = 0; t < ts.length; t++) {
-                createBlockEntry(b['template'][t], b)
+                createBlockEntry(b['template'][t].toLowerCase(), b)
             }
         } else {
-            createBlockEntry(b['template'], b)
+            createBlockEntry(b['template'].toLowerCase(), b)
 
         }
 
