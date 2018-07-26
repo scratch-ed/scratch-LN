@@ -521,7 +521,12 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     argument(ctx) {
+
         if (ctx.Literal) {
+            if(this.state.isExpectingBoolean()){
+                this.warningsKeeper.add(ctx, "a boolean block is expected");
+                return;
+            }
             if (tokenMatcher(ctx.Literal[0], ColorLiteral)) {
                 this.createColourPickerInput(ctx);
             } else {
@@ -529,8 +534,16 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
                 //todo: numberinputs + context -> createnumber
             }
         } else if (ctx.Label) {
+            if(this.state.isExpectingBoolean()){
+                this.warningsKeeper.add(ctx, "a boolean block is expected");
+                return; 
+            }
             this.createTextInput(ctx);
         } else if (ctx.expression) {
+            if(this.state.isExpectingBoolean()){
+                this.warningsKeeper.add(ctx, "a boolean block is expected");
+                return;
+            }
             this.visit(ctx.expression);
         } else if (ctx.predicate) {
             this.visit(ctx.predicate)
