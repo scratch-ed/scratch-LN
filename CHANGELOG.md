@@ -1,3 +1,12 @@
+# v0.4.0
+- make brackets around boolean and reporters mandatory 
+- improved warnings
+- change modifiers
+- case insensitive matching of built-in blocks
+- Scratch-LN comments token definition
+
+
+
 # v0.3.0
 - update block specifications: remove and add some blocks + add alternatives
 - add locale
