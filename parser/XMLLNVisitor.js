@@ -246,7 +246,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         //is it used correctly?
         if(check){
             console.log(this.buildinBlocksConverters[description].modus);
-            if(this.buildinBlocksConverters[description].modus === this.state.getModus()){
+            if(this.buildinBlocksConverters[description].modus.includes(this.state.getModus())){
                 return true; //no problems
             }else{
                 //the text matches a builtin block but the modus is not right

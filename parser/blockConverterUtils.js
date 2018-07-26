@@ -49,23 +49,24 @@ export function init_parser_utils() {
  * @param specification as defined in blockspecifications
  */
 function createBlockEntry(templateString, specification) {
+    //determine the modus for the block
+    let modus;
+    switch (specification.description.shape) {
+        case "booleanblock":
+        case "booleans":
+            modus = MODUS.BOOLEAN;
+            break;
+        case "reporterblock":
+            modus=MODUS.REPORTER;
+            break;
+        default:
+            modus = MODUS.STACK;
+    }
     //if the template has no converter assigned yet, there is no problem, just create it
     if (!blocks[templateString]) {
         blocks[templateString] = {};
         blocks[templateString].converter = createBlockFunction(specification);
-        let modus;
-        switch (specification.description.shape) {
-            case "booleanblock":
-                modus = MODUS.BOOLEAN;
-                break;
-            case "reporterblock":
-                modus=MODUS.REPORTER;
-                break;
-            default:
-                modus = MODUS.STACK;
-        }
-
-        blocks[templateString].modus = modus;
+        blocks[templateString].modus = [modus];
 
     } else {
         let higherDefinedSpecification = blocks[templateString].converter;
@@ -78,6 +79,10 @@ function createBlockEntry(templateString, specification) {
                 return createBlockFunction(specification)(ctx, visitor);
             }
             return first_call_executed;
+        };
+        //add the modus if it is a different one
+        if(!(modus in blocks[templateString].modus)){
+            blocks[templateString].modus.push(modus);
         }
     }
 }

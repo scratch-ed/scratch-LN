@@ -64,7 +64,7 @@ var scratchLN =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 80);
+/******/ 	return __webpack_require__(__webpack_require__.s = 82);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1196,7 +1196,7 @@ exports.serializeProduction = serializeProduction;
 Object.defineProperty(exports, "__esModule", { value: true });
 var utils_1 = __webpack_require__(0);
 var lang_extensions_1 = __webpack_require__(5);
-var lexer_public_1 = __webpack_require__(28);
+var lexer_public_1 = __webpack_require__(27);
 var tokens_1 = __webpack_require__(10);
 function tokenLabel(clazz) {
     if (hasTokenLabel(clazz)) {
@@ -1539,17 +1539,17 @@ exports.GAstVisitor = GAstVisitor;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var parser_public_1 = __webpack_require__(27);
-var lexer_public_1 = __webpack_require__(28);
+var parser_public_1 = __webpack_require__(26);
+var lexer_public_1 = __webpack_require__(27);
 var tokens_public_1 = __webpack_require__(3);
 var exceptions_public_1 = __webpack_require__(36);
-var version_1 = __webpack_require__(29);
-var errors_public_1 = __webpack_require__(24);
-var render_public_1 = __webpack_require__(53);
+var version_1 = __webpack_require__(28);
+var errors_public_1 = __webpack_require__(23);
+var render_public_1 = __webpack_require__(54);
 var gast_visitor_public_1 = __webpack_require__(6);
 var gast_public_1 = __webpack_require__(1);
 var gast_resolver_public_1 = __webpack_require__(38);
-var generate_public_1 = __webpack_require__(55);
+var generate_public_1 = __webpack_require__(56);
 /**
  * defines the public API of
  * changes here may require major version change. (semVer)
@@ -1630,12 +1630,12 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var utils = __webpack_require__(0);
 var utils_1 = __webpack_require__(0);
-var parser_public_1 = __webpack_require__(27);
+var parser_public_1 = __webpack_require__(26);
 var gast_1 = __webpack_require__(9);
 var tokens_public_1 = __webpack_require__(3);
 var lookahead_1 = __webpack_require__(40);
 var cst_1 = __webpack_require__(35);
-var interpreter_1 = __webpack_require__(25);
+var interpreter_1 = __webpack_require__(24);
 var gast_public_1 = __webpack_require__(1);
 var gast_visitor_public_1 = __webpack_require__(6);
 function validateGrammar(topLevels, maxLookahead, tokenTypes, ignoredIssues, errMsgProvider, grammarName) {
@@ -3149,319 +3149,6 @@ exports.isTokenType = isTokenType;
 
 /***/ }),
 /* 23 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_chevrotain__);
-/**
- * LNLexer + tokens.
- *
- * @file   This files defines the lexer and tokens for  scratch-LN.
- * @author Ellen Vanhove.
- */
-
-
-//DO NOT FORGET TO ADD THE EXPORT WHEN COPY PASTING
-//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
-const Label = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "Label",
-    pattern:
-    //necessary to escape: [] {} () " ; \n # | @ \n and whitespace
-    //this cannot contain :: and should not partially match ::
-    //--> :(?!:) : not followed by another :
-    // --> x(?!y) = negative lookahead (matches 'x' when it's not followed by 'y')
-
-    //atleast one character
-    // - a : followed by a not :  = (:(?!:))
-    // - normal - not necessary to escape or whitespace - characters = [^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]
-    // - \ followed by any character or a newline = [^] not
-
-    //no whitespace in the beginning or end -> will be skipped (OR allow whitespace with keywords?)
-    //char (whitespace* char)*
-
-        /((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"#@: \t\n]|\\[^])([ \t]*((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\[^]))*/,
-
-    line_breaks: true
-});
-/* harmony export (immutable) */ __webpack_exports__["Label"] = Label;
-
-
-const ScratchLNComment = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "ScratchLNComment",
-    pattern: __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Lexer"].NA,
-})
-/* harmony export (immutable) */ __webpack_exports__["ScratchLNComment"] = ScratchLNComment;
-
-
-const LineComment = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "LineComment",
-    pattern: /\/\/[^\n]*[\n]?/,
-    group: __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Lexer"].SKIPPED,
-    categories: [ScratchLNComment],
-});
-/* harmony export (immutable) */ __webpack_exports__["LineComment"] = LineComment;
-
-
-const BlockComment = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "BlockComment",
-    //between /**/
-    //allowed to use * and / within text but not after each other
-    //most chars = [^\*]
-    //* followed by /  = /\*(?!\/))
-    pattern: /\/\*([^\*]|\*(?!\/))*\*\//,
-    group: __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Lexer"].SKIPPED,
-    categories: [ScratchLNComment],
-    line_breaks: true
-});
-/* harmony export (immutable) */ __webpack_exports__["BlockComment"] = BlockComment;
-
-
-const LCurlyBracket = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "LCurlyBracket",
-    pattern: /{/
-});
-/* harmony export (immutable) */ __webpack_exports__["LCurlyBracket"] = LCurlyBracket;
-
-
-const RCurlyBracket = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "RCurlyBracket",
-    pattern: /}/
-});
-/* harmony export (immutable) */ __webpack_exports__["RCurlyBracket"] = RCurlyBracket;
-
-
-const LRoundBracket = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "LRoundBracket",
-    pattern: /\(/
-});
-/* harmony export (immutable) */ __webpack_exports__["LRoundBracket"] = LRoundBracket;
-
-
-const RRoundBracket = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "RRoundBracket",
-    pattern: /\)/
-});
-/* harmony export (immutable) */ __webpack_exports__["RRoundBracket"] = RRoundBracket;
-
-
-const LAngleBracket = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "LAngleBracket",
-    pattern: /</
-});
-/* harmony export (immutable) */ __webpack_exports__["LAngleBracket"] = LAngleBracket;
-
-
-const RAngleBracket = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "RAngleBracket",
-    pattern: />/
-});
-/* harmony export (immutable) */ __webpack_exports__["RAngleBracket"] = RAngleBracket;
-
-
-const Literal = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "Literal",
-    pattern: __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Lexer"].NA
-});
-/* harmony export (immutable) */ __webpack_exports__["Literal"] = Literal;
-
-
-const StringLiteral = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "StringLiteral",
-    //"char*" -> "char+" or ""
-    //most characters = [^"]
-    //escaped the " char =  \\"
-    //cannot end with \ so must end with = [^\\"] or \\"
-    //empty is allowed ""
-    pattern: /"([^"\\]|\\.)*"/,
-    categories: [Literal],
-    line_breaks: true
-});
-/* harmony export (immutable) */ __webpack_exports__["StringLiteral"] = StringLiteral;
-
-
-const NumberLiteral = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "NumberLiteral",
-    pattern: /-?(\d+)(\.\d+)?/,
-    categories: [Literal,Label],
-    longer_alt: Label,
-});
-/* harmony export (immutable) */ __webpack_exports__["NumberLiteral"] = NumberLiteral;
-
-
-const ColorLiteral = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "ColorLiteral",
-    //first the 6 , otherwise only 3 will be matched
-    pattern: /#([0-9a-f]{6}|[0-9a-f]{3})/i,
-    categories: [Literal]
-});
-/* harmony export (immutable) */ __webpack_exports__["ColorLiteral"] = ColorLiteral;
-
-
-const ChoiceLiteral = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "ChoiceLiteral",
-    //idem stringLiteral
-    pattern: /\[([^\]\\]|\\.)*\]/,
-    categories: [Literal],
-    line_breaks: true
-});
-/* harmony export (immutable) */ __webpack_exports__["ChoiceLiteral"] = ChoiceLiteral;
-
-
-const Keyword = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "Keyword",
-    pattern: __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Lexer"].NA,
-    //longer_alt: Label //I would expect that this is valid for all keywords but apparently not
-});
-/* harmony export (immutable) */ __webpack_exports__["Keyword"] = Keyword;
-
-
-const If = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "If",
-    pattern: /if/i,
-    categories: [Keyword],
-    longer_alt: Label
-});
-/* harmony export (immutable) */ __webpack_exports__["If"] = If;
-
-
-const Then = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "Then",
-    pattern: /then/i,
-    categories: [Keyword],
-    longer_alt: Label
-});
-/* harmony export (immutable) */ __webpack_exports__["Then"] = Then;
-
-
-const Else = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "Else",
-    pattern: /else/i,
-    categories: [Keyword],
-    longer_alt: Label
-});
-/* harmony export (immutable) */ __webpack_exports__["Else"] = Else;
-
-
-const Forever = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "Forever",
-    pattern: /forever/i,
-    categories: [Keyword],
-    longer_alt: Label
-});
-/* harmony export (immutable) */ __webpack_exports__["Forever"] = Forever;
-
-
-const RepeatUntil = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "RepeatUntil",
-    pattern: /repeat[ \t]*until/i,
-    categories: [Keyword],
-    longer_alt: Label
-});
-/* harmony export (immutable) */ __webpack_exports__["RepeatUntil"] = RepeatUntil;
-
-
-const Repeat = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "Repeat",
-    pattern: /repeat/i,
-    categories: [Keyword],
-    longer_alt: Label
-});
-/* harmony export (immutable) */ __webpack_exports__["Repeat"] = Repeat;
-
-
-
-const End = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "End",
-    pattern: /end/i,
-    categories: [Keyword],
-    longer_alt: Label
-});
-/* harmony export (immutable) */ __webpack_exports__["End"] = End;
-
-
-const Modifier = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "Modifier",
-    pattern: /::((:(?!:))|[^\{\|\(\)<>\\#@: \t\n]|\\[^])([ \t]*((:(?!:))|[^\|\(\)<>\\#@: \t\n]|\\[^]))*/
-});
-/* harmony export (immutable) */ __webpack_exports__["Modifier"] = Modifier;
-
-
-const Comment = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "Comment",
-    //similar to stringliteral but between ||
-    pattern: /\|([^\|\\]|\\.)*\|/
-});
-/* harmony export (immutable) */ __webpack_exports__["Comment"] = Comment;
-
-
-const ID = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "ID",
-    pattern: /@[a-z0-9_]+/i
-});
-/* harmony export (immutable) */ __webpack_exports__["ID"] = ID;
-
-
-
-const MultipleDelimiters = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "MultipleDelimiters",
-    //; \n should always bee seen as a whole 
-    //so a ; alone must explicitly not been followed by a \n
-    pattern: /((;[ \t]*\n|;[ \t]*(?!\n)|\n)[ \t]*){2,}/,
-    line_breaks: true
-});
-/* harmony export (immutable) */ __webpack_exports__["MultipleDelimiters"] = MultipleDelimiters;
-
-
-const Delimiter = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "Delimiter",
-    pattern: /;[ \t]*\n?|\n/,
-    line_breaks: true,
-    //longer_alt: MultipleDelimiter
-});
-/* harmony export (immutable) */ __webpack_exports__["Delimiter"] = Delimiter;
-
-
-
-
-// marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
-const WhiteSpace = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
-    name: "WhiteSpace",
-    pattern: /[ \t]+/,
-    group: __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Lexer"].SKIPPED,
-    line_breaks: false
-});
-/* harmony export (immutable) */ __webpack_exports__["WhiteSpace"] = WhiteSpace;
-
-
-//order matters!
-const allTokens = [
-    WhiteSpace,
-    LineComment, BlockComment, Comment, //match before anything else
-    Literal, StringLiteral, NumberLiteral, ColorLiteral, ChoiceLiteral,
-    //WARNING: RepeatUntil must be defined before Repeat
-    Forever, End, RepeatUntil, Repeat, If, Else, Then,
-    //WARNING: StackDelimiter must be defined before Delimiter
-    MultipleDelimiters, Delimiter,
-    LCurlyBracket, RCurlyBracket,
-    LRoundBracket, RRoundBracket,
-    RAngleBracket, LAngleBracket,
-    Modifier, ID,
-    //WARNING: Label must be defined after anything else
-    Label
-];
-/* harmony export (immutable) */ __webpack_exports__["allTokens"] = allTokens;
-
-//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
-
-const LNLexer = new __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Lexer"](allTokens);
-/* harmony export (immutable) */ __webpack_exports__["LNLexer"] = LNLexer;
-
-
-
-/***/ }),
-/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3473,7 +3160,7 @@ var utils_1 = __webpack_require__(0);
 var gast_public_1 = __webpack_require__(1);
 var gast_1 = __webpack_require__(9);
 var checks_1 = __webpack_require__(8);
-var version_1 = __webpack_require__(29);
+var version_1 = __webpack_require__(28);
 exports.defaultParserErrorProvider = {
     buildMismatchTokenMessage: function (_a) {
         var expected = _a.expected, actual = _a.actual, previous = _a.previous, ruleName = _a.ruleName;
@@ -3682,7 +3369,7 @@ exports.defaultGrammarValidatorErrorProvider = {
 //# sourceMappingURL=errors_public.js.map
 
 /***/ }),
-/* 25 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3698,7 +3385,7 @@ exports.defaultGrammarValidatorErrorProvider = {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var rest_1 = __webpack_require__(26);
+var rest_1 = __webpack_require__(25);
 var utils_1 = __webpack_require__(0);
 var tokens_public_1 = __webpack_require__(3);
 var first_1 = __webpack_require__(37);
@@ -4222,7 +3909,7 @@ function expandTopLevelRule(topRule, currIdx, currRuleStack, currOccurrenceStack
 //# sourceMappingURL=interpreter.js.map
 
 /***/ }),
-/* 26 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4340,7 +4027,7 @@ function restForRepetitionWithSeparator(repSepProd, currRest, prevRest) {
 //# sourceMappingURL=rest.js.map
 
 /***/ }),
-/* 27 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4350,17 +4037,17 @@ var exceptions_public_1 = __webpack_require__(36);
 var lang_extensions_1 = __webpack_require__(5);
 var checks_1 = __webpack_require__(8);
 var utils_1 = __webpack_require__(0);
-var follow_1 = __webpack_require__(58);
+var follow_1 = __webpack_require__(59);
 var tokens_public_1 = __webpack_require__(3);
 var lookahead_1 = __webpack_require__(40);
-var gast_builder_1 = __webpack_require__(57);
-var interpreter_1 = __webpack_require__(25);
+var gast_builder_1 = __webpack_require__(58);
+var interpreter_1 = __webpack_require__(24);
 var constants_1 = __webpack_require__(34);
 var tokens_1 = __webpack_require__(10);
 var cst_1 = __webpack_require__(35);
 var keys_1 = __webpack_require__(39);
-var cst_visitor_1 = __webpack_require__(56);
-var errors_public_1 = __webpack_require__(24);
+var cst_visitor_1 = __webpack_require__(57);
+var errors_public_1 = __webpack_require__(23);
 var gast_public_1 = __webpack_require__(1);
 var gast_resolver_public_1 = __webpack_require__(38);
 var IN_RULE_RECOVERY_EXCEPTION = "InRuleRecoveryException";
@@ -6043,13 +5730,13 @@ InRuleRecoveryException.prototype = Error.prototype;
 //# sourceMappingURL=parser_public.js.map
 
 /***/ }),
-/* 28 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var lexer_1 = __webpack_require__(60);
+var lexer_1 = __webpack_require__(61);
 var utils_1 = __webpack_require__(0);
 var tokens_1 = __webpack_require__(10);
 var LexerDefinitionErrorType;
@@ -6631,7 +6318,7 @@ exports.Lexer = Lexer;
 //# sourceMappingURL=lexer_public.js.map
 
 /***/ }),
-/* 29 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6644,14 +6331,14 @@ exports.VERSION = "3.7.0";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
-/* 30 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(42).goog;
 
 
 /***/ }),
-/* 31 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -6991,6 +6678,319 @@ module.exports = __webpack_require__(42).goog;
 
 
 /***/ }),
+/* 31 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_chevrotain__);
+/**
+ * LNLexer + tokens.
+ *
+ * @file   This files defines the lexer and tokens for  scratch-LN.
+ * @author Ellen Vanhove.
+ */
+
+
+//DO NOT FORGET TO ADD THE EXPORT WHEN COPY PASTING
+//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
+const Label = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "Label",
+    pattern:
+    //necessary to escape: [] {} () " ; \n # | @ \n and whitespace
+    //this cannot contain :: and should not partially match ::
+    //--> :(?!:) : not followed by another :
+    // --> x(?!y) = negative lookahead (matches 'x' when it's not followed by 'y')
+
+    //atleast one character
+    // - a : followed by a not :  = (:(?!:))
+    // - normal - not necessary to escape or whitespace - characters = [^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]
+    // - \ followed by any character or a newline = [^] not
+
+    //no whitespace in the beginning or end -> will be skipped (OR allow whitespace with keywords?)
+    //char (whitespace* char)*
+
+        /((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"#@: \t\n]|\\[^])([ \t]*((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\[^]))*/,
+
+    line_breaks: true
+});
+/* harmony export (immutable) */ __webpack_exports__["Label"] = Label;
+
+
+const ScratchLNComment = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "ScratchLNComment",
+    pattern: __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Lexer"].NA,
+})
+/* harmony export (immutable) */ __webpack_exports__["ScratchLNComment"] = ScratchLNComment;
+
+
+const LineComment = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "LineComment",
+    pattern: /\/\/[^\n]*[\n]?/,
+    group: __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Lexer"].SKIPPED,
+    categories: [ScratchLNComment],
+});
+/* harmony export (immutable) */ __webpack_exports__["LineComment"] = LineComment;
+
+
+const BlockComment = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "BlockComment",
+    //between /**/
+    //allowed to use * and / within text but not after each other
+    //most chars = [^\*]
+    //* followed by /  = /\*(?!\/))
+    pattern: /\/\*([^\*]|\*(?!\/))*\*\//,
+    group: __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Lexer"].SKIPPED,
+    categories: [ScratchLNComment],
+    line_breaks: true
+});
+/* harmony export (immutable) */ __webpack_exports__["BlockComment"] = BlockComment;
+
+
+const LCurlyBracket = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "LCurlyBracket",
+    pattern: /{/
+});
+/* harmony export (immutable) */ __webpack_exports__["LCurlyBracket"] = LCurlyBracket;
+
+
+const RCurlyBracket = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "RCurlyBracket",
+    pattern: /}/
+});
+/* harmony export (immutable) */ __webpack_exports__["RCurlyBracket"] = RCurlyBracket;
+
+
+const LRoundBracket = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "LRoundBracket",
+    pattern: /\(/
+});
+/* harmony export (immutable) */ __webpack_exports__["LRoundBracket"] = LRoundBracket;
+
+
+const RRoundBracket = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "RRoundBracket",
+    pattern: /\)/
+});
+/* harmony export (immutable) */ __webpack_exports__["RRoundBracket"] = RRoundBracket;
+
+
+const LAngleBracket = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "LAngleBracket",
+    pattern: /</
+});
+/* harmony export (immutable) */ __webpack_exports__["LAngleBracket"] = LAngleBracket;
+
+
+const RAngleBracket = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "RAngleBracket",
+    pattern: />/
+});
+/* harmony export (immutable) */ __webpack_exports__["RAngleBracket"] = RAngleBracket;
+
+
+const Literal = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "Literal",
+    pattern: __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Lexer"].NA
+});
+/* harmony export (immutable) */ __webpack_exports__["Literal"] = Literal;
+
+
+const StringLiteral = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "StringLiteral",
+    //"char*" -> "char+" or ""
+    //most characters = [^"]
+    //escaped the " char =  \\"
+    //cannot end with \ so must end with = [^\\"] or \\"
+    //empty is allowed ""
+    pattern: /"([^"\\]|\\.)*"/,
+    categories: [Literal],
+    line_breaks: true
+});
+/* harmony export (immutable) */ __webpack_exports__["StringLiteral"] = StringLiteral;
+
+
+const NumberLiteral = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "NumberLiteral",
+    pattern: /-?(\d+)(\.\d+)?/,
+    categories: [Literal,Label],
+    longer_alt: Label,
+});
+/* harmony export (immutable) */ __webpack_exports__["NumberLiteral"] = NumberLiteral;
+
+
+const ColorLiteral = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "ColorLiteral",
+    //first the 6 , otherwise only 3 will be matched
+    pattern: /#([0-9a-f]{6}|[0-9a-f]{3})/i,
+    categories: [Literal]
+});
+/* harmony export (immutable) */ __webpack_exports__["ColorLiteral"] = ColorLiteral;
+
+
+const ChoiceLiteral = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "ChoiceLiteral",
+    //idem stringLiteral
+    pattern: /\[([^\]\\]|\\.)*\]/,
+    categories: [Literal],
+    line_breaks: true
+});
+/* harmony export (immutable) */ __webpack_exports__["ChoiceLiteral"] = ChoiceLiteral;
+
+
+const Keyword = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "Keyword",
+    pattern: __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Lexer"].NA,
+    //longer_alt: Label //I would expect that this is valid for all keywords but apparently not
+});
+/* harmony export (immutable) */ __webpack_exports__["Keyword"] = Keyword;
+
+
+const If = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "If",
+    pattern: /if/i,
+    categories: [Keyword],
+    longer_alt: Label
+});
+/* harmony export (immutable) */ __webpack_exports__["If"] = If;
+
+
+const Then = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "Then",
+    pattern: /then/i,
+    categories: [Keyword],
+    longer_alt: Label
+});
+/* harmony export (immutable) */ __webpack_exports__["Then"] = Then;
+
+
+const Else = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "Else",
+    pattern: /else/i,
+    categories: [Keyword],
+    longer_alt: Label
+});
+/* harmony export (immutable) */ __webpack_exports__["Else"] = Else;
+
+
+const Forever = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "Forever",
+    pattern: /forever/i,
+    categories: [Keyword],
+    longer_alt: Label
+});
+/* harmony export (immutable) */ __webpack_exports__["Forever"] = Forever;
+
+
+const RepeatUntil = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "RepeatUntil",
+    pattern: /repeat[ \t]*until/i,
+    categories: [Keyword],
+    longer_alt: Label
+});
+/* harmony export (immutable) */ __webpack_exports__["RepeatUntil"] = RepeatUntil;
+
+
+const Repeat = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "Repeat",
+    pattern: /repeat/i,
+    categories: [Keyword],
+    longer_alt: Label
+});
+/* harmony export (immutable) */ __webpack_exports__["Repeat"] = Repeat;
+
+
+
+const End = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "End",
+    pattern: /end/i,
+    categories: [Keyword],
+    longer_alt: Label
+});
+/* harmony export (immutable) */ __webpack_exports__["End"] = End;
+
+
+const Modifier = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "Modifier",
+    pattern: /::((:(?!:))|[^\{\|\(\)<>\\#@: \t\n]|\\[^])([ \t]*((:(?!:))|[^\|\(\)<>\\#@: \t\n]|\\[^]))*/
+});
+/* harmony export (immutable) */ __webpack_exports__["Modifier"] = Modifier;
+
+
+const Comment = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "Comment",
+    //similar to stringliteral but between ||
+    pattern: /\|([^\|\\]|\\.)*\|/
+});
+/* harmony export (immutable) */ __webpack_exports__["Comment"] = Comment;
+
+
+const ID = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "ID",
+    pattern: /@[a-z0-9_]+/i
+});
+/* harmony export (immutable) */ __webpack_exports__["ID"] = ID;
+
+
+
+const MultipleDelimiters = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "MultipleDelimiters",
+    //; \n should always bee seen as a whole 
+    //so a ; alone must explicitly not been followed by a \n
+    pattern: /((;[ \t]*\n|;[ \t]*(?!\n)|\n)[ \t]*){2,}/,
+    line_breaks: true
+});
+/* harmony export (immutable) */ __webpack_exports__["MultipleDelimiters"] = MultipleDelimiters;
+
+
+const Delimiter = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "Delimiter",
+    pattern: /;[ \t]*\n?|\n/,
+    line_breaks: true,
+    //longer_alt: MultipleDelimiter
+});
+/* harmony export (immutable) */ __webpack_exports__["Delimiter"] = Delimiter;
+
+
+
+
+// marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
+const WhiteSpace = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["createToken"])({
+    name: "WhiteSpace",
+    pattern: /[ \t]+/,
+    group: __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Lexer"].SKIPPED,
+    line_breaks: false
+});
+/* harmony export (immutable) */ __webpack_exports__["WhiteSpace"] = WhiteSpace;
+
+
+//order matters!
+const allTokens = [
+    WhiteSpace,
+    LineComment, BlockComment, Comment, //match before anything else
+    Literal, StringLiteral, NumberLiteral, ColorLiteral, ChoiceLiteral,
+    //WARNING: RepeatUntil must be defined before Repeat
+    Forever, End, RepeatUntil, Repeat, If, Else, Then,
+    //WARNING: StackDelimiter must be defined before Delimiter
+    MultipleDelimiters, Delimiter,
+    LCurlyBracket, RCurlyBracket,
+    LRoundBracket, RRoundBracket,
+    RAngleBracket, LAngleBracket,
+    Modifier, ID,
+    //WARNING: Label must be defined after anything else
+    Label
+];
+/* harmony export (immutable) */ __webpack_exports__["allTokens"] = allTokens;
+
+//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
+
+const LNLexer = new __WEBPACK_IMPORTED_MODULE_0_chevrotain__["Lexer"](allTokens);
+/* harmony export (immutable) */ __webpack_exports__["LNLexer"] = LNLexer;
+
+
+
+/***/ }),
 /* 32 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -7009,7 +7009,7 @@ module.exports = __webpack_require__(42).goog;
 // Using ES6 style imports, this means Webpack 2 can perform tree shaking
 
 
-const lntokens = __webpack_require__(23);
+const lntokens = __webpack_require__(31);
 
 let LNLexer = lntokens.LNLexer;
 let allTokens = lntokens.allTokens;
@@ -7195,22 +7195,29 @@ function LNParser(input) {
             LABEL: "ifClause"
         });
         $.OPTION3(() => {
-            /*$.OPTION4(() => {
-                $.CONSUME(Delimiter, {
-                    LABEL: "trailingIfClauseDelimiter"
-                });
-            });*/
+            /* $.OPTION4(() => {
+                 $.CONSUME(Delimiter, {
+                     LABEL: "trailingIfClauseDelimiter"
+                 });
+             });*/
             $.CONSUME(Else);
             $.SUBRULE3($.clause, {
                 LABEL: "elseClause"
             });
+
         });
+        $.OPTION5(() => {
+            $.CONSUME(End);
+        })
     });
 
     $.RULE("forever", () => {
         $.CONSUME(Forever);
         $.SUBRULE($.annotations);
         $.SUBRULE($.clause);
+        $.OPTION3(() => {
+            $.CONSUME(End);
+        })
     });
 
 
@@ -7219,6 +7226,9 @@ function LNParser(input) {
         $.SUBRULE($.argument);
         $.SUBRULE($.annotations);
         $.SUBRULE($.clause);
+        $.OPTION3(() => {
+            $.CONSUME(End);
+        })
     });
 
     $.RULE("repeatuntil", () => {
@@ -7226,6 +7236,9 @@ function LNParser(input) {
         $.SUBRULE($.condition);
         $.SUBRULE($.annotations);
         $.SUBRULE($.clause);
+        $.OPTION3(() => {
+            $.CONSUME(End);
+        })
     });
 
 
@@ -7240,9 +7253,9 @@ function LNParser(input) {
         $.OPTION2(() => {
             $.SUBRULE($.stack);
         });
-        $.OPTION3(() => {
+        /*$.OPTION3(() => {
             $.CONSUME(End);
-        })
+        })*/
     });
 
     $.RULE("annotations", () => {
@@ -7413,170 +7426,459 @@ function parse(text) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["b"] = universalBlockConverter;
-/* harmony export (immutable) */ __webpack_exports__["d"] = addType;
-/* harmony export (immutable) */ __webpack_exports__["g"] = variableBlockConverter;
-/* harmony export (immutable) */ __webpack_exports__["c"] = listBlockConverter;
-/* harmony export (immutable) */ __webpack_exports__["f"] = messageShadowBlockconverter;
-/* harmony export (immutable) */ __webpack_exports__["e"] = messageBlockconverter;
-/* harmony export (immutable) */ __webpack_exports__["h"] = stopConverter;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__IDManager__ = __webpack_require__(46);
-let blocks = {};
-/* harmony default export */ __webpack_exports__["a"] = (blocks);
-
-
-
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_chevrotain__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__LNParser__ = __webpack_require__(32);
 /**
+ * Template for the visitor.
  *
- * @param ctx
- * @param visitor
- * @param arg definition from the structure
- * @param i the index of the argument in the ctx
+ * .Provides information about parts of the three in the format
+ *
+ * {
+ * placeHolder: %b (boolean)| %s (string) ,
+ * offset: number,
+ * text: "a string",
+ * type: "tokename" or "expression" or "predicate"
+ * modifiers: list of tokens
+ * }
+ * the options are only avaible if they make sense.
+ *
+ * @file   This files defines the LNVisitor class.
+ * @author Ellen Vanhove.
  */
-function makeArgument(ctx, visitor, arg, i) {
-    if (arg.menu) {
-        visitor.xml = visitor.xml.ele('value', {
-            'name': arg.name
-        });
-        visitor.xml.ele('shadow', {
-            'type': arg.menu //this was added to the json and was not default.
-        }).ele('field', {
-            'name': arg.name
-        }, visitor.infoVisitor.getString(ctx.argument[i])); // '_mouse_'
-        visitor.xml = visitor.xml.up();
-    } else if (arg.type === 'input_value') {
-        visitor.xml = visitor.xml.ele('value', {
-            'name': arg.name
-        });
-        visitor.visit(ctx.argument[i]);
-        visitor.xml = visitor.xml.up();
-    } else if (arg.type === 'field_dropdown') {
-        visitor.xml = visitor.xml.ele('field', {
-            'name': arg.name
-        }, visitor.infoVisitor.getString(ctx.argument[i]));
-        visitor.xml = visitor.xml.up();
-    }
-}
-
-function universalBlockConverter(ctx, visitor, structure) {
-    if (structure.shape === "hatblock") {
-        visitor.interruptStack();
-    }
-    addType(ctx, visitor, structure.type);
-    for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
-        let arg = structure.args[i];
-        makeArgument(ctx, visitor, arg, i);
-    }
-    if (structure.shape === "hatblock") {
-        visitor.startStack();
-    }
-    if (structure.shape === "capblock") {
-        visitor.interruptStack();
-    }
-}
 
 
-function addType(ctx, visitor, type) {
-    let blockid = visitor.idManager.getNextBlockID(visitor.infoVisitor.getID(ctx, "atomic"));
-    visitor.xml = visitor.xml.ele('block', {
-        'id': blockid,
-        'type': type
-    });
-    visitor.state.addBlock(blockid);
-};
+//import {NumberLiteral, ColorLiteral} from "./LNLexer";
+const lntokens = __webpack_require__(31);
+let NumberLiteral = lntokens.NumberLiteral;
+let ColorLiteral = lntokens.ColorLiteral;
+let StringLiteral = lntokens.StringLiteral;
+let ChoiceLiteral = lntokens.ChoiceLiteral;
 
-//=======================================================================================================================================
-// variable and list operations require special treatment considering the IDS
-//=======================================================================================================================================
 
-function variableBlockConverter(ctx, visitor, structure) {
-    addType(ctx, visitor, structure.type);
-    //name of the variable
-    let varble = visitor.infoVisitor.getString(ctx.argument[0]);
-    //function must be called to register VariableID
-    visitor.idManager.acquireVariableID(varble);
-    visitor.xml = visitor.xml.ele('field', {
-        'name': 'VARIABLE'
-    }, varble);
-    if(structure.args.length>1) {
-        visitor.xml = visitor.xml.up().ele('value', {
-            'name': 'VALUE'
-        });
+const PLACEHOLDER = "placeholder";
+/* unused harmony export PLACEHOLDER */
+
+const OFFSET = "offset";
+/* unused harmony export OFFSET */
+
+
+//todo make this an enum or something
+const TYPE = "type";
+/* unused harmony export TYPE */
+
+const EXPRESSION = "expression";
+/* harmony export (immutable) */ __webpack_exports__["b"] = EXPRESSION;
+
+const PREDICATE = "predicate";
+/* harmony export (immutable) */ __webpack_exports__["c"] = PREDICATE;
+
+const ATOMIC = "atomic";
+/* unused harmony export ATOMIC */
+
+const EMPTY = "empty";
+/* unused harmony export EMPTY */
+
+const CHOICE = "choice";
+/* harmony export (immutable) */ __webpack_exports__["a"] = CHOICE;
+
+const TEXT = "text";
+/* unused harmony export TEXT */
+
+const TEXT_OR_NUMBER = "text or number";
+/* unused harmony export TEXT_OR_NUMBER */
+
+const COLOR = "color";
+/* unused harmony export COLOR */
+
+
+const COMMENT = "comment";
+/* unused harmony export COMMENT */
+
+const ID = "id";
+/* unused harmony export ID */
+
+const CBLOCK = "cblock";
+/* unused harmony export CBLOCK */
+
+
+
+const BaseCstVisitor = __WEBPACK_IMPORTED_MODULE_1__LNParser__["b" /* lnparser */].getBaseCstVisitorConstructor();
+
+
+class InfoLNVisitor extends BaseCstVisitor {
+
+    constructor() {
+        super();
+        // This helper will detect any missing or redundant methods on this visitor
+        this.validateVisitor()
     }
-    //the second argument.
-    visitor.visit(ctx.argument[1]);
-    visitor.xml = visitor.xml.up();
-}
 
-//todo
-function listBlockConverter(ctx, visitor, structure) {
-    addType(ctx, visitor, structure.type);
-    for (let i = 0; i < ctx.argument.length; i++) {
-        let arg = structure.args[i];
-        if (arg.name === 'LIST') {
-            let varble = visitor.infoVisitor.getString(ctx.argument[i]);
-            visitor.idManager.acquireVariableID(varble, __WEBPACK_IMPORTED_MODULE_0__IDManager__["a" /* LIST */]);
-            visitor.xml = visitor.xml.ele('field', {
-                'name': 'LIST',
-                'variabletype': 'list',
-            }, varble);
-            visitor.xml = visitor.xml.up();
+    code(ctx) {
+
+    }
+
+    delimiters(ctx) {
+
+    }
+
+    stackDelimiter(ctx) {
+
+    }
+
+    comments(ctx) {
+
+    }
+
+    stack(ctx) {
+
+    }
+
+    block(ctx) {
+
+    }
+
+    atomic(ctx) {
+        //calculate the offset
+        let offset = 0;
+        if (ctx.Label) {
+            //if there is a label and a argument check which one occurs first
+            if (ctx.argument) {
+                offset = this.getOffsetArgument(ctx.argument[0]) < ctx.Label[0].startOffset ?
+                    this.getOffsetArgument(ctx.argument[0]) : ctx.Label[0].startOffset
+            } else {
+                offset = ctx.Label[0].startOffset
+            }
         } else {
-            makeArgument(ctx, visitor, arg, i);
+            //only a argument
+            offset = this.getOffsetArgument(ctx.argument[0])
+        }
+
+        return {
+            TEXT: this.unescapeLabel(this.getTextAtomic(ctx)),
+            OFFSET: offset,
+            TYPE: ATOMIC,
+            ID: this.visit(ctx.annotations).ID
         }
     }
-}
 
-//todo
-function messageShadowBlockconverter(ctx, visitor, structure) {
-    addType(ctx, visitor, structure.type);
-    let varble = visitor.infoVisitor.getString(ctx.argument[0]);
-    let arg = structure.args[0];
-    let id = visitor.idManager.acquireVariableID(varble, __WEBPACK_IMPORTED_MODULE_0__IDManager__["b" /* BROADCAST */]);
-
-    visitor.xml = visitor.xml.ele('value', {
-        'name': arg.name
-    });
-    visitor.xml.ele('shadow', {
-        'type': "event_broadcast_menu"
-    }).ele('field', {
-        'name': 'BROADCAST_OPTION',
-        'variabletype': "broadcast_msg",
-        'id': id
-    }, varble);
-    visitor.xml = visitor.xml.up();
-}
-
-// "when I receive %1"
-function messageBlockconverter(ctx, visitor, structure) {
-    if (structure.shape === "hatblock") {
-        visitor.interruptStack();
+    unescapeLabel(text){
+        //replace a \ followed by a not nothing character by only the character
+        return text.replace(/\\([^])/g, '$1');
     }
-    addType(ctx, visitor, structure.type);
 
-    let varble = visitor.infoVisitor.getString(ctx.argument[0]);
-    let arg = structure.args[0];
-    let id = visitor.idManager.acquireVariableID(varble, __WEBPACK_IMPORTED_MODULE_0__IDManager__["b" /* BROADCAST */]);
+    /**
+     * marges the labels into one string
+     * @param ctx
+     * @returns {string}
+     */
+    getTextAtomic(ctx) {
+        let matchString = '';
+        let a = 0;
+        for (let i = 0; ctx.Label && i < ctx.Label.length; i++) {
+            if (ctx.argument && a < ctx.argument.length) {
+                while (a < ctx.argument.length && this.getOffsetArgument(ctx.argument[a]) < ctx.Label[i].startOffset) {
+                    matchString += ' %' + (a + 1) + ' ';
+                    ++a;
+                }
+            }
+            matchString += ' ' + ctx.Label[i].image + ' ';
+        }
+        for (a; ctx.argument && a < ctx.argument.length; a++) {
+            matchString += ' %' + (a + 1) + ' ';
+        }
+        return this.cleanupText(matchString)
+    }
 
-    visitor.xml.ele('field', {
-        'name': "BROADCAST_OPTION",
-        'variabletype': "broadcast_msg",
-        'id': id
-    }, varble);
-    if (structure.shape === "hatblock") {
-        visitor.startStack();
+    getOffsetArgument(arg) {
+        if (!arg) {
+            return Number.MAX_SAFE_INTEGER; //avoid infinite loop
+        }
+        let child = this.visit(arg);
+        return child.OFFSET
+    }
+
+    /**
+     * cleanup a text
+     * * to remove multiple spaces
+     * * unescape special characters todo
+     * @param text e.g. merged labels
+     * @returns {*}
+     */
+    cleanupText(text) {
+        //remove double spaces to easier match
+        text = text.replace(/ +(?= )/g, '');
+        //' ?'
+        text = text.replace(/ +(?=[\?])/g, '');
+        //text = text.replace(/ +(?=[\%][^sbn])/g, '');
+        //remove spaces at beginning and end
+        text = text.trim();
+
+        return text;
+    }
+
+    composite(ctx) {
+
+    }
+
+    ifelse(ctx) {
+        return {
+            PLACEHOLDER: "%s",
+            TEXT: "",
+            OFFSET: ctx.If.offset,
+            TYPE: CBLOCK,
+            ID: this.visit(ctx.annotations).ID
+        }
+    }
+
+    forever(ctx) {
+        return {
+            PLACEHOLDER: "%s",
+            TEXT: "",
+            OFFSET: ctx.Forever.offset,
+            TYPE: CBLOCK,
+            ID: this.visit(ctx.annotations).ID
+        }
+    }
+
+    repeat(ctx) {
+        return {
+            PLACEHOLDER: "%s",
+            TEXT: "",
+            OFFSET: ctx.Repeat.offset,
+            TYPE: CBLOCK,
+            ID: this.visit(ctx.annotations).ID
+        }
+    }
+
+    repeatuntil(ctx) {
+        return {
+            PLACEHOLDER: "%s",
+            TEXT: "",
+            OFFSET: ctx.RepeatUntil.offset,
+            TYPE: CBLOCK,
+            ID: this.visit(ctx.annotations).ID
+        }
+    }
+
+    clause(ctx) {
+
+    }
+
+    modifiers(ctx) {
+        if (!ctx.Modifier) {
+            return {
+                MODIFIERS: []
+            }
+        }
+        return {
+            MODIFIERS: ctx.Modifier
+        }
+    }
+
+    id(ctx) {
+        if (ctx && ctx.ID) {
+            return {
+                OFFSET: ctx.ID[0].offset,
+                TEXT: ctx.ID[0].image,
+                ID: ctx.ID[0].image,
+                TYPE: ID
+            }
+        } else {
+            return {
+                ID: null,
+                TYPE: ID
+            }
+        }
+    }
+
+    comment(ctx) {
+        return {
+            OFFSET: ctx.Comment[0].offset,
+            TEXT: this.unescapeComment(ctx.Comment[0].image),
+            TYPE: COMMENT
+        }
+    }
+
+
+    unescapeComment(text) {
+        return text.replace(/\\([^])/g, '$1').replace(/^\|(.*(?=\|$))\|$/, '$1');
+    }
+
+    annotations(ctx) {
+        let idinfo = this.visit(ctx.id);
+        let modInfo = this.visit(ctx.modifiers);
+        return {
+            ID: idinfo.ID,
+            MODIFIERS: modInfo.MODIFIERS
+        }
+
+    }
+
+
+    argument(ctx) {
+        let type;
+        let id = ctx.id?this.visit(ctx.id).ID:null;
+        if (ctx.Literal) {
+            let text = "";
+            if (__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["tokenMatcher"])(ctx.Literal[0], ChoiceLiteral)) {
+                text = this.unescapeChoiceLiteral(ctx.Literal[0].image);
+                type = CHOICE;
+            } else if (__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["tokenMatcher"])(ctx.Literal[0], ColorLiteral)) {
+                text = this.makeValidColor(ctx.Literal[0].image);
+                type = COLOR
+            } else {
+                text = this.unescapeStringLiteral(ctx.Literal[0].image);
+                type = TEXT_OR_NUMBER
+            }
+            return {
+                PLACEHOLDER: "%s",
+                TEXT: text,
+                OFFSET: ctx.Literal[0].startOffset,
+                TYPE: type,
+                ID: id
+            }
+        }else if (ctx.Label) {
+            return {
+                PLACEHOLDER: "%s",
+                TEXT:  ctx.Label[0].image,
+                OFFSET: ctx.Label[0].startOffset,
+                TYPE: TEXT_OR_NUMBER,
+                ID: id
+            }
+        } else if (ctx.expression) {
+            return this.visit(ctx.expression);
+        } else if (ctx.predicate) {
+            return this.visit(ctx.predicate);
+        } else {
+            //empty argument
+            return {
+                PLACEHOLDER: "%s",
+                TEXT: "",
+                OFFSET: ctx.LCurlyBracket[0].startOffset,
+                TYPE: EMPTY,
+                ID: id
+            }
+        }
+    }
+
+
+    argument$empty(ctx) {
+
+    }
+
+    unescapeStringLiteral(text) {
+        return text.replace(/\\([^])/g, '$1').replace(/^"(.*(?="$))"$/, '$1');
+    }
+
+    unescapeChoiceLiteral(text) {
+        return text.replace(/\\([^])/g, '$1').replace(/^\[(.*(?=\]$))\]$/, '$1');
+    }
+
+    /**
+     * color has to have 6 digits so ABC -> AABBCC
+     * @param text
+     */
+    makeValidColor(text) {
+        return text.replace(/^#([0-F])([0-F])([0-F])$/i, '#$1$1$2$2$3$3')
+    }
+
+    condition(ctx) {
+        return this.visit(ctx.expression);
+    }
+
+    condition$empty(ctx) {
+
+    }
+
+    expression(ctx) {
+        return {
+            PLACEHOLDER: "%s",
+            OFFSET: ctx.LRoundBracket[0].startOffset,
+            TYPE: EXPRESSION,
+            ID: this.id(ctx.ID).ID,
+            TEXT: ctx.atomic?this.visit(ctx.atomic).TEXT:""
+        }
+    }
+
+    predicate(ctx) {
+        return {
+            PLACEHOLDER: "%b",
+            OFFSET: ctx.LAngleBracket[0].startOffset,
+            TYPE: PREDICATE,
+            ID: this.id(ctx.ID).ID,
+            TEXT: ctx.atomic?this.visit(ctx.atomic).TEXT:""
+        }
+    }
+
+    //////////////////////////////////////////////////
+    //// no 'real' visitor methods as they are not rules.
+    //////////////////////////////////////////////////
+
+
+    //////////////////////////////////////////////////
+    //// simplified getters
+    //////////////////////////////////////////////////
+
+    /**
+     * returns a string for the given ctx
+     * @param ctx
+     * @param rule explicitly declare the rule that needs to be used:
+     *             this is necessary if this function is called with whole ctx and not with a child
+     */
+    getString(ctx, rule = null) {
+        let x;
+        if (!rule) {
+            x = this.visit(ctx);
+        } else {
+            x = this[rule](ctx);
+        }
+        return x.TEXT;
+    }
+
+    getPlaceholder(ctx, rule = null) {
+        let x;
+        if (!rule) {
+            x = this.visit(ctx);
+        } else {
+            x = this[rule](ctx);
+        }
+        return x.PLACEHOLDER;
+    }
+
+    getID(ctx, rule = null) {
+        let x;
+        if (!rule) {
+            x = this.visit(ctx);
+        } else {
+            x = this[rule](ctx);
+        }
+        return x.ID;
+    }
+
+    getType(ctx, rule = null) {
+        let x;
+        if (!rule) {
+            x = this.visit(ctx);
+        } else {
+            x = this[rule](ctx);
+        }
+        return x.TYPE;
+    }
+
+    getModifiers(ctx, rule = null) {
+        let x;
+        if (!rule) {
+            x = this.visit(ctx);
+        } else {
+            x = this[rule](ctx);
+        }
+        return x.MODIFIERS;
     }
 }
+/* harmony export (immutable) */ __webpack_exports__["d"] = InfoLNVisitor;
 
-//todo
-function stopConverter(ctx, visitor, structure) {
-    addType(ctx, visitor, structure.type);
-    visitor.xml = visitor.xml.ele('field', {
-        'name': "STOP_OPTION"
-    }, visitor.infoVisitor.getString(ctx.argument[0]));
-    visitor.xml = visitor.xml.up();
-    visitor.interruptStack();
-}
+
 
 /***/ }),
 /* 34 */
@@ -7874,9 +8176,9 @@ exports.firstForTerminal = firstForTerminal;
 Object.defineProperty(exports, "__esModule", { value: true });
 var utils_1 = __webpack_require__(0);
 var lang_extensions_1 = __webpack_require__(5);
-var resolver_1 = __webpack_require__(59);
+var resolver_1 = __webpack_require__(60);
 var checks_1 = __webpack_require__(8);
-var errors_public_1 = __webpack_require__(24);
+var errors_public_1 = __webpack_require__(23);
 var gast_1 = __webpack_require__(9);
 function resolveGrammar(options) {
     options = utils_1.defaults(options, {
@@ -7977,8 +8279,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var utils_1 = __webpack_require__(0);
-var interpreter_1 = __webpack_require__(25);
-var rest_1 = __webpack_require__(26);
+var interpreter_1 = __webpack_require__(24);
+var rest_1 = __webpack_require__(25);
 var tokens_1 = __webpack_require__(10);
 var gast_public_1 = __webpack_require__(1);
 var gast_visitor_public_1 = __webpack_require__(6);
@@ -9388,7 +9690,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 /* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(67);
+module.exports = __webpack_require__(68);
 
 
 /***/ }),
@@ -9709,6 +10011,8 @@ module.exports = __webpack_require__(67);
  * @file   This files defines the BasicIDManager class.
  * @author Ellen Vanhove.
  */
+const ARG = 'arg';
+/* harmony export (immutable) */ __webpack_exports__["d"] = ARG;
 
 const BROADCAST = 'broadcast_msg';
 /* harmony export (immutable) */ __webpack_exports__["b"] = BROADCAST;
@@ -9739,7 +10043,7 @@ class BasicIDManager{
 
     /**
      * generates an unique id for every block
-     * todo: if an id is defined in the ctx this one should be used
+     * if an id is defined in the ctx this one should be used
      * todo: waring in case an id is used twice.
      * @param definedID the id defiend by the user, null incase the id is not defined
      * @returns {string}
@@ -9761,7 +10065,7 @@ class BasicIDManager{
 
     /**
      * generates an unique id for every block
-     * todo: if an id is defined in the ctx this one should be used
+     * if an id is defined in the ctx this one should be used
      * todo: waring in case an id is used twice.
      * @param definedID the id defiend by the user, null incase the id is not defined
      * @param parentID the id of the parent block that contains this input
@@ -9796,7 +10100,7 @@ class BasicIDManager{
 
     /**
      * generates an unique id for every coment
-     * todo: if an id is defined in the ctx this one should be used
+     * if an id is defined in the ctx this one should be used
      * todo: waring in case an id is used twice.
      * @param definedID
      * @param {boolean} pinned is it a stand alone block?
@@ -9815,467 +10119,169 @@ class BasicIDManager{
 /* harmony export (immutable) */ __webpack_exports__["c"] = BasicIDManager;
 
 
+
+
 /***/ }),
 /* 47 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_chevrotain__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__LNParser__ = __webpack_require__(32);
+/* harmony export (immutable) */ __webpack_exports__["a"] = init_parser_utils;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__blockspecification_blockspecification__ = __webpack_require__(53);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__typeConfig__ = __webpack_require__(48);
 /**
- * Template for the visitor.
+ * Functions that structure the functions that generate the xml of the build-in blocks;.
  *
- * .Provides information about parts of the three in the format
- *
- * {
- * placeHolder: %b (boolean)| %s (string) ,
- * offset: number,
- * text: "a string",
- * type: "tokename" or "expression" or "predicate"
- * modifiers: list of tokens
- * }
- * the options are only avaible if they make sense.
- *
- * @file   This files defines the LNVisitor class.
+ * @file   This files defines the functions
  * @author Ellen Vanhove.
  */
 
 
-//import {NumberLiteral, ColorLiteral} from "./LNLexer";
-const lntokens = __webpack_require__(23);
-let NumberLiteral = lntokens.NumberLiteral;
-let ColorLiteral = lntokens.ColorLiteral;
-let StringLiteral = lntokens.StringLiteral;
-let ChoiceLiteral = lntokens.ChoiceLiteral;
 
+let blocks = {};
+//map of strings -> objects that look like
+/**
+ * WARNING: blocks with the same text are wrapped in the converter.
+ * WARNING: currently only one modus for each block,
+ * so should be relooked in case same string in two modusses can be used.
+ * {
+ *  converter: function that generates xml
+ *  modus: see typeConfig, in which context can this block been build.
+ * }
+ */
 
-const PLACEHOLDER = "placeholder";
-/* unused harmony export PLACEHOLDER */
+/* harmony default export */ __webpack_exports__["b"] = (blocks);
 
-const OFFSET = "offset";
-/* unused harmony export OFFSET */
-
-
-
-const TYPE = "type";
-/* unused harmony export TYPE */
-
-const EXPRESSION = "expression";
-/* unused harmony export EXPRESSION */
-
-const PREDICATE = "predicate";
-/* unused harmony export PREDICATE */
-
-const ATOMIC = "atomic";
-/* unused harmony export ATOMIC */
-
-const EMPTY = "empty";
-/* unused harmony export EMPTY */
-
-const CHOICE = "choice";
-/* harmony export (immutable) */ __webpack_exports__["a"] = CHOICE;
-
-const TEXT = "text";
-/* unused harmony export TEXT */
-
-const TEXT_OR_NUMBER = "text or number";
-/* unused harmony export TEXT_OR_NUMBER */
-
-const COLOR = "color"
-/* unused harmony export COLOR */
-
-
-const COMMENT = "comment";
-/* unused harmony export COMMENT */
-
-const ID = "id";
-/* unused harmony export ID */
-
-const CBLOCK = "cblock"
-/* unused harmony export CBLOCK */
-
-
-
-const BaseCstVisitor = __WEBPACK_IMPORTED_MODULE_1__LNParser__["b" /* lnparser */].getBaseCstVisitorConstructor();
-
-
-class InfoLNVisitor extends BaseCstVisitor {
-
-    constructor() {
-        super();
-        // This helper will detect any missing or redundant methods on this visitor
-        this.validateVisitor()
-    }
-
-    code(ctx) {
-
-    }
-
-    delimiters(ctx) {
-
-    }
-
-    stackDelimiter(ctx) {
-
-    }
-
-    comments(ctx) {
-
-    }
-
-    stack(ctx) {
-
-    }
-
-    block(ctx) {
-
-    }
-
-    atomic(ctx) {
-        //calculate the offset
-        let offset = 0;
-        if (ctx.Label) {
-            //if there is a label and a argument check which one occurs first
-            if (ctx.argument) {
-                offset = this.getOffsetArgument(ctx.argument[0]) < ctx.Label[0].startOffset ?
-                    this.getOffsetArgument(ctx.argument[0]) : ctx.Label[0].startOffset
-            } else {
-                offset = ctx.Label[0].startOffset
+/**
+ * init blocks with information from blockspecifications
+ */
+function init_parser_utils() {
+    // blockspecifications
+    //generate the functions in blocks
+    for (let x = 0; x < __WEBPACK_IMPORTED_MODULE_0__blockspecification_blockspecification__["a" /* blockspecifications */].length; x++) {
+        let b = __WEBPACK_IMPORTED_MODULE_0__blockspecification_blockspecification__["a" /* blockspecifications */][x];
+        if (Array.isArray(b['template'])) {
+            let ts = b['template'];
+            for (let t = 0; t < ts.length; t++) {
+                createBlockEntry(b['template'][t], b)
             }
         } else {
-            //only a argument
-            offset = this.getOffsetArgument(ctx.argument[0])
+            createBlockEntry(b['template'], b)
+
         }
 
-        return {
-            TEXT: this.unescapeLabel(this.getTextAtomic(ctx)),
-            OFFSET: offset,
-            TYPE: ATOMIC,
-            ID: this.visit(ctx.annotations).ID
-        }
     }
 
-    unescapeLabel(text){
-        //replace a \ followed by a not nothing character by only the character
-        return text.replace(/\\([^])/g, '$1');
-    }
+}
 
-    /**
-     * marges the labels into one string
-     * @param ctx
-     * @returns {string}
-     */
-    getTextAtomic(ctx) {
-        let matchString = '';
-        let a = 0;
-        for (let i = 0; ctx.Label && i < ctx.Label.length; i++) {
-            if (ctx.argument && a < ctx.argument.length) {
-                while (a < ctx.argument.length && this.getOffsetArgument(ctx.argument[a]) < ctx.Label[i].startOffset) {
-                    matchString += ' %' + (a + 1) + ' ';
-                    ++a;
-                }
+/**
+ * adds an function element to blocks
+ * @param templateString {String} to match so that the block from the definition is build
+ * @param specification as defined in blockspecifications
+ */
+function createBlockEntry(templateString, specification) {
+    //determine the modus for the block
+    let modus;
+    switch (specification.description.shape) {
+        case "booleanblock":
+        case "booleans":
+            modus = __WEBPACK_IMPORTED_MODULE_1__typeConfig__["a" /* MODUS */].BOOLEAN;
+            break;
+        case "reporterblock":
+            modus=__WEBPACK_IMPORTED_MODULE_1__typeConfig__["a" /* MODUS */].REPORTER;
+            break;
+        default:
+            modus = __WEBPACK_IMPORTED_MODULE_1__typeConfig__["a" /* MODUS */].STACK;
+    }
+    //if the template has no converter assigned yet, there is no problem, just create it
+    if (!blocks[templateString]) {
+        blocks[templateString] = {};
+        blocks[templateString].converter = createBlockFunction(specification);
+        blocks[templateString].modus = [modus];
+
+    } else {
+        let higherDefinedSpecification = blocks[templateString].converter;
+        //wrap the previous one
+        blocks[templateString].converter = function (ctx, visitor) {
+            //if it not succeeds
+            let first_call_executed = higherDefinedSpecification(ctx, visitor);
+            if (!first_call_executed) {
+                //Call the next one
+                return createBlockFunction(specification)(ctx, visitor);
             }
-            matchString += ' ' + ctx.Label[i].image + ' ';
+            return first_call_executed;
+        };
+        //add the modus if it is a different one
+        if(!(modus in blocks[templateString].modus)){
+            blocks[templateString].modus.push(modus);
         }
-        for (a; ctx.argument && a < ctx.argument.length; a++) {
-            matchString += ' %' + (a + 1) + ' ';
-        }
-        return this.cleanupText(matchString)
-    }
-
-    getOffsetArgument(arg) {
-        if (!arg) {
-            return Number.MAX_SAFE_INTEGER; //avoid infinite loop
-        }
-        let child = this.visit(arg);
-        return child.OFFSET
-    }
-
-    /**
-     * cleanup a text
-     * * to remove multiple spaces
-     * * unescape special characters todo
-     * @param text e.g. merged labels
-     * @returns {*}
-     */
-    cleanupText(text) {
-        //remove double spaces to easier match
-        text = text.replace(/ +(?= )/g, '');
-        //' ?'
-        text = text.replace(/ +(?=[\?])/g, '');
-        //text = text.replace(/ +(?=[\%][^sbn])/g, '');
-        //remove spaces at beginning and end
-        text = text.trim();
-
-        return text;
-    }
-
-    composite(ctx) {
-
-    }
-
-    ifelse(ctx) {
-        return {
-            PLACEHOLDER: "%s",
-            TEXT: "",
-            OFFSET: ctx.If.offset,
-            TYPE: CBLOCK,
-            ID: this.visit(ctx.annotations).ID
-        }
-    }
-
-    forever(ctx) {
-        return {
-            PLACEHOLDER: "%s",
-            TEXT: "",
-            OFFSET: ctx.Forever.offset,
-            TYPE: CBLOCK,
-            ID: this.visit(ctx.annotations).ID
-        }
-    }
-
-    repeat(ctx) {
-        return {
-            PLACEHOLDER: "%s",
-            TEXT: "",
-            OFFSET: ctx.Repeat.offset,
-            TYPE: CBLOCK,
-            ID: this.visit(ctx.annotations).ID
-        }
-    }
-
-    repeatuntil(ctx) {
-        return {
-            PLACEHOLDER: "%s",
-            TEXT: "",
-            OFFSET: ctx.RepeatUntil.offset,
-            TYPE: CBLOCK,
-            ID: this.visit(ctx.annotations).ID
-        }
-    }
-
-    clause(ctx) {
-
-    }
-
-    modifiers(ctx) {
-        if (!ctx.Modifier) {
-            return {
-                MODIFIERS: []
-            }
-        }
-        return {
-            MODIFIERS: ctx.Modifier
-        }
-    }
-
-    id(ctx) {
-        if (ctx && ctx.ID) {
-            return {
-                OFFSET: ctx.ID[0].offset,
-                TEXT: ctx.ID[0].image,
-                ID: ctx.ID[0].image,
-                TYPE: ID
-            }
-        } else {
-            return {
-                ID: null,
-                TYPE: ID
-            }
-        }
-    }
-
-    comment(ctx) {
-        return {
-            OFFSET: ctx.Comment[0].offset,
-            TEXT: this.unescapeComment(ctx.Comment[0].image),
-            TYPE: COMMENT
-        }
-    }
-
-
-    unescapeComment(text) {
-        return text.replace(/\\([^])/g, '$1').replace(/^\|(.*(?=\|$))\|$/, '$1');
-    }
-
-    annotations(ctx) {
-        let idinfo = this.visit(ctx.id);
-        let modInfo = this.visit(ctx.modifiers);
-        return {
-            ID: idinfo.ID,
-            MODIFIERS: modInfo.MODIFIERS
-        }
-
-    }
-
-
-    argument(ctx) {
-        let type;
-        let id = ctx.id?this.visit(ctx.id).ID:null;
-        if (ctx.Literal) {
-            let text = "";
-            if (__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["tokenMatcher"])(ctx.Literal[0], ChoiceLiteral)) {
-                text = this.unescapeChoiceLiteral(ctx.Literal[0].image);
-                type = CHOICE;
-            } else if (__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_chevrotain__["tokenMatcher"])(ctx.Literal[0], ColorLiteral)) {
-                text = this.makeValidColor(ctx.Literal[0].image);
-                type = COLOR
-            } else {
-                text = this.unescapeStringLiteral(ctx.Literal[0].image);
-                type = TEXT_OR_NUMBER
-            }
-            return {
-                PLACEHOLDER: "%s",
-                TEXT: text,
-                OFFSET: ctx.Literal[0].startOffset,
-                TYPE: type,
-                ID: id
-            }
-        }else if (ctx.Label) {
-            return {
-                PLACEHOLDER: "%s",
-                TEXT:  ctx.Label[0].image,
-                OFFSET: ctx.Label[0].startOffset,
-                TYPE: TEXT_OR_NUMBER,
-                ID: id
-            }
-        } else if (ctx.expression) {
-            return this.visit(ctx.expression);
-        } else if (ctx.predicate) {
-            return this.visit(ctx.predicate);
-        } else {
-            //empty argument
-            return {
-                PLACEHOLDER: "%s",
-                TEXT: "",
-                OFFSET: ctx.LCurlyBracket[0].startOffset,
-                TYPE: EMPTY,
-                ID: id
-            }
-        }
-    }
-
-
-    argument$empty(ctx) {
-
-    }
-
-    unescapeStringLiteral(text) {
-        return text.replace(/\\([^])/g, '$1').replace(/^"(.*(?="$))"$/, '$1');
-    }
-
-    unescapeChoiceLiteral(text) {
-        return text.replace(/\\([^])/g, '$1').replace(/^\[(.*(?=\]$))\]$/, '$1');
-    }
-
-    /**
-     * color has to have 6 digits so ABC -> AABBCC
-     * @param text
-     */
-    makeValidColor(text) {
-        return text.replace(/^#([0-F])([0-F])([0-F])$/i, '#$1$1$2$2$3$3')
-    }
-
-    condition(ctx) {
-        return this.visit(ctx.expression);
-    }
-
-    condition$empty(ctx) {
-
-    }
-
-    expression(ctx) {
-        return {
-            PLACEHOLDER: "%s",
-            OFFSET: ctx.LRoundBracket[0].startOffset,
-            TYPE: EXPRESSION,
-            ID: this.id(ctx.ID).ID,
-            TEXT: ctx.atomic?this.visit(ctx.atomic).TEXT:""
-        }
-    }
-
-    predicate(ctx) {
-        return {
-            PLACEHOLDER: "%b",
-            OFFSET: ctx.LAngleBracket[0].startOffset,
-            TYPE: PREDICATE,
-            ID: this.id(ctx.ID).ID,
-            TEXT: ctx.atomic?this.visit(ctx.atomic).TEXT:""
-        }
-    }
-
-    //////////////////////////////////////////////////
-    //// no 'real' visitor methods as they are not rules.
-    //////////////////////////////////////////////////
-
-
-    //////////////////////////////////////////////////
-    //// simplified getters
-    //////////////////////////////////////////////////
-
-    /**
-     * returns a string for the given ctx
-     * @param ctx
-     * @param rule explicitly declare the rule that needs to be used:
-     *             this is necessary if this function is called with whole ctx and not with a child
-     */
-    getString(ctx, rule = null) {
-        let x;
-        if (!rule) {
-            x = this.visit(ctx);
-        } else {
-            x = this[rule](ctx);
-        }
-        return x.TEXT;
-    }
-
-    getPlaceholder(ctx, rule = null) {
-        let x;
-        if (!rule) {
-            x = this.visit(ctx);
-        } else {
-            x = this[rule](ctx);
-        }
-        return x.PLACEHOLDER;
-    }
-
-    getID(ctx, rule = null) {
-        let x;
-        if (!rule) {
-            x = this.visit(ctx);
-        } else {
-            x = this[rule](ctx);
-        }
-        return x.ID;
-    }
-
-    getType(ctx, rule = null) {
-        let x;
-        if (!rule) {
-            x = this.visit(ctx);
-        } else {
-            x = this[rule](ctx);
-        }
-        return x.TYPE;
-    }
-
-    getModifiers(ctx, rule = null) {
-        let x;
-        if (!rule) {
-            x = this.visit(ctx);
-        } else {
-            x = this[rule](ctx);
-        }
-        return x.MODIFIERS;
     }
 }
-/* harmony export (immutable) */ __webpack_exports__["b"] = InfoLNVisitor;
 
+/**
+ * creates a function that can be called with (ctx,visitor)
+ * it creates xml based on the specifications by calling the converter function if the predicate is true
+ * @param specification object as defined in the file blockspecifications
+ * @returns {Function}
+ */
+function createBlockFunction(specification) {
+    let b = specification;
+    return function (ctx, visitor) {
+        if (!b['predicate'] || b['predicate'](ctx, visitor)) {
+            b['converter'](ctx, visitor, b['description']);
+            return true;
+        }
+        return false;
+    };
 
+}
 
 /***/ }),
 /* 48 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/**
+ * Summary.
+ *
+ * Description.
+ *
+ * @file   This files defines the MyClass class.
+ * @author Ellen Vanhove.
+ */
+
+
+const MODUS = {
+    NONE: 0,
+    STACK: 1,
+    REPORTER: 2,
+    BOOLEAN: 3,
+};
+/* harmony export (immutable) */ __webpack_exports__["a"] = MODUS;
+
+const INPUTTYPE = {
+    NONE: 0,
+    BOOLEAN: 1,
+    TEXT: 2,
+    NUMBER: 3,
+    COLOR: 4,
+    DROPDOWN: 5,
+};
+/* harmony export (immutable) */ __webpack_exports__["b"] = INPUTTYPE;
+
+const BLOCKTYPE = {
+    NONE: 0,
+    STATEMENT: 1,
+    REPORTER: 2,
+    BOOLEAN: 3,
+    HATBLOCK:4,
+    CAPBLOCK:5
+};
+/* unused harmony export BLOCKTYPE */
+
+
+/***/ }),
+/* 49 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10293,7 +10299,7 @@ const MEDIA = '/static/blocks-media/';
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -20664,24 +20670,22 @@ return jQuery;
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(64);
+module.exports = __webpack_require__(65);
 
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* unused harmony export init_parser_utils */
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseTextToXML;
 /* unused harmony export parseTextToXMLWithWarnings */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__LNParser__ = __webpack_require__(32);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__XMLLNVisitor__ = __webpack_require__(77);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__blockspecification_blockspecification__ = __webpack_require__(52);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__blocks__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__blockConverterUtils__ = __webpack_require__(47);
 /**
  * Provide high level function to transform text to XML
  *
@@ -20695,74 +20699,10 @@ module.exports = __webpack_require__(64);
 
 
 
-
 const visitor = __WEBPACK_IMPORTED_MODULE_1__XMLLNVisitor__["a" /* XMLLNVisitor */];
 
-/**
- * init blocks with information from blockspecifications
- */
-function init_parser_utils() {
-    // blockspecifications
-    //generate the functions in blocks
-    for (let x = 0; x < __WEBPACK_IMPORTED_MODULE_2__blockspecification_blockspecification__["a" /* blockspecifications */].length; x++) {
-        let b = __WEBPACK_IMPORTED_MODULE_2__blockspecification_blockspecification__["a" /* blockspecifications */][x];
-        if (Array.isArray(b['template'])) {
-            let ts = b['template'];
-            for (let t = 0; t < ts.length; t++) {
-                createBlockEntry(b['template'][t], b)
-            }
-        } else {
-            createBlockEntry(b['template'], b)
-
-        }
-
-    }
-
-}
-
-/**
- * adds an function element to blocks
- * @param templateString {String} to match so that the block from the definition is build
- * @param specification as defined in blockspecifications
- */
-function createBlockEntry(templateString, specification) {
-    //if the template has no converter assigned yet, there is no problem, just create it
-    if (!__WEBPACK_IMPORTED_MODULE_3__blocks__["a" /* default */][templateString]) {
-        __WEBPACK_IMPORTED_MODULE_3__blocks__["a" /* default */][templateString] = createBlockFunction(specification);
-    } else {
-        let higherDefinedSpecification = __WEBPACK_IMPORTED_MODULE_3__blocks__["a" /* default */][templateString];
-        //wrap the previous one
-        __WEBPACK_IMPORTED_MODULE_3__blocks__["a" /* default */][templateString] = function (ctx, visitor) {
-            //if it not succeeds
-            let first_call_executed = higherDefinedSpecification(ctx, visitor);
-            if (!first_call_executed) {
-                //Call the next one
-                return createBlockFunction(specification)(ctx, visitor);
-            }
-            return first_call_executed;
-        }
-    }
-}
-
-/**
- * creates a function that can be called with (ctx,visitor)
- * it creates xml based on the specifications by calling the converter function if the predicate is true
- * @param specification object as defined in the file blockspecifications
- * @returns {Function}
- */
-function createBlockFunction(specification) {
-    let b = specification;
-    return function (ctx, visitor) {
-        if (!b['predicate'] || b['predicate'](ctx, visitor)) {
-            b['converter'](ctx, visitor, b['description']);
-            return true;
-        }
-        return false;
-    };
-
-}
-
-init_parser_utils();
+//todo make this return a value and not just some global value
+__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__blockConverterUtils__["a" /* init_parser_utils */])();
 
 //////////////////////////////////////////////////////////////////
 // public functions
@@ -20809,12 +20749,12 @@ function parseTextToXMLWithWarnings(text) {
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parser_blocks__ = __webpack_require__(33);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parser_InfoLNVisitor__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parser_infoLNVisitor__ = __webpack_require__(33);
 /**
  * Specification of blocks.
  *
@@ -20844,7 +20784,7 @@ let looksSoundPredicate = function (ctx, visitor) {
 
 let listOperatorPredicate = function (ctx, visitor) {
     let argType = visitor.infoVisitor.getType(ctx.argument[0]);
-    return (argType === __WEBPACK_IMPORTED_MODULE_1__parser_InfoLNVisitor__["a" /* CHOICE */]);
+    return (argType === __WEBPACK_IMPORTED_MODULE_1__parser_infoLNVisitor__["a" /* CHOICE */]);
 };
 // ===============================================================================
 
@@ -20861,7 +20801,7 @@ const blockspecifications = [
                 }],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */],
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */],
             "predicate": (ctx, visitor) => {
                 let arg = visitor.infoVisitor.getString(ctx.argument[0]);
                 return (arg === 'front' || arg === 'back');
@@ -20875,7 +20815,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "TO", "menu": "motion_goto_menu"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */],
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */],
         },
         /*{
             "template": ["pen down"],
@@ -20889,7 +20829,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "MESSAGE"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         }, {
             "template": "go to x: %1 y: %2",
             "description": {
@@ -20897,7 +20837,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "X"}, {"type": "input_value", "name": "Y"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         }, {
             "template": "set rotation style %1",
             "description": {
@@ -20909,7 +20849,7 @@ const blockspecifications = [
                 }],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         }, {
             "template": "%1 + %2",
             "description": {
@@ -20917,7 +20857,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "NUM1"}, {"type": "input_value", "name": "NUM2"}],
                 "shape": "reporterblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         }, {
             "template": "not %1",
             "description": {
@@ -20925,7 +20865,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "OPERAND", "check": "Boolean"}],
                 "shape": "booleanblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
 
 //==== operator ===================================================
@@ -20936,7 +20876,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "NUM1"}, {"type": "input_value", "name": "NUM2"}],
                 "shape": "reporterblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "%1 * %2",
@@ -20945,7 +20885,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "NUM1"}, {"type": "input_value", "name": "NUM2"}],
                 "shape": "reporterblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "%1 / %2",
@@ -20954,7 +20894,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "NUM1"}, {"type": "input_value", "name": "NUM2"}],
                 "shape": "reporterblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "pick random %1 to %2",
@@ -20963,7 +20903,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "FROM"}, {"type": "input_value", "name": "TO"}],
                 "shape": "reporterblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": ["%1 lt %2", "%1 < %2", "%1 less than %2"],
@@ -20972,7 +20912,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "OPERAND1"}, {"type": "input_value", "name": "OPERAND2"}],
                 "shape": "booleanblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "%1 = %2",
@@ -20981,7 +20921,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "OPERAND1"}, {"type": "input_value", "name": "OPERAND2"}],
                 "shape": "booleanblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": ["%1 gt %2", "%1 > %2", "%1 greater than %2"],
@@ -20990,7 +20930,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "OPERAND1"}, {"type": "input_value", "name": "OPERAND2"}],
                 "shape": "booleanblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "%1 and %2",
@@ -21003,7 +20943,7 @@ const blockspecifications = [
                 }],
                 "shape": "booleanblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "%1 or %2",
@@ -21016,7 +20956,7 @@ const blockspecifications = [
                 }],
                 "shape": "booleanblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "join %1 %2",
@@ -21025,7 +20965,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "STRING1"}, {"type": "input_value", "name": "STRING2"}],
                 "shape": "reporterblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "letter %1 of %2",
@@ -21034,7 +20974,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "LETTER"}, {"type": "input_value", "name": "STRING"}],
                 "shape": "reporterblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "%1 mod %2",
@@ -21043,7 +20983,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "NUM1"}, {"type": "input_value", "name": "NUM2"}],
                 "shape": "reporterblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "round %1",
@@ -21052,7 +20992,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "NUM"}],
                 "shape": "reporterblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
 //=== control ===============================================================
         {
@@ -21062,7 +21002,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "DURATION"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "wait until %1",
@@ -21071,12 +21011,12 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "CONDITION", "check": "Boolean"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "when I start as a clone",
             "description": {"type": "control_start_as_clone", "args": [], "shape": "hatblock"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "create clone of %1",
@@ -21085,12 +21025,12 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "CLONE_OPTION", "menu": "control_create_clone_of_menu"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "delete this clone",
             "description": {"type": "control_delete_this_clone", "args": [], "shape": "capblock"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
 //=== sensing ===============================================================
         {
@@ -21100,7 +21040,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "TOUCHINGOBJECTMENU", "menu": "sensing_touchingobjectmenu"}],
                 "shape": "booleanblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": ["touching color %1?", "touching color %1"],
@@ -21109,7 +21049,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "COLOR"}],
                 "shape": "booleanblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": ["color %1 is touching %2?", "color %1 is touching %2"],
@@ -21118,7 +21058,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "COLOR"}, {"type": "input_value", "name": "COLOR2"}],
                 "shape": "booleanblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "distance to %1",
@@ -21127,7 +21067,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "DISTANCETOMENU", "menu": "sensing_distancetomenu"}],
                 "shape": "reporterblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "ask %1 and wait",
@@ -21136,12 +21076,12 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "QUESTION"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "answer",
             "description": {"type": "sensing_answer", "shape": "reporterblock"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": ["key %1 pressed?", "key %1 pressed"],
@@ -21155,22 +21095,22 @@ const blockspecifications = [
                 }],
                 "shape": "booleanblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": ["mouse down?", "mouse down"],
             "description": {"type": "sensing_mousedown", "shape": "booleanblock"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "mouse x",
             "description": {"type": "sensing_mousex", "shape": "reporterblock"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "mouse y",
             "description": {"type": "sensing_mousey", "shape": "reporterblock"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "set drag mode %1",
@@ -21183,12 +21123,12 @@ const blockspecifications = [
                 }],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "loudness",
             "description": {"type": "sensing_loudness", "shape": "reporterblock"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "video %1 on %2",
@@ -21197,7 +21137,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "VIDEOONMENU1"}, {"type": "input_value", "name": "VIDEOONMENU2"}],
                 "shape": "reporterblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "turn video %1",
@@ -21206,7 +21146,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "VIDEOTOGGLEMENU"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "set video transparency to %1%",
@@ -21215,17 +21155,17 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "TRANSPARENCY"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "timer",
             "description": {"type": "sensing_timer", "shape": "reporterblock"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "reset timer",
             "description": {"type": "sensing_resettimer", "shape": "statement"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "current %1",
@@ -21238,17 +21178,17 @@ const blockspecifications = [
                 }],
                 "shape": "reporterblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "days since 2000",
             "description": {"type": "sensing_dayssince2000", "shape": "reporterblock"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "username",
             "description": {"type": "sensing_username", "shape": "reporterblock"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
 
 
@@ -21260,7 +21200,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "STEPS"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": ["turn right %1 degrees", "turn cw %1 degrees", "turn clockwise %1 degrees", "turn \u21BB %1 degrees"],
@@ -21269,7 +21209,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "DEGREES"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": ["turn left %1 degrees", "turn ccw %1 degrees", "turn counterclockwise %1 degrees",
@@ -21279,7 +21219,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "DEGREES"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "point in direction %1",
@@ -21288,7 +21228,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "DIRECTION"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "point towards %1",
@@ -21297,7 +21237,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "TOWARDS", "menu": "motion_pointtowards_menu"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "glide %1 secs to x: %2 y: %3",
@@ -21309,7 +21249,7 @@ const blockspecifications = [
                 }, {"type": "input_value", "name": "Y"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "glide %1 secs to %2",
@@ -21322,7 +21262,7 @@ const blockspecifications = [
                 }],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "change x by %1",
@@ -21331,12 +21271,12 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "DX"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "set x to %1",
             "description": {"type": "motion_setx", "args": [{"type": "input_value", "name": "X"}], "shape": "statement"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "change y by %1",
@@ -21345,32 +21285,32 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "DY"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "set y to %1",
             "description": {"type": "motion_sety", "args": [{"type": "input_value", "name": "Y"}], "shape": "statement"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": ["if on edge, bounce","bounce on edge"],
             "description": {"type": "motion_ifonedgebounce", "shape": "statement"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "x position",
             "description": {"type": "motion_xposition", "shape": "reporterblock"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "y position",
             "description": {"type": "motion_yposition", "shape": "reporterblock"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "direction",
             "description": {"type": "motion_direction", "shape": "reporterblock"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
 //=== looks ======================================
         {
@@ -21380,7 +21320,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "MESSAGE"}, {"type": "input_value", "name": "SECS"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "think %1 for %2 seconds",
@@ -21389,7 +21329,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "MESSAGE"}, {"type": "input_value", "name": "SECS"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "think %1",
@@ -21398,22 +21338,22 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "MESSAGE"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "show",
             "description": {"type": "looks_show", "shape": "statement"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "hide",
             "description": {"type": "looks_hide", "shape": "statement"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "clear graphic effects",
             "description": {"type": "looks_cleargraphiceffects", "shape": "statement"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "change size by %1",
@@ -21422,7 +21362,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "CHANGE"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "set size to %1 %",
@@ -21431,12 +21371,12 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "SIZE"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "size",
             "description": {"type": "looks_size", "shape": "reporterblock"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "switch costume to %1",
@@ -21445,12 +21385,12 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "COSTUME", "menu": "looks_costume"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "next costume",
             "description": {"type": "looks_nextcostume", "shape": "statement"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "switch backdrop to %1",
@@ -21459,7 +21399,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "BACKDROP", "menu": "looks_backdrops"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "go %1 %2 layers",
@@ -21472,7 +21412,7 @@ const blockspecifications = [
                 }, {"type": "input_value", "name": "NUM"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "backdrop %1",
@@ -21485,7 +21425,7 @@ const blockspecifications = [
                 }],
                 "shape": "reporterblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "costume %1",
@@ -21498,7 +21438,7 @@ const blockspecifications = [
                 }],
                 "shape": "reporterblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "switch backdrop to %1 and wait",
@@ -21507,12 +21447,12 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "BACKDROP", "menu": "looks_backdrops"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "next backdrop",
             "description": {"type": "looks_nextbackdrop", "shape": "statement"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         //=== pen
         //todo -> extensions
@@ -21625,7 +21565,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "SOUND_MENU", "menu": "sound_sounds_menu"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "play sound %1 until done",
@@ -21634,17 +21574,17 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "SOUND_MENU", "menu": "sound_sounds_menu"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "stop all sounds",
             "description": {"type": "sound_stopallsounds", "shape": "statement"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "clear sound effects",
             "description": {"type": "sound_cleareffects", "shape": "statement"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "change volume by %1",
@@ -21653,7 +21593,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "VOLUME"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "set volume to %1 %",
@@ -21662,23 +21602,23 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "VOLUME"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "volume",
             "description": {"type": "sound_volume", "shape": "reporterblock"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         //=== events =============================================================
         {
             "template": ["when gf clicked", "when greenflag clicked", "when green flag clicked", "when \u2691 clicked", "when flag clicked",],
             "description": {"type": "event_whenflagclicked", "args": [], "shape": "hatblock"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "when this sprite clicked",
             "description": {"type": "event_whenthisspriteclicked", "shape": "hatblock"},
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "when backdrop switches to %1",
@@ -21687,7 +21627,7 @@ const blockspecifications = [
                 "args": [{"type": "field_dropdown", "name": "BACKDROP", "options": [["backdrop1", "BACKDROP1"]]}],
                 "shape": "hatblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": ["when %1 gt %2", "when %1 greater than %2", "when %1 > %2"],
@@ -21700,7 +21640,7 @@ const blockspecifications = [
                 }, {"type": "input_value", "name": "VALUE"}],
                 "shape": "hatblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "when %1 key pressed",
@@ -21713,7 +21653,7 @@ const blockspecifications = [
                 }],
                 "shape": "hatblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
 // =========================================================
 // with the same text
@@ -21729,7 +21669,7 @@ const blockspecifications = [
                 }, {"type": "input_value", "name": "VALUE"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */],
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */],
             "predicate": looksSoundPredicate
         },
         {
@@ -21743,7 +21683,7 @@ const blockspecifications = [
                 }, {"type": "input_value", "name": "VALUE"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "change %1 effect by %2",
@@ -21756,7 +21696,7 @@ const blockspecifications = [
                 }, {"type": "input_value", "name": "VALUE"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */],
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */],
             "predicate": looksSoundPredicate
         },
         {
@@ -21770,7 +21710,7 @@ const blockspecifications = [
                 }, {"type": "input_value", "name": "CHANGE"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "length of %1",
@@ -21779,7 +21719,7 @@ const blockspecifications = [
                 "args": [{"type": "field_variable", "name": "LIST", "variabletypes": ["list"]}],
                 "shape": "reporterblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["c" /* listBlockConverter */],
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["b" /* listBlockConverter */],
             "predicate": listOperatorPredicate
         }, {
             "template": "length of %1",
@@ -21788,7 +21728,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "STRING"}],
                 "shape": "reporterblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": ["%1 contains %2?", "%1 contains %2"],
@@ -21800,7 +21740,7 @@ const blockspecifications = [
                 }],
                 "shape": "booleanblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["c" /* listBlockConverter */],
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["b" /* listBlockConverter */],
             "predicate": listOperatorPredicate
         },
         {
@@ -21810,7 +21750,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "STRING1"}, {"type": "input_value", "name": "STRING2"}],
                 "shape": "booleanblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "%1 of %2",
@@ -21826,7 +21766,7 @@ const blockspecifications = [
             },
             "converter": function (ctx, visitor) {
                 //something was weird here...
-                __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__parser_blocks__["d" /* addType */])(ctx, visitor, 'sensing_of')
+                __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["c" /* addType */])(ctx, visitor, 'sensing_of')
                 visitor.xml = visitor.xml.ele('field', {
                     'name': 'PROPERTY'
                 }, visitor.infoVisitor.getString(ctx.argument[0])); //'all around' //this is ugly because 'option' is the only one that returns something... and there is no check whether the option is existing and valid
@@ -21843,7 +21783,7 @@ const blockspecifications = [
             },
             "predicate": function (ctx, visitor) {
                 let argType = visitor.infoVisitor.getType(ctx.argument[1]);
-                return (argType === __WEBPACK_IMPORTED_MODULE_1__parser_InfoLNVisitor__["a" /* CHOICE */]);
+                return (argType === __WEBPACK_IMPORTED_MODULE_1__parser_infoLNVisitor__["a" /* CHOICE */]);
             }
 
         },
@@ -21858,7 +21798,7 @@ const blockspecifications = [
                 }, {"type": "input_value", "name": "NUM"}],
                 "shape": "reporterblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["b" /* universalBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["a" /* universalBlockConverter */]
         },
         {
             "template": "when I receive %1",
@@ -21872,7 +21812,7 @@ const blockspecifications = [
                 }],
                 "shape": "hatblock"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["e" /* messageBlockconverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["d" /* messageBlockconverter */]
         },
         {
             "template": "broadcast %1",
@@ -21881,7 +21821,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "BROADCAST_INPUT"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["f" /* messageShadowBlockconverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["e" /* messageShadowBlockconverter */]
         },
         {
             "template": "broadcast %1 and wait",
@@ -21890,7 +21830,7 @@ const blockspecifications = [
                 "args": [{"type": "input_value", "name": "BROADCAST_INPUT"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["f" /* messageShadowBlockconverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["e" /* messageShadowBlockconverter */]
         },
         {
             "template": "set %1 to %2",
@@ -21899,7 +21839,7 @@ const blockspecifications = [
                 "args": [{"type": "field_variable", "name": "variable"}, {"type": "input_value", "name": "VALUE"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["g" /* variableBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["f" /* variableBlockConverter */]
         },
         {
             "template": "change %1 by %2",
@@ -21908,7 +21848,7 @@ const blockspecifications = [
                 "args": [{"type": "field_variable", "name": "variable"}, {"type": "input_value", "name": "VALUE"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["g" /* variableBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["f" /* variableBlockConverter */]
         },
         {
             "template": "show variable %1",
@@ -21917,7 +21857,7 @@ const blockspecifications = [
                 "args": [{"type": "field_variable","name": "VARIABLE"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["g" /* variableBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["f" /* variableBlockConverter */]
         },
         {
             "template": "hide variable %1",
@@ -21926,7 +21866,7 @@ const blockspecifications = [
                 "args": [{"type": "field_variable","name": "VARIABLE"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["g" /* variableBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["f" /* variableBlockConverter */]
         },
         {
             "template": "add %1 to %2",
@@ -21939,7 +21879,7 @@ const blockspecifications = [
                 }],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["c" /* listBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["b" /* listBlockConverter */]
         },
         {
             "template": "delete %1 of %2",
@@ -21952,7 +21892,7 @@ const blockspecifications = [
                 }],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["c" /* listBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["b" /* listBlockConverter */]
         },
         {
             "template": "insert %1 at %2 of %3",
@@ -21964,7 +21904,7 @@ const blockspecifications = [
                 }, {"type": "field_variable", "name": "LIST", "variabletypes": ["list"]}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["c" /* listBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["b" /* listBlockConverter */]
         },
         {
             "template": "replace item %1 of %2 with %3",
@@ -21977,7 +21917,7 @@ const blockspecifications = [
                 }, {"type": "input_value", "name": "ITEM"}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["c" /* listBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["b" /* listBlockConverter */]
         },
         {
             "template": "item %1 of %2",
@@ -21990,7 +21930,7 @@ const blockspecifications = [
                 }],
                 "shape": "booleans"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["c" /* listBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["b" /* listBlockConverter */]
         },
         {
             "template": "show list %1",
@@ -21999,7 +21939,7 @@ const blockspecifications = [
                 "args": [{"type": "field_variable", "name": "LIST", "variabletypes": ["list"]}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["c" /* listBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["b" /* listBlockConverter */]
         },
         {
             "template": "hide list %1",
@@ -22008,7 +21948,7 @@ const blockspecifications = [
                 "args": [{"type": "field_variable", "name": "LIST", "variabletypes": ["list"]}],
                 "shape": "statement"
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["c" /* listBlockConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["b" /* listBlockConverter */]
         },
 // special case:stop
         {
@@ -22022,7 +21962,7 @@ const blockspecifications = [
                     }],
                 "shape": "capblock",
             },
-            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocks__["h" /* stopConverter */]
+            "converter": __WEBPACK_IMPORTED_MODULE_0__parser_blocksConverter__["g" /* stopConverter */]
         },
 
     ]
@@ -22033,13 +21973,13 @@ const blockspecifications = [
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var version_1 = __webpack_require__(29);
+var version_1 = __webpack_require__(28);
 function createSyntaxDiagramsCode(grammar, _a) {
     var _b = _a === void 0 ? {} : _a, _c = _b.resourceBase, resourceBase = _c === void 0 ? "https://unpkg.com/chevrotain@" + version_1.VERSION + "/diagrams/" : _c, _d = _b.css, css = _d === void 0 ? "https://unpkg.com/chevrotain@" + version_1.VERSION + "/diagrams/diagrams.css" : _d;
     var header = "\n<!-- This is a generated file -->\n<!DOCTYPE html>\n<meta charset=\"utf-8\">\n<style>\n  body {\n    background-color: hsl(30, 20%, 95%)\n  }\n</style>\n\n";
@@ -22054,7 +21994,7 @@ exports.createSyntaxDiagramsCode = createSyntaxDiagramsCode;
 //# sourceMappingURL=render_public.js.map
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22204,13 +22144,13 @@ function indent(howMuch, text) {
 //# sourceMappingURL=generate.js.map
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var generate_1 = __webpack_require__(54);
+var generate_1 = __webpack_require__(55);
 function generateParserFactory(options) {
     var wrapperText = generate_1.genWrapperFunction({
         name: options.name,
@@ -22231,7 +22171,7 @@ exports.generateParserModule = generateParserModule;
 //# sourceMappingURL=generate_public.js.map
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22366,13 +22306,13 @@ exports.validateRedundantMethods = validateRedundantMethods;
 //# sourceMappingURL=cst_visitor.js.map
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var range_1 = __webpack_require__(62);
+var range_1 = __webpack_require__(63);
 var utils_1 = __webpack_require__(0);
 var gast_public_1 = __webpack_require__(1);
 var ProdType;
@@ -22822,7 +22762,7 @@ exports.deserializeProduction = deserializeProduction;
 //# sourceMappingURL=gast_builder.js.map
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22838,7 +22778,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var rest_1 = __webpack_require__(26);
+var rest_1 = __webpack_require__(25);
 var lang_extensions_1 = __webpack_require__(5);
 var first_1 = __webpack_require__(37);
 var utils_1 = __webpack_require__(0);
@@ -22894,7 +22834,7 @@ exports.buildInProdFollowPrefix = buildInProdFollowPrefix;
 //# sourceMappingURL=follow.js.map
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22910,7 +22850,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var parser_public_1 = __webpack_require__(27);
+var parser_public_1 = __webpack_require__(26);
 var utils_1 = __webpack_require__(0);
 var gast_visitor_public_1 = __webpack_require__(6);
 function resolveGrammar(topLevels, errMsgProvider) {
@@ -22956,7 +22896,7 @@ exports.GastRefResolverVisitor = GastRefResolverVisitor;
 //# sourceMappingURL=resolver.js.map
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22974,9 +22914,9 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var regexp_to_ast_1 = __webpack_require__(41);
 var tokens_public_1 = __webpack_require__(3);
-var lexer_public_1 = __webpack_require__(28);
+var lexer_public_1 = __webpack_require__(27);
 var utils_1 = __webpack_require__(0);
-var reg_exp_1 = __webpack_require__(61);
+var reg_exp_1 = __webpack_require__(62);
 var regExpParser = new regexp_to_ast_1.RegExpParser();
 var PATTERN = "PATTERN";
 exports.DEFAULT_MODE = "defaultMode";
@@ -23790,7 +23730,7 @@ function getCharCodes(charsOrCodes) {
 //# sourceMappingURL=lexer.js.map
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23988,7 +23928,7 @@ exports.canMatchCharCode = canMatchCharCode;
 //# sourceMappingURL=reg_exp.js.map
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24027,12 +23967,12 @@ exports.isValidRange = isValidRange;
 //# sourceMappingURL=range.js.map
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
-var Blockly = __webpack_require__(71);
-var goog = __webpack_require__(30);
+var Blockly = __webpack_require__(72);
+var goog = __webpack_require__(29);
 
 /**
  * @license
@@ -24384,12 +24324,12 @@ module.exports = Blockly;
 
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
-var Blockly = __webpack_require__(70);
-var goog = __webpack_require__(30);
+var Blockly = __webpack_require__(71);
+var goog = __webpack_require__(29);
 
 // This file was automatically generated.  Do not modify.
 
@@ -34342,11 +34282,11 @@ module.exports = Blockly;
 
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
-var Blockly = __webpack_require__(69);
+var Blockly = __webpack_require__(70);
 
 // Do not edit this file; automatically generated by build.py.
 'use strict';
@@ -34390,12 +34330,12 @@ module.exports = Blockly;
 
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
-var goog = __webpack_require__(30);
-var Blockly = __webpack_require__(68);
+var goog = __webpack_require__(29);
+var Blockly = __webpack_require__(69);
 
 // Do not edit this file; automatically generated by build.py.
 'use strict';
@@ -34602,7 +34542,7 @@ module.exports = Blockly;
 
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -36765,35 +36705,35 @@ exports["goog"] = (goog);
 }.call(window));
 
 /***/ }),
-/* 68 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(65);
-
-
-/***/ }),
 /* 69 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(42).Blockly;
-
-
-/***/ }),
-/* 70 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(63);
-
-
-/***/ }),
-/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(66);
 
 
 /***/ }),
+/* 70 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(42).Blockly;
+
+
+/***/ }),
+/* 71 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(64);
+
+
+/***/ }),
 /* 72 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(67);
+
+
+/***/ }),
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -36808,7 +36748,7 @@ module.exports = __webpack_require__(66);
 
   XMLStringifier = __webpack_require__(44);
 
-  XMLStringWriter = __webpack_require__(31);
+  XMLStringWriter = __webpack_require__(30);
 
   module.exports = XMLDocument = (function(superClass) {
     extend(XMLDocument, superClass);
@@ -36847,7 +36787,7 @@ module.exports = __webpack_require__(66);
 
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -36885,7 +36825,7 @@ module.exports = __webpack_require__(66);
 
   XMLStringifier = __webpack_require__(44);
 
-  XMLStringWriter = __webpack_require__(31);
+  XMLStringWriter = __webpack_require__(30);
 
   module.exports = XMLDocumentCB = (function() {
     function XMLDocumentCB(options, onData, onEnd) {
@@ -37255,7 +37195,7 @@ module.exports = __webpack_require__(66);
 
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -37540,7 +37480,7 @@ module.exports = __webpack_require__(66);
 
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -37549,13 +37489,13 @@ module.exports = __webpack_require__(66);
 
   ref = __webpack_require__(4), assign = ref.assign, isFunction = ref.isFunction;
 
-  XMLDocument = __webpack_require__(72);
+  XMLDocument = __webpack_require__(73);
 
-  XMLDocumentCB = __webpack_require__(73);
+  XMLDocumentCB = __webpack_require__(74);
 
-  XMLStringWriter = __webpack_require__(31);
+  XMLStringWriter = __webpack_require__(30);
 
-  XMLStreamWriter = __webpack_require__(74);
+  XMLStreamWriter = __webpack_require__(75);
 
   module.exports.create = function(name, xmldec, doctype, options) {
     var doc, root;
@@ -37599,154 +37539,6 @@ module.exports = __webpack_require__(66);
 
 
 /***/ }),
-/* 76 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/**
- * Storage of the state of the workspace
- *
- * things that need to be possible are:
- *      - get the last block and the type of the block
- *
- * @file   This files defines the State class.
- * @author Ellen Vanhove.
- */
-
-const MODUS = {
-    NONE:0,
-    STACK:1,
-    REPORTER:2,
-    BOOLEAN:3,
-};
-
-class State {
-
-    constructor(informationVisitor) {
-        this.infoVisitor = informationVisitor;
-        this.reset();
-    }
-
-    /**
-     * reset the state:
-     *  removes all stored information
-     */
-    reset() {
-        //list of all blocks
-        this.blocks = [];
-        this.blocks.push({ID:-1}); //this should not happen normally but this way nothing breaks during dev
-        this.modus = MODUS.NONE;
-        this.interrupted = false;
-        //when opening a new context the previous is stored here
-        this.storage = [];
-    }
-
-
-
-    pushStorage(){
-       this.storage.push(
-            {
-                blocks : this.blocks,
-                modus: this.modus
-            }
-        );
-    }
-
-    popStorage(){
-        let stored = this.storage.pop();
-        this.setBack(stored);
-    }
-
-    setBack(stored) {
-        this.blocks = stored.blocks;
-        this.modus = stored.modus;
-    }
-
-    isBuildingStackBlock(){
-        return this.modus === MODUS.STACK;
-    }
-
-    isBuildingReporterBlock(){
-        return this.modus === MODUS.REPORTER;
-    }
-
-    isBuildingBooleanBlock(){
-        return this.modus === MODUS.BOOLEAN;
-    }
-
-    /**
-     * store informaton about a block
-     * @param id the id of the block
-     * @param shape the shape of the block
-     */
-    addBlock(id){
-        this.blocks.push({ID:id})
-    }
-
-
-    /**
-     * return the id of the last added block
-     * @returns {string}
-     */
-    getFirstBlockID(){
-        return this.blocks[0].ID;
-    }
-
-
-    /**
-     * return the id of the last added block
-     * @returns {string}
-     */
-    getLastBlockID(){
-        return this.blocks[this.blocks.length-1].ID;
-    }
-
-    startStack(){
-        this.pushStorage();
-        this.modus = MODUS.STACK;
-        this.interrupted=false;
-    }
-
-    endStack(){
-        this.popStorage();
-    }
-
-    interruptStack(){
-        let stored =  this.storage[0];
-        this.setBack(stored);
-        this.storage = []
-        this.interrupted = true;
-    }
-
-    isInterruptedStack(){
-        return this.interrupted;
-    }
-
-    openBooleanBlock(){
-        this.pushStorage();
-        this.modus = MODUS.BOOLEAN;
-    }
-
-    closeBooleanBlock(){
-        this.popStorage();
-    }
-
-    openReporterBlock(){
-        this.pushStorage();
-        this.modus = MODUS.REPORTER;
-    }
-
-    closeReporterBlock(){
-        this.popStorage();
-    }
-
-
-
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = State;
-
-
-/***/ }),
 /* 77 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -37754,15 +37546,14 @@ class State {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_chevrotain__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__LNParser__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__InfoLNVisitor__ = __webpack_require__(47);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_xmlbuilder__ = __webpack_require__(75);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__infoLNVisitor__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_xmlbuilder__ = __webpack_require__(76);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_xmlbuilder___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_xmlbuilder__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__IDManager__ = __webpack_require__(46);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__State__ = __webpack_require__(76);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__blocks__ = __webpack_require__(33);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__LNLexer__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__modifierAnalyser__ = __webpack_require__(78);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__warnings__ = __webpack_require__(79);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__state__ = __webpack_require__(80);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__blockConverterUtils__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__modifierAnalyser__ = __webpack_require__(79);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__warnings__ = __webpack_require__(81);
 /**
  * Template for the visitor.
  *
@@ -37774,13 +37565,6 @@ class State {
 
 //parser
 
-//import {NumberLiteral, ColorLiteral} from "./LNLexer";
-const lntokens = __webpack_require__(23);
-let NumberLiteral = lntokens.NumberLiteral;
-let ColorLiteral = lntokens.ColorLiteral;
-let StringLiteral = lntokens.StringLiteral;
-let ChoiceLiteral = lntokens.ChoiceLiteral;
-
 
 
 //xml
@@ -37790,7 +37574,12 @@ let ChoiceLiteral = lntokens.ChoiceLiteral;
 
 
 
-
+//import {NumberLiteral, ColorLiteral} from "./LNLexer";
+const lntokens = __webpack_require__(31);
+let NumberLiteral = lntokens.NumberLiteral;
+let ColorLiteral = lntokens.ColorLiteral;
+let StringLiteral = lntokens.StringLiteral;
+let ChoiceLiteral = lntokens.ChoiceLiteral;
 
 //const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
 
@@ -37803,16 +37592,12 @@ let ChoiceLiteral = lntokens.ChoiceLiteral;
 const BaseCstVisitorWithDefaults = __WEBPACK_IMPORTED_MODULE_1__LNParser__["b" /* lnparser */].getBaseCstVisitorConstructorWithDefaults();
 
 //variable types
-const ARG = 'arg';
 
-//shapes
-const STACKBLOCK = "statement";
-const BOOLEANBLOCK = "blooleanblock";
-const REPORTERBLOCK = "reporterblock";
-const HATBLOCK = "hatblock";
+
 //regexen
 const DEFINE_REGEX = /^[ \t]*define/i;
 const VARIABLE_REGEX = /^([ \t]*%[0-9][ \t]*)*$/i;
+const UNKNOWN_REGEX = /%[0-9]/;
 
 
 class XMLLNVisitor extends BaseCstVisitorWithDefaults {
@@ -37823,48 +37608,44 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         this.validateVisitor();
 
         //-- xml --
-        //the visitor stores an xml, this is reinit every visit call.
-        //the builder keeps where we are adding the next block
+        //the visitor stores an xml for what it is currently building, this is resetted by getXML
+        //keeps where we are adding the next block
         this.xml = null;
         //xml root
         this.xmlRoot = null;
-        //placeholder in the beginning for variables
+        //placeholder for the declaration of the variables
         this.variablesTag = null;
 
         //id generation
         this.idManager = new __WEBPACK_IMPORTED_MODULE_4__IDManager__["c" /* BasicIDManager */]();
 
         //information visitor
-        this.infoVisitor = new __WEBPACK_IMPORTED_MODULE_2__InfoLNVisitor__["b" /* InfoLNVisitor */]();
+        this.infoVisitor = new __WEBPACK_IMPORTED_MODULE_2__infoLNVisitor__["d" /* InfoLNVisitor */]();
 
-        //state
-        this.state = new __WEBPACK_IMPORTED_MODULE_5__State__["a" /* State */](__WEBPACK_IMPORTED_MODULE_2__InfoLNVisitor__["b" /* InfoLNVisitor */]);
+        //state: keeps track of which block we are building
+        this.state = new __WEBPACK_IMPORTED_MODULE_5__state__["a" /* State */]();
 
-        //modifiers
-        this.modifierAnalyser = new __WEBPACK_IMPORTED_MODULE_8__modifierAnalyser__["a" /* ModifierAnalyser */]();
+        //modifiers: extracts the modifiers from an node
+        this.modifierAnalyser = new __WEBPACK_IMPORTED_MODULE_7__modifierAnalyser__["a" /* ModifierAnalyser */]();
 
-        this.warningsKeeper = new __WEBPACK_IMPORTED_MODULE_9__warnings__["a" /* WarningsKeeper */]();
+        //warnings
+        this.warningsKeeper = new __WEBPACK_IMPORTED_MODULE_8__warnings__["a" /* WarningsKeeper */]();
+
+        //defenition
+        this.buildinBlocksConverters = __WEBPACK_IMPORTED_MODULE_6__blockConverterUtils__["b" /* default */];
     }
 
     getXML(cst) {
         //reset
         this.idManager.reset();
+        this.warningsKeeper.reset();
+        this.state.reset();
         //create new xml
         this.xml = __WEBPACK_IMPORTED_MODULE_3_xmlbuilder___default.a.begin().ele('xml').att('xmlns', 'http://www.w3.org/1999/xhtml');
         this.variablesTag = this.xml.ele('variables');
         this.xmlRoot = this.xml;
         this.visit(cst);
-        this.xml = this.variablesTag;
-        for (let key in this.idManager.varMap) {
-            if (this.idManager.varMap.hasOwnProperty(key)) {
-                if (this.idManager.varMap[key].variableType !== ARG) {
-                    this.xml.ele('variable', {
-                        'type': this.idManager.varMap[key].variableType,
-                        'id': this.idManager.varMap[key].id,
-                    }, key);
-                }
-            }
-        }
+        this.createVariables();
         return {
             xml: this.xml.end({
                 pretty: true
@@ -37873,6 +37654,20 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         }
     }
 
+
+    createVariables() {
+        this.xml = this.variablesTag;
+        for (let key in this.idManager.varMap) {
+            if (this.idManager.varMap.hasOwnProperty(key)) {
+                if (this.idManager.varMap[key].variableType !== __WEBPACK_IMPORTED_MODULE_4__IDManager__["d" /* ARG */]) {
+                    this.xml.ele('variable', {
+                        'type': this.idManager.varMap[key].variableType,
+                        'id': this.idManager.varMap[key].id,
+                    }, key);
+                }
+            }
+        }
+    }
 
     /*code(ctx) {
        //todo: correct order of comments and stacks
@@ -37894,21 +37689,29 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     stack(ctx) {
         this.state.startStack();
         let prevxml = this.xml;
+        let interupted=false;
         for (let i = 0; ctx.block && i < ctx.block.length; i++) {
             this.visit(ctx.block[i]); //opens a block
             //the flow was interrupted by a hat block or stand alone variable
             //so a new stack has to start
             if (this.state.isInterruptedStack()) {
                 if(i<ctx.block.length-1) { //no warning if nothing follows
-                    this.warningsKeeper.add(ctx.block[i], "started a new stack");
+                    this.warningsKeeper.add(ctx.block[i], "started a new stack after cap");
                 }
                 this.state.startStack();
+                interupted=true;
             } else { //normal flow
                 this.xml = this.xml.ele('next');
             }
         }
-        this.xml = prevxml;
-        this.state.endStack();
+        //if it was interrupted jump back to the root
+        if(interupted){
+            this.xml = this.xmlRoot;
+            this.state.endStack();
+        }else{ //normalflow
+            this.xml = prevxml;
+            this.state.endStack();
+        }
     }
 
     /*block(ctx) {
@@ -37917,35 +37720,46 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     atomic(ctx) {
         let description = this.infoVisitor.getString(ctx, "atomic");
-
-        //todo obtain modifiers
         let modifiers = this.modifierAnalyser.getMods(this.infoVisitor.getModifiers(ctx.annotations));
+        if((modifiers.user && modifiers.myblock)||
+            (modifiers.user && modifiers.list) ||
+            (modifiers.myblock && modifiers.list)
+        ){
+            this.warningsKeeper.add(ctx, "multiple modifiers with conflicting meaning")
+        }
+
         if (this.isBuildInBlock(description, ctx, modifiers)) {
             //generate block
-            __WEBPACK_IMPORTED_MODULE_6__blocks__["a" /* default */][description](ctx, this, modifiers)
+            this.buildinBlocksConverters[description].converter(ctx, this, modifiers)
         } else if (description.match(DEFINE_REGEX)) {
             this.createDefineBlock(ctx, description);
         } else { //the block is not defined in scratch, so considered it as user-defined
-            if (this.isCustomReporterblock(ctx, modifiers)) {
-                this.createCustomReporterBlock(ctx, description);
+            if (this.isMyBlockReporterblock(description,ctx, modifiers)) {
+                this.createMyBlockReporterBlock(ctx, description);
 
-            } else if (this.isListBlock(ctx, modifiers)) {
+            } else if (this.isListBlock(description,ctx, modifiers)) {
                 this.createListBlock(ctx, description);
 
-            } else if (this.isVariableBlock(ctx, modifiers)) {
+            } else if (this.isVariableBlock(description,ctx, modifiers)) {
+                //if description contains %1 do a warning
+                if(description.match(UNKNOWN_REGEX)){
+                    this.warningsKeeper.add(ctx, "unkown reporter block, generated variable");
+                }
                 this.createVariableBlock(ctx, description);
 
-            } else if (this.isBooleanBlock(ctx, modifiers)) {
-                if(!modifiers.custom){
-                    this.warningsKeeper.add(ctx, "unkown boolean block, add ::custom if you want a custom block")
+            } else if (this.isBooleanBlock(description,ctx, modifiers)) {
+                if(description.match(UNKNOWN_REGEX)){
+                    this.warningsKeeper.add(ctx, "unkown boolean block, generated variable");
+                }else if(!modifiers.custom){
+                    this.warningsKeeper.add(ctx, "unkown boolean block, add the correct modifier if you want this block");
                 }
-                this.createCustomBooleanBlock(ctx, description);
+
+                this.createMyBlockBooleanBlock(ctx, description);
 
             } else {
-                //todo
                 //if the label is empty this is a stand alone block so just visit the child
                 if (description.match(VARIABLE_REGEX)) {
-                    this.interruptStack();
+                    this.interruptStack(ctx,false);
                     for (let a = 0; a < ctx.argument.length; a++) {
                         this.visit(ctx.argument[a])
                     }
@@ -37963,7 +37777,11 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
      * intterupt a stack, can be done because of a hatblock, standalone variable, after a cap block
      * this wil set the state correctly and set the xml to the correct position to start building new blocks
      */
-    interruptStack() {
+    interruptStack(ctx,isHat=false) {
+        //check wether this is a really interupt, in case it is generate warning.
+        if(this.state.hasPreviousConnectedBlocks() && isHat) {
+            this.warningsKeeper.add(ctx,"hat block in a stack");
+        }
         //notify the state
         this.state.interruptStack();
         //set xml to the root
@@ -37973,28 +37791,43 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     /**
      * start the stack again after an interrupt
      */
-    startStack() {
+    startStack(ctx) {
         this.state.startStack();
     }
 
 
     isBuildInBlock(description, ctx, modifiers) {
-        return !modifiers.user && !modifiers.custom && description in __WEBPACK_IMPORTED_MODULE_6__blocks__["a" /* default */];
+        let check = !modifiers.user && !modifiers.myblock && description in this.buildinBlocksConverters;
+        //it is defined as build in block.
+        //is it used correctly?
+        if(check){
+            console.log(this.buildinBlocksConverters[description].modus);
+            if(this.buildinBlocksConverters[description].modus.includes(this.state.getModus())){
+                return true; //no problems
+            }else{
+                //the text matches a builtin block but the modus is not right
+                //so a for example mouse down instead of <mouse down>
+                this.warningsKeeper.add(ctx,"try to use a built-in block in the wrong context/modus");
+                return false;
+            }
+        }
+        return false;
     }
 
-    isVariableBlock(ctx, modifiers) {
+
+    isVariableBlock(description,ctx, modifiers) {
         return this.state.isBuildingReporterBlock();
     }
 
-    isListBlock(ctx, modifiers) {
+    isListBlock(description,ctx, modifiers) {
         return this.isVariableBlock(ctx, modifiers) && modifiers.list;
     }
 
-    isCustomReporterblock(ctx, modifiers) {
-        return this.isVariableBlock(ctx, modifiers) && modifiers.custom;
+    isMyBlockReporterblock(description, ctx, modifiers) {
+        return this.isVariableBlock(ctx, modifiers) && modifiers.myblock;
     }
 
-    isBooleanBlock(ctx, modifiers) {
+    isBooleanBlock(description,ctx, modifiers) {
         return this.state.isBuildingBooleanBlock();
     }
 
@@ -38005,7 +37838,7 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
      */
     createProcedureBlock(ctx, description) {
         let blockid = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "atomic"));
-        this.state.addBlock(blockid, STACKBLOCK);
+        this.state.addBlock(blockid);
         this.xml = this.xml.ele('block', {
             'id': blockid,
         });
@@ -38020,10 +37853,10 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
      */
     createDefineBlock(ctx, description) {
         //stop the previous stack
-        this.interruptStack();
+        this.interruptStack(ctx,true);
         description = description.replace(DEFINE_REGEX, '');
         let blockid = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "atomic"));
-        this.state.addBlock(blockid, HATBLOCK);
+        this.state.addBlock(blockid);
         this.xml = this.xml.ele('block', {
             'type': 'procedures_definition',
             'id': blockid,
@@ -38064,7 +37897,10 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
         for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
             //make names
-            let name = this.infoVisitor.getString(ctx.argument[i]);
+            let name;
+            if(!visitArgs) {
+                name = this.infoVisitor.getString(ctx.argument[i]);
+            }
             if (!name) {
                 name = 'argumentname_' + blockid + '_' + i
             }
@@ -38079,7 +37915,7 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
                 this.xml = this.xml.up();
                 args.push(arg);
             }
-            argumentids.push(this.idManager.acquireVariableID(argumentnames[argumentnames.length - 1], ARG));
+            argumentids.push(this.idManager.acquireVariableID(argumentnames[argumentnames.length - 1], __WEBPACK_IMPORTED_MODULE_4__IDManager__["d" /* ARG */]));
         }
         if (argumentnames.length > 0) {
             head.att('proccode', proccode);
@@ -38123,14 +37959,18 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         this.xml = this.xml.up().ele('statement ', {
             'name': 'SUBSTACK'
         });
+        this.state.startStack();
         this.visit(ctx.ifClause);
+        this.state.endStack();
         this.xml = this.xml.up();
         if (ctx.Else) {
-            this.xml = this.xml.ele('statement ', {
-                'name': 'SUBSTACK2'
-            });
-            this.visit(ctx.elseClause);
-            this.xml = this.xml.up();
+                this.xml = this.xml.ele('statement ', {
+                    'name': 'SUBSTACK2'
+                });
+                this.state.startStack();
+                this.visit(ctx.elseClause);
+                this.state.endStack();
+                this.xml = this.xml.up();
         }
         this.visit(ctx.annotations);
 
@@ -38145,11 +37985,11 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             'name': 'SUBSTACK'
         });
         this.state.addBlock(blockid);
+        this.state.startStack();
         this.visit(ctx.clause);
         this.xml = this.xml.up(); //close statement (stack will close block)
         this.visit(ctx.annotations);
-        this.interruptStack();
-
+        this.interruptStack(ctx,false);
     }
 
     repeat(ctx) {
@@ -38162,10 +38002,13 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         });
         this.state.addBlock(blockid);
         this.visit(ctx.argument);
+
         this.xml = this.xml.up().ele('statement ', {
             'name': 'SUBSTACK'
         });
+        this.state.startStack();
         this.visit(ctx.clause);
+        this.state.endStack();
         this.xml = this.xml.up(); //go out of statement
         this.visit(ctx.annotations);
     }
@@ -38179,11 +38022,14 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             'name': 'CONDITION'
         });
         this.state.addBlock(blockid);
+        this.state.expectBoolean();
         this.visit(ctx.condition);
         this.xml = this.xml.up().ele('statement ', {
             'name': 'SUBSTACK'
         });
+        this.state.startStack();
         this.visit(ctx.clause);
+        this.state.endStack();
         this.xml = this.xml.up(); //go out of statement
         this.visit(ctx.annotations);
     }
@@ -38191,6 +38037,10 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     /*clause(ctx) {
         //it is not possible to add the statement, substack here because the name is different for the else clause
         //it's only one line 5 times deal with it.
+        this.state.startStack();
+        console.log(this.state.storage);
+        this.visit(ctx.stack);
+        this.state.endStack()
     }*/
 
     /*modifiers(ctx) {
@@ -38242,7 +38092,11 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         } else if (ctx.predicate) {
             this.visit(ctx.predicate)
         } else if (ctx.$empty) {
-            this.createTextInput(ctx);
+            if(this.state.isExpectingBoolean()){
+                //do nothing
+            }else {
+                this.createTextInput(ctx);
+            }
         }
     }
 
@@ -38323,9 +38177,9 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         this.state.addBlock(blockID);
     }
 
-    createCustomReporterBlock(ctx, description) {
+    createMyBlockReporterBlock(ctx, description) {
         let blockID = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "atomic"));
-        let varID = this.idManager.acquireVariableID(this.infoVisitor.getString(ctx, "atomic"), __WEBPACK_IMPORTED_MODULE_4__IDManager__["a" /* LIST */]);
+        let varID = this.idManager.acquireVariableID(this.infoVisitor.getString(ctx, "atomic"));
         this.xml = this.xml.ele('block', {
             'type': 'argument_reporter_string_number',
             'id': blockID,
@@ -38336,9 +38190,9 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         this.state.addBlock(blockID);
     }
 
-    createCustomBooleanBlock(ctx, description) {
+    createMyBlockBooleanBlock(ctx, description) {
         let blockID = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "atomic"));
-        let varID = this.idManager.acquireVariableID(this.infoVisitor.getString(ctx, "atomic"), __WEBPACK_IMPORTED_MODULE_4__IDManager__["a" /* LIST */]);
+        let varID = this.idManager.acquireVariableID(this.infoVisitor.getString(ctx, "atomic"));
         this.xml = this.xml.ele('block', {
             'type': 'argument_reporter_boolean',
             'id': blockID,
@@ -38357,6 +38211,217 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
 /***/ }),
 /* 78 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = universalBlockConverter;
+/* harmony export (immutable) */ __webpack_exports__["c"] = addType;
+/* harmony export (immutable) */ __webpack_exports__["f"] = variableBlockConverter;
+/* harmony export (immutable) */ __webpack_exports__["b"] = listBlockConverter;
+/* harmony export (immutable) */ __webpack_exports__["e"] = messageShadowBlockconverter;
+/* harmony export (immutable) */ __webpack_exports__["d"] = messageBlockconverter;
+/* harmony export (immutable) */ __webpack_exports__["g"] = stopConverter;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__infoLNVisitor__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__IDManager__ = __webpack_require__(46);
+
+
+
+
+/**
+ *
+ * @param ctx
+ * @param visitor
+ * @param arg definition from the structure
+ * @param i the index of the argument in the ctx
+ */
+function makeArgument(ctx, visitor, arg, i) {
+    if (arg.check === "Boolean") {
+        visitor.state.expectBoolean();
+    } else {
+        visitor.state.expectNothing();
+    }
+    let type = visitor.infoVisitor.getType(ctx.argument[i]);
+    //check menu first, because round dropdwons are also inputvalues
+    if (arg.menu) { //can be replaced -> round dropdown
+        visitor.xml = visitor.xml.ele('value', {
+            'name': arg.name
+        });
+        if (type === __WEBPACK_IMPORTED_MODULE_0__infoLNVisitor__["b" /* EXPRESSION */] || type === __WEBPACK_IMPORTED_MODULE_0__infoLNVisitor__["c" /* PREDICATE */]) {
+            visitor.visit(ctx.argument[i]);
+            //generate an empty dropdown below
+            visitor.xml.ele('shadow', {
+                'type': arg.menu //this was added to the json and was not default.
+            }).ele('field', {
+                'name': arg.name
+            }); // '_mouse_'
+        } else {
+            //wrong input type
+            if (type !== __WEBPACK_IMPORTED_MODULE_0__infoLNVisitor__["a" /* CHOICE */]) {
+                visitor.warningsKeeper.add(ctx,"expected a choice but found " + type);
+            }
+            visitor.xml.ele('shadow', {
+                'type': arg.menu //this was added to the json and was not default.
+            }).ele('field', {
+                'name': arg.name
+            }, visitor.infoVisitor.getString(ctx.argument[i])); // '_mouse_'
+        }
+        visitor.xml = visitor.xml.up();
+
+    } else if (arg.type === 'input_value') { //normal input
+        visitor.xml = visitor.xml.ele('value', {
+            'name': arg.name
+        });
+        visitor.visit(ctx.argument[i]);
+        visitor.xml = visitor.xml.up();
+
+    } else if (arg.type === 'field_dropdown') { //limited options -> rectangle dropdwon
+        let option = visitor.infoVisitor.getString(ctx.argument[i]);
+        let key;
+        for(let i=0; i<arg.options.length;i++){
+            let text = arg.options[i][0];
+            if(text === option){
+                key = arg.options[i][1];
+                break;
+            }
+        }
+        if(!key){
+            visitor.warningsKeeper.add(ctx,"unknown option: " + option);
+            key=option;
+        }
+        if(type !== __WEBPACK_IMPORTED_MODULE_0__infoLNVisitor__["a" /* CHOICE */]){
+            visitor.warningsKeeper.add(ctx,"expected a choice but found " + type);
+        }
+
+
+        visitor.xml = visitor.xml.ele('field', {
+            'name': arg.name
+        }, key);
+        visitor.xml = visitor.xml.up();
+    }
+}
+
+function universalBlockConverter(ctx, visitor, structure) {
+    if (structure.shape === "hatblock") {
+        visitor.interruptStack(ctx, true);
+    }
+    addType(ctx, visitor, structure.type);
+    for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
+        let arg = structure.args[i];
+        makeArgument(ctx, visitor, arg, i);
+    }
+    if (structure.shape === "hatblock") {
+        visitor.startStack(ctx);
+    }
+    if (structure.shape === "capblock") {
+        visitor.interruptStack(ctx, false);
+    }
+}
+
+
+function addType(ctx, visitor, type) {
+    let blockid = visitor.idManager.getNextBlockID(visitor.infoVisitor.getID(ctx, "atomic"));
+    visitor.xml = visitor.xml.ele('block', {
+        'id': blockid,
+        'type': type
+    });
+    visitor.state.addBlock(blockid);
+};
+
+//=======================================================================================================================================
+// variable and list operations require special treatment considering the IDS
+//=======================================================================================================================================
+
+function variableBlockConverter(ctx, visitor, structure) {
+    addType(ctx, visitor, structure.type);
+    //name of the variable
+    let varble = visitor.infoVisitor.getString(ctx.argument[0]);
+    //function must be called to register VariableID
+    visitor.idManager.acquireVariableID(varble);
+    visitor.xml = visitor.xml.ele('field', {
+        'name': 'VARIABLE'
+    }, varble);
+    if (structure.args.length > 1) {
+        visitor.xml = visitor.xml.up().ele('value', {
+            'name': 'VALUE'
+        });
+    }
+    //the second argument.
+    visitor.visit(ctx.argument[1]);
+    visitor.xml = visitor.xml.up();
+}
+
+//todo
+function listBlockConverter(ctx, visitor, structure) {
+    addType(ctx, visitor, structure.type);
+    for (let i = 0; i < ctx.argument.length; i++) {
+        let arg = structure.args[i];
+        if (arg.name === 'LIST') {
+            let varble = visitor.infoVisitor.getString(ctx.argument[i]);
+            visitor.idManager.acquireVariableID(varble, __WEBPACK_IMPORTED_MODULE_1__IDManager__["a" /* LIST */]);
+            visitor.xml = visitor.xml.ele('field', {
+                'name': 'LIST',
+                'variabletype': 'list',
+            }, varble);
+            visitor.xml = visitor.xml.up();
+        } else {
+            makeArgument(ctx, visitor, arg, i);
+        }
+    }
+}
+
+//todo
+function messageShadowBlockconverter(ctx, visitor, structure) {
+    addType(ctx, visitor, structure.type);
+    let varble = visitor.infoVisitor.getString(ctx.argument[0]);
+    let arg = structure.args[0];
+    let id = visitor.idManager.acquireVariableID(varble, __WEBPACK_IMPORTED_MODULE_1__IDManager__["b" /* BROADCAST */]);
+
+    visitor.xml = visitor.xml.ele('value', {
+        'name': arg.name
+    });
+    visitor.xml.ele('shadow', {
+        'type': "event_broadcast_menu"
+    }).ele('field', {
+        'name': 'BROADCAST_OPTION',
+        'variabletype': "broadcast_msg",
+        'id': id
+    }, varble);
+    visitor.xml = visitor.xml.up();
+}
+
+// "when I receive %1"
+function messageBlockconverter(ctx, visitor, structure) {
+    if (structure.shape === "hatblock") {
+        visitor.interruptStack();
+    }
+    addType(ctx, visitor, structure.type);
+
+    let varble = visitor.infoVisitor.getString(ctx.argument[0]);
+    let arg = structure.args[0];
+    let id = visitor.idManager.acquireVariableID(varble, __WEBPACK_IMPORTED_MODULE_1__IDManager__["b" /* BROADCAST */]);
+
+    visitor.xml.ele('field', {
+        'name': "BROADCAST_OPTION",
+        'variabletype': "broadcast_msg",
+        'id': id
+    }, varble);
+    if (structure.shape === "hatblock") {
+        visitor.startStack(ctx);
+    }
+}
+
+//todo
+function stopConverter(ctx, visitor, structure) {
+    addType(ctx, visitor, structure.type);
+    visitor.xml = visitor.xml.ele('field', {
+        'name': "STOP_OPTION"
+    }, visitor.infoVisitor.getString(ctx.argument[0]));
+    visitor.xml = visitor.xml.up();
+    visitor.interruptStack(ctx, false);
+}
+
+/***/ }),
+/* 79 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -38414,9 +38479,11 @@ class listModifierExtractor extends ModifierExtractor {
     }
 }
 
-class customModifierExtractor extends ModifierExtractor {
+class myBlockModifierExtractor extends ModifierExtractor {
     containsKey(modifierToken) {
-        return modifierToken.image.match(/::custom/i);
+        return modifierToken.image.match(/::local/i)
+            || modifierToken.image.match(/::myblock/i)
+            || modifierToken.image.match(/::custom-arg/i);
     }
 
     extractParameters(modifierToken) {
@@ -38424,13 +38491,17 @@ class customModifierExtractor extends ModifierExtractor {
     }
 
     getName() {
-        return "custom"
+        return "myblock"
     }
 }
 
 class varModifierExtractor extends ModifierExtractor {
     containsKey(modifierToken) {
-        return modifierToken.image.match(/::user-defined/i);
+        return modifierToken.image.match(/::user/i)
+            || modifierToken.image.match(/::var/i)
+            || modifierToken.image.match(/::user-defined/i)
+            || modifierToken.image.match(/::custom/i)
+            || modifierToken.image.match(/::variable/i);
     }
 
     extractParameters(modifierToken) {
@@ -38447,7 +38518,7 @@ class ModifierAnalyser {
         this.infoVisitor = informationVisitor;
         this.modifierExtractors = [];
         this.modifierExtractors.push(new listModifierExtractor());
-        this.modifierExtractors.push(new customModifierExtractor());
+        this.modifierExtractors.push(new myBlockModifierExtractor());
         this.modifierExtractors.push(new varModifierExtractor());
     }
 
@@ -38471,7 +38542,193 @@ class ModifierAnalyser {
 
 
 /***/ }),
-/* 79 */
+/* 80 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__typeConfig__ = __webpack_require__(48);
+/**
+ * Storage of the state of the workspace
+ *
+ * things that need to be possible are:
+ *      - get the last block and the type of the block
+ *
+ * @file   This files defines the State class.
+ * @author Ellen Vanhove.
+ */
+
+
+
+class State {
+
+    constructor() {
+        this.reset();
+    }
+
+    /**
+     * reset the state:
+     *  removes all stored information
+     */
+    reset() {
+        //list of all blocks
+        this.blocks = [];
+        //this.blocks.push({ID:-1}); //this should not happen normally but this way nothing breaks during dev
+        this.modus = __WEBPACK_IMPORTED_MODULE_0__typeConfig__["a" /* MODUS */].NONE;
+        this.interrupted = false;
+        //when opening a new context the previous is stored here
+        this.storage = [];
+        this.expectedInput = __WEBPACK_IMPORTED_MODULE_0__typeConfig__["b" /* INPUTTYPE */].NONE;
+    }
+
+
+
+    pushStorage(){
+       this.storage.push(
+            {
+                blocks : this.blocks,
+                modus: this.modus
+            }
+        );
+       this.blocks = [];
+    }
+
+    popStorage(){
+        if(this.storage.length>0) {
+            let stored = this.storage.pop();
+            this.setBack(stored);
+        }
+    }
+
+    setBack(stored) {
+        this.blocks = stored.blocks;
+        this.modus = stored.modus;
+    }
+
+    isBuildingStackBlock(){
+        return this.modus === __WEBPACK_IMPORTED_MODULE_0__typeConfig__["a" /* MODUS */].STACK;
+    }
+
+    isBuildingReporterBlock(){
+        return this.modus === __WEBPACK_IMPORTED_MODULE_0__typeConfig__["a" /* MODUS */].REPORTER;
+    }
+
+    isBuildingBooleanBlock(){
+        return this.modus === __WEBPACK_IMPORTED_MODULE_0__typeConfig__["a" /* MODUS */].BOOLEAN;
+    }
+
+    getModus(){
+        return this.modus;
+    }
+
+    /**
+     * store informaton about a block
+     * @param id the id of the block
+     * @param shape the shape of the block
+     */
+    addBlock(id){
+        this.blocks.push({ID:id})
+    }
+
+
+    /**
+     * return the id of the last added block
+     * @returns {string}
+     */
+    getFirstBlockID(){
+        return this.blocks[0].ID;
+    }
+
+
+    /**
+     * return the id of the last added block
+     * @returns {string}
+     */
+    getLastBlockID(){
+        return this.blocks[this.blocks.length-1].ID;
+    }
+
+    startStack(){
+        this.pushStorage();
+        this.modus = __WEBPACK_IMPORTED_MODULE_0__typeConfig__["a" /* MODUS */].STACK;
+        this.interrupted=false;
+    }
+
+    endStack(){
+        this.popStorage();
+    }
+
+    interruptStack(){
+        if(this.storage.length>0) {
+            let stored = this.storage[0];
+            this.setBack(stored);
+            this.storage = [];
+        }
+        this.interrupted = true;
+    }
+
+    isInterruptedStack(){
+        return this.interrupted;
+    }
+
+    openBooleanBlock(){
+        this.pushStorage();
+        this.modus = __WEBPACK_IMPORTED_MODULE_0__typeConfig__["a" /* MODUS */].BOOLEAN;
+    }
+
+    closeBooleanBlock(){
+        this.popStorage();
+    }
+
+    openReporterBlock(){
+        this.pushStorage();
+        this.modus = __WEBPACK_IMPORTED_MODULE_0__typeConfig__["a" /* MODUS */].REPORTER;
+    }
+
+    closeReporterBlock(){
+        this.popStorage();
+    }
+
+    amountOfPreviousBlocksOnStack(){
+        return this.blocks.length;
+    }
+
+    hasPreviousBlocksOnStack(){
+        return this.blocks.length > 0;
+    }
+
+    hasPreviousConnectedBlocks(){
+        return this.hasPreviousBlocksOnStack() || this.storage.length > 1;
+    }
+
+    isExpectingBoolean(){
+        return this.expectedInput === __WEBPACK_IMPORTED_MODULE_0__typeConfig__["b" /* INPUTTYPE */].BOOLEAN;
+    }
+
+    isExpectingNumber(){
+        return this.expectedInput === __WEBPACK_IMPORTED_MODULE_0__typeConfig__["b" /* INPUTTYPE */].NUMBER;
+    }
+
+    setExpectingInput(type){
+        if(! type in __WEBPACK_IMPORTED_MODULE_0__typeConfig__["b" /* INPUTTYPE */]){
+            throw new Error("type not valid");
+        }
+        this.expectedInput = type;
+    }
+
+    expectBoolean(){
+        this.expectedInput=__WEBPACK_IMPORTED_MODULE_0__typeConfig__["b" /* INPUTTYPE */].BOOLEAN;
+    }
+
+    expectNothing(){
+        this.expectedInput = __WEBPACK_IMPORTED_MODULE_0__typeConfig__["b" /* INPUTTYPE */].NONE;
+    }
+
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = State;
+
+
+/***/ }),
+/* 81 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -38510,7 +38767,7 @@ class WarningsKeeper {
 
 
 /***/ }),
-/* 80 */
+/* 82 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -38523,12 +38780,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["changeValue"] = changeValue;
 /* harmony export (immutable) */ __webpack_exports__["createWorkspace"] = createWorkspace;
 /* harmony export (immutable) */ __webpack_exports__["fitBlocks"] = fitBlocks;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(50);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_scratch_blocks__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_scratch_blocks__ = __webpack_require__(51);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_scratch_blocks___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_scratch_blocks__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parser_parserUtils_js__ = __webpack_require__(51);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__config_config__ = __webpack_require__(48);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parser_parserUtils_js__ = __webpack_require__(52);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__config_config__ = __webpack_require__(49);
 
 
 

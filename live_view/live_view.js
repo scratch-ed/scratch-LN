@@ -38,7 +38,7 @@ window.onload = function () {
     //text
     editor = document.getElementById('editor');
     editor.addEventListener('input', updateWorkspace);
-    editor.value =  'set rotation style [left-right]'
+    editor.value =  '([abs] of {-1})'
     ;
 
     warnings = document.getElementById('warnings');
