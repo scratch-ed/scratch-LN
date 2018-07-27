@@ -179,16 +179,17 @@ $(document).ready(function() {
         "show variable [vivi];" +
         "hide variable [vivi];").split(";"), "Data");
 */
-    makeTable(("length of {};" +
-        "length of {\"fds\"};" +
-        "length of [ddd];" +
-        "length of {(dada)};" +
-        "{\"hello\"} contains {\"world\"} ?;" +
-        " [lili] contains {\"thing\"}?;" +
-        "{(sadfjk)} contains {(x)} ?;" +
-        "[x position] of [Sprite1];" +
-        "[abs] of {-1};" +
-        "[abs] of {};" +
+    makeTable(("(length of {});" +
+        "(length of {\"fds\"});" +
+        "(length of [ddd]);" +
+        "(length of {(dada)});" +
+        "<{\"hello\"} contains {\"world\"}?>;" +
+        "<{\"hello\"} contains {\"world\"}>;" + 
+        "< [lili] contains {\"thing\"}?>;" +
+        "<{(sadfjk)} contains {(x)} ?>;" +
+        "([x position] of [Sprite1]);" +
+        "([abs] of {-1});" +
+        "([abs] of {});" +
         "change [color] effect by {10};" +
         "set [color] effect to {10};" +
         "change [pitchX] effect by {10}::sound;" +
