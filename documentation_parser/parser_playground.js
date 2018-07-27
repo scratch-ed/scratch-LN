@@ -271,21 +271,25 @@
 
 
         $.RULE("delimiters", () => {
-            $.OR([{
-                ALT: () => {
-                    $.CONSUME(Delimiter, {
-                        LABEL: "leadingCodeDelimiters"
-                    });
+            $.MANY({
+                DEF: () => {
+                    $.OR([{
+                        ALT: () => {
+                            $.CONSUME(Delimiter, {
+                                LABEL: "leadingCodeDelimiters"
+                            });
+                        }
+                    }, {
+                        ALT: () => {
+                            $.CONSUME(MultipleDelimiters, {
+                                LABEL: "leadingCodeDelimiters"
+                            });
+                        },
+                    } /*{
+                  ALT: chevrotain.EMPTY_ALT()
+              }*/])
                 }
-            }, {
-                ALT: () => {
-                    $.CONSUME(MultipleDelimiters, {
-                        LABEL: "leadingCodeDelimiters"
-                    });
-                },
-            }, {
-                ALT: chevrotain.EMPTY_ALT()
-            }])
+            })
         })
 
         $.RULE("stackDelimiter", () => {
@@ -688,7 +692,7 @@
     // for the playground to work the returned object must contain these fields
     return {
         lexer: LNLexer,
-        //parser: LNParser,
+        parser: LNParser,
         //visitor: LNVisitor,
         defaultRule: "code"
     };
