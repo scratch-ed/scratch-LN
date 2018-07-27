@@ -38,7 +38,7 @@ window.onload = function () {
     //text
     editor = document.getElementById('editor');
     editor.addEventListener('input', updateWorkspace);
-    editor.value =  '([abs] of {-1})'
+    editor.value =  'set [color] effect to {10}'
     ;
 
     warnings = document.getElementById('warnings');
@@ -81,8 +81,8 @@ window.onload = function () {
 };
 
 function generateTextWorkspace() {
-    //let text = generateText(workspace);
-    //generatorField.value = text;
+    let text = generateText(workspace);
+    generatorField.value = text;
 }
 
 

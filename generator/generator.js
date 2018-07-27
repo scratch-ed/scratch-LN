@@ -247,6 +247,13 @@ export function init_generator() {
                 switch (args[i].type) {
                     case "field_dropdown":
                         v = block.getFieldValue(args[i].name);
+                        for(let k=0; args[i].options && k<args[i].options.length;k++){ //value to text, sometimes there is something in capital letters.
+                            let text = args[i].options[k][1];
+                            if(text === v){
+                                v = args[i].options[k][0];
+                                break;
+                            }
+                        }
                         v = '[' + v + ']';
                         break;
                     default:

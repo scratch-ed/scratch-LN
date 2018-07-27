@@ -12,7 +12,7 @@ let workspaceCounter =0;
 
 $(document).ready(function() {
     //scratchify('.scratch');
-    /*makeTable(['say "hello"','move {10} steps','x {', 'x |'], "a test");
+    makeTable(['say "hello"','move {10} steps','x {', 'x |'], "a test");
     makeTable(("move {10} steps;" +
         "turn right {15} degrees;"+
         "turn clockwise {15} degrees;"+
@@ -178,13 +178,13 @@ $(document).ready(function() {
         "show list [lala];" +
         "show variable [vivi];" +
         "hide variable [vivi];").split(";"), "Data");
-*/
+
     makeTable(("(length of {});" +
         "(length of {\"fds\"});" +
         "(length of [ddd]);" +
         "(length of {(dada)});" +
         "<{\"hello\"} contains {\"world\"}?>;" +
-        "<{\"hello\"} contains {\"world\"}>;" + 
+        "<{\"hello\"} contains {\"world\"}>;" +
         "< [lili] contains {\"thing\"}?>;" +
         "<{(sadfjk)} contains {(x)} ?>;" +
         "([x position] of [Sprite1]);" +

@@ -23,7 +23,7 @@
         //no whitespace in the beginning or end -> will be skipped (OR allow whitespace with keywords?)
         //char (whitespace* char)*
 
-            /((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"#@: \t\n/]|\\[^])([ \t]*((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t/]|\\[^]))*/,
+            /((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"#@: \t\n]|\\[^])([ \t]*((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\[^]))*/,
 
         line_breaks: true
     });
@@ -102,8 +102,8 @@
     const NumberLiteral = createToken({
         name: "NumberLiteral",
         //pattern: /-?(\d+)(\.\d+)?/, todo test of dit werkt met een *
-        pattern: /-?(\d*)(\.\d+)?/,
-        categories: [Literal,Label],
+        pattern: /-?(\d+)(\.\d+)?/,
+        categories: [Literal, Label],
         longer_alt: Label,
     });
 
@@ -197,7 +197,7 @@
 
     const MultipleDelimiters = createToken({
         name: "MultipleDelimiters",
-        //; \n should always bee seen as a whole 
+        //; \n should always bee seen as a whole
         //so a ; alone must explicitly not been followed by a \n
         pattern: /((;[ \t]*\n|;[ \t]*(?!\n)|\n)[ \t]*){2,}/,
         line_breaks: true
@@ -209,7 +209,6 @@
         line_breaks: true,
         //longer_alt: MultipleDelimiters
     });
-
 
 
     // marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
@@ -256,17 +255,17 @@
                 $.SUBRULE($.comments);
             })
             $.OPTION2(() => {
-                    $.SUBRULE($.stack);
-                    $.MANY({
-                        DEF: () => {
-                            $.SUBRULE($.stackDelimiter);
-                            $.OPTION3(() => {
-                                $.SUBRULE2($.stack);
-                            })
-                        }
-                    });
-                })
-                //$.CONSUME(chevrotain.EOF);
+                $.SUBRULE($.stack);
+                $.MANY({
+                    DEF: () => {
+                        $.SUBRULE($.stackDelimiter);
+                        $.OPTION3(() => {
+                            $.SUBRULE2($.stack);
+                        })
+                    }
+                });
+            })
+            //$.CONSUME(chevrotain.EOF);
         });
 
 
@@ -422,8 +421,6 @@
         });
 
 
-
-
         $.RULE("clause", () => {
             $.OPTION(() => {
                 $.CONSUME(Delimiter, {
@@ -488,7 +485,7 @@
                     }, {
                         NAME: "$empty",
                         ALT: chevrotain.EMPTY_ALT()
-                    }, ]);
+                    },]);
                     $.SUBRULE($.id);
                     $.CONSUME(RCurlyBracket);
                 }
@@ -537,7 +534,7 @@
                     }, {
                         NAME: "$empty",
                         ALT: chevrotain.EMPTY_ALT()
-                    }, ]);
+                    },]);
                     $.OPTION2(() => {
                         $.CONSUME(ID);
                     });
@@ -583,6 +580,7 @@
 
     // ----------------- Interpreter -----------------
     const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
+
     class LNVisitor extends BaseCstVisitor {
 
         constructor() {
@@ -689,7 +687,7 @@
     return {
         lexer: LNLexer,
         parser: LNParser,
-        visitor: LNVisitor,
+        //visitor: LNVisitor,
         defaultRule: "code"
     };
 }())
