@@ -1174,7 +1174,7 @@ export const blockspecifications = [
                     "name": "LIST",
                     "variabletypes": ["list"]
                 }],
-                "shape": "booleans"
+                "shape": "reporterblock"
             },
             "converter": listBlockConverter
         },

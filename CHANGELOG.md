@@ -6,7 +6,6 @@
 - Scratch-LN comments token definition
 
 
-
 # v0.3.0
 - update block specifications: remove and add some blocks + add alternatives
 - add locale

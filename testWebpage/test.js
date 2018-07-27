@@ -12,7 +12,7 @@ let workspaceCounter =0;
 
 $(document).ready(function() {
     //scratchify('.scratch');
-    makeTable(['say "hello"','move {10} steps','x {', 'x |'], "a test");
+    /*makeTable(['say "hello"','move {10} steps','x {', 'x |'], "a test");
     makeTable(("move {10} steps;" +
         "turn right {15} degrees;"+
         "turn clockwise {15} degrees;"+
@@ -37,9 +37,9 @@ $(document).ready(function() {
         "set y to {0};" +
         "set rotation style [left-right];" +
         "if on edge, bounce;" +
-        "x position;" +
-        "y position;" +
-        "direction;").split(";"), "Motion");
+        "(x position);" +
+        "(y position);" +
+        "(direction);").split(";"), "Motion");
     makeTable((
         "say \"hello\";"+
         "say \"hello\" for {2} seconds;"+
@@ -51,34 +51,27 @@ $(document).ready(function() {
         "next costume;" +
         "next backdrop;" +
         "switch backdrop to [backdrop];" +
+        "switch backdrop to (variable);" +
         "switch backdrop to [backdrop] and wait;" +
         "change [color] effect by {10};" +
         "set [color] effect to {10};" +
         "change size by {10};" +
         "go to [back];" +
         "go [forward] {1} layers;" +
-        "costume [number];" +
-        "backdrop [number];" +
-        "size;"+
+        "(costume [number]);" +
+        "(backdrop [number]);" +
+        "(size);"+
         "clear graphic effects;"+
         "set size to {100} %").split(";"), "Looks");
     makeTable(("start sound [1];" +
         "play sound [1] until done;" +
         "stop all sounds;" +
-        "rest for {0.25} beats;" +
-        "play note {30} for {0.3} beats;" +
         "change [pitch] effect by {10};" +
         "set [pitch] effect to {100};" +
         "clear sound effects;" +
         "change volume by {-10};" +
         "set volume to {100}%;" +
-        "change tempo by {60};" +
-        "set tempo to {60} bpm;" +
-        "set instrument to [ikook];" +
-        "play drum [ikbenverzonnen] for {0.2} beats;" +
-        "set instrument to [(1) Piano];" +
-        "volume;" +
-        "tempo").split(";"), "Sounds");
+        "(volume);").split(";"), "Sounds");
     makeTable(("when greenflag clicked;" +
         "when gf clicked;"+
         "when green flag clicked;"+
@@ -96,6 +89,7 @@ $(document).ready(function() {
         "").split(";"), "Events");
     makeTable(("wait {1} seconds;" +
         "wait until <>;" +
+        "wait until {};" +
         "stop [all];" +
         "when I start as a clone;" +
         "create clone of [myself];" +
@@ -113,56 +107,58 @@ $(document).ready(function() {
         "block;" +
         "end;" +
         "block",
+        "if {} then",
+        "if {} then \n else \n end",
         "forever",
         "repeat {10}",
         "repeat until <>",
         "repeat {10};block;end;block",
     ], "Control: C-Blocks");
-    makeTable(("touching [mouse-pointer]?;" +
-        "touching [mouse-pointer];" +
-        "touching color {#123456} ?;" +
-        "touching color {#123456} ;" +
-        "color {#123456} is touching {#123456} ?;" +
-        "color {#123456} is touching {#123456} ;" +
-        "distance to [mouse-pounter];" +
-        "key [space ] pressed ?;" +
-        "key [space ] pressed ;" +
-        "mouse down?;" +
-        "mouse down;" +
-        "mouse x;" +
-        "mouse y;" +
+    makeTable(("<touching [mouse-pointer]?>;" +
+        "<touching [mouse-pointer]>;" +
+        "<touching color {#123456} ?>;" +
+        "<touching color {#123456} >;" +
+        "<color {#123456} is touching {#123456} ?>;" +
+        "<color {#123456} is touching {#123456} >;" +
+        "(distance to [mouse-pounter]);" +
+        "<key [space ] pressed ?>;" +
+        "<key [space ] pressed >;" +
+        "<mouse down?>;" +
+        "<mouse down>;" +
+        "(mouse x);" +
+        "(mouse y);" +
         "set drag mode [draggable];" +
-        "loudness;" +
-        "timer;" +
+        "(loudness);" +
+        "(timer);" +
         "reset timer;" +
-        " [x position] of [Sprite1];" +
-        "current [year];" +
-        "days since 2000;"+
-        "username;"+
-        "answer;"+
+        "( [x position] of [Sprite1]);" +
+        "(current [year]);" +
+        "(days since 2000);"+
+        "(username);"+
+        "(answer);"+
         "ask \"what is your favorite muffin?\" and wait").split(";"), "Sensing");
-    makeTable(("{1} + {2};" +
-        "{1} - {2};" +
-        "{1} * {2};" +
-        "{1} / {2};" +
-        "pick random {1} to {10};" +
-        "{1} \\< {2};" +
-        "{1} lt {2};"+
-        "{1} less than {2};"+
-        "{1} \\> {2};" +
-        "{1} gt {2};"+
-        "{1} greater than {2};"+
-        "{1} = {2};" +
-        "<> and <>;" +
-        "<> or <>;" +
-        "not <>;" +
-        "join {\"hello\"} {\"world\"};" +
-        "letter {1} of {\"world\"};" +
-        "length of {\"world\"};" +
-        "{\"hello\"} contains {\"world\"} ?;" +
-        " {3} mod {2};" +
-        "round {2.22};" +
-        " [abs] of {-1}").split(";"), "Operators");
+    makeTable(("({1} + {2});" +
+        "({1} - {2});" +
+        "({1} * {2});" +
+        "({1} / {2});" +
+        "(pick random {1} to {10});" +
+        "<{1} \\< {2}>;" +
+        "<{1} lt {2}>;"+
+        "<{1} less than {2}>;"+
+        "<{1} \\> {2}>;" +
+        "<{1} gt {2}>;"+
+        "<{1} greater than {2}>;"+
+        "<{1} = {2}>;" +
+        "<<> and <>>;" +
+        "<<> or <>>;" +
+        "<not <>>;" +
+        "(join {\"hello\"} {\"world\"});" +
+        "(letter {1} of {\"world\"});" +
+        "(length of {\"world\"});" +
+        "<{\"hello\"} contains {\"world\"} ?>;" +
+        "( {3} mod {2});" +
+        "(round {2.22});" +
+        "([abs] of {-1})").split(";"), "Operators");
     makeTable(("set [a] to {\"fds\"};" +
         "set [a]to {(a)};" +
         "change [a] by {1};" +
@@ -171,9 +167,10 @@ $(document).ready(function() {
         "delete {\"thing\"} of [lili];" +
         "insert {\"thing\"} at {1} of [lili];" +
         "replace item {1} of [lili] with {\"otherthing\"};" +
-        "item {1} of [lili];" +
-        "length of [lili];" +
-        " [lili] contains {\"thing\"}?;" +
+        "(item {1} of [lili]);" +
+        "(item \\\# of {1} in [lili]);" + //todo
+        "(length of [lili]);" +
+        "< [lili] contains {\"thing\"}?>;" +
         " say {(a list::list)};" +
         " (a list::list);" +
         " (nolist);"+
@@ -181,7 +178,7 @@ $(document).ready(function() {
         "show list [lala];" +
         "show variable [vivi];" +
         "hide variable [vivi];").split(";"), "Data");
-
+*/
     makeTable(("length of {};" +
         "length of {\"fds\"};" +
         "length of [ddd];" +
@@ -209,11 +206,21 @@ $(document).ready(function() {
         "|comment| ; block",
         "block {(r |r comment|)} |block comment|"
     ], "comments");
+    /**/
 
     makeTable(["forever;\n" +
     "bla;\n" +
     "end;\n" +
     "bla",
+        "mouse x", "mouse down", "direction", "<direction>",
+        "change [something] effect by {10}",
+        "change [something] effect by {10}",
+        "change {color} effect by {10}",
+        "when [XXX] key pressed;",
+        "wait until (x)",
+        "wait until \"x\"",
+        "<answer>",
+        "answer"
     ], "warnings");
 
     //makeTable(("").split(";"), "");
@@ -221,6 +228,9 @@ $(document).ready(function() {
     //scroll down #makeUrLifeEasy
     //window.scrollTo(0,document.body.scrollHeight);
 });
+
+
+
 
 function makeTable(codeArray,title=null){
     var table = $('<table>');
