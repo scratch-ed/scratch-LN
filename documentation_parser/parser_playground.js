@@ -23,7 +23,7 @@
         //no whitespace in the beginning or end -> will be skipped (OR allow whitespace with keywords?)
         //char (whitespace* char)*
 
-            /((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"#@: \t\n]|\\[^])([ \t]*((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\[^]))*/,
+            /((:(?!:))|(\/(?![\/*]))|[^\{\|\(\)\}\<\>\[\];\\"#@: \t\n\/]|\\[^])([ \t]*((:(?!:))|(\/(?![\/*]))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t\/]|\\[^]))*/,
 
         line_breaks: true
     });
@@ -35,7 +35,7 @@
 
     const LineComment = createToken({
         name: "LineComment",
-        pattern: /\/\/[^\n]*/,
+        pattern: /(;[ \t]*\n?|\n)?[ \t]*\/\/[^\n;]*/,
         group: Lexer.SKIPPED,
         categories: [ScratchLNComment],
     });
@@ -46,7 +46,7 @@
         //allowed to use * and / within text but not after each other
         //most chars = [^\*]
         //* followed by /  = /\*(?!\/))
-        pattern: /\/\*([^\*]|\*(?!\/))*\*\//,
+        pattern: /(;[ \t]*\n?|\n)?[ \t]*\/\*([^\*]|\*(?!\/))*\*\//,
         group: Lexer.SKIPPED,
         categories: [ScratchLNComment],
         line_breaks: true
@@ -103,7 +103,7 @@
         name: "NumberLiteral",
         //pattern: /-?(\d+)(\.\d+)?/, todo test of dit werkt met een *
         pattern: /-?(\d+)(\.\d+)?/,
-        categories: [Literal, Label],
+        categories: [Literal,Label],
         longer_alt: Label,
     });
 
@@ -209,6 +209,7 @@
         line_breaks: true,
         //longer_alt: MultipleDelimiters
     });
+
 
 
     // marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
@@ -421,6 +422,8 @@
         });
 
 
+
+
         $.RULE("clause", () => {
             $.OPTION(() => {
                 $.CONSUME(Delimiter, {
@@ -485,7 +488,7 @@
                     }, {
                         NAME: "$empty",
                         ALT: chevrotain.EMPTY_ALT()
-                    },]);
+                    }, ]);
                     $.SUBRULE($.id);
                     $.CONSUME(RCurlyBracket);
                 }
@@ -534,7 +537,7 @@
                     }, {
                         NAME: "$empty",
                         ALT: chevrotain.EMPTY_ALT()
-                    },]);
+                    }, ]);
                     $.OPTION2(() => {
                         $.CONSUME(ID);
                     });
@@ -580,7 +583,6 @@
 
     // ----------------- Interpreter -----------------
     const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
-
     class LNVisitor extends BaseCstVisitor {
 
         constructor() {
@@ -686,7 +688,7 @@
     // for the playground to work the returned object must contain these fields
     return {
         lexer: LNLexer,
-        parser: LNParser,
+        //parser: LNParser,
         //visitor: LNVisitor,
         defaultRule: "code"
     };
