@@ -103,7 +103,7 @@
         name: "NumberLiteral",
         //pattern: /-?(\d+)(\.\d+)?/, todo test of dit werkt met een *
         pattern: /-?(\d+)(\.\d+)?/,
-        categories: [Literal,Label],
+        categories: [Literal, Label],
         longer_alt: Label,
     });
 
@@ -211,7 +211,6 @@
     });
 
 
-
     // marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
     const WhiteSpace = createToken({
         name: "WhiteSpace",
@@ -300,6 +299,11 @@
                             $.CONSUME(MultipleDelimiters, {
                                 LABEL: "intermediateCodeDelimiters"
                             });
+                            $.OPTION(() => {
+                                $.CONSUME(Delimiter, {
+                                    LABEL: "intermediateCodeDelimiter"
+                                });
+                            })
                         }
                     }, {
                         ALT: () => {
@@ -426,8 +430,6 @@
         });
 
 
-
-
         $.RULE("clause", () => {
             $.OPTION(() => {
                 $.CONSUME(Delimiter, {
@@ -492,7 +494,7 @@
                     }, {
                         NAME: "$empty",
                         ALT: chevrotain.EMPTY_ALT()
-                    }, ]);
+                    },]);
                     $.SUBRULE($.id);
                     $.CONSUME(RCurlyBracket);
                 }
@@ -541,7 +543,7 @@
                     }, {
                         NAME: "$empty",
                         ALT: chevrotain.EMPTY_ALT()
-                    }, ]);
+                    },]);
                     $.OPTION2(() => {
                         $.CONSUME(ID);
                     });
@@ -587,6 +589,7 @@
 
     // ----------------- Interpreter -----------------
     const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
+
     class LNVisitor extends BaseCstVisitor {
 
         constructor() {

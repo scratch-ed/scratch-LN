@@ -107,6 +107,11 @@ function LNParser(input) {
                         $.CONSUME(MultipleDelimiters, {
                             LABEL: "intermediateCodeDelimiters"
                         });
+                        $.OPTION(() => {
+                            $.CONSUME(Delimiter, {
+                                LABEL: "intermediateCodeDelimiter"
+                            });
+                        })
                     }
                 }, {
                     ALT: () => {

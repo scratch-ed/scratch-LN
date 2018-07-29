@@ -122,7 +122,7 @@
   {
     "type": "Rule",
     "name": "stackDelimiter",
-    "orgText": "() => {\r\n                $.AT_LEAST_ONE({\r\n                    DEF: () => {\r\n                        $.OR([{\r\n                            ALT: () => {\r\n                                $.CONSUME(MultipleDelimiters, {\r\n                                    LABEL: \"intermediateCodeDelimiters\"\r\n                                });\r\n                            }\r\n                        }, {\r\n                            ALT: () => {\r\n                                $.SUBRULE($.comments);\r\n                            }\r\n                        }]);\r\n                    }\r\n                });\r\n            }",
+    "orgText": "() => {\r\n                $.AT_LEAST_ONE({\r\n                    DEF: () => {\r\n                        $.OR([{\r\n                            ALT: () => {\r\n                                $.CONSUME(MultipleDelimiters, {\r\n                                    LABEL: \"intermediateCodeDelimiters\"\r\n                                });\r\n                                $.OPTION(() => {\r\n                                    $.CONSUME(Delimiter, {\r\n                                        LABEL: \"intermediateCodeDelimiter\"\r\n                                    });\r\n                                })\r\n                            }\r\n                        }, {\r\n                            ALT: () => {\r\n                                $.SUBRULE($.comments);\r\n                            }\r\n                        }]);\r\n                    }\r\n                });\r\n            }",
     "definition": [
       {
         "type": "RepetitionMandatory",
@@ -141,6 +141,19 @@
                     "label": "MultipleDelimiters",
                     "idx": 0,
                     "pattern": "((;[ \\t]*\\n|;[ \\t]*(?!\\n)|\\n)[ \\t]*){2,}"
+                  },
+                  {
+                    "type": "Option",
+                    "idx": 0,
+                    "definition": [
+                      {
+                        "type": "Terminal",
+                        "name": "Delimiter",
+                        "label": "Delimiter",
+                        "idx": 0,
+                        "pattern": ";[ \\t]*\\n?|\\n"
+                      }
+                    ]
                   }
                 ]
               },
@@ -652,7 +665,7 @@
   {
     "type": "Rule",
     "name": "argument",
-    "orgText": "() => {\r\n                $.OR([{\r\n                    ALT: () => {\r\n                        $.CONSUME(LCurlyBracket);\r\n                        $.OR2([{\r\n                            ALT: () => {\r\n                                $.CONSUME(Literal);\r\n                            }\r\n                        }, {\r\n                            ALT: () => {\r\n                                $.CONSUME(Label);\r\n                            }\r\n                        }, {\r\n                            ALT: () => {\r\n                                $.SUBRULE($.expression);\r\n                            }\r\n                        }, {\r\n                            ALT: () => {\r\n                                $.SUBRULE($.predicate);\r\n                            }\r\n                        }, {\r\n                            NAME: \"$empty\",\r\n                            ALT: chevrotain.EMPTY_ALT()\r\n                        }, ]);\r\n                        $.SUBRULE($.id);\r\n                        $.CONSUME(RCurlyBracket);\r\n                    }\r\n                }, {\r\n                    ALT: () => {\r\n                        $.OR3([{\r\n                            ALT: () => {\r\n                                $.CONSUME(StringLiteral, {\r\n                                    LABEL: \"Literal\"\r\n                                });\r\n                            }\r\n                        }, {\r\n                            ALT: () => {\r\n                                $.CONSUME(ColorLiteral, {\r\n                                    LABEL: \"Literal\"\r\n                                });\r\n                            }\r\n                        }, {\r\n                            ALT: () => {\r\n                                $.CONSUME(ChoiceLiteral, {\r\n                                    LABEL: \"Literal\"\r\n                                });\r\n                            }\r\n                        }, {\r\n                            ALT: () => {\r\n                                $.SUBRULE2($.expression);\r\n                            }\r\n                        }, {\r\n                            ALT: () => {\r\n                                $.SUBRULE2($.predicate);\r\n                            }\r\n                        }]);\r\n                    }\r\n                }])\r\n\r\n            }",
+    "orgText": "() => {\r\n                $.OR([{\r\n                    ALT: () => {\r\n                        $.CONSUME(LCurlyBracket);\r\n                        $.OR2([{\r\n                            ALT: () => {\r\n                                $.CONSUME(Literal);\r\n                            }\r\n                        }, {\r\n                            ALT: () => {\r\n                                $.CONSUME(Label);\r\n                            }\r\n                        }, {\r\n                            ALT: () => {\r\n                                $.SUBRULE($.expression);\r\n                            }\r\n                        }, {\r\n                            ALT: () => {\r\n                                $.SUBRULE($.predicate);\r\n                            }\r\n                        }, {\r\n                            NAME: \"$empty\",\r\n                            ALT: chevrotain.EMPTY_ALT()\r\n                        },]);\r\n                        $.SUBRULE($.id);\r\n                        $.CONSUME(RCurlyBracket);\r\n                    }\r\n                }, {\r\n                    ALT: () => {\r\n                        $.OR3([{\r\n                            ALT: () => {\r\n                                $.CONSUME(StringLiteral, {\r\n                                    LABEL: \"Literal\"\r\n                                });\r\n                            }\r\n                        }, {\r\n                            ALT: () => {\r\n                                $.CONSUME(ColorLiteral, {\r\n                                    LABEL: \"Literal\"\r\n                                });\r\n                            }\r\n                        }, {\r\n                            ALT: () => {\r\n                                $.CONSUME(ChoiceLiteral, {\r\n                                    LABEL: \"Literal\"\r\n                                });\r\n                            }\r\n                        }, {\r\n                            ALT: () => {\r\n                                $.SUBRULE2($.expression);\r\n                            }\r\n                        }, {\r\n                            ALT: () => {\r\n                                $.SUBRULE2($.predicate);\r\n                            }\r\n                        }]);\r\n                    }\r\n                }])\r\n\r\n            }",
     "definition": [
       {
         "type": "Alternation",
@@ -810,7 +823,7 @@
   {
     "type": "Rule",
     "name": "condition",
-    "orgText": "() => {\r\n                $.OR([{\r\n                    ALT: () => {\r\n                        $.CONSUME(LCurlyBracket);\r\n                        $.OR2([{\r\n                            ALT: () => {\r\n                                $.SUBRULE($.predicate);\r\n                            }\r\n                        }, {\r\n                            NAME: \"$empty\",\r\n                            ALT: chevrotain.EMPTY_ALT()\r\n                        }, ]);\r\n                        $.OPTION2(() => {\r\n                            $.CONSUME(ID);\r\n                        });\r\n                        $.CONSUME(RCurlyBracket);\r\n                    }\r\n                }, {\r\n                    ALT: () => {\r\n                        $.SUBRULE2($.predicate);\r\n                    }\r\n                }])\r\n            }",
+    "orgText": "() => {\r\n                $.OR([{\r\n                    ALT: () => {\r\n                        $.CONSUME(LCurlyBracket);\r\n                        $.OR2([{\r\n                            ALT: () => {\r\n                                $.SUBRULE($.predicate);\r\n                            }\r\n                        }, {\r\n                            NAME: \"$empty\",\r\n                            ALT: chevrotain.EMPTY_ALT()\r\n                        },]);\r\n                        $.OPTION2(() => {\r\n                            $.CONSUME(ID);\r\n                        });\r\n                        $.CONSUME(RCurlyBracket);\r\n                    }\r\n                }, {\r\n                    ALT: () => {\r\n                        $.SUBRULE2($.predicate);\r\n                    }\r\n                }])\r\n            }",
     "definition": [
       {
         "type": "Alternation",

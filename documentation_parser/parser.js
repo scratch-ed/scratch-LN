@@ -106,7 +106,7 @@ module.exports = {
             name: "NumberLiteral",
             //pattern: /-?(\d+)(\.\d+)?/, todo test of dit werkt met een *
             pattern: /-?(\d+)(\.\d+)?/,
-            categories: [Literal,Label],
+            categories: [Literal, Label],
             longer_alt: Label,
         });
 
@@ -214,7 +214,6 @@ module.exports = {
         });
 
 
-
         // marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
         const WhiteSpace = createToken({
             name: "WhiteSpace",
@@ -303,6 +302,11 @@ module.exports = {
                                 $.CONSUME(MultipleDelimiters, {
                                     LABEL: "intermediateCodeDelimiters"
                                 });
+                                $.OPTION(() => {
+                                    $.CONSUME(Delimiter, {
+                                        LABEL: "intermediateCodeDelimiter"
+                                    });
+                                })
                             }
                         }, {
                             ALT: () => {
@@ -429,8 +433,6 @@ module.exports = {
             });
 
 
-
-
             $.RULE("clause", () => {
                 $.OPTION(() => {
                     $.CONSUME(Delimiter, {
@@ -495,7 +497,7 @@ module.exports = {
                         }, {
                             NAME: "$empty",
                             ALT: chevrotain.EMPTY_ALT()
-                        }, ]);
+                        },]);
                         $.SUBRULE($.id);
                         $.CONSUME(RCurlyBracket);
                     }
@@ -544,7 +546,7 @@ module.exports = {
                         }, {
                             NAME: "$empty",
                             ALT: chevrotain.EMPTY_ALT()
-                        }, ]);
+                        },]);
                         $.OPTION2(() => {
                             $.CONSUME(ID);
                         });
@@ -590,6 +592,7 @@ module.exports = {
 
         // ----------------- Interpreter -----------------
         const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
+
         class LNVisitor extends BaseCstVisitor {
 
             constructor() {
@@ -691,7 +694,8 @@ module.exports = {
             }
 
         }
-    // for the playground to work the returned object must contain these fields
+
+        // for the playground to work the returned object must contain these fields
         return {
             lexer: LNLexer,
             parser: LNParser,
