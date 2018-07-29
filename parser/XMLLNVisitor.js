@@ -18,6 +18,7 @@ import {State} from "./state";
 import blocks from "./blockConverterUtils";
 import {ModifierAnalyser} from "./modifierAnalyser";
 import {WarningsKeeper} from "./warnings";
+import {CATEGORY} from "./typeConfig";
 //import {NumberLiteral, ColorLiteral} from "./LNLexer";
 const lntokens = require("./LNLexer");
 let NumberLiteral = lntokens.NumberLiteral;
@@ -69,11 +70,11 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         //state: keeps track of which block we are building
         this.state = new State();
 
-        //modifiers: extracts the modifiers from an node
-        this.modifierAnalyser = new ModifierAnalyser();
-
         //warnings
         this.warningsKeeper = new WarningsKeeper();
+
+        //modifiers: extracts the modifiers from an node
+        this.modifierAnalyser = new ModifierAnalyser(this.warningsKeeper);
 
         //defenition
         this.buildinBlocksConverters = blocks;
@@ -164,14 +165,8 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     atomic(ctx) {
         let description = this.infoVisitor.getString(ctx, "atomic");
-        let modifiers = this.modifierAnalyser.getMods(this.infoVisitor.getModifiers(ctx.annotations));
-        if((modifiers.user && modifiers.myblock)||
-            (modifiers.user && modifiers.list) ||
-            (modifiers.myblock && modifiers.list)
-        ){
-            this.warningsKeeper.add(ctx, "multiple modifiers with conflicting meaning")
-        }
-
+        let modifiers = this.modifierAnalyser.getMods(ctx,this.infoVisitor.getModifiers(ctx.annotations));
+        console.log(modifiers);
         if (this.isBuildInBlock(description, ctx, modifiers)) {
             //generate block
             this.buildinBlocksConverters[description.toLowerCase()].converter(ctx, this, modifiers)
@@ -194,7 +189,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             } else if (this.isBooleanBlock(description,ctx, modifiers)) {
                 if(description.match(UNKNOWN_REGEX)){
                     this.warningsKeeper.add(ctx, "unkown boolean block, generated variable");
-                }else if(!modifiers.custom){
+                }else if(modifiers.category !== CATEGORY.MYBLOCK ){
                     this.warningsKeeper.add(ctx, "unkown boolean block, add the correct modifier if you want this block");
                 }
 
@@ -241,7 +236,10 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
 
     isBuildInBlock(description, ctx, modifiers) {
-        let check = !modifiers.user && !modifiers.myblock && description.toLowerCase() in this.buildinBlocksConverters;
+        let check = (modifiers.category !== CATEGORY.VARIABLES)
+            && (modifiers.category !== CATEGORY.MYBLOCK)
+            && description.toLowerCase() in this.buildinBlocksConverters;
+
         //it is defined as build in block.
         //is it used correctly?
         if(check){
@@ -267,7 +265,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     isMyBlockReporterblock(description, ctx, modifiers) {
-        return this.isVariableBlock(ctx, modifiers) && modifiers.myblock;
+        return this.isVariableBlock(ctx, modifiers) && modifiers.category === CATEGORY.MYBLOCK;
     }
 
     isBooleanBlock(description,ctx, modifiers) {

@@ -38,7 +38,7 @@ window.onload = function () {
     //text
     editor = document.getElementById('editor');
     editor.addEventListener('input', updateWorkspace);
-    editor.value =  'set [color] effect to {10}'
+    editor.value =  '(direction::myblock)'
     ;
 
     warnings = document.getElementById('warnings');

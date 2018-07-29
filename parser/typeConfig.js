@@ -30,3 +30,11 @@ export const BLOCKTYPE = {
     HATBLOCK:4,
     CAPBLOCK:5
 };
+
+export const CATEGORY = {
+    NONE:0,
+    VARIABLES:1,
+    MYBLOCK:2,
+    //todo add others
+
+};
