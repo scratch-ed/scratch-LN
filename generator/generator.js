@@ -154,25 +154,37 @@ ScratchBlocks.text['control_forever'] = function (block) {
 ScratchBlocks.text['control_repeat'] = function (block) {
     let statements = ScratchBlocks.text.statementToCode(block, 'SUBSTACK');
     let nr = ScratchBlocks.text.valueToCode(block, 'TIMES', ScratchBlocks.text.ORDER_NONE);
+    if(nr===""){
+        nr = "{}";
+    }
     return 'repeat ' + nr + '\n' + statements + 'end\n' + ScratchBlocks.text.getNextCode(block);
 };
 
 ScratchBlocks.text['control_repeat_until'] = function (block) {
     let statements = ScratchBlocks.text.statementToCode(block, 'SUBSTACK');
     let nr = ScratchBlocks.text.valueToCode(block, 'CONDITION', ScratchBlocks.text.ORDER_NONE);
+    if(nr===""){
+        nr = "<>";
+    }
     return 'repeat until ' + nr + '\n' + statements + 'end\n' + ScratchBlocks.text.getNextCode(block);
 };
 
 ScratchBlocks.text['control_if'] = function (block) {
     let statements = ScratchBlocks.text.statementToCode(block, 'SUBSTACK');
     let nr = ScratchBlocks.text.valueToCode(block, 'CONDITION', ScratchBlocks.text.ORDER_NONE);
-    return 'if {' + nr + '}\n' + statements + 'end\n' + ScratchBlocks.text.getNextCode(block);
+    if(nr===""){
+        nr = "<>";
+    }
+    return 'if ' + nr + '\n' + statements + 'end\n' + ScratchBlocks.text.getNextCode(block);
 };
 
 ScratchBlocks.text['control_if_else'] = function (block) {
     let statements = ScratchBlocks.text.statementToCode(block, 'SUBSTACK');
     let statements2 = ScratchBlocks.text.statementToCode(block, 'SUBSTACK2');
     let nr = ScratchBlocks.text.valueToCode(block, 'CONDITION', ScratchBlocks.text.ORDER_NONE);
+    if(nr===""){
+        nr = "<>";
+    }
     return 'if ' + nr + '\n' + statements + 'else\n' + statements2 + 'end\n' + ScratchBlocks.text.getNextCode(block);
 };
 
@@ -276,6 +288,11 @@ export function init_generator() {
                         if (!args[i].menu) {
                             v = '' + v + ''; //results is {} if empty
                         }
+                }
+                if(args[i].check === "Boolean" && v === "") {
+                    v = "<>";
+                }else if(!v || v === "") {
+                    v = "{}"; //this should not really happen only in cases the inputobject was not made
                 }
                 values.push(v);
             }
