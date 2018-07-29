@@ -18,7 +18,7 @@ import {State} from "./state";
 import blocks from "./blockConverterUtils";
 import {ModifierAnalyser} from "./modifierAnalyser";
 import {WarningsKeeper} from "./warnings";
-import {CATEGORY} from "./typeConfig";
+import {CATEGORY, INPUTTYPE} from "./typeConfig";
 //import {NumberLiteral, ColorLiteral} from "./LNLexer";
 const lntokens = require("./LNLexer");
 let NumberLiteral = lntokens.NumberLiteral;
@@ -441,8 +441,9 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             'name': 'TIMES'
         });
         this.state.addBlock(blockid);
+        this.state.setExpectingInput(INPUTTYPE.WHOLE_NUMBER);
         this.visit(ctx.argument);
-
+        this.state.expectNothing();
         this.xml = this.xml.up().ele('statement ', {
             'name': 'SUBSTACK'
         });
@@ -464,6 +465,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         this.state.addBlock(blockid);
         this.state.expectBoolean();
         this.visit(ctx.condition);
+        this.state.expectNothing();
         this.xml = this.xml.up().ele('statement ', {
             'name': 'SUBSTACK'
         });
@@ -527,8 +529,11 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             if (tokenMatcher(ctx.Literal[0], ColorLiteral)) {
                 this.createColourPickerInput(ctx);
             } else {
-                this.createTextInput(ctx);
-                //todo: numberinputs + context -> createnumber
+                if(this.state.isExpectingNumber()){
+                    this.createMathNumberInput(ctx);
+                }else {
+                    this.createTextInput(ctx);
+                }
             }
         } else if (ctx.Label) {
             if(this.state.isExpectingBoolean()){

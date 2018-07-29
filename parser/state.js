@@ -156,7 +156,11 @@ export class State {
     }
 
     isExpectingNumber(){
-        return this.expectedInput === INPUTTYPE.NUMBER;
+        return this.expectedInput === INPUTTYPE.NUMBER
+            || this.expectedInput === INPUTTYPE.WHOLE_NUMBER
+            || this.expectedInput === INPUTTYPE.POSITIVE_NUMBER
+            || this.expectedInput === INPUTTYPE.INTEGER
+            || this.expectedInput === INPUTTYPE.ANGLE;
     }
 
     setExpectingInput(type){
@@ -164,6 +168,10 @@ export class State {
             throw new Error("type not valid");
         }
         this.expectedInput = type;
+    }
+
+    getExpectingInputType(){
+        return this.expectedInput;
     }
 
     expectBoolean(){

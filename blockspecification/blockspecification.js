@@ -20,9 +20,10 @@ import {CHOICE, COLOR} from "../parser/infoLNVisitor";
                     {
                         type
                         name
-                        options (optional for rectangle drop downs)
-                        menu (optional for round dropdown)
+                        options (for rectangle drop downs)
+                        menu (for round dropdown)
                         "check": "Boolean" (optional for boolean input)
+                        shadowType: default text
                     }
                  ]
             shape: one of statement/reporterblock/booleanblock/hatblock/capblock
@@ -30,9 +31,7 @@ import {CHOICE, COLOR} from "../parser/infoLNVisitor";
 
         blockConverter: default:universalblockconverter
         predicate: default: always true
-        }
-
-
+   }
  */
 // ===============================================================================
 // some frequently used predicates
@@ -91,7 +90,9 @@ export const blockspecifications = [
             "template": "go to x: %1 y: %2",
             "description": {
                 "type": "motion_gotoxy",
-                "args": [{"type": "input_value", "name": "X"}, {"type": "input_value", "name": "Y"}],
+                "args": [
+                    {"type": "input_value", "name": "X","shadowType":"math_number"},
+                    {"type": "input_value", "name": "Y","shadowType":"math_number"}],
                 "shape": "statement"
             }
         }, {

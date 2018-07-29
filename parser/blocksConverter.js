@@ -1,6 +1,7 @@
 import {CHOICE, EXPRESSION, PREDICATE} from "./infoLNVisitor";
 
 import {BROADCAST, LIST} from "./IDManager";
+import {stringToinputType} from "./typeConfigUtils";
 
 /**
  *
@@ -13,7 +14,12 @@ function makeArgument(ctx, visitor, arg, i) {
     if (arg.check === "Boolean") {
         visitor.state.expectBoolean();
     } else {
-        visitor.state.expectNothing();
+        if (arg.shadowType) {
+            let inputType = stringToinputType(arg.shadowType);
+            visitor.state.setExpectingInput(inputType);
+        } else {
+            visitor.state.expectNothing();
+        }
     }
     let type = visitor.infoVisitor.getType(ctx.argument[i]);
     //check menu first, because round dropdwons are also inputvalues
@@ -32,7 +38,7 @@ function makeArgument(ctx, visitor, arg, i) {
         } else {
             //wrong input type
             if (type !== CHOICE) {
-                visitor.warningsKeeper.add(ctx,"expected a choice but found " + type);
+                visitor.warningsKeeper.add(ctx, "expected a choice but found " + type);
             }
             visitor.xml.ele('shadow', {
                 'type': arg.menu //this was added to the json and was not default.
@@ -52,19 +58,19 @@ function makeArgument(ctx, visitor, arg, i) {
     } else if (arg.type === 'field_dropdown') { //limited options -> rectangle dropdwon
         let option = visitor.infoVisitor.getString(ctx.argument[i]);
         let key;
-        for(let i=0; i<arg.options.length;i++){
+        for (let i = 0; i < arg.options.length; i++) {
             let text = arg.options[i][0];
-            if(text === option){
+            if (text === option) {
                 key = arg.options[i][1];
                 break;
             }
         }
-        if(!key){
-            visitor.warningsKeeper.add(ctx,"unknown option: " + option);
-            key=option;
+        if (!key) {
+            visitor.warningsKeeper.add(ctx, "unknown option: " + option);
+            key = option;
         }
-        if(type !== CHOICE){
-            visitor.warningsKeeper.add(ctx,"expected a choice but found " + type);
+        if (type !== CHOICE) {
+            visitor.warningsKeeper.add(ctx, "expected a choice but found " + type);
         }
 
 
@@ -73,6 +79,8 @@ function makeArgument(ctx, visitor, arg, i) {
         }, key);
         visitor.xml = visitor.xml.up();
     }
+
+    visitor.state.expectNothing();
 }
 
 export function universalBlockConverter(ctx, visitor, structure) {

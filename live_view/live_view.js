@@ -38,7 +38,7 @@ window.onload = function () {
     //text
     editor = document.getElementById('editor');
     editor.addEventListener('input', updateWorkspace);
-    editor.value =  'move {10} steps::myblock'
+    editor.value =  'go to x:{10} y:{10}'
     ;
 
     warnings = document.getElementById('warnings');
