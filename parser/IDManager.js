@@ -11,7 +11,7 @@
  */
 export const ARG = 'arg';
 export const BROADCAST = 'broadcast_msg';
-export const LIST = '';
+export const LIST = 'list';
 
 export class BasicIDManager{
 
@@ -81,10 +81,11 @@ export class BasicIDManager{
     acquireVariableID(varName, variableType = '') {
         //if first time this variable is encountered, create an ID for it
         if (!this.varMap[varName]) {
-            this.varMap[varName] = {
-                'id': 'variable_' + this.varCounter++,
-                'variableType': variableType
-            }
+                this.varMap[varName] = {
+                    'id': 'variable_' + this.varCounter++,
+                    'variableType': variableType
+                }
+
         }
         return this.varMap[varName].id;
     }

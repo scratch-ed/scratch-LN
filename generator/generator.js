@@ -26,7 +26,14 @@ ScratchBlocks.text = new ScratchBlocks.Generator('text');
 
 //some basis function that are necessary but do not do anything here
 ScratchBlocks.text.init = function (workspace) {
-    //nope
+    //create a db of variables
+    ScratchBlocks.text.variables = {};
+    var variables = workspace.getAllVariables();
+    for (var i = 0; i < variables.length; i++) {
+        let v = variables[i];
+        console.log(v);
+        ScratchBlocks.text.variables[v.id_]=v.name;
+    }
 };
 
 ScratchBlocks.text.scrub_ = function (block, code) {
@@ -139,7 +146,7 @@ ScratchBlocks.text['argument_reporter_string_number'] = function (block) {
 //========= special cases  ===============
 ScratchBlocks.text['event_broadcast_menu'] = function (block) {
     //variables are a bit different... getfieldvalue returns the id
-    return [block.getField('BROADCAST_OPTION').getText(), ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+    return ['['+block.getField('BROADCAST_OPTION').getText()+']', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
 //========================================
 
@@ -266,12 +273,17 @@ export function init_generator() {
         let type = b['description']['type'];
         let args = b['description']['args'];
         let shape = b['description']['shape'];
-        //add function to text
+        //make converter for all blocks
         ScratchBlocks.text[type] = function (block) {
             let values = [];
             for (let i = 0; args && i < args.length; i++) {
                 let v;
                 switch (args[i].type) {
+                    case "field_variable":
+                        v = block.getFieldValue(args[i].name);
+                        v=ScratchBlocks.text.variables[v];
+                        v = '[' + v + ']';
+                        break;
                     case "field_dropdown":
                         v = block.getFieldValue(args[i].name);
                         for(let k=0; args[i].options && k<args[i].options.length;k++){ //value to text, sometimes there is something in capital letters.
@@ -285,9 +297,6 @@ export function init_generator() {
                         break;
                     default:
                         v = ScratchBlocks.text.valueToCode(block, args[i].name, ScratchBlocks.text.ORDER_NONE); //returns undefined if empty
-                        if (!args[i].menu) {
-                            v = '' + v + ''; //results is {} if empty
-                        }
                 }
                 if(args[i].check === "Boolean" && v === "") {
                     v = "<>";
@@ -309,6 +318,7 @@ export function init_generator() {
 
         };
 
+        //make converter for menus
         for (let i = 0; args && i < args.length; i++) {
             if (args[i].menu) {
                 ScratchBlocks.text[args[i].menu] = function (block) {

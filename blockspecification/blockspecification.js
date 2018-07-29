@@ -29,8 +29,9 @@ import {CHOICE, COLOR} from "../parser/infoLNVisitor";
             shape: one of statement/reporterblock/booleanblock/hatblock/capblock
         }
 
-        blockConverter: default:universalblockconverter
-        predicate: default: always true
+        blockConverter: function(ctx, visitor, structure) default:universalblockconverter
+        predicate:  function (ctx, visitor) default: always true
+        generator: stopConverter(block)default: something universal
    }
  */
 // ===============================================================================
