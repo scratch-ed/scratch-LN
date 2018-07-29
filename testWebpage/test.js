@@ -196,11 +196,28 @@ $(document).ready(function() {
         "set [pitchX] effect to {100}::sound;" +
         "change [pitch] effect by {10};" +
         "set [pitch] effect to {100};"+
-        "move {10} steps ::custom").split(";"), "same text blocks");
+        "move {10} steps ::My Block").split(";"), "same text blocks");
     makeTable(("this is a custom block {1} \"a\" <>;" +
-        "(a::custom);" +
-        "<b::custom>;" +
-        "define (a) <b>").split(";"), "custom blocks");
+        "(a::My Block);" +
+        "<b::My Block>;" +
+        "define (a) <b>").split(";"), "My Blocks");
+    makeTable(
+        [
+            "(direction)","(direction::list)",
+                        "(direction::Variables)","(direction::Variable)",
+                            "(direction::variables)","(direction::variable)","(direction::custom)","(direction::user-defined)",
+                        "(direction::My Blocks)","(direction::My Block)","(direction::MyBlocks)","(direction::myblocks)",
+                            "(direction::local)", "(direction::custom-arg)",
+
+        ]
+        , "modifiers for reporterblocks");
+    makeTable(
+        [
+            "<mouse down?>","<mouse down?::Variables>",
+            "<mouse down?::My Blocks>","<mouse down?::local>","<mouse down?::custom-arg>",
+
+        ]
+        , "modifiers for booleanblocks");
     makeTable(["|comment|",
         "(x |x comment|)",
         "block |x comment|",
@@ -221,7 +238,8 @@ $(document).ready(function() {
         "wait until (x)",
         "wait until \"x\"",
         "<answer>",
-        "answer"
+        "answer",
+        "<dd>",
     ], "warnings");
 
     //makeTable(("").split(";"), "");
@@ -245,7 +263,7 @@ function makeTable(codeArray,title=null){
         var ret = parseTextToXMLWithWarnings(codeArray[i]);
         storage[id] = ret.xml;
         ret.xml = undefined;
-        table.append( '<tr><td>' + codeArray[i] + '</td>' +
+        table.append( '<tr><td>' + $('<span>').text(codeArray[i]).html() + '</td>' +
             '<td>'+ "<div class=blocklyDiv id=" + id + "></div>"+'</td>' +
             '<td>'+JSON.stringify(ret)+'</td>' +
             '<td id="text_'+id+'">'+""+'</td>' +

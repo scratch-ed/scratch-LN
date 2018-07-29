@@ -141,7 +141,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             //so a new stack has to start
             if (this.state.isInterruptedStack()) {
                 if(i<ctx.block.length-1) { //no warning if nothing follows
-                    this.warningsKeeper.add(ctx.block[i], "started a new stack after cap");
+                    this.warningsKeeper.add(ctx.block[i], "started a new stack");
                 }
                 this.state.startStack();
                 interupted=true;
@@ -182,15 +182,15 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             } else if (this.isVariableBlock(description,ctx, modifiers)) {
                 //if description contains %1 do a warning
                 if(description.match(UNKNOWN_REGEX)){
-                    this.warningsKeeper.add(ctx, "unkown reporter block, generated variable");
+                    this.warningsKeeper.add(ctx, "unknown reporter block, generated variable");
                 }
                 this.createVariableBlock(ctx, description);
 
             } else if (this.isBooleanBlock(description,ctx, modifiers)) {
                 if(description.match(UNKNOWN_REGEX)){
-                    this.warningsKeeper.add(ctx, "unkown boolean block, generated variable");
+                    this.warningsKeeper.add(ctx, "unknown boolean block, generated variable");
                 }else if(modifiers.category !== CATEGORY.MYBLOCK ){
-                    this.warningsKeeper.add(ctx, "unkown boolean block, add the correct modifier if you want this block");
+                    this.warningsKeeper.add(ctx, "\"My blocks\" boolean block with incorrect modifier");
                 }
 
                 this.createMyBlockBooleanBlock(ctx, description);

@@ -8,6 +8,7 @@
  */
 import ScratchBlocks from 'scratch-blocks';
 import {blockspecifications} from "../blockspecification/blockspecification";
+import blocks from "../parser/blockConverterUtils";
 
 
 export default function generateText(workspace) {
@@ -111,23 +112,27 @@ ScratchBlocks.text['text'] = function (block) {
 
 //========= reporter and boolean variables  ===============
 ScratchBlocks.text['data_variable'] = function (block) {
+    let name = block.getField('VARIABLE').getText();
+    if(name.toLowerCase() in blocks){
+        name += " ::Variables";
+    }
     //variables are a bit different... getfieldvalue returns the id
-    return ['(' + block.getField('VARIABLE').getText() + ')', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+    return ['(' + name + ')', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
 
 ScratchBlocks.text['data_listcontents'] = function (block) {
     //variables are a bit different... getfieldvalue returns the id
-    return ['(' + block.getField('LIST').getText() + '::list)', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+    return ['(' + block.getField('LIST').getText() + ' ::list)', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
 
 ScratchBlocks.text['argument_reporter_boolean'] = function (block) {
     //variables are a bit different... getfieldvalue returns the id
-    return ['<' + block.getField('VALUE').getText() + '::custom>', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+    return ['<' + block.getField('VALUE').getText() + ' ::My Blocks>', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
 
 ScratchBlocks.text['argument_reporter_string_number'] = function (block) {
     //variables are a bit different... getfieldvalue returns the id
-    return ['(' + block.getField('VALUE').getText() + '::custom)', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+    return ['(' + block.getField('VALUE').getText() + ' ::My Blocks)', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
 //========================================
 
@@ -177,16 +182,27 @@ ScratchBlocks.text['control_if_else'] = function (block) {
 ScratchBlocks.text['procedures_call'] = function (block) {
     let procCode = block.getProcCode();
     //todo <> is not a child ..., so find a better way to handle this
-    console.log(block);
+    //console.log(block);
     let args=block.childBlocks_;
     let textargs = [];
     for(let i=0; i<args.length;i++){
         textargs.push(ScratchBlocks.text.blockToCode(args[i])[0]);
     }
     let ids=block.argumentIds_;
-    console.log(textargs,args,ids);
+    //console.log(textargs,args,ids);
+    console.log(changePlaceholder(procCode).toLowerCase());
+    if(changePlaceholder(procCode).toLowerCase() in blocks){
+        procCode += " ::My Blocks";
+    }
     return formatPlaceholder(procCode,textargs,ids) + '\n' + ScratchBlocks.text.getNextCode(block);
 };
+
+function changePlaceholder(text) {
+    let argscounter=1;
+    return text.replace(/%([snb])/g, function (x, m) {
+        return '%'+argscounter++;
+    });
+}
 
 function formatPlaceholder(text,args,ids) {
     let argscounter=0;
