@@ -38,10 +38,7 @@ window.onload = function () {
     //text
     editor = document.getElementById('editor');
     editor.addEventListener('input', updateWorkspace);
-    editor.value =  '< [lili] contains {"thing"}?> (a::list)'/*'set [a]to {(a)}\n' +
-        'add "thing" to [lili] \n' +
-        'show variable [vivi]\n' +
-        'set [a]to {}'*/
+    editor.value =  'set [a] to {"fds"}'
     ;
 
     warnings = document.getElementById('warnings');

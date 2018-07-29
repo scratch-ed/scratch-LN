@@ -105,22 +105,11 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         for (let key in this.idManager.varMap) {
             if (this.idManager.varMap.hasOwnProperty(key)) {
                 if (this.idManager.varMap[key].variableType !== ARG) {
-                    if (false && this.idManager.varMap[key].variableType === LIST) {
-                        /*this.xml.ele('variable', {
-                            'type': this.idManager.varMap[key].variableType,
-                            'id': this.idManager.varMap[key].id,
-                        }, key);*/
-                        this.xml.ele('variable', {
-                            'type': '',
-                            'id': this.idManager.varMap[key].id,
-                        }, key);
-                    } else {
                         this.xml.ele('variable', {
                             'type': this.idManager.varMap[key].variableType,
                             'id': this.idManager.varMap[key].id,
                             'isLocal':false,
                         }, key);
-                    }
                 }
             }
         }

@@ -899,7 +899,7 @@ export const blockspecifications = [
             "template": "set %1 to %2",
             "description": {
                 "type": "data_setvariableto",
-                "args": [{"type": "field_variable", "name": "variable"}, {"type": "input_value", "name": "VALUE"}],
+                "args": [{"type": "field_variable", "name": "VARIABLE"}, {"type": "input_value", "name": "VALUE"}],
                 "shape": "statement"
             },
             "converter": variableBlockConverter
@@ -908,7 +908,7 @@ export const blockspecifications = [
             "template": "change %1 by %2",
             "description": {
                 "type": "data_changevariableby",
-                "args": [{"type": "field_variable", "name": "variable"}, {"type": "input_value", "name": "VALUE"}],
+                "args": [{"type": "field_variable", "name": "VARIABLE"}, {"type": "input_value", "name": "VALUE"}],
                 "shape": "statement"
             },
             "converter": variableBlockConverter

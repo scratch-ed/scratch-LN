@@ -281,7 +281,10 @@ export function init_generator() {
                 switch (args[i].type) {
                     case "field_variable":
                         v = block.getFieldValue(args[i].name);
-                        v=ScratchBlocks.text.variables[v];
+                        console.log(args[i].name);
+                        if(ScratchBlocks.text.variables[v]) {
+                            v = ScratchBlocks.text.variables[v];
+                        }
                         v = '[' + v + ']';
                         break;
                     case "field_dropdown":
