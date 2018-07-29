@@ -204,9 +204,9 @@ $(document).ready(function () {
     makeTable(
         [
             "(direction)", "(direction::list)",
-            "(direction::Variables)", "(direction::Variable)",
-            "(direction::variables)", "(direction::variable)", "(direction::custom)", "(direction::user-defined)",
-            "(direction::My Blocks)", "(direction::My Block)", "(direction::MyBlocks)", "(direction::myblocks)",
+            "(direction::Variables)",
+            "(direction::variables)", "(direction::custom)", "(direction::user-defined)",
+            "(direction::My Blocks)", "(direction::MyBlocks)", "(direction::myblocks)",
             "(direction::local)", "(direction::custom-arg)",
 
         ]

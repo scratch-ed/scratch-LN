@@ -79,7 +79,7 @@ class varModifierExtractor extends ModifierExtractor {
             || modifierToken.image.match(/^::custom$/i)
             || modifierToken.image.match(/^::variables?$/i);
     }
-    
+
     getName() {
         return CATEGORY_KEY;
     }
