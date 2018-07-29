@@ -214,12 +214,18 @@ function LNParser(input) {
                 LABEL: "elseClause"
             });
         });
+        $.OPTION5(() => {
+            $.CONSUME(End);
+        })
     });
 
     $.RULE("forever", () => {
         $.CONSUME(Forever);
         $.SUBRULE($.annotations);
         $.SUBRULE($.clause);
+        $.OPTION(() => {
+            $.CONSUME(End);
+        })
     });
 
 
@@ -228,6 +234,9 @@ function LNParser(input) {
         $.SUBRULE($.argument);
         $.SUBRULE($.annotations);
         $.SUBRULE($.clause);
+        $.OPTION(() => {
+            $.CONSUME(End);
+        })
     });
 
     $.RULE("repeatuntil", () => {
@@ -235,9 +244,10 @@ function LNParser(input) {
         $.SUBRULE($.condition);
         $.SUBRULE($.annotations);
         $.SUBRULE($.clause);
+        $.OPTION(() => {
+            $.CONSUME(End);
+        })
     });
-
-
 
 
     $.RULE("clause", () => {
@@ -249,11 +259,8 @@ function LNParser(input) {
         $.OPTION2(() => {
             $.SUBRULE($.stack);
         });
-        $.OPTION3(() => {
-            $.CONSUME(End);
-        })
     });
-
+    
     $.RULE("annotations", () => {
         $.SUBRULE($.modifiers);
         $.SUBRULE($.id);

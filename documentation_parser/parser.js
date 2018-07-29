@@ -3,7 +3,6 @@ module.exports = {
 
         "use strict";
         const chevrotain = require("chevrotain");
-
         const createToken = chevrotain.createToken;
         const tokenMatcher = chevrotain.tokenMatcher;
         const Lexer = chevrotain.Lexer;
@@ -409,12 +408,18 @@ module.exports = {
                         LABEL: "elseClause"
                     });
                 });
+                $.OPTION5(() => {
+                    $.CONSUME(End);
+                })
             });
 
             $.RULE("forever", () => {
                 $.CONSUME(Forever);
                 $.SUBRULE($.annotations);
                 $.SUBRULE($.clause);
+                $.OPTION(() => {
+                    $.CONSUME(End);
+                })
             });
 
 
@@ -423,6 +428,9 @@ module.exports = {
                 $.SUBRULE($.argument);
                 $.SUBRULE($.annotations);
                 $.SUBRULE($.clause);
+                $.OPTION(() => {
+                    $.CONSUME(End);
+                })
             });
 
             $.RULE("repeatuntil", () => {
@@ -430,6 +438,9 @@ module.exports = {
                 $.SUBRULE($.condition);
                 $.SUBRULE($.annotations);
                 $.SUBRULE($.clause);
+                $.OPTION(() => {
+                    $.CONSUME(End);
+                })
             });
 
 
@@ -442,9 +453,6 @@ module.exports = {
                 $.OPTION2(() => {
                     $.SUBRULE($.stack);
                 });
-                $.OPTION3(() => {
-                    $.CONSUME(End);
-                })
             });
 
             $.RULE("annotations", () => {
@@ -694,6 +702,7 @@ module.exports = {
             }
 
         }
+
 
         // for the playground to work the returned object must contain these fields
         return {

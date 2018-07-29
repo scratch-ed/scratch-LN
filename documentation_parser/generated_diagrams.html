@@ -374,7 +374,7 @@
   {
     "type": "Rule",
     "name": "ifelse",
-    "orgText": "() => {\r\n                $.CONSUME(If);\r\n                $.SUBRULE($.condition);\r\n                $.OPTION(() => {\r\n                    $.CONSUME(Then);\r\n                });\r\n                $.SUBRULE($.annotations);\r\n                $.SUBRULE($.clause, {\r\n                    LABEL: \"ifClause\"\r\n                });\r\n                $.OPTION3(() => {\r\n                    $.OPTION4(() => {\r\n                        $.CONSUME(Delimiter, {\r\n                            LABEL: \"trailingIfClauseDelimiter\"\r\n                        });\r\n                    });\r\n                    $.CONSUME(Else);\r\n                    $.SUBRULE3($.clause, {\r\n                        LABEL: \"elseClause\"\r\n                    });\r\n                });\r\n            }",
+    "orgText": "() => {\r\n                $.CONSUME(If);\r\n                $.SUBRULE($.condition);\r\n                $.OPTION(() => {\r\n                    $.CONSUME(Then);\r\n                });\r\n                $.SUBRULE($.annotations);\r\n                $.SUBRULE($.clause, {\r\n                    LABEL: \"ifClause\"\r\n                });\r\n                $.OPTION3(() => {\r\n                    $.OPTION4(() => {\r\n                        $.CONSUME(Delimiter, {\r\n                            LABEL: \"trailingIfClauseDelimiter\"\r\n                        });\r\n                    });\r\n                    $.CONSUME(Else);\r\n                    $.SUBRULE3($.clause, {\r\n                        LABEL: \"elseClause\"\r\n                    });\r\n                });\r\n                $.OPTION5(() => {\r\n                    $.CONSUME(End);\r\n                })\r\n            }",
     "definition": [
       {
         "type": "Terminal",
@@ -441,13 +441,26 @@
             "idx": 3
           }
         ]
+      },
+      {
+        "type": "Option",
+        "idx": 5,
+        "definition": [
+          {
+            "type": "Terminal",
+            "name": "End",
+            "label": "End",
+            "idx": 0,
+            "pattern": "end"
+          }
+        ]
       }
     ]
   },
   {
     "type": "Rule",
     "name": "forever",
-    "orgText": "() => {\r\n                $.CONSUME(Forever);\r\n                $.SUBRULE($.annotations);\r\n                $.SUBRULE($.clause);\r\n            }",
+    "orgText": "() => {\r\n                $.CONSUME(Forever);\r\n                $.SUBRULE($.annotations);\r\n                $.SUBRULE($.clause);\r\n                $.OPTION(() => {\r\n                    $.CONSUME(End);\r\n                })\r\n            }",
     "definition": [
       {
         "type": "Terminal",
@@ -465,13 +478,26 @@
         "type": "NonTerminal",
         "name": "clause",
         "idx": 0
+      },
+      {
+        "type": "Option",
+        "idx": 0,
+        "definition": [
+          {
+            "type": "Terminal",
+            "name": "End",
+            "label": "End",
+            "idx": 0,
+            "pattern": "end"
+          }
+        ]
       }
     ]
   },
   {
     "type": "Rule",
     "name": "repeat",
-    "orgText": "() => {\r\n                $.CONSUME(Repeat);\r\n                $.SUBRULE($.argument);\r\n                $.SUBRULE($.annotations);\r\n                $.SUBRULE($.clause);\r\n            }",
+    "orgText": "() => {\r\n                $.CONSUME(Repeat);\r\n                $.SUBRULE($.argument);\r\n                $.SUBRULE($.annotations);\r\n                $.SUBRULE($.clause);\r\n                $.OPTION(() => {\r\n                    $.CONSUME(End);\r\n                })\r\n            }",
     "definition": [
       {
         "type": "Terminal",
@@ -494,13 +520,26 @@
         "type": "NonTerminal",
         "name": "clause",
         "idx": 0
+      },
+      {
+        "type": "Option",
+        "idx": 0,
+        "definition": [
+          {
+            "type": "Terminal",
+            "name": "End",
+            "label": "End",
+            "idx": 0,
+            "pattern": "end"
+          }
+        ]
       }
     ]
   },
   {
     "type": "Rule",
     "name": "repeatuntil",
-    "orgText": "() => {\r\n                $.CONSUME(RepeatUntil);\r\n                $.SUBRULE($.condition);\r\n                $.SUBRULE($.annotations);\r\n                $.SUBRULE($.clause);\r\n            }",
+    "orgText": "() => {\r\n                $.CONSUME(RepeatUntil);\r\n                $.SUBRULE($.condition);\r\n                $.SUBRULE($.annotations);\r\n                $.SUBRULE($.clause);\r\n                $.OPTION(() => {\r\n                    $.CONSUME(End);\r\n                })\r\n            }",
     "definition": [
       {
         "type": "Terminal",
@@ -523,13 +562,26 @@
         "type": "NonTerminal",
         "name": "clause",
         "idx": 0
+      },
+      {
+        "type": "Option",
+        "idx": 0,
+        "definition": [
+          {
+            "type": "Terminal",
+            "name": "End",
+            "label": "End",
+            "idx": 0,
+            "pattern": "end"
+          }
+        ]
       }
     ]
   },
   {
     "type": "Rule",
     "name": "clause",
-    "orgText": "() => {\r\n                $.OPTION(() => {\r\n                    $.CONSUME(Delimiter, {\r\n                        LABEL: \"leadingClauseDelimiter\"\r\n                    });\r\n                });\r\n                $.OPTION2(() => {\r\n                    $.SUBRULE($.stack);\r\n                });\r\n                $.OPTION3(() => {\r\n                    $.CONSUME(End);\r\n                })\r\n            }",
+    "orgText": "() => {\r\n                $.OPTION(() => {\r\n                    $.CONSUME(Delimiter, {\r\n                        LABEL: \"leadingClauseDelimiter\"\r\n                    });\r\n                });\r\n                $.OPTION2(() => {\r\n                    $.SUBRULE($.stack);\r\n                });\r\n            }",
     "definition": [
       {
         "type": "Option",
@@ -552,19 +604,6 @@
             "type": "NonTerminal",
             "name": "stack",
             "idx": 0
-          }
-        ]
-      },
-      {
-        "type": "Option",
-        "idx": 3,
-        "definition": [
-          {
-            "type": "Terminal",
-            "name": "End",
-            "label": "End",
-            "idx": 0,
-            "pattern": "end"
           }
         ]
       }
