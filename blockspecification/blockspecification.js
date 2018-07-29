@@ -100,7 +100,7 @@ export const blockspecifications = [
             "template": "%1 + %2",
             "description": {
                 "type": "operator_add",
-                "args": [{"type": "input_value", "name": "NUM1"}, {"type": "input_value", "name": "NUM2"}],
+                "args": [{"type": "input_value", "name": "NUM1", "shadowType":"math_number"}, {"type": "input_value", "name": "NUM2"}],
                 "shape": "reporterblock"
             },
             "converter": universalBlockConverter
@@ -1008,7 +1008,7 @@ export const blockspecifications = [
                     "options": [["x position", "x position"], ["y position", "y position"], ["direction", "direction"], ["costume #", "costume #"], ["costume name", "costume name"], ["size", "size"], ["volume", "volume"], ["backdrop #", "backdrop #"], ["backdrop name", "backdrop name"]],
 
                 }, {"type": "input_value", "name": "OBJECT", 'menu': 'sensing_of_object_menu'}],
-                "shape": "booleans"
+                "shape": "reporterblock"
             },
             "converter": function (ctx, visitor) {
                 //something was weird here...

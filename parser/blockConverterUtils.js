@@ -53,7 +53,6 @@ function createBlockEntry(templateString, specification) {
     let modus;
     switch (specification.description.shape) {
         case "booleanblock":
-        case "booleans":
             modus = MODUS.BOOLEAN;
             break;
         case "reporterblock":
