@@ -29,35 +29,31 @@ class ModifierExtractor {
     }
 
     /**
-     * returns an object
-     * @param modifierToken
-     * returns object
-     */
-    extractParameters(modifierToken) {
-        throw new Error('You have to implement the method extractParameters!');
-    }
-
-    /**
-     * return a generic name for this extractor
+     * return the name of the parameters that are set by this modifier
      */
     getName() {
         throw new Error('You have to implement the method getName!');
     }
 
+    addParameters(obj,modifierToken) {
+        throw new Error('You have to implement the method addParameters!');
+    }
 }
+
+const CATEGORY_KEY = "category";
 
 class listModifierExtractor extends ModifierExtractor {
     containsKey(modifierToken) {
         return modifierToken.image.match(/::list/i);
     }
 
-    extractParameters(modifierToken) {
-        return true;
+    getName() {
+        return CATEGORY_KEY;
     }
 
-
-    getName() {
-        return "list"
+    addParameters(obj,modifierToken) {
+        obj["list"]=true;
+        obj[CATEGORY_KEY] = CATEGORY.VARIABLES;
     }
 }
 
@@ -68,12 +64,12 @@ class myBlockModifierExtractor extends ModifierExtractor {
             || modifierToken.image.match(/^::custom-arg$/i);
     }
 
-    extractParameters(modifierToken) {
-        return CATEGORY.MYBLOCK;
+    getName() {
+        return CATEGORY_KEY;
     }
 
-    getName() {
-        return "category"
+    addParameters(obj,modifierToken) {
+        obj[CATEGORY_KEY] = CATEGORY.MYBLOCK;
     }
 }
 
@@ -83,14 +79,13 @@ class varModifierExtractor extends ModifierExtractor {
             || modifierToken.image.match(/^::custom$/i)
             || modifierToken.image.match(/^::variables?$/i);
     }
-
-    extractParameters(modifierToken) {
-        return CATEGORY.VARIABLES
+    
+    getName() {
+        return CATEGORY_KEY;
     }
 
-
-    getName() {
-        return "category"
+    addParameters(obj,modifierToken) {
+        obj[CATEGORY_KEY] = CATEGORY.VARIABLES;
     }
 }
 
@@ -120,7 +115,8 @@ export class ModifierAnalyser {
                         if(mods[name]){
                             this.warningsKeeper.add(ctx, "multiple modifiers with conflicting meaning");
                         }else {
-                            mods[name] = this.modifierExtractors[m].extractParameters(modifierList[i]);
+                            //mods[name] = this.modifierExtractors[m].extractParameters(modifierList[i]);
+                            this.modifierExtractors[m].addParameters(mods,modifierList[i]);
                         }
                     }
                 }

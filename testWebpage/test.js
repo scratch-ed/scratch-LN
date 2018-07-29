@@ -3,27 +3,27 @@ import {scratchify} from './../webtools/scratchify.js';
 import {parseTextToXMLWithWarnings} from './../parser/parserUtils.js'
 
 import ScratchBlocks from 'scratch-blocks';
-import {createWorkspace, fitBlocks,DEFAULT_PROPERTIES} from "../webtools/scratchify";
+import {createWorkspace, fitBlocks, DEFAULT_PROPERTIES} from "../webtools/scratchify";
 import parseTextToXML from "../parser/parserUtils";
 
 import generateText from "../generator/generator"
 
-let workspaceCounter =0;
+let workspaceCounter = 0;
 
-$(document).ready(function() {
+$(document).ready(function () {
     //scratchify('.scratch');
-    makeTable(['say "hello"','move {10} steps','x {', 'x |'], "a test");
+    makeTable(['say "hello"', 'move {10} steps', 'x {', 'x |'], "a test");
     makeTable(("move {10} steps;" +
-        "turn right {15} degrees;"+
-        "turn clockwise {15} degrees;"+
-        "turn \u21BB {15} degrees;"+
+        "turn right {15} degrees;" +
+        "turn clockwise {15} degrees;" +
+        "turn \u21BB {15} degrees;" +
         "turn cw {15} degrees;" +
-        "turn left {15} degrees;"+
-        "turn ccw {15} degrees;"+
-        "turn counterclockwise {15} degrees;"+
-        "turn anticlockwise {15} degrees;"+
-        "turn acw {15} degrees;"+
-        "turn \u21BA {15} degrees;"+
+        "turn left {15} degrees;" +
+        "turn ccw {15} degrees;" +
+        "turn counterclockwise {15} degrees;" +
+        "turn anticlockwise {15} degrees;" +
+        "turn acw {15} degrees;" +
+        "turn \u21BA {15} degrees;" +
         "turn ccw {15} degrees;" +
         "point in direction {90};" +
         "point towards [mouse-pointer];" +
@@ -41,10 +41,10 @@ $(document).ready(function() {
         "(y position);" +
         "(direction);").split(";"), "Motion");
     makeTable((
-        "say \"hello\";"+
-        "say \"hello\" for {2} seconds;"+
-        "think \"hello\";"+
-        "think \"hello\" for {2} seconds;"+
+        "say \"hello\";" +
+        "say \"hello\" for {2} seconds;" +
+        "think \"hello\";" +
+        "think \"hello\" for {2} seconds;" +
         "show;" +
         "hide;" +
         "switch costume to [costume 1];" +
@@ -60,8 +60,8 @@ $(document).ready(function() {
         "go [forward] {1} layers;" +
         "(costume [number]);" +
         "(backdrop [number]);" +
-        "(size);"+
-        "clear graphic effects;"+
+        "(size);" +
+        "clear graphic effects;" +
         "set size to {100} %").split(";"), "Looks");
     makeTable(("start sound [1];" +
         "play sound [1] until done;" +
@@ -73,10 +73,10 @@ $(document).ready(function() {
         "set volume to {100}%;" +
         "(volume);").split(";"), "Sounds");
     makeTable(("when greenflag clicked;" +
-        "when gf clicked;"+
-        "when green flag clicked;"+
-        "when \u2691 clicked;"+
-        "when flag clicked;"+
+        "when gf clicked;" +
+        "when green flag clicked;" +
+        "when \u2691 clicked;" +
+        "when flag clicked;" +
         "when [space] key pressed;" +
         "when this sprite clicked;" +
         "when backdrop switches to [backdrop 1];" +
@@ -133,9 +133,9 @@ $(document).ready(function() {
         "reset timer;" +
         "( [x position] of [Sprite1]);" +
         "(current [year]);" +
-        "(days since 2000);"+
-        "(username);"+
-        "(answer);"+
+        "(days since 2000);" +
+        "(username);" +
+        "(answer);" +
         "ask \"what is your favorite muffin?\" and wait").split(";"), "Sensing");
     makeTable(("({1} + {2});" +
         "({1} - {2});" +
@@ -143,11 +143,11 @@ $(document).ready(function() {
         "({1} / {2});" +
         "(pick random {1} to {10});" +
         "<{1} \\< {2}>;" +
-        "<{1} lt {2}>;"+
-        "<{1} less than {2}>;"+
+        "<{1} lt {2}>;" +
+        "<{1} less than {2}>;" +
         "<{1} \\> {2}>;" +
-        "<{1} gt {2}>;"+
-        "<{1} greater than {2}>;"+
+        "<{1} gt {2}>;" +
+        "<{1} greater than {2}>;" +
         "<{1} = {2}>;" +
         "<<> and <>>;" +
         "<<> or <>>;" +
@@ -173,7 +173,7 @@ $(document).ready(function() {
         "< [lili] contains {\"thing\"}?>;" +
         " say {(a list::list)};" +
         " (a list::list);" +
-        " (nolist);"+
+        " (nolist);" +
         " hide list [lala];" +
         "show list [lala];" +
         "show variable [vivi];" +
@@ -195,29 +195,35 @@ $(document).ready(function() {
         "change [pitchX] effect by {10}::sound;" +
         "set [pitchX] effect to {100}::sound;" +
         "change [pitch] effect by {10};" +
-        "set [pitch] effect to {100};"+
-        "move {10} steps ::My Block").split(";"), "same text blocks");
+        "set [pitch] effect to {100};"
+    ).split(";"), "same text blocks");
     makeTable(("this is a custom block {1} \"a\" <>;" +
         "(a::My Block);" +
         "<b::My Block>;" +
         "define (a) <b>").split(";"), "My Blocks");
     makeTable(
         [
-            "(direction)","(direction::list)",
-                        "(direction::Variables)","(direction::Variable)",
-                            "(direction::variables)","(direction::variable)","(direction::custom)","(direction::user-defined)",
-                        "(direction::My Blocks)","(direction::My Block)","(direction::MyBlocks)","(direction::myblocks)",
-                            "(direction::local)", "(direction::custom-arg)",
+            "(direction)", "(direction::list)",
+            "(direction::Variables)", "(direction::Variable)",
+            "(direction::variables)", "(direction::variable)", "(direction::custom)", "(direction::user-defined)",
+            "(direction::My Blocks)", "(direction::My Block)", "(direction::MyBlocks)", "(direction::myblocks)",
+            "(direction::local)", "(direction::custom-arg)",
 
         ]
         , "modifiers for reporterblocks");
     makeTable(
         [
-            "<mouse down?>","<mouse down?::Variables>",
-            "<mouse down?::My Blocks>","<mouse down?::local>","<mouse down?::custom-arg>",
+            "<mouse down?>", "<mouse down?::Variables>",
+            "<mouse down?::My Blocks>", "<mouse down?::local>", "<mouse down?::custom-arg>",
 
         ]
         , "modifiers for booleanblocks");
+    makeTable(
+        [
+            "move {10} steps",
+            "move {10} steps ::My Block"
+        ]
+        , "modifiers for stack blocks");
     makeTable(["|comment|",
         "(x |x comment|)",
         "block |x comment|",
@@ -249,43 +255,41 @@ $(document).ready(function() {
 });
 
 
-
-
-function makeTable(codeArray,title=null){
+function makeTable(codeArray, title = null) {
     var table = $('<table>');
-    if(title){
-        $('#tables').append("<h2 id='"+title+"'><a href='#"+title+"'>"+title+"</a></h2>");
+    if (title) {
+        $('#tables').append("<h2 id='" + title + "'><a href='#" + title + "'>" + title + "</a></h2>");
     }
     let startCounter = workspaceCounter;
     let storage = {};
-    for(let i=0;i<codeArray.length;i++){
+    for (let i = 0; i < codeArray.length; i++) {
         let id = "workspace_" + workspaceCounter++;
         var ret = parseTextToXMLWithWarnings(codeArray[i]);
         storage[id] = ret.xml;
         ret.xml = undefined;
-        table.append( '<tr><td>' + $('<span>').text(codeArray[i]).html() + '</td>' +
-            '<td>'+ "<div class=blocklyDiv id=" + id + "></div>"+'</td>' +
-            '<td>'+JSON.stringify(ret)+'</td>' +
-            '<td id="text_'+id+'">'+""+'</td>' +
-            '</tr>' );
+        table.append('<tr><td>' + $('<span>').text(codeArray[i]).html() + '</td>' +
+            '<td>' + "<div class=blocklyDiv id=" + id + "></div>" + '</td>' +
+            '<td>' + JSON.stringify(ret) + '</td>' +
+            '<td id="text_' + id + '">' + "" + '</td>' +
+            '</tr>');
     }
     $('#tables').append(table);
-    for(let i=startCounter;i<workspaceCounter;i++) {
+    for (let i = startCounter; i < workspaceCounter; i++) {
         let wid = "workspace_" + i;
         let xml = storage[wid];
-        let workspace=createWorkspace(wid);
-        if(xml) {
+        let workspace = createWorkspace(wid);
+        if (xml) {
             try {
                 var dom = ScratchBlocks.Xml.textToDom(xml);
                 ScratchBlocks.Xml.domToWorkspace(dom, workspace);
                 workspace.cleanUp();
                 let text = generateText(workspace);
-                $("#text_"+wid).text(text);
-            }catch(err){
+                $("#text_" + wid).text(text);
+            } catch (err) {
                 console.log(err);
             }
         }
-        fitBlocks(workspace, wid,DEFAULT_PROPERTIES);
+        fitBlocks(workspace, wid, DEFAULT_PROPERTIES);
     }
 }
 
