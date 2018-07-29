@@ -14,8 +14,7 @@ import {CHOICE, COLOR} from "../parser/infoLNVisitor";
 
 /*
  {"template":"",
-        "description": ,
-            "converter": universalBlockConverter
+        "description": 
         }
 
  */
@@ -47,7 +46,6 @@ export const blockspecifications = [
                 }],
                 "shape": "statement"
             },
-            "converter": universalBlockConverter,
             "predicate": (ctx, visitor) => {
                 let arg = visitor.infoVisitor.getString(ctx.argument[0]);
                 return (arg === 'front' || arg === 'back');
@@ -61,12 +59,10 @@ export const blockspecifications = [
                 "args": [{"type": "input_value", "name": "TO", "menu": "motion_goto_menu"}],
                 "shape": "statement"
             },
-            "converter": universalBlockConverter,
         },
         /*{
             "template": ["pen down"],
-            "description": {"type": "pen_pendown", "shape": "statement"},
-            "converter": universalBlockConverter
+            "description": {"type": "pen_pendown", "shape": "statement"}
         },*/
         {
             "template": ["say %1"],
@@ -74,16 +70,14 @@ export const blockspecifications = [
                 "type": "looks_say",
                 "args": [{"type": "input_value", "name": "MESSAGE"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         }, {
             "template": "go to x: %1 y: %2",
             "description": {
                 "type": "motion_gotoxy",
                 "args": [{"type": "input_value", "name": "X"}, {"type": "input_value", "name": "Y"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         }, {
             "template": "set rotation style %1",
             "description": {
@@ -94,24 +88,21 @@ export const blockspecifications = [
                     "options": [["left-right", "left-right"], ["don't rotate", "don't rotate"], ["all around", "all around"]]
                 }],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         }, {
             "template": "%1 + %2",
             "description": {
                 "type": "operator_add",
                 "args": [{"type": "input_value", "name": "NUM1", "shadowType":"math_number"}, {"type": "input_value", "name": "NUM2"}],
                 "shape": "reporterblock"
-            },
-            "converter": universalBlockConverter
+            }
         }, {
             "template": "not %1",
             "description": {
                 "type": "operator_not",
                 "args": [{"type": "input_value", "name": "OPERAND", "check": "Boolean"}],
                 "shape": "booleanblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
 
 //==== operator ===================================================
@@ -121,8 +112,7 @@ export const blockspecifications = [
                 "type": "operator_subtract",
                 "args": [{"type": "input_value", "name": "NUM1"}, {"type": "input_value", "name": "NUM2"}],
                 "shape": "reporterblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "%1 * %2",
@@ -130,8 +120,7 @@ export const blockspecifications = [
                 "type": "operator_multiply",
                 "args": [{"type": "input_value", "name": "NUM1"}, {"type": "input_value", "name": "NUM2"}],
                 "shape": "reporterblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "%1 / %2",
@@ -139,8 +128,7 @@ export const blockspecifications = [
                 "type": "operator_divide",
                 "args": [{"type": "input_value", "name": "NUM1"}, {"type": "input_value", "name": "NUM2"}],
                 "shape": "reporterblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "pick random %1 to %2",
@@ -148,8 +136,7 @@ export const blockspecifications = [
                 "type": "operator_random",
                 "args": [{"type": "input_value", "name": "FROM"}, {"type": "input_value", "name": "TO"}],
                 "shape": "reporterblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": ["%1 lt %2", "%1 < %2", "%1 less than %2"],
@@ -157,8 +144,7 @@ export const blockspecifications = [
                 "type": "operator_lt",
                 "args": [{"type": "input_value", "name": "OPERAND1"}, {"type": "input_value", "name": "OPERAND2"}],
                 "shape": "booleanblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": ["%1 = %2","%1 eq %2","%1 equals %2",],
@@ -166,8 +152,7 @@ export const blockspecifications = [
                 "type": "operator_equals",
                 "args": [{"type": "input_value", "name": "OPERAND1"}, {"type": "input_value", "name": "OPERAND2"}],
                 "shape": "booleanblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": ["%1 gt %2", "%1 > %2", "%1 greater than %2"],
@@ -175,8 +160,7 @@ export const blockspecifications = [
                 "type": "operator_gt",
                 "args": [{"type": "input_value", "name": "OPERAND1"}, {"type": "input_value", "name": "OPERAND2"}],
                 "shape": "booleanblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "%1 and %2",
@@ -188,8 +172,7 @@ export const blockspecifications = [
                     "check": "Boolean"
                 }],
                 "shape": "booleanblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "%1 or %2",
@@ -201,8 +184,7 @@ export const blockspecifications = [
                     "check": "Boolean"
                 }],
                 "shape": "booleanblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "join %1 %2",
@@ -210,8 +192,7 @@ export const blockspecifications = [
                 "type": "operator_join",
                 "args": [{"type": "input_value", "name": "STRING1"}, {"type": "input_value", "name": "STRING2"}],
                 "shape": "reporterblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "letter %1 of %2",
@@ -219,8 +200,7 @@ export const blockspecifications = [
                 "type": "operator_letter_of",
                 "args": [{"type": "input_value", "name": "LETTER"}, {"type": "input_value", "name": "STRING"}],
                 "shape": "reporterblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "%1 mod %2",
@@ -228,8 +208,7 @@ export const blockspecifications = [
                 "type": "operator_mod",
                 "args": [{"type": "input_value", "name": "NUM1"}, {"type": "input_value", "name": "NUM2"}],
                 "shape": "reporterblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "round %1",
@@ -237,8 +216,7 @@ export const blockspecifications = [
                 "type": "operator_round",
                 "args": [{"type": "input_value", "name": "NUM"}],
                 "shape": "reporterblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
 //=== control ===============================================================
         {
@@ -247,8 +225,7 @@ export const blockspecifications = [
                 "type": "control_wait",
                 "args": [{"type": "input_value", "name": "DURATION"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "wait until %1",
@@ -256,13 +233,11 @@ export const blockspecifications = [
                 "type": "control_wait_until",
                 "args": [{"type": "input_value", "name": "CONDITION", "check": "Boolean"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "when I start as a clone",
-            "description": {"type": "control_start_as_clone", "args": [], "shape": "hatblock"},
-            "converter": universalBlockConverter
+            "description": {"type": "control_start_as_clone", "args": [], "shape": "hatblock"}
         },
         {
             "template": "create clone of %1",
@@ -270,13 +245,11 @@ export const blockspecifications = [
                 "type": "control_create_clone_of",
                 "args": [{"type": "input_value", "name": "CLONE_OPTION", "menu": "control_create_clone_of_menu"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "delete this clone",
-            "description": {"type": "control_delete_this_clone", "args": [], "shape": "capblock"},
-            "converter": universalBlockConverter
+            "description": {"type": "control_delete_this_clone", "args": [], "shape": "capblock"}
         },
 //=== sensing ===============================================================
         {
@@ -285,8 +258,7 @@ export const blockspecifications = [
                 "type": "sensing_touchingobject",
                 "args": [{"type": "input_value", "name": "TOUCHINGOBJECTMENU", "menu": "sensing_touchingobjectmenu"}],
                 "shape": "booleanblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": ["touching color %1?", "touching color %1"],
@@ -294,8 +266,7 @@ export const blockspecifications = [
                 "type": "sensing_touchingcolor",
                 "args": [{"type": "input_value", "name": "COLOR"}],
                 "shape": "booleanblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": ["color %1 is touching %2?", "color %1 is touching %2"],
@@ -303,8 +274,7 @@ export const blockspecifications = [
                 "type": "sensing_coloristouchingcolor",
                 "args": [{"type": "input_value", "name": "COLOR"}, {"type": "input_value", "name": "COLOR2"}],
                 "shape": "booleanblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "distance to %1",
@@ -312,8 +282,7 @@ export const blockspecifications = [
                 "type": "sensing_distanceto",
                 "args": [{"type": "input_value", "name": "DISTANCETOMENU", "menu": "sensing_distancetomenu"}],
                 "shape": "reporterblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "ask %1 and wait",
@@ -321,13 +290,11 @@ export const blockspecifications = [
                 "type": "sensing_askandwait",
                 "args": [{"type": "input_value", "name": "QUESTION"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "answer",
-            "description": {"type": "sensing_answer", "shape": "reporterblock"},
-            "converter": universalBlockConverter
+            "description": {"type": "sensing_answer", "shape": "reporterblock"}
         },
         {
             "template": ["key %1 pressed?", "key %1 pressed"],
@@ -340,23 +307,19 @@ export const blockspecifications = [
                     "menu": "sensing_keyoptions"
                 }],
                 "shape": "booleanblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": ["mouse down?", "mouse down"],
-            "description": {"type": "sensing_mousedown", "shape": "booleanblock"},
-            "converter": universalBlockConverter
+            "description": {"type": "sensing_mousedown", "shape": "booleanblock"}
         },
         {
             "template": "mouse x",
-            "description": {"type": "sensing_mousex", "shape": "reporterblock"},
-            "converter": universalBlockConverter
+            "description": {"type": "sensing_mousex", "shape": "reporterblock"}
         },
         {
             "template": "mouse y",
-            "description": {"type": "sensing_mousey", "shape": "reporterblock"},
-            "converter": universalBlockConverter
+            "description": {"type": "sensing_mousey", "shape": "reporterblock"}
         },
         {
             "template": "set drag mode %1",
@@ -368,13 +331,11 @@ export const blockspecifications = [
                     "options": [["draggable", "draggable"], ["not draggable", "not draggable"]]
                 }],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "loudness",
-            "description": {"type": "sensing_loudness", "shape": "reporterblock"},
-            "converter": universalBlockConverter
+            "description": {"type": "sensing_loudness", "shape": "reporterblock"}
         },
         {
             "template": "video %1 on %2",
@@ -382,8 +343,7 @@ export const blockspecifications = [
                 "type": "sensing_videoon",
                 "args": [{"type": "input_value", "name": "VIDEOONMENU1"}, {"type": "input_value", "name": "VIDEOONMENU2"}],
                 "shape": "reporterblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "turn video %1",
@@ -391,8 +351,7 @@ export const blockspecifications = [
                 "type": "sensing_videotoggle",
                 "args": [{"type": "input_value", "name": "VIDEOTOGGLEMENU"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "set video transparency to %1%",
@@ -400,18 +359,15 @@ export const blockspecifications = [
                 "type": "sensing_setvideotransparency",
                 "args": [{"type": "input_value", "name": "TRANSPARENCY"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "timer",
-            "description": {"type": "sensing_timer", "shape": "reporterblock"},
-            "converter": universalBlockConverter
+            "description": {"type": "sensing_timer", "shape": "reporterblock"}
         },
         {
             "template": "reset timer",
-            "description": {"type": "sensing_resettimer", "shape": "statement"},
-            "converter": universalBlockConverter
+            "description": {"type": "sensing_resettimer", "shape": "statement"}
         },
         {
             "template": "current %1",
@@ -423,18 +379,15 @@ export const blockspecifications = [
                     "options": [["year", "YEAR"], ["month", "MONTH"], ["date", "DATE"], ["day of week", "DAYOFWEEK"], ["hour", "HOUR"], ["minute", "MINUTE"], ["second", "SECOND"]]
                 }],
                 "shape": "reporterblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "days since 2000",
-            "description": {"type": "sensing_dayssince2000", "shape": "reporterblock"},
-            "converter": universalBlockConverter
+            "description": {"type": "sensing_dayssince2000", "shape": "reporterblock"}
         },
         {
             "template": "username",
-            "description": {"type": "sensing_username", "shape": "reporterblock"},
-            "converter": universalBlockConverter
+            "description": {"type": "sensing_username", "shape": "reporterblock"}
         },
 
 
@@ -445,8 +398,7 @@ export const blockspecifications = [
                 "type": "motion_movesteps",
                 "args": [{"type": "input_value", "name": "STEPS"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": ["turn right %1 degrees", "turn cw %1 degrees", "turn clockwise %1 degrees", "turn \u21BB %1 degrees"],
@@ -454,8 +406,7 @@ export const blockspecifications = [
                 "type": "motion_turnright",
                 "args": [{"type": "input_value", "name": "DEGREES"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": ["turn left %1 degrees", "turn ccw %1 degrees", "turn counterclockwise %1 degrees",
@@ -464,8 +415,7 @@ export const blockspecifications = [
                 "type": "motion_turnleft",
                 "args": [{"type": "input_value", "name": "DEGREES"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "point in direction %1",
@@ -473,8 +423,7 @@ export const blockspecifications = [
                 "type": "motion_pointindirection",
                 "args": [{"type": "input_value", "name": "DIRECTION"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "point towards %1",
@@ -482,8 +431,7 @@ export const blockspecifications = [
                 "type": "motion_pointtowards",
                 "args": [{"type": "input_value", "name": "TOWARDS", "menu": "motion_pointtowards_menu"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "glide %1 secs to x: %2 y: %3",
@@ -494,8 +442,7 @@ export const blockspecifications = [
                     "name": "X"
                 }, {"type": "input_value", "name": "Y"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "glide %1 secs to %2",
@@ -507,8 +454,7 @@ export const blockspecifications = [
                     "menu": "motion_glideto_menu"
                 }],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "change x by %1",
@@ -516,13 +462,11 @@ export const blockspecifications = [
                 "type": "motion_changexby",
                 "args": [{"type": "input_value", "name": "DX"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "set x to %1",
-            "description": {"type": "motion_setx", "args": [{"type": "input_value", "name": "X"}], "shape": "statement"},
-            "converter": universalBlockConverter
+            "description": {"type": "motion_setx", "args": [{"type": "input_value", "name": "X"}], "shape": "statement"}
         },
         {
             "template": "change y by %1",
@@ -530,33 +474,27 @@ export const blockspecifications = [
                 "type": "motion_changeyby",
                 "args": [{"type": "input_value", "name": "DY"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "set y to %1",
-            "description": {"type": "motion_sety", "args": [{"type": "input_value", "name": "Y"}], "shape": "statement"},
-            "converter": universalBlockConverter
+            "description": {"type": "motion_sety", "args": [{"type": "input_value", "name": "Y"}], "shape": "statement"}
         },
         {
             "template": ["if on edge, bounce","bounce on edge"],
-            "description": {"type": "motion_ifonedgebounce", "shape": "statement"},
-            "converter": universalBlockConverter
+            "description": {"type": "motion_ifonedgebounce", "shape": "statement"}
         },
         {
             "template": "x position",
-            "description": {"type": "motion_xposition", "shape": "reporterblock"},
-            "converter": universalBlockConverter
+            "description": {"type": "motion_xposition", "shape": "reporterblock"}
         },
         {
             "template": "y position",
-            "description": {"type": "motion_yposition", "shape": "reporterblock"},
-            "converter": universalBlockConverter
+            "description": {"type": "motion_yposition", "shape": "reporterblock"}
         },
         {
             "template": "direction",
-            "description": {"type": "motion_direction", "shape": "reporterblock"},
-            "converter": universalBlockConverter
+            "description": {"type": "motion_direction", "shape": "reporterblock"}
         },
 //=== looks ======================================
         {
@@ -565,8 +503,7 @@ export const blockspecifications = [
                 "type": "looks_sayforsecs",
                 "args": [{"type": "input_value", "name": "MESSAGE"}, {"type": "input_value", "name": "SECS"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "think %1 for %2 seconds",
@@ -574,8 +511,7 @@ export const blockspecifications = [
                 "type": "looks_thinkforsecs",
                 "args": [{"type": "input_value", "name": "MESSAGE"}, {"type": "input_value", "name": "SECS"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "think %1",
@@ -583,23 +519,19 @@ export const blockspecifications = [
                 "type": "looks_think",
                 "args": [{"type": "input_value", "name": "MESSAGE"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "show",
-            "description": {"type": "looks_show", "shape": "statement"},
-            "converter": universalBlockConverter
+            "description": {"type": "looks_show", "shape": "statement"}
         },
         {
             "template": "hide",
-            "description": {"type": "looks_hide", "shape": "statement"},
-            "converter": universalBlockConverter
+            "description": {"type": "looks_hide", "shape": "statement"}
         },
         {
             "template": "clear graphic effects",
-            "description": {"type": "looks_cleargraphiceffects", "shape": "statement"},
-            "converter": universalBlockConverter
+            "description": {"type": "looks_cleargraphiceffects", "shape": "statement"}
         },
         {
             "template": "change size by %1",
@@ -607,8 +539,7 @@ export const blockspecifications = [
                 "type": "looks_changesizeby",
                 "args": [{"type": "input_value", "name": "CHANGE"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "set size to %1 %",
@@ -616,13 +547,11 @@ export const blockspecifications = [
                 "type": "looks_setsizeto",
                 "args": [{"type": "input_value", "name": "SIZE"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "size",
-            "description": {"type": "looks_size", "shape": "reporterblock"},
-            "converter": universalBlockConverter
+            "description": {"type": "looks_size", "shape": "reporterblock"}
         },
         {
             "template": "switch costume to %1",
@@ -630,13 +559,11 @@ export const blockspecifications = [
                 "type": "looks_switchcostumeto",
                 "args": [{"type": "input_value", "name": "COSTUME", "menu": "looks_costume"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "next costume",
-            "description": {"type": "looks_nextcostume", "shape": "statement"},
-            "converter": universalBlockConverter
+            "description": {"type": "looks_nextcostume", "shape": "statement"}
         },
         {
             "template": "switch backdrop to %1",
@@ -644,8 +571,7 @@ export const blockspecifications = [
                 "type": "looks_switchbackdropto",
                 "args": [{"type": "input_value", "name": "BACKDROP", "menu": "looks_backdrops"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "go %1 %2 layers",
@@ -657,8 +583,7 @@ export const blockspecifications = [
                     "options": [["forward", "forward"], ["backward", "backward"]]
                 }, {"type": "input_value", "name": "NUM"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "backdrop %1",
@@ -670,8 +595,7 @@ export const blockspecifications = [
                     "options": [["number", "number"], ["name", "name"]]
                 }],
                 "shape": "reporterblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "costume %1",
@@ -683,8 +607,7 @@ export const blockspecifications = [
                     "options": [["number", "number"], ["name", "name"]]
                 }],
                 "shape": "reporterblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "switch backdrop to %1 and wait",
@@ -692,30 +615,25 @@ export const blockspecifications = [
                 "type": "looks_switchbackdroptoandwait",
                 "args": [{"type": "input_value", "name": "BACKDROP", "menu": "looks_backdrops"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "next backdrop",
-            "description": {"type": "looks_nextbackdrop", "shape": "statement"},
-            "converter": universalBlockConverter
+            "description": {"type": "looks_nextbackdrop", "shape": "statement"}
         },
         //=== pen
         //todo -> extensions
         /*{
             "template": "clear",
-            "description": {"type": "pen_clear", "shape": "statement"},
-            "converter": universalBlockConverter
+            "description": {"type": "pen_clear", "shape": "statement"}
         },
         {
             "template": "stamp",
-            "description": {"type": "pen_stamp", "shape": "statement"},
-            "converter": universalBlockConverter
+            "description": {"type": "pen_stamp", "shape": "statement"}
         },
         {
             "template": "pen up",
-            "description": {"type": "pen_penup", "shape": "statement"},
-            "converter": universalBlockConverter
+            "description": {"type": "pen_penup", "shape": "statement"}
         },
         {
             "template": "set pen color to %1",
@@ -724,7 +642,6 @@ export const blockspecifications = [
                 "args": [{"type": "input_value", "name": "COLOR"}],
                 "shape": "statement"
             },
-            "converter": universalBlockConverter,
             "predicate": (ctx, visitor) => {
                 let argType = visitor.infoVisitor.getType(ctx.argument[0]);
                 return (argType === COLOR);
@@ -736,8 +653,7 @@ export const blockspecifications = [
                 "type": "pen_setpencolortonum",
                 "args": [{"type": "input_value", "name": "COLOR"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
 
         },
         {
@@ -746,8 +662,7 @@ export const blockspecifications = [
                 "type": "pen_changepencolorby",
                 "args": [{"type": "input_value", "name": "COLOR"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "change pen shade by %1",
@@ -755,8 +670,7 @@ export const blockspecifications = [
                 "type": "pen_changepenshadeby",
                 "args": [{"type": "input_value", "name": "SHADE"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "set pen shade to %1",
@@ -764,8 +678,7 @@ export const blockspecifications = [
                 "type": "pen_setpenshadeto",
                 "args": [{"type": "input_value", "name": "SHADE"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "change pen size by %1",
@@ -773,8 +686,7 @@ export const blockspecifications = [
                 "type": "pen_changepensizeby",
                 "args": [{"type": "input_value", "name": "SIZE"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "set pen size to %1",
@@ -782,8 +694,7 @@ export const blockspecifications = [
                 "type": "pen_setpensizeto",
                 "args": [{"type": "input_value", "name": "SIZE"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "change pen transparency by %1",
@@ -791,8 +702,7 @@ export const blockspecifications = [
                 "type": "pen_changepentransparencyby",
                 "args": [{"type": "input_value", "name": "TRANSPARENCY"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "set pen transparency to %1",
@@ -800,8 +710,7 @@ export const blockspecifications = [
                 "type": "pen_setpentransparencyto",
                 "args": [{"type": "input_value", "name": "TRANSPARENCY"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },*/
         //=== sounds =======================================================
         {
@@ -810,8 +719,7 @@ export const blockspecifications = [
                 "type": "sound_play",
                 "args": [{"type": "input_value", "name": "SOUND_MENU", "menu": "sound_sounds_menu"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "play sound %1 until done",
@@ -819,18 +727,15 @@ export const blockspecifications = [
                 "type": "sound_playuntildone",
                 "args": [{"type": "input_value", "name": "SOUND_MENU", "menu": "sound_sounds_menu"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "stop all sounds",
-            "description": {"type": "sound_stopallsounds", "shape": "statement"},
-            "converter": universalBlockConverter
+            "description": {"type": "sound_stopallsounds", "shape": "statement"}
         },
         {
             "template": "clear sound effects",
-            "description": {"type": "sound_cleareffects", "shape": "statement"},
-            "converter": universalBlockConverter
+            "description": {"type": "sound_cleareffects", "shape": "statement"}
         },
         {
             "template": "change volume by %1",
@@ -838,8 +743,7 @@ export const blockspecifications = [
                 "type": "sound_changevolumeby",
                 "args": [{"type": "input_value", "name": "VOLUME"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "set volume to %1 %",
@@ -847,24 +751,20 @@ export const blockspecifications = [
                 "type": "sound_setvolumeto",
                 "args": [{"type": "input_value", "name": "VOLUME"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "volume",
-            "description": {"type": "sound_volume", "shape": "reporterblock"},
-            "converter": universalBlockConverter
+            "description": {"type": "sound_volume", "shape": "reporterblock"}
         },
         //=== events =============================================================
         {
             "template": ["when gf clicked", "when greenflag clicked", "when green flag clicked", "when \u2691 clicked", "when flag clicked",],
-            "description": {"type": "event_whenflagclicked", "args": [], "shape": "hatblock"},
-            "converter": universalBlockConverter
+            "description": {"type": "event_whenflagclicked", "args": [], "shape": "hatblock"}
         },
         {
             "template": "when this sprite clicked",
-            "description": {"type": "event_whenthisspriteclicked", "shape": "hatblock"},
-            "converter": universalBlockConverter
+            "description": {"type": "event_whenthisspriteclicked", "shape": "hatblock"}
         },
         {
             "template": "when backdrop switches to %1",
@@ -872,8 +772,7 @@ export const blockspecifications = [
                 "type": "event_whenbackdropswitchesto",
                 "args": [{"type": "field_dropdown", "name": "BACKDROP", "options": [["backdrop1", "BACKDROP1"]]}],
                 "shape": "hatblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": ["when %1 gt %2", "when %1 greater than %2", "when %1 > %2"],
@@ -885,8 +784,7 @@ export const blockspecifications = [
                     "options": [["timer", "TIMER"]]
                 }, {"type": "input_value", "name": "VALUE"}],
                 "shape": "hatblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "when %1 key pressed",
@@ -898,8 +796,7 @@ export const blockspecifications = [
                     "options": [["space", "space"], ["left arrow", "left arrow"], ["right arrow", "right arrow"], ["down arrow", "down arrow"], ["up arrow", "up arrow"], ["any", "any"], ["a", "a"], ["b", "b"], ["c", "c"], ["d", "d"], ["e", "e"], ["f", "f"], ["g", "g"], ["h", "h"], ["i", "i"], ["j", "j"], ["k", "k"], ["l", "l"], ["m", "m"], ["n", "n"], ["o", "o"], ["p", "p"], ["q", "q"], ["r", "r"], ["s", "s"], ["t", "t"], ["u", "u"], ["v", "v"], ["w", "w"], ["x", "x"], ["y", "y"], ["z", "z"], ["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"]]
                 }],
                 "shape": "hatblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
 // =========================================================
 // with the same text
@@ -915,7 +812,6 @@ export const blockspecifications = [
                 }, {"type": "input_value", "name": "VALUE"}],
                 "shape": "statement"
             },
-            "converter": universalBlockConverter,
             "predicate": looksSoundPredicate
         },
         {
@@ -928,8 +824,7 @@ export const blockspecifications = [
                     "options": [["color", "COLOR"], ["fisheye", "FISHEYE"], ["whirl", "WHIRL"], ["pixelate", "PIXELATE"], ["mosaic", "MOSAIC"], ["brightness", "BRIGHTNESS"], ["ghost", "GHOST"]]
                 }, {"type": "input_value", "name": "VALUE"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "change %1 effect by %2",
@@ -942,7 +837,6 @@ export const blockspecifications = [
                 }, {"type": "input_value", "name": "VALUE"}],
                 "shape": "statement"
             },
-            "converter": universalBlockConverter,
             "predicate": looksSoundPredicate
         },
         {
@@ -955,8 +849,7 @@ export const blockspecifications = [
                     "options": [["color", "COLOR"], ["fisheye", "FISHEYE"], ["whirl", "WHIRL"], ["pixelate", "PIXELATE"], ["mosaic", "MOSAIC"], ["brightness", "BRIGHTNESS"], ["ghost", "GHOST"]]
                 }, {"type": "input_value", "name": "CHANGE"}],
                 "shape": "statement"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "length of %1",
@@ -973,8 +866,7 @@ export const blockspecifications = [
                 "type": "operator_length",
                 "args": [{"type": "input_value", "name": "STRING"}],
                 "shape": "reporterblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": ["%1 contains %2?", "%1 contains %2"],
@@ -995,8 +887,7 @@ export const blockspecifications = [
                 "type": "operator_contains",
                 "args": [{"type": "input_value", "name": "STRING1"}, {"type": "input_value", "name": "STRING2"}],
                 "shape": "booleanblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "%1 of %2",
@@ -1043,8 +934,7 @@ export const blockspecifications = [
                     "options": [["abs", "abs"], ["floor", "floor"], ["ceiling", "ceiling"], ["sqrt", "sqrt"], ["sin", "sin"], ["cos", "cos"], ["tan", "tan"], ["asin", "asin"], ["acos", "acos"], ["atan", "atan"], ["ln", "ln"], ["log", "log"], ["e ^", "e ^"], ["10 ^", "10 ^"]]
                 }, {"type": "input_value", "name": "NUM"}],
                 "shape": "reporterblock"
-            },
-            "converter": universalBlockConverter
+            }
         },
         {
             "template": "when I receive %1",

@@ -6,6 +6,7 @@
  */
 import {blockspecifications} from "../blockspecification/blockspecification";
 import {MODUS} from "./typeConfig";
+import {universalBlockConverter} from "./blocksConverter";
 
 let blocks = {};
 //map of strings -> objects that look like
@@ -96,7 +97,11 @@ function createBlockFunction(specification) {
     let b = specification;
     return function (ctx, visitor) {
         if (!b['predicate'] || b['predicate'](ctx, visitor)) {
-            b['converter'](ctx, visitor, b['description']);
+            if(b['converter']) {
+                b['converter'](ctx, visitor, b['description']);
+            }else{
+                universalBlockConverter(ctx, visitor, b['description']);
+            }
             return true;
         }
         return false;
