@@ -78,21 +78,25 @@ function LNParser(input) {
 
 
     $.RULE("delimiters", () => {
-        $.OR([{
-            ALT: () => {
-                $.CONSUME(Delimiter, {
-                    LABEL: "leadingCodeDelimiters"
-                });
+        $.MANY({
+            DEF: () => {
+                $.OR([{
+                    ALT: () => {
+                        $.CONSUME(Delimiter, {
+                            LABEL: "leadingCodeDelimiters"
+                        });
+                    }
+                }, {
+                    ALT: () => {
+                        $.CONSUME(MultipleDelimiters, {
+                            LABEL: "leadingCodeDelimiters"
+                        });
+                    },
+                } /*{
+                  ALT: chevrotain.EMPTY_ALT()
+              }*/])
             }
-        }, {
-            ALT: () => {
-                $.CONSUME(MultipleDelimiters, {
-                    LABEL: "leadingCodeDelimiters"
-                });
-            },
-        }, {
-            ALT: EMPTY_ALT()
-        }])
+        })
     })
 
     $.RULE("stackDelimiter", () => {
@@ -195,29 +199,22 @@ function LNParser(input) {
             LABEL: "ifClause"
         });
         $.OPTION3(() => {
-            /* $.OPTION4(() => {
-                 $.CONSUME(Delimiter, {
-                     LABEL: "trailingIfClauseDelimiter"
-                 });
-             });*/
+            $.OPTION4(() => {
+                $.CONSUME(Delimiter, {
+                    LABEL: "trailingIfClauseDelimiter"
+                });
+            });
             $.CONSUME(Else);
             $.SUBRULE3($.clause, {
                 LABEL: "elseClause"
             });
-
         });
-        $.OPTION5(() => {
-            $.CONSUME(End);
-        })
     });
 
     $.RULE("forever", () => {
         $.CONSUME(Forever);
         $.SUBRULE($.annotations);
         $.SUBRULE($.clause);
-        $.OPTION3(() => {
-            $.CONSUME(End);
-        })
     });
 
 
@@ -226,9 +223,6 @@ function LNParser(input) {
         $.SUBRULE($.argument);
         $.SUBRULE($.annotations);
         $.SUBRULE($.clause);
-        $.OPTION3(() => {
-            $.CONSUME(End);
-        })
     });
 
     $.RULE("repeatuntil", () => {
@@ -236,9 +230,6 @@ function LNParser(input) {
         $.SUBRULE($.condition);
         $.SUBRULE($.annotations);
         $.SUBRULE($.clause);
-        $.OPTION3(() => {
-            $.CONSUME(End);
-        })
     });
 
 
@@ -253,9 +244,9 @@ function LNParser(input) {
         $.OPTION2(() => {
             $.SUBRULE($.stack);
         });
-        /*$.OPTION3(() => {
+        $.OPTION3(() => {
             $.CONSUME(End);
-        })*/
+        })
     });
 
     $.RULE("annotations", () => {

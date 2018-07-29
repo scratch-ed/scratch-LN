@@ -190,7 +190,6 @@ ScratchBlocks.text['procedures_call'] = function (block) {
     }
     let ids=block.argumentIds_;
     //console.log(textargs,args,ids);
-    console.log(changePlaceholder(procCode).toLowerCase());
     if(changePlaceholder(procCode).toLowerCase() in blocks){
         procCode += " ::My Blocks";
     }
