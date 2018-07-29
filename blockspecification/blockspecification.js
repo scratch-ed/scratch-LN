@@ -13,9 +13,25 @@ import {
 import {CHOICE, COLOR} from "../parser/infoLNVisitor";
 
 /*
- {"template":"",
-        "description": 
+ {      "template":"" or [""],
+        "description": {
+            type:
+            args:[
+                    {
+                        type
+                        name
+                        options (optional for rectangle drop downs)
+                        menu (optional for round dropdown)
+                        "check": "Boolean" (optional for boolean input)
+                    }
+                 ]
+            shape: one of statement/reporterblock/booleanblock/hatblock/capblock
         }
+
+        blockConverter: default:universalblockconverter
+        predicate: default: always true
+        }
+
 
  */
 // ===============================================================================
@@ -93,7 +109,7 @@ export const blockspecifications = [
             "template": "%1 + %2",
             "description": {
                 "type": "operator_add",
-                "args": [{"type": "input_value", "name": "NUM1", "shadowType":"math_number"}, {"type": "input_value", "name": "NUM2"}],
+                "args": [{"type": "input_value", "name": "NUM1"}, {"type": "input_value", "name": "NUM2"}],
                 "shape": "reporterblock"
             }
         }, {
@@ -621,97 +637,6 @@ export const blockspecifications = [
             "template": "next backdrop",
             "description": {"type": "looks_nextbackdrop", "shape": "statement"}
         },
-        //=== pen
-        //todo -> extensions
-        /*{
-            "template": "clear",
-            "description": {"type": "pen_clear", "shape": "statement"}
-        },
-        {
-            "template": "stamp",
-            "description": {"type": "pen_stamp", "shape": "statement"}
-        },
-        {
-            "template": "pen up",
-            "description": {"type": "pen_penup", "shape": "statement"}
-        },
-        {
-            "template": "set pen color to %1",
-            "description": {
-                "type": "pen_setpencolortocolor",
-                "args": [{"type": "input_value", "name": "COLOR"}],
-                "shape": "statement"
-            },
-            "predicate": (ctx, visitor) => {
-                let argType = visitor.infoVisitor.getType(ctx.argument[0]);
-                return (argType === COLOR);
-            }
-        },
-        {
-            "template": "set pen color to %1",
-            "description": {
-                "type": "pen_setpencolortonum",
-                "args": [{"type": "input_value", "name": "COLOR"}],
-                "shape": "statement"
-            }
-
-        },
-        {
-            "template": "change pen color by %1",
-            "description": {
-                "type": "pen_changepencolorby",
-                "args": [{"type": "input_value", "name": "COLOR"}],
-                "shape": "statement"
-            }
-        },
-        {
-            "template": "change pen shade by %1",
-            "description": {
-                "type": "pen_changepenshadeby",
-                "args": [{"type": "input_value", "name": "SHADE"}],
-                "shape": "statement"
-            }
-        },
-        {
-            "template": "set pen shade to %1",
-            "description": {
-                "type": "pen_setpenshadeto",
-                "args": [{"type": "input_value", "name": "SHADE"}],
-                "shape": "statement"
-            }
-        },
-        {
-            "template": "change pen size by %1",
-            "description": {
-                "type": "pen_changepensizeby",
-                "args": [{"type": "input_value", "name": "SIZE"}],
-                "shape": "statement"
-            }
-        },
-        {
-            "template": "set pen size to %1",
-            "description": {
-                "type": "pen_setpensizeto",
-                "args": [{"type": "input_value", "name": "SIZE"}],
-                "shape": "statement"
-            }
-        },
-        {
-            "template": "change pen transparency by %1",
-            "description": {
-                "type": "pen_changepentransparencyby",
-                "args": [{"type": "input_value", "name": "TRANSPARENCY"}],
-                "shape": "statement"
-            }
-        },
-        {
-            "template": "set pen transparency to %1",
-            "description": {
-                "type": "pen_setpentransparencyto",
-                "args": [{"type": "input_value", "name": "TRANSPARENCY"}],
-                "shape": "statement"
-            }
-        },*/
         //=== sounds =======================================================
         {
             "template": "start sound %1",
