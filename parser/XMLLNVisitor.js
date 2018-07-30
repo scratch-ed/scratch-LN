@@ -531,6 +531,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             }
             if (!verifyInputType(text, this.state.getExpectingInputType())) {
                 this.warningsKeeper.add(ctx, text + " is not of the right inputType");
+                //todo should i Create the right input or the text input?
             }
 
             if (ctx.Literal) {
@@ -546,7 +547,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             let tags = getXMLTags(this.state.getExpectingInputType());
             if (tags) {
                 this.createInput(ctx, tags.type, tags.name);
-            } else { //Default
+            } else { //Default or something is wrong
                 this.createTextInput(ctx);
             }
 
