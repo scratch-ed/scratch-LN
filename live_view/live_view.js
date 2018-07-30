@@ -38,7 +38,7 @@ window.onload = function () {
     //text
     editor = document.getElementById('editor');
     editor.addEventListener('input', updateWorkspace);
-    editor.value =  'set [a] to {"fds"}'
+    editor.value =  'repeat{10}; go to x:{a} y:{a}'
     ;
 
     warnings = document.getElementById('warnings');

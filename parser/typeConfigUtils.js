@@ -9,13 +9,13 @@
 import {INPUTTYPE} from "./typeConfig";
 
 export const stringInputTypeMap = {
-    "text":INPUTTYPE.text,
-    "math_number":INPUTTYPE.NUMBER,
-    "math_angle":INPUTTYPE.ANGLE,
-    "math_integer":INPUTTYPE.INTEGER,
-    "math_positive_number":INPUTTYPE.POSITIVE_NUMBER,
-    "math_whole_number":INPUTTYPE.WHOLE_NUMBER,
-    "colour_picker":INPUTTYPE.DROPDOWN
+    "text": INPUTTYPE.text,
+    "math_number": INPUTTYPE.NUMBER,
+    "math_angle": INPUTTYPE.ANGLE,
+    "math_integer": INPUTTYPE.INTEGER,
+    "math_positive_number": INPUTTYPE.POSITIVE_NUMBER,
+    "math_whole_number": INPUTTYPE.WHOLE_NUMBER,
+    "colour_picker": INPUTTYPE.DROPDOWN
 };
 
 /**
@@ -23,15 +23,13 @@ export const stringInputTypeMap = {
  * @param text string textual version of inputtype
  * @returns {*}
  */
-export function stringToinputType(text){
-    if(stringInputTypeMap[text]){
+export function stringToinputType(text) {
+    if (stringInputTypeMap[text]) {
         return stringInputTypeMap[text];
-    }else{
+    } else {
         return INPUTTYPE.NONE;
     }
 }
-
-
 
 
 /**
@@ -40,35 +38,62 @@ export function stringToinputType(text){
  * @param type an inputType
  * @returns {boolean}
  */
-export function verifyInputType(text,type){
-    switch (type){
-            case INPUTTYPE.NONE:
+export function verifyInputType(text, type) {
+    switch (type) {
+        case INPUTTYPE.NUMBER://fallthrough
+        case INPUTTYPE.ANGLE:
+            return !/[^0-9.]/i.test(text);
+        case INPUTTYPE.INTEGER:
+            return !/\./i.test(text);
+        case INPUTTYPE.WHOLE_NUMBER:
+            if (/\./i.test(text)) {
                 return false;
-            case INPUTTYPE.BOOLEAN:
+            }
+        //fallthrough
+        case INPUTTYPE.POSITIVE_NUMBER:
+            if (/[^0-9.]/i.test(text)) {
                 return false;
-            case INPUTTYPE.TEXT:
-                return true;
-            case INPUTTYPE.NUMBER:
-            case INPUTTYPE.ANGLE:
-                return !/[^0-9.]/i.test(text);
-            case INPUTTYPE.INTEGER:
-                return !/\./i.test(text);
-            case INPUTTYPE.WHOLE_NUMBER:
-                if(/\./i.test(text)){
-                    return false;
-                }
-                //fallthrough
-            case INPUTTYPE.POSITIVE_NUMBER:
-                let num;
-                try{
-                    num=parseInt(text);
-                }catch(e){
-                    return false;
-                }
-                return num>=0;
-            case INPUTTYPE.COLOR:
-                return /#[0-F]{6}/i.test(text);
-            case INPUTTYPE.DROPDOWN:
-                return false;
+            }
+            let num = parseInt(text); // "1a1" is parsed to 1 "a" is parsed to nan
+            return num >= 0;
+        case INPUTTYPE.COLOR:
+            return /#[0-F]{6}/i.test(text);
+
+        case INPUTTYPE.NONE: //everything is ok if no inputtype is specified
+        case INPUTTYPE.TEXT:
+            return true;
+        case INPUTTYPE.BOOLEAN:
+        case INPUTTYPE.DROPDOWN:
+        default:
+            return null;
+    }
+}
+
+/**
+ * return the type and name of the tags related to the inputtype
+ * @param inputType
+ * @returns {*}
+ */
+export function getXMLTags(inputType) {
+    switch (inputType) {
+        case INPUTTYPE.TEXT:
+            return {type: 'text', name: 'TEXT'};
+        case INPUTTYPE.NUMBER:
+            return {type: 'math_number', name: 'NUM'};
+        case INPUTTYPE.ANGLE:
+            return {type: 'math_angle', name: 'NUM'};
+        case INPUTTYPE.INTEGER:
+            return {type: 'math_integer', name: 'NUM'};
+        case INPUTTYPE.WHOLE_NUMBER:
+            return {type: 'math_whole_number', name: 'NUM'};
+        case INPUTTYPE.POSITIVE_NUMBER:
+            return {type: 'math_positive_number', name: 'NUM'};
+        case INPUTTYPE.COLOR:
+            return {type: 'colour_picker', name: 'COLOUR'};
+        case INPUTTYPE.NONE:
+        case INPUTTYPE.BOOLEAN:
+        case INPUTTYPE.DROPDOWN:
+        default:
+            return null;
     }
 }

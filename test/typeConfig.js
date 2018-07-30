@@ -30,6 +30,18 @@ let assert = require('chai').assert;
             let expected = false;
             assert.equal(ret,expected);
         });
+
+        it('1a1 is not a positive number', function() {
+            let ret = verifyInputType("1a1",INPUTTYPE.POSITIVE_NUMBER);
+            let expected = false;
+            assert.equal(ret,expected);
+        });
+
+        it('-1 is not a positive number', function() {
+            let ret = verifyInputType("-1",INPUTTYPE.POSITIVE_NUMBER);
+            let expected = false;
+            assert.equal(ret,expected);
+        });
     });
 
 

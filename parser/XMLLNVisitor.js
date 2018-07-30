@@ -19,6 +19,7 @@ import blocks from "./blockConverterUtils";
 import {ModifierAnalyser} from "./modifierAnalyser";
 import {WarningsKeeper} from "./warnings";
 import {CATEGORY, INPUTTYPE} from "./typeConfig";
+import {getXMLTags, verifyInputType} from "./typeConfigUtils";
 //import {NumberLiteral, ColorLiteral} from "./LNLexer";
 const lntokens = require("./LNLexer");
 let NumberLiteral = lntokens.NumberLiteral;
@@ -105,11 +106,11 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         for (let key in this.idManager.varMap) {
             if (this.idManager.varMap.hasOwnProperty(key)) {
                 if (this.idManager.varMap[key].variableType !== ARG) {
-                        this.xml.ele('variable', {
-                            'type': this.idManager.varMap[key].variableType,
-                            'id': this.idManager.varMap[key].id,
-                            'isLocal':false,
-                        }, key);
+                    this.xml.ele('variable', {
+                        'type': this.idManager.varMap[key].variableType,
+                        'id': this.idManager.varMap[key].id,
+                        'isLocal': false,
+                    }, key);
                 }
             }
         }
@@ -521,27 +522,34 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     argument(ctx) {
-
-        if (ctx.Literal) {
+        let text = this.infoVisitor.getString(ctx, "argument");
+        if (ctx.Literal || ctx.Label) {
+            //checks for literals (label is kind of a literal)
             if (this.state.isExpectingBoolean()) {
                 this.warningsKeeper.add(ctx, "a boolean block is expected");
                 return;
             }
-            if (tokenMatcher(ctx.Literal[0], ColorLiteral)) {
-                this.createColourPickerInput(ctx);
-            } else {
-                if (this.state.isExpectingNumber()) {
-                    this.createMathNumberInput(ctx);
-                } else {
-                    this.createTextInput(ctx);
+            if (!verifyInputType(text, this.state.getExpectingInputType())) {
+                this.warningsKeeper.add(ctx, text + " is not of the right inputType");
+            }
+
+            if (ctx.Literal) {
+                if (this.state.isExpectingNumber() && !tokenMatcher(ctx.Literal[0], NumberLiteral)) {
+                    this.warningsKeeper.add(ctx, text + "a number is expected");
+                }
+                //build
+                if (tokenMatcher(ctx.Literal[0], ColorLiteral)) {
+                    this.createColourPickerInput(ctx);
+                    return;
                 }
             }
-        } else if (ctx.Label) {
-            if (this.state.isExpectingBoolean()) {
-                this.warningsKeeper.add(ctx, "a boolean block is expected");
-                return;
+            let tags = getXMLTags(this.state.getExpectingInputType());
+            if (tags) {
+                this.createInput(ctx, tags.type, tags.name);
+            } else { //Default
+                this.createTextInput(ctx);
             }
-            this.createTextInput(ctx);
+
         } else if (ctx.expression) {
             if (this.state.isExpectingBoolean()) {
                 this.warningsKeeper.add(ctx, "a boolean block is expected");
@@ -559,31 +567,25 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         }
     }
 
-    createTextInput(ctx) {
+    createInput(ctx, type, name) {
         this.xml.ele('shadow', {
-            'type': 'text',
+            'type': type,
             'id': this.idManager.getNextInputID(this.state.getLastBlockID(), this.infoVisitor.getID(ctx, "argument")),
         }).ele('field', {
-            'name': 'TEXT',
+            'name': name,
         }, this.infoVisitor.getString(ctx, "argument"));
+    }
+
+    createTextInput(ctx) {
+        this.createInput(ctx, 'text', 'TEXT');
     }
 
     createColourPickerInput(ctx) {
-        this.xml.ele('shadow', {
-            'type': 'colour_picker',
-            'id': this.idManager.getNextInputID(this.state.getLastBlockID(), this.infoVisitor.getID(ctx, "argument")),
-        }).ele('field', {
-            'name': 'COLOUR',
-        }, this.infoVisitor.getString(ctx, "argument"));
+        this.createInput(ctx, 'colour_picker', 'COLOUR');
     }
 
     createMathNumberInput(ctx) {
-        this.xml.ele('shadow', {
-            'type': 'math_number',
-            'id': this.idManager.getNextInputID(this.state.getLastBlockID(), this.infoVisitor.getID(ctx, "argument")),
-        }).ele('field', {
-            'name': 'NUM',
-        }, this.infoVisitor.getString(ctx, "argument"));
+        this.createInput(ctx, 'math_number', 'NUM');
     }
 
     condition(ctx) {
