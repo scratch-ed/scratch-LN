@@ -65,7 +65,7 @@ export function verifyInputType(text, type) {
         case INPUTTYPE.BOOLEAN:
         case INPUTTYPE.DROPDOWN:
         default:
-            return null;
+            return null; //not specified, not enough information based only on the text
     }
 }
 
@@ -76,6 +76,7 @@ export function verifyInputType(text, type) {
  */
 export function getXMLTags(inputType) {
     switch (inputType) {
+        case INPUTTYPE.NONE: //none is treated as text.
         case INPUTTYPE.TEXT:
             return {type: 'text', name: 'TEXT'};
         case INPUTTYPE.NUMBER:
@@ -90,7 +91,6 @@ export function getXMLTags(inputType) {
             return {type: 'math_positive_number', name: 'NUM'};
         case INPUTTYPE.COLOR:
             return {type: 'colour_picker', name: 'COLOUR'};
-        case INPUTTYPE.NONE:
         case INPUTTYPE.BOOLEAN:
         case INPUTTYPE.DROPDOWN:
         default:
