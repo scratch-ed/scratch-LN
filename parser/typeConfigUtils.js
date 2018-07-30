@@ -56,7 +56,7 @@ export function verifyInputType(text, type) {
             if (/[^0-9.]/i.test(text)) {
                 return false;
             }
-            let num = parseInt(text); // "1a1" is parsed to 1 "a" is parsed to nan
+            let num = parseFloat(text); // "1a1" is parsed to 1 "a" is parsed to nan
             return num >= 0;
 
         case INPUTTYPE.COLOR:

@@ -538,10 +538,10 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
                 // "1" and {1} are both ok
                 if (this.state.isExpectingNumber() &&
                         (!tokenMatcher(ctx.Literal[0], NumberLiteral)
-                        ||
+                        &&
                         !(tokenMatcher(ctx.Literal[0], StringLiteral) && verifyInputType(text, INPUTTYPE.NUMBER))
                     )) {
-                    this.warningsKeeper.add(ctx, text + "a number is expected");
+                    this.warningsKeeper.add(ctx, text + " a number is expected");
                 }
                 //build
                 if (tokenMatcher(ctx.Literal[0], ColorLiteral)) {

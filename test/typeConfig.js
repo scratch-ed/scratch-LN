@@ -42,6 +42,11 @@ let assert = require('chai').assert;
             let expected = false;
             assert.equal(ret,expected);
         });
+        it('3.14 is a positive number', function() {
+            let ret = verifyInputType("3.14",INPUTTYPE.POSITIVE_NUMBER);
+            let expected = true;
+            assert.equal(ret,expected);
+        });
     });
 
 
