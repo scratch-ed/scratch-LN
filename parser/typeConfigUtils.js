@@ -15,7 +15,7 @@ export const stringInputTypeMap = {
     "math_integer": INPUTTYPE.INTEGER,
     "math_positive_number": INPUTTYPE.POSITIVE_NUMBER,
     "math_whole_number": INPUTTYPE.WHOLE_NUMBER,
-    "colour_picker": INPUTTYPE.DROPDOWN
+    "colour_picker": INPUTTYPE.COLOR
 };
 
 /**
@@ -34,13 +34,15 @@ export function stringToinputType(text) {
 
 /**
  * returns whether a certain text matches an certain inputtype
+ * text should already have "" or other things removed.
+ * Ofcourse for color # is part of the color code definition so this should remain.
  * @param text an text
  * @param type an inputType
  * @returns {boolean}
  */
 export function verifyInputType(text, type) {
     switch (type) {
-        case INPUTTYPE.NUMBER://fallthrough
+        case INPUTTYPE.NUMBER://fallthrough (for now?)
         case INPUTTYPE.ANGLE:
             return !/[^0-9.]/i.test(text);
         case INPUTTYPE.INTEGER:
@@ -56,9 +58,9 @@ export function verifyInputType(text, type) {
             }
             let num = parseInt(text); // "1a1" is parsed to 1 "a" is parsed to nan
             return num >= 0;
+
         case INPUTTYPE.COLOR:
             return /#[0-F]{6}/i.test(text);
-
         case INPUTTYPE.NONE: //everything is ok if no inputtype is specified
         case INPUTTYPE.TEXT:
             return true;
