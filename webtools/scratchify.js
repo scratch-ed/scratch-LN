@@ -4,8 +4,8 @@ import parseTextToXML from './../parser/parserUtils.js'
 import {MEDIA} from "../config/config";
 
 
-const LOCALE_ATTR ="blocks-locale";
-const SCALE_ATTR ="blocks-scale";
+const LOCALE_ATTR ="blocks-locale"; //todo change to data-blocks-locale
+const SCALE_ATTR ="blocks-scale"; //todo idem
 
 /**
  *

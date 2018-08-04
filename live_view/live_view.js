@@ -106,7 +106,7 @@ function updateWorkspace() {
     warnings.value = JSON.stringify(r);
 
     editor.focus();
-    //console.log(getWorkspaceXML())
+    console.log(getWorkspaceXML())
 
     //let topBlocks=workspace.getTopBlocks(true);
     //if(topBlocks[0]) {

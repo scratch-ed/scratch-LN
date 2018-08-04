@@ -136,6 +136,7 @@ $(document).ready(function () {
         "(days since 2000);" +
         "(username);" +
         "(answer);" +
+        "<touching color #00ff00>;"+
         "ask \"what is your favorite muffin?\" and wait").split(";"), "Sensing");
     makeTable(("({1} + {2});" +
         "({1} - {2});" +
@@ -200,7 +201,8 @@ $(document).ready(function () {
     makeTable(("this is a custom block {1} \"a\" <>;" +
         "(a::My Block);" +
         "<b::My Block>;" +
-        "define (a) <b>").split(";"), "My Blocks");
+        "define (a) <b>;" +
+        "define jump (height) <gravity on?> (message)").split(";"), "My Blocks");
     makeTable(
         [
             "(direction)", "(direction::list)",

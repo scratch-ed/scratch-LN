@@ -270,7 +270,7 @@ export function init_generator() {
         } else {
             template = b['template'];
         }
-        let type = b['description']['type'];
+        let type = b['description']['opcode'];
         let args = b['description']['args'];
         let shape = b['description']['shape'];
         //make converter for all blocks

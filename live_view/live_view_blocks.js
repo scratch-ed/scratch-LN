@@ -5,6 +5,8 @@ import {MEDIA} from "../config/config";
 
 let workspace = null;
 
+let example = "<xml xmlns=\"http://www.w3.org/1999/xhtml\"><variables><variable type=\"broadcast_msg\" id=\"variable_0\" islocal=\"false\">message</variable><variable type=\"\" id=\"variable_1\" islocal=\"false\">lives</variable></variables><block type=\"event_whenflagclicked\" id=\"block_0\" x=\"0\" y=\"0\"><next><block type=\"control_forever\" id=\"block_1\"><statement name=\"SUBSTACK\"><block type=\"motion_goto\" id=\"block_2\"><value name=\"TO\"><shadow type=\"motion_goto_menu\" id=\"R?;co8@v$|ay*?RI~4sH\"><field name=\"TO\">mouse-pointer</field></shadow></value></block></statement></block></next></block><block type=\"event_whenbroadcastreceived\" id=\"block_3\" x=\"0\" y=\"224\"><field name=\"BROADCAST_OPTION\" id=\"variable_0\" variabletype=\"broadcast_msg\">message</field><next><block type=\"control_if\" id=\"block_4\"><value name=\"CONDITION\"><block type=\"sensing_touchingcolor\" id=\"block_5\"><value name=\"COLOR\"><shadow type=\"colour_picker\" id=\"block_5_input_0\"><field name=\"COLOUR\">#123456</field></shadow></value></block></value><statement name=\"SUBSTACK\"><block type=\"data_changevariableby\" id=\"block_6\"><field name=\"VARIABLE\" id=\"variable_1\" variabletype=\"\">lives</field><value name=\"VALUE\"><shadow type=\"text\" id=\"block_6_input_0\"><field name=\"TEXT\">-1</field></shadow></value><next><block type=\"control_if\" id=\"block_7\"><value name=\"CONDITION\"><block type=\"operator_lt\" id=\"block_8\"><value name=\"OPERAND1\"><block type=\"data_variable\" id=\"block_9\"><field name=\"VARIABLE\" id=\"variable_1\" variabletype=\"\">lives</field></block></value><value name=\"OPERAND2\"><shadow type=\"text\" id=\"block_8_input_0\"><field name=\"TEXT\">1</field></shadow></value></block></value><statement name=\"SUBSTACK\"><block type=\"looks_say\" id=\"block_10\"><value name=\"MESSAGE\"><shadow type=\"text\" id=\"block_10_input_0\"><field name=\"TEXT\">game over</field></shadow></value></block></statement></block></next></block></statement></block></next></block></xml>";
+
 
 window.onload = function () {
     //scratch-blocks
@@ -47,6 +49,8 @@ window.onload = function () {
     editor.value = '';
 
 
+
+
     //button options
     document.getElementById('generator').addEventListener('click', generateTextWorkspace);
 
@@ -66,7 +70,10 @@ window.onload = function () {
 
     //insertSomeCodeFromXML();
 
-    generateText(workspace)
+    generateText(workspace);
+
+    let dom = Blockly.Xml.textToDom(example);
+    Blockly.Xml.domToWorkspace(dom, workspace);
 
 };
 
