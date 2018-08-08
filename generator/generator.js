@@ -12,7 +12,7 @@ import blocks from "../parser/blockConverterUtils";
 
 
 export default function generateText(workspace) {
-    let u = ScratchBlocks.text.workspaceToCode(workspace);
+    let u = ScratchBlocks.scratchln.workspaceToCode(workspace);
     return u
 }
 
@@ -21,26 +21,26 @@ export default function generateText(workspace) {
 //generator
 //======================================================
 
-ScratchBlocks.text = new ScratchBlocks.Generator('text');
+ScratchBlocks.scratchln = new ScratchBlocks.Generator('scratchln');
 
 
 //some basis function that are necessary but do not do anything here
-ScratchBlocks.text.init = function (workspace) {
+ScratchBlocks.scratchln.init = function (workspace) {
     //create a db of variables
-    ScratchBlocks.text.variables = {};
+    ScratchBlocks.scratchln.variables = {};
     var variables = workspace.getAllVariables();
     for (var i = 0; i < variables.length; i++) {
         let v = variables[i];
         console.log(v);
-        ScratchBlocks.text.variables[v.id_]=v.name;
+        ScratchBlocks.scratchln.variables[v.id_]=v.name;
     }
 };
 
-ScratchBlocks.text.scrub_ = function (block, code) {
+ScratchBlocks.scratchln.scrub_ = function (block, code) {
     return code
 };
 
-ScratchBlocks.text.finish = function (code) {
+ScratchBlocks.scratchln.finish = function (code) {
     return code
 };
 
@@ -49,9 +49,9 @@ ScratchBlocks.text.finish = function (code) {
  * @param block
  * @returns {string|Array}
  */
-ScratchBlocks.text.getNextCode = function (block) {
+ScratchBlocks.scratchln.getNextCode = function (block) {
     let nextBlock = block.nextConnection && block.nextConnection.targetBlock();
-    let nextCode = ScratchBlocks.text.blockToCode(nextBlock); //returns '' if not existing
+    let nextCode = ScratchBlocks.scratchln.blockToCode(nextBlock); //returns '' if not existing
     return nextCode
 };
 
@@ -71,13 +71,13 @@ String.prototype.format = function () {
 };
 
 //====examples
-ScratchBlocks.text['event_whenflagclicked'] = function (block) {
-    return 'when greenflag clicked;\n' + ScratchBlocks.text.getNextCode(block);
+ScratchBlocks.scratchln['event_whenflagclicked'] = function (block) {
+    return 'when greenflag clicked;\n' + ScratchBlocks.scratchln.getNextCode(block);
 };
 
-ScratchBlocks.text['motion_movesteps'] = function (block) {
-    let value_name = ScratchBlocks.text.valueToCode(block, 'STEPS', ScratchBlocks.text.ORDER_NONE);
-    return 'move %1 steps;\n'.format(value_name) + ScratchBlocks.text.getNextCode(block);
+ScratchBlocks.scratchln['motion_movesteps'] = function (block) {
+    let value_name = ScratchBlocks.scratchln.valueToCode(block, 'STEPS', ScratchBlocks.scratchln.ORDER_NONE);
+    return 'move %1 steps;\n'.format(value_name) + ScratchBlocks.scratchln.getNextCode(block);
 };
 //====examples
 
@@ -86,133 +86,132 @@ function surroundWithCurlyBrackets(text) {
 }
 
 //=========== arguments =================
-ScratchBlocks.text['math_number'] = function (block) {
-    return [surroundWithCurlyBrackets(block.getFieldValue('NUM')), ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+ScratchBlocks.scratchln['math_number'] = function (block) {
+    return [surroundWithCurlyBrackets(block.getFieldValue('NUM')), ScratchBlocks.scratchln.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
 
-ScratchBlocks.text['math_integer'] = function (block) {
-    return [surroundWithCurlyBrackets(block.getFieldValue('NUM')), ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+ScratchBlocks.scratchln['math_integer'] = function (block) {
+    return [surroundWithCurlyBrackets(block.getFieldValue('NUM')), ScratchBlocks.scratchln.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
 
-ScratchBlocks.text['math_positive_number'] = function (block) {
-    return [surroundWithCurlyBrackets(block.getFieldValue('NUM')), ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+ScratchBlocks.scratchln['math_positive_number'] = function (block) {
+    return [surroundWithCurlyBrackets(block.getFieldValue('NUM')), ScratchBlocks.scratchln.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
 
-ScratchBlocks.text['math_whole_number'] = function (block) {
-    return [surroundWithCurlyBrackets(block.getFieldValue('NUM')), ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+ScratchBlocks.scratchln['math_whole_number'] = function (block) {
+    return [surroundWithCurlyBrackets(block.getFieldValue('NUM')), ScratchBlocks.scratchln.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
 
-ScratchBlocks.text['math_angle'] = function (block) {
-    return [surroundWithCurlyBrackets(block.getFieldValue('NUM')), ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+ScratchBlocks.scratchln['math_angle'] = function (block) {
+    return [surroundWithCurlyBrackets(block.getFieldValue('NUM')), ScratchBlocks.scratchln.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
 
-ScratchBlocks.text['colour_picker'] = function (block) {
-    return [block.getFieldValue('COLOUR'), ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+ScratchBlocks.scratchln['colour_picker'] = function (block) {
+    return [block.getFieldValue('COLOUR'), ScratchBlocks.scratchln.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
 
-ScratchBlocks.text['text'] = function (block) {
-    return ['"'+block.getFieldValue('TEXT')+'"', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+ScratchBlocks.scratchln['text'] = function (block) {
+    return ['"'+block.getFieldValue('TEXT')+'"', ScratchBlocks.scratchln.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
 
 
 //========================================
 
 //========= reporter and boolean variables  ===============
-ScratchBlocks.text['data_variable'] = function (block) {
+ScratchBlocks.scratchln['data_variable'] = function (block) {
     let name = block.getField('VARIABLE').getText();
     if(name.toLowerCase() in blocks){
         name += " ::Variables";
     }
     //variables are a bit different... getfieldvalue returns the id
-    return ['(' + name + ')', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+    return ['(' + name + ')', ScratchBlocks.scratchln.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
 
-ScratchBlocks.text['data_listcontents'] = function (block) {
+ScratchBlocks.scratchln['data_listcontents'] = function (block) {
     //variables are a bit different... getfieldvalue returns the id
-    return ['(' + block.getField('LIST').getText() + ' ::list)', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+    return ['(' + block.getField('LIST').getText() + ' ::list)', ScratchBlocks.scratchln.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
 
-ScratchBlocks.text['argument_reporter_boolean'] = function (block) {
+ScratchBlocks.scratchln['argument_reporter_boolean'] = function (block) {
     //variables are a bit different... getfieldvalue returns the id
-    return ['<' + block.getField('VALUE').getText() + ' ::My Blocks>', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+    return ['<' + block.getField('VALUE').getText() + ' ::My Blocks>', ScratchBlocks.scratchln.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
 
-ScratchBlocks.text['argument_reporter_string_number'] = function (block) {
+ScratchBlocks.scratchln['argument_reporter_string_number'] = function (block) {
     //variables are a bit different... getfieldvalue returns the id
-    return ['(' + block.getField('VALUE').getText() + ' ::My Blocks)', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+    return ['(' + block.getField('VALUE').getText() + ' ::My Blocks)', ScratchBlocks.scratchln.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
 //========================================
 
 //========= special cases  ===============
-ScratchBlocks.text['event_broadcast_menu'] = function (block) {
+ScratchBlocks.scratchln['event_broadcast_menu'] = function (block) {
     //variables are a bit different... getfieldvalue returns the id
-    return ['['+block.getField('BROADCAST_OPTION').getText()+']', ScratchBlocks.text.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
+    return ['['+block.getField('BROADCAST_OPTION').getText()+']', ScratchBlocks.scratchln.ORDER_NONE]; //order for parenthese generation or somthing in real code (not important)
 };
 //========================================
 
 //========= controls =====================
 
-ScratchBlocks.text['control_forever'] = function (block) {
-    let statements = ScratchBlocks.text.statementToCode(block, 'SUBSTACK');
-    return 'forever\n' + statements;
-
+ScratchBlocks.scratchln['control_forever'] = function (block) {
+    let statements = ScratchBlocks.scratchln.statementToCode(block, 'SUBSTACK');
+    return 'forever\n' + statements + 'end\n';
 };
 
-ScratchBlocks.text['control_repeat'] = function (block) {
-    let statements = ScratchBlocks.text.statementToCode(block, 'SUBSTACK');
-    let nr = ScratchBlocks.text.valueToCode(block, 'TIMES', ScratchBlocks.text.ORDER_NONE);
+ScratchBlocks.scratchln['control_repeat'] = function (block) {
+    let statements = ScratchBlocks.scratchln.statementToCode(block, 'SUBSTACK');
+    let nr = ScratchBlocks.scratchln.valueToCode(block, 'TIMES', ScratchBlocks.scratchln.ORDER_NONE);
     if(nr===""){
         nr = "{}";
     }
-    return 'repeat ' + nr + '\n' + statements + 'end\n' + ScratchBlocks.text.getNextCode(block);
+    return 'repeat ' + nr + '\n' + statements + 'end\n' + ScratchBlocks.scratchln.getNextCode(block);
 };
 
-ScratchBlocks.text['control_repeat_until'] = function (block) {
-    let statements = ScratchBlocks.text.statementToCode(block, 'SUBSTACK');
-    let nr = ScratchBlocks.text.valueToCode(block, 'CONDITION', ScratchBlocks.text.ORDER_NONE);
+ScratchBlocks.scratchln['control_repeat_until'] = function (block) {
+    let statements = ScratchBlocks.scratchln.statementToCode(block, 'SUBSTACK');
+    let nr = ScratchBlocks.scratchln.valueToCode(block, 'CONDITION', ScratchBlocks.scratchln.ORDER_NONE);
     if(nr===""){
         nr = "<>";
     }
-    return 'repeat until ' + nr + '\n' + statements + 'end\n' + ScratchBlocks.text.getNextCode(block);
+    return 'repeat until ' + nr + '\n' + statements + 'end\n' + ScratchBlocks.scratchln.getNextCode(block);
 };
 
-ScratchBlocks.text['control_if'] = function (block) {
-    let statements = ScratchBlocks.text.statementToCode(block, 'SUBSTACK');
-    let nr = ScratchBlocks.text.valueToCode(block, 'CONDITION', ScratchBlocks.text.ORDER_NONE);
+ScratchBlocks.scratchln['control_if'] = function (block) {
+    let statements = ScratchBlocks.scratchln.statementToCode(block, 'SUBSTACK');
+    let nr = ScratchBlocks.scratchln.valueToCode(block, 'CONDITION', ScratchBlocks.scratchln.ORDER_NONE);
     if(nr===""){
         nr = "<>";
     }
-    return 'if ' + nr + '\n' + statements + 'end\n' + ScratchBlocks.text.getNextCode(block);
+    return 'if ' + nr + '\n' + statements + 'end\n' + ScratchBlocks.scratchln.getNextCode(block);
 };
 
-ScratchBlocks.text['control_if_else'] = function (block) {
-    let statements = ScratchBlocks.text.statementToCode(block, 'SUBSTACK');
-    let statements2 = ScratchBlocks.text.statementToCode(block, 'SUBSTACK2');
-    let nr = ScratchBlocks.text.valueToCode(block, 'CONDITION', ScratchBlocks.text.ORDER_NONE);
+ScratchBlocks.scratchln['control_if_else'] = function (block) {
+    let statements = ScratchBlocks.scratchln.statementToCode(block, 'SUBSTACK');
+    let statements2 = ScratchBlocks.scratchln.statementToCode(block, 'SUBSTACK2');
+    let nr = ScratchBlocks.scratchln.valueToCode(block, 'CONDITION', ScratchBlocks.scratchln.ORDER_NONE);
     if(nr===""){
         nr = "<>";
     }
-    return 'if ' + nr + '\n' + statements + 'else\n' + statements2 + 'end\n' + ScratchBlocks.text.getNextCode(block);
+    return 'if ' + nr + '\n' + statements + 'else\n' + statements2 + 'end\n' + ScratchBlocks.scratchln.getNextCode(block);
 };
 
 //========================================
 
 //======= custom blocks ==================
-ScratchBlocks.text['procedures_call'] = function (block) {
+ScratchBlocks.scratchln['procedures_call'] = function (block) {
     let procCode = block.getProcCode();
     //todo <> is not a child ..., so find a better way to handle this
     //console.log(block);
     let args=block.childBlocks_;
     let textargs = [];
     for(let i=0; i<args.length;i++){
-        textargs.push(ScratchBlocks.text.blockToCode(args[i])[0]);
+        textargs.push(ScratchBlocks.scratchln.blockToCode(args[i])[0]);
     }
     let ids=block.argumentIds_;
     //console.log(textargs,args,ids);
     if(changePlaceholder(procCode).toLowerCase() in blocks){
         procCode += " ::My Blocks";
     }
-    return formatPlaceholder(procCode,textargs,ids) + '\n' + ScratchBlocks.text.getNextCode(block);
+    return formatPlaceholder(procCode,textargs,ids) + '\n' + ScratchBlocks.scratchln.getNextCode(block);
 };
 
 function changePlaceholder(text) {
@@ -237,11 +236,11 @@ function formatPlaceholder(text,args,ids) {
     });
 };
 
-ScratchBlocks.text['procedures_definition'] = function (block) {
+ScratchBlocks.scratchln['procedures_definition'] = function (block) {
     let prodecureblock=block.childBlocks_[0];
     let procCode = prodecureblock.getProcCode();
     let argumentsIds = prodecureblock.argumentIds_;
-    return 'define '+replaceArgs(procCode,argumentsIds)+'\n' + ScratchBlocks.text.getNextCode(block);
+    return 'define '+replaceArgs(procCode,argumentsIds)+'\n' + ScratchBlocks.scratchln.getNextCode(block);
 };
 
 function replaceArgs(text,args) {
@@ -274,7 +273,7 @@ export function init_generator() {
         let args = b['description']['args'];
         let shape = b['description']['shape'];
         //make converter for all blocks
-        ScratchBlocks.text[type] = function (block) {
+        ScratchBlocks.scratchln[type] = function (block) {
             let values = [];
             for (let i = 0; args && i < args.length; i++) {
                 let v;
@@ -282,8 +281,8 @@ export function init_generator() {
                     case "field_variable":
                         v = block.getFieldValue(args[i].name);
                         console.log(args[i].name);
-                        if(ScratchBlocks.text.variables[v]) {
-                            v = ScratchBlocks.text.variables[v];
+                        if(ScratchBlocks.scratchln.variables[v]) {
+                            v = ScratchBlocks.scratchln.variables[v];
                         }
                         v = '[' + v + ']';
                         break;
@@ -299,7 +298,7 @@ export function init_generator() {
                         v = '[' + v + ']';
                         break;
                     default:
-                        v = ScratchBlocks.text.valueToCode(block, args[i].name, ScratchBlocks.text.ORDER_NONE); //returns undefined if empty
+                        v = ScratchBlocks.scratchln.valueToCode(block, args[i].name, ScratchBlocks.scratchln.ORDER_NONE); //returns undefined if empty
                 }
                 if(args[i].check === "Boolean" && v === "") {
                     v = "<>";
@@ -312,11 +311,11 @@ export function init_generator() {
 
             switch (shape) { // ({}+{({}+{})})
                 case 'reporterblock':
-                    return ['(' + template.format(values) + ')' + ScratchBlocks.text.getNextCode(block), ScratchBlocks.text.ORDER_NONE];
+                    return ['(' + template.format(values) + ')' + ScratchBlocks.scratchln.getNextCode(block), ScratchBlocks.scratchln.ORDER_NONE];
                 case 'booleanblock':
-                    return ['<' + template.format(values) + '>' + ScratchBlocks.text.getNextCode(block), ScratchBlocks.text.ORDER_NONE];
+                    return ['<' + template.format(values) + '>' + ScratchBlocks.scratchln.getNextCode(block), ScratchBlocks.scratchln.ORDER_NONE];
                 default:
-                    return template.format(values) + '\n' + ScratchBlocks.text.getNextCode(block);
+                    return template.format(values) + '\n' + ScratchBlocks.scratchln.getNextCode(block);
             }
 
         };
@@ -324,8 +323,8 @@ export function init_generator() {
         //make converter for menus
         for (let i = 0; args && i < args.length; i++) {
             if (args[i].menu) {
-                ScratchBlocks.text[args[i].menu] = function (block) {
-                    return ['['+block.getFieldValue(args[i].name)+']', ScratchBlocks.text.ORDER_NONE];
+                ScratchBlocks.scratchln[args[i].menu] = function (block) {
+                    return ['['+block.getFieldValue(args[i].name)+']', ScratchBlocks.scratchln.ORDER_NONE];
                 };
             }
         }

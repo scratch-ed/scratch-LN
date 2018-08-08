@@ -203,8 +203,8 @@
         line_breaks: true
     });
 
-    const Delimiter = createToken({
-        name: "Delimiter",
+    const BlockDelimiter = createToken({
+        name: "BlockDelimiter",
         pattern: /;[ \t]*\n?|\n/,
         line_breaks: true,
         //longer_alt: MultipleDelimiters
@@ -226,8 +226,8 @@
         Literal, StringLiteral, NumberLiteral, ColorLiteral, ChoiceLiteral,
         //WARNING: RepeatUntil must be defined before Repeat
         Forever, End, RepeatUntil, Repeat, If, Else, Then,
-        //WARNING: StackDelimiter must be defined before Delimiter
-        MultipleDelimiters, Delimiter,
+        //WARNING: StackDelimiter must be defined before BlockDelimiter
+        MultipleDelimiters, BlockDelimiter,
         LCurlyBracket, RCurlyBracket,
         LRoundBracket, RRoundBracket,
         RAngleBracket, LAngleBracket,
@@ -274,7 +274,7 @@
                 DEF: () => {
                     $.OR([{
                         ALT: () => {
-                            $.CONSUME(Delimiter, {
+                            $.CONSUME(BlockDelimiter, {
                                 LABEL: "leadingCodeDelimiters"
                             });
                         }
@@ -300,7 +300,7 @@
                                 LABEL: "intermediateCodeDelimiters"
                             });
                             $.OPTION(() => {
-                                $.CONSUME(Delimiter, {
+                                $.CONSUME(BlockDelimiter, {
                                     LABEL: "intermediateCodeDelimiter"
                                 });
                             })
@@ -326,13 +326,13 @@
         $.RULE("stack", () => {
             $.SUBRULE($.block);
             $.MANY(() => {
-                $.CONSUME(Delimiter, {
+                $.CONSUME(BlockDelimiter, {
                     LABEL: "intermediateStackDelimiter"
                 });
                 $.SUBRULE2($.block);
             });
             $.OPTION(() => {
-                $.CONSUME2(Delimiter, {
+                $.CONSUME2(BlockDelimiter, {
                     LABEL: "trailingStackDelimiter"
                 });
             })
@@ -397,7 +397,7 @@
             });
             $.OPTION3(() => {
                 $.OPTION4(() => {
-                    $.CONSUME(Delimiter, {
+                    $.CONSUME(BlockDelimiter, {
                         LABEL: "trailingIfClauseDelimiter"
                     });
                 });
@@ -444,7 +444,7 @@
 
         $.RULE("clause", () => {
             $.OPTION(() => {
-                $.CONSUME(Delimiter, {
+                $.CONSUME(BlockDelimiter, {
                     LABEL: "leadingClauseDelimiter"
                 });
             });
