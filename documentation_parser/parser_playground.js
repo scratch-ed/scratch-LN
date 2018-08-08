@@ -195,8 +195,8 @@
     });
 
 
-    const MultipleDelimiters = createToken({
-        name: "MultipleDelimiters",
+    const StackDelimiters = createToken({
+        name: "StackDelimiters",
         //; \n should always bee seen as a whole
         //so a ; alone must explicitly not been followed by a \n
         pattern: /((;[ \t]*\n|;[ \t]*(?!\n)|\n)[ \t]*){2,}/,
@@ -207,7 +207,7 @@
         name: "BlockDelimiter",
         pattern: /;[ \t]*\n?|\n/,
         line_breaks: true,
-        //longer_alt: MultipleDelimiters
+        //longer_alt: StackDelimiters
     });
 
 
@@ -227,7 +227,7 @@
         //WARNING: RepeatUntil must be defined before Repeat
         Forever, End, RepeatUntil, Repeat, If, Else, Then,
         //WARNING: StackDelimiter must be defined before BlockDelimiter
-        MultipleDelimiters, BlockDelimiter,
+        StackDelimiters, BlockDelimiter,
         LCurlyBracket, RCurlyBracket,
         LRoundBracket, RRoundBracket,
         RAngleBracket, LAngleBracket,
@@ -280,7 +280,7 @@
                         }
                     }, {
                         ALT: () => {
-                            $.CONSUME(MultipleDelimiters, {
+                            $.CONSUME(StackDelimiters, {
                                 LABEL: "leadingCodeDelimiters"
                             });
                         },
@@ -296,7 +296,7 @@
                 DEF: () => {
                     $.OR([{
                         ALT: () => {
-                            $.CONSUME(MultipleDelimiters, {
+                            $.CONSUME(StackDelimiters, {
                                 LABEL: "intermediateCodeDelimiters"
                             });
                             $.OPTION(() => {
