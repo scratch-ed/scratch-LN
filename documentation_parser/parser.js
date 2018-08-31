@@ -396,18 +396,18 @@ module.exports = {
                         $.CONSUME(Then);
                     });
                     $.SUBRULE($.annotations);
-                    $.SUBRULE($.clause, {
-                        LABEL: "ifClause"
+                    $.SUBRULE($.substack, {
+                        LABEL: "ifSubstack"
                     });
                     $.OPTION3(() => {
                         $.OPTION4(() => {
                             $.CONSUME(BlockDelimiter, {
-                                LABEL: "trailingIfClauseDelimiter"
+                                LABEL: "trailingIfSubstackDelimiter"
                             });
                         });
                         $.CONSUME(Else);
-                        $.SUBRULE3($.clause, {
-                            LABEL: "elseClause"
+                        $.SUBRULE3($.substack, {
+                            LABEL: "elseSubstack"
                         });
                     });
                     $.OPTION5(() => {
@@ -418,7 +418,7 @@ module.exports = {
                 $.RULE("forever", () => {
                     $.CONSUME(Forever);
                     $.SUBRULE($.annotations);
-                    $.SUBRULE($.clause);
+                    $.SUBRULE($.substack);
                     $.OPTION(() => {
                         $.CONSUME(End);
                     })
@@ -429,7 +429,7 @@ module.exports = {
                     $.CONSUME(Repeat);
                     $.SUBRULE($.argument);
                     $.SUBRULE($.annotations);
-                    $.SUBRULE($.clause);
+                    $.SUBRULE($.substack);
                     $.OPTION(() => {
                         $.CONSUME(End);
                     })
@@ -439,17 +439,17 @@ module.exports = {
                     $.CONSUME(RepeatUntil);
                     $.SUBRULE($.condition);
                     $.SUBRULE($.annotations);
-                    $.SUBRULE($.clause);
+                    $.SUBRULE($.substack);
                     $.OPTION(() => {
                         $.CONSUME(End);
                     })
                 });
 
 
-                $.RULE("clause", () => {
+                $.RULE("substack", () => {
                     $.OPTION(() => {
                         $.CONSUME(BlockDelimiter, {
-                            LABEL: "leadingClauseDelimiter"
+                            LABEL: "leadingSubstackDelimiter"
                         });
                     });
                     $.OPTION2(() => {
@@ -659,7 +659,7 @@ module.exports = {
 
                 }
 
-                clause(ctx) {
+                substack(ctx) {
 
                 }
 

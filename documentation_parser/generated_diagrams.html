@@ -374,7 +374,7 @@
   {
     "type": "Rule",
     "name": "ifelse",
-    "orgText": "() => {\r\n                    $.CONSUME(If);\r\n                    $.SUBRULE($.condition);\r\n                    $.OPTION(() => {\r\n                        $.CONSUME(Then);\r\n                    });\r\n                    $.SUBRULE($.annotations);\r\n                    $.SUBRULE($.clause, {\r\n                        LABEL: \"ifClause\"\r\n                    });\r\n                    $.OPTION3(() => {\r\n                        $.OPTION4(() => {\r\n                            $.CONSUME(BlockDelimiter, {\r\n                                LABEL: \"trailingIfClauseDelimiter\"\r\n                            });\r\n                        });\r\n                        $.CONSUME(Else);\r\n                        $.SUBRULE3($.clause, {\r\n                            LABEL: \"elseClause\"\r\n                        });\r\n                    });\r\n                    $.OPTION5(() => {\r\n                        $.CONSUME(End);\r\n                    })\r\n                }",
+    "orgText": "() => {\r\n                    $.CONSUME(If);\r\n                    $.SUBRULE($.condition);\r\n                    $.OPTION(() => {\r\n                        $.CONSUME(Then);\r\n                    });\r\n                    $.SUBRULE($.annotations);\r\n                    $.SUBRULE($.substack, {\r\n                        LABEL: \"ifSubstack\"\r\n                    });\r\n                    $.OPTION3(() => {\r\n                        $.OPTION4(() => {\r\n                            $.CONSUME(BlockDelimiter, {\r\n                                LABEL: \"trailingIfSubstackDelimiter\"\r\n                            });\r\n                        });\r\n                        $.CONSUME(Else);\r\n                        $.SUBRULE3($.substack, {\r\n                            LABEL: \"elseSubstack\"\r\n                        });\r\n                    });\r\n                    $.OPTION5(() => {\r\n                        $.CONSUME(End);\r\n                    })\r\n                }",
     "definition": [
       {
         "type": "Terminal",
@@ -408,7 +408,7 @@
       },
       {
         "type": "NonTerminal",
-        "name": "clause",
+        "name": "substack",
         "idx": 0
       },
       {
@@ -437,7 +437,7 @@
           },
           {
             "type": "NonTerminal",
-            "name": "clause",
+            "name": "substack",
             "idx": 3
           }
         ]
@@ -460,7 +460,7 @@
   {
     "type": "Rule",
     "name": "forever",
-    "orgText": "() => {\r\n                    $.CONSUME(Forever);\r\n                    $.SUBRULE($.annotations);\r\n                    $.SUBRULE($.clause);\r\n                    $.OPTION(() => {\r\n                        $.CONSUME(End);\r\n                    })\r\n                }",
+    "orgText": "() => {\r\n                    $.CONSUME(Forever);\r\n                    $.SUBRULE($.annotations);\r\n                    $.SUBRULE($.substack);\r\n                    $.OPTION(() => {\r\n                        $.CONSUME(End);\r\n                    })\r\n                }",
     "definition": [
       {
         "type": "Terminal",
@@ -476,7 +476,7 @@
       },
       {
         "type": "NonTerminal",
-        "name": "clause",
+        "name": "substack",
         "idx": 0
       },
       {
@@ -497,7 +497,7 @@
   {
     "type": "Rule",
     "name": "repeat",
-    "orgText": "() => {\r\n                    $.CONSUME(Repeat);\r\n                    $.SUBRULE($.argument);\r\n                    $.SUBRULE($.annotations);\r\n                    $.SUBRULE($.clause);\r\n                    $.OPTION(() => {\r\n                        $.CONSUME(End);\r\n                    })\r\n                }",
+    "orgText": "() => {\r\n                    $.CONSUME(Repeat);\r\n                    $.SUBRULE($.argument);\r\n                    $.SUBRULE($.annotations);\r\n                    $.SUBRULE($.substack);\r\n                    $.OPTION(() => {\r\n                        $.CONSUME(End);\r\n                    })\r\n                }",
     "definition": [
       {
         "type": "Terminal",
@@ -518,7 +518,7 @@
       },
       {
         "type": "NonTerminal",
-        "name": "clause",
+        "name": "substack",
         "idx": 0
       },
       {
@@ -539,7 +539,7 @@
   {
     "type": "Rule",
     "name": "repeatuntil",
-    "orgText": "() => {\r\n                    $.CONSUME(RepeatUntil);\r\n                    $.SUBRULE($.condition);\r\n                    $.SUBRULE($.annotations);\r\n                    $.SUBRULE($.clause);\r\n                    $.OPTION(() => {\r\n                        $.CONSUME(End);\r\n                    })\r\n                }",
+    "orgText": "() => {\r\n                    $.CONSUME(RepeatUntil);\r\n                    $.SUBRULE($.condition);\r\n                    $.SUBRULE($.annotations);\r\n                    $.SUBRULE($.substack);\r\n                    $.OPTION(() => {\r\n                        $.CONSUME(End);\r\n                    })\r\n                }",
     "definition": [
       {
         "type": "Terminal",
@@ -560,7 +560,7 @@
       },
       {
         "type": "NonTerminal",
-        "name": "clause",
+        "name": "substack",
         "idx": 0
       },
       {
@@ -580,8 +580,8 @@
   },
   {
     "type": "Rule",
-    "name": "clause",
-    "orgText": "() => {\r\n                    $.OPTION(() => {\r\n                        $.CONSUME(BlockDelimiter, {\r\n                            LABEL: \"leadingClauseDelimiter\"\r\n                        });\r\n                    });\r\n                    $.OPTION2(() => {\r\n                        $.SUBRULE($.stack);\r\n                    });\r\n                }",
+    "name": "substack",
+    "orgText": "() => {\r\n                    $.OPTION(() => {\r\n                        $.CONSUME(BlockDelimiter, {\r\n                            LABEL: \"leadingSubstackDelimiter\"\r\n                        });\r\n                    });\r\n                    $.OPTION2(() => {\r\n                        $.SUBRULE($.stack);\r\n                    });\r\n                }",
     "definition": [
       {
         "type": "Option",
