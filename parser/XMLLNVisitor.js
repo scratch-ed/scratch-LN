@@ -152,11 +152,12 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             }
         }
         //if it was interrupted jump back to the root
+        this.xml = prevxml;
         if (interupted) {
-            this.xml = this.xmlRoot;
+            //this.xml = this.xmlRoot;
             this.state.endStack();
         } else { //normalflow
-            this.xml = prevxml;
+            //this.xml = prevxml;
             this.state.endStack();
         }
     }
@@ -243,7 +244,11 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
         //it is defined as build in block.
         //is it used correctly?
+
         if (check) {
+            console.log(this.state.getModus());
+            console.log(this.buildinBlocksConverters[description.toLowerCase()].modus);
+
             if (this.buildinBlocksConverters[description.toLowerCase()].modus.includes(this.state.getModus())) {
                 return true; //no problems
             } else {

@@ -38,7 +38,7 @@ window.onload = function () {
     //text
     editor = document.getElementById('editor');
     editor.addEventListener('input', updateWorkspace);
-    editor.value =  'repeat{10}; go to x:{a} y:{a}'
+    editor.value =  'repeat{10} \n stop \nend\nbla'
     ;
 
     warnings = document.getElementById('warnings');

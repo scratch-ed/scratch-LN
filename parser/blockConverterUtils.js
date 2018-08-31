@@ -66,7 +66,8 @@ function createBlockEntry(templateString, specification) {
     if (!blocks[templateString]) {
         blocks[templateString] = {};
         blocks[templateString].converter = createBlockFunction(specification);
-        blocks[templateString].modus = [modus];
+        //If no modus is defined it is always ok
+        blocks[templateString].modus = [MODUS.NONE,modus];
 
     } else {
         let higherDefinedSpecification = blocks[templateString].converter;
