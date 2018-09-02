@@ -4,6 +4,8 @@ import generateText from './../generator/generator.js'
 import {parseTextToXMLWithWarnings} from "../parser/parserUtils";
 import {MEDIA} from "../config/config";
 import ace from "ace-builds";
+import "ace-builds/src-noconflict/ext-language_tools"
+
 
 let workspace = null;
 let warnings;
@@ -90,15 +92,47 @@ window.onload = function () {
 //===================================================================================
 
 function updateToolbar() {
-    //refs.saveButton.disabled = editor.session.getUndoManager().isClean();
+    aceCopyButton.disabled = aceEditor.session.getUndoManager().isClean();
     aceUndoButton.disabled = !aceEditor.session.getUndoManager().hasUndo();
-    //refs.redoButton.disabled = !editor.session.getUndoManager().hasRedo();
+    aceRedoButton.disabled = !aceEditor.session.getUndoManager().hasRedo();
 }
 
 let aceUndoButton;
+let aceRedoButton;
+let aceCopyButton;
+let aceFontSizeInput;
+let aceCommentButton;
 
 function aceUndo(){
     aceEditor.undo();
+}
+
+function aceRedo(){
+    aceEditor.redo();
+}
+
+function aceComment() {
+    aceEditor.insertSnippet("/*${1:$SELECTION}*/");
+    aceEditor.renderer.scrollCursorIntoView()
+}
+
+function aceCopy(){
+    //https://hackernoon.com/copying-text-to-clipboard-with-javascript-df4d4988697f
+    let el = document.createElement('textarea');
+    el.value = aceEditor.getValue();
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+}
+
+function aceFontSize() {
+    console.log(aceFontSizeInput.value);
+    //aceEditor.style.fontSize=aceFontSizeInput.value+'px';
+    aceEditor.setFontSize(aceFontSizeInput.value);
 }
 
 /**
@@ -108,10 +142,18 @@ function createEditor() {
     aceEditor = ace.edit("ace_editor");
     aceUndoButton = document.getElementById('ace_undo');
     aceUndoButton.addEventListener('click', aceUndo);
-    let aceRedo = document.getElementById('ace_redo');
-    let aceFont = document.getElementById('ace_font_size');
-    let aceCopy = document.getElementById('ace_copy');
 
+    aceRedoButton = document.getElementById('ace_redo');
+    aceRedoButton.addEventListener('click', aceRedo);
+
+    aceFontSizeInput = document.getElementById('ace_font_size');
+    aceFontSizeInput.addEventListener('change', aceFontSize);
+
+    aceCopyButton = document.getElementById('ace_copy');
+    aceCopyButton.addEventListener('click', aceCopy);
+
+    aceCommentButton = document.getElementById('ace_comment');
+    aceCommentButton.addEventListener('click', aceComment);
 
     aceEditor.on("input", updateToolbar);
 
@@ -270,7 +312,7 @@ function showExample() {
         'end\n' +
         'move {10 @idi} steps\n' +
         'say "hello"'
-    editor.value = code;
+    aceEditor.setValue(code);
     updateWorkspace();
 }
 
