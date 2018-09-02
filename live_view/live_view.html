@@ -6,6 +6,8 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
     <script type="text/javascript" src="live_view.js" charset="utf-8"></script>
     <style type="text/css">
         #main{
@@ -89,7 +91,7 @@
                 <div id="toolbars">
                     <div id="id_toolbar" class="btn-group" role="group">
                         <div class="input-group" >
-                            
+
                             <div class="input-group-prepend">
                                 <div class="input-group-text" id="btnGroupAddon">block id</div>
                             </div>
@@ -106,7 +108,7 @@
                     <div id="workspace_toolbar" class="btn-group" role="group" >
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <div class="input-group-text">blocks language</div>
+                                <div class="input-group-text">block language</div>
                             </div>
                             <select class="form-control"  id="locale">
                                 <option value="en">English</option>
@@ -145,14 +147,27 @@
                             </select>
                         </div>
 
-                        <button id="showexample" type="button" class="btn btn-secondary">show example</button>
-                        <button id="makeimage" type="button" class="btn btn-secondary">save workspace as png</button>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                examples
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                <button id="showexample" class="dropdown-item" type="button">scratch comments</button>
+                            </div>
+                        </div>
+                        <button id="makeimage" type="button" class="btn btn-secondary"><i class="fas fa-save"></i>
+                            save workspace as png</button>
                         <canvas id="myCanvas"></canvas>
                     </div>
 
                     <div id="ace_toolbar" class="btn-group" role="group">
-                        <button id="ace_undo"  type="button" class="btn btn-secondary">undo</button>
-                        <button id="ace_redo"  type="button" class="btn btn-secondary">redo</button>
+                        <button id="ace_undo"  type="button" class="btn btn-secondary">
+                            <i class="fas fa-undo"></i>
+                            <!--undo-->
+                        </button>
+                        <button id="ace_redo"  type="button" class="btn btn-secondary">
+                            <i class="fas fa-redo"></i>
+                            </button>
                         <button id="ace_comment"  type="button" class="btn btn-secondary">comment</button>
                         <div class="input-group">
                             <div class="input-group-prepend">
@@ -162,7 +177,9 @@
                                    value="10" step="1" min="2"
                                    type="text" class="form-control"/>
                         </div>
-                        <button id="ace_copy"  type="button" class="btn btn-secondary">copy Scratch-LN</button>
+                        <button id="ace_copy"  type="button" class="btn btn-secondary">
+                            <i class="fas fa-copy"></i>
+                            copy Scratch-LN</button>
                     </div>
                 </div>
                 </div>
@@ -196,7 +213,7 @@
         <div class="col">
 
             <div id="generatorControl">
-                <button id="generate" type="button" class="btn btn-secondary btn-sm">generate text</button>
+                <button id="generate" type="button" class="btn btn-secondary btn-sm">generate Scratch-LN</button>
                 <textarea id="generatorOutput"></textarea>
             </div>
 
