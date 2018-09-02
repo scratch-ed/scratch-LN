@@ -137,7 +137,11 @@ function aceFontSize() {
  * configure the ace editor and toolbar
  */
 function createEditor() {
-    aceEditor = ace.edit("ace_editor");
+    aceEditor = ace.edit("ace_editor",{
+
+
+    });
+    aceEditor.renderer.setScrollMargin(10, 10, 10, 10);
     aceUndoButton = document.getElementById('ace_undo');
     aceUndoButton.addEventListener('click', aceUndo);
 
@@ -155,6 +159,8 @@ function createEditor() {
 
     aceEditor.on("input", updateToolbar);
     aceFontSize();
+
+
 
 }
 

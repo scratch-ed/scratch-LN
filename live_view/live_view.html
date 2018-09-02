@@ -26,8 +26,7 @@
 
         #generatorControl{
             display: block;
-            height: 20%;
-            padding-top: 10px;
+
         }
 
         #generatorOutput{
@@ -57,8 +56,18 @@
         }
 
         #editorContainer{
-            height: 80vh;
+            /*height: 77vh;*/
+            height: 70vh;
             width: 100%;
+
+        }
+
+        #toolbars{
+            /*height: 13vh;*/
+        }
+
+        #sln {
+
         }
     </style>
 
@@ -69,22 +78,18 @@
     <div class="row">
         <div class="col .row.row-eq-height">
             <div id="blocklyDiv"></div>
-
-            <div id="errorOutput">
-                <textarea id="warnings"></textarea>
-            </div>
-
         </div>
 
         <div class="col">
             <div id="sln">
+                <div class="row">
                 <div id="toolbars">
                     <div id="id_toolbar" class="btn-group" role="group">
-                        <div class="input-group">
+                        <div class="input-group" >
                             <div class="input-group-prepend">
                                 <div class="input-group-text" id="btnGroupAddon">block id</div>
                             </div>
-                            <input id="blockid" type="text" class="form-control" placeholder="Input group example" aria-label="Input group example" aria-describedby="btnGroupAddon">
+                            <input id="blockid" type="text" class="form-control" >
                         </div>
                         <button id="glowon" type="button" class="btn btn-secondary">glow on</button>
                         <button id="glowoff" type="button" class="btn btn-secondary">glow off</button>
@@ -93,12 +98,12 @@
                         <button id="report" type="button" class="btn btn-secondary">report</button>
                     </div>
 
-                    <div id="workspace_toolbar" class="btn-group" role="group">
+                    <div id="workspace_toolbar" class="btn-group" role="group" >
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <div class="input-group-text" id="btnGroupAddon2">blocks language</div>
+                                <div class="input-group-text">blocks language</div>
                             </div>
-                            <select id="locale">
+                            <select class="form-control"  id="locale">
                                 <option value="en">English</option>
                                 <option value="nl">Dutch</option>
 
@@ -150,24 +155,22 @@
                             </div>
                             <input type="number" id="ace_font_size"
                                    value="10" step="1" min="2"
-                                   type="text" class="form-control" placeholder="Input group example" aria-label="Input group example" aria-describedby="btnGroupAddon"/>
+                                   type="text" class="form-control"/>
                         </div>
                         <button id="ace_copy"  type="button" class="btn btn-secondary">copy Scratch-LN</button>
                     </div>
                 </div>
+                </div>
 
-
+                <div class="row">
                 <div id="editorContainer">
                     <pre class = "my_ace_editor">
                         <div id="ace_editor"></div>
                     </pre>
                 </div>
-
-
-                <div id="generatorControl">
-                    <button id="generate">generate text</button>
-                    <textarea id="generatorOutput"></textarea>
                 </div>
+
+
 
             </div>
         </div>
@@ -175,10 +178,24 @@
 </div>
 
 
+    <div class="row">
+        <div class="col .row.row-eq-height">
+    Warnings:
 
+            <div id="errorOutput">
+                <textarea id="warnings"></textarea>
+            </div>
 
+        </div>
 
+        <div class="col">
 
+            <div id="generatorControl">
+                <button id="generate" type="button" class="btn btn-secondary btn-sm">generate text</button>
+                <textarea id="generatorOutput"></textarea>
+            </div>
+
+        </div>
 
 </div>
 
