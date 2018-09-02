@@ -15,7 +15,7 @@ let aceEditor;
 
 window.onload = function () {
     createEditor();
-    //ScratchBlocks.ScratchMsgs.setLocale("nl");
+
     //scratch-blocks
     workspace = ScratchBlocks.inject('blocklyDiv', {
         toolbox: '<xml></xml>',
@@ -36,36 +36,37 @@ window.onload = function () {
             scaleSpeed: 1.1
         }
     });
-
     ScratchBlocks.mainWorkspace.getFlyout().hide();
 
-    //text
+    //init extra text fields
+    warnings = document.getElementById('warnings');
+
+    generatorField = document.getElementById('generatorOutput');
+
+    //set default value
     aceEditor.on("input",updateWorkspace);
     let text = 'repeat{10} \n stop \nend\nbla\nbla\nbla\nbla\nbla\nbla\nbla\nbla\nbla\nbla'
     ;
     aceEditor.setValue(text);
     aceEditor.gotoLine(aceEditor.session.getLength());
 
-    warnings = document.getElementById('warnings');
-
-    generatorField = document.getElementById('generatorOutput');
-
-    updateWorkspace();
 
     //button options
-    document.getElementById('xmlparser').addEventListener('click', generateTextWorkspace);
     document.getElementById('showexample').addEventListener('click', showExample);
+    document.getElementById('locale').addEventListener('click', translate);
+    document.getElementById('makeimage').addEventListener('click', savePNG);
+
+
     //glowing buttons
     document.getElementById('glowon').addEventListener('click', glowOn);
     document.getElementById('glowoff').addEventListener('click', glowOff);
     document.getElementById('report').addEventListener('click', report);
     document.getElementById('stackglowon').addEventListener('click', stackGlowOn);
     document.getElementById('stackglowoff').addEventListener('click', stackGlowOff);
-    document.getElementById('translate').addEventListener('click', translate);
+
+
+
     document.getElementById('generate').addEventListener('click', generateTextWorkspace);
-    document.getElementById('makeimage').addEventListener('click', savePNG);
-
-
 
     //resizing workspace
     //https://developers.google.com/blockly/guides/configure/web/resizable
@@ -75,14 +76,13 @@ window.onload = function () {
     blocklyDiv.style.height = '80%';
     ScratchBlocks.svgResize(workspace);
 
-    //addBlock('looks_say','aaa',1,1);
-    //addBlock('data_addtolist','aaa',1,1);    
-    //addBlock('procedures_definition','aaa',500,10);
-    //addBlock('procedures_call','aaa',200,10);
-
     //insertSomeCodeFromXML();
 
     //generateText(workspace)
+
+    //set view right
+    updateWorkspace();
+    translate();
 
     console.log(getWorkspaceXML())
 };
@@ -156,6 +156,7 @@ function createEditor() {
     aceCommentButton.addEventListener('click', aceComment);
 
     aceEditor.on("input", updateToolbar);
+    aceFontSize();
 
 }
 
@@ -191,12 +192,6 @@ function updateWorkspace() {
     warnings.value = JSON.stringify(r);
 
     console.log(getWorkspaceXML());
-
-    //let topBlocks=workspace.getTopBlocks(true);
-    //if(topBlocks[0]) {
-    //    let x = topBlocks[0].startHat_;
-    //    console.log(x)
-    //}
     generateTextWorkspace();
 }
 

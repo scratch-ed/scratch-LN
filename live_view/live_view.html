@@ -3,13 +3,16 @@
     <meta charset="utf-8">
     <script type="text/javascript" src="live_view.js" charset="utf-8"></script>
     <style type="text/css">
-        #editor {
+
+
+        #blocklyDiv {
+            float: left;
+            margin-right: 10px;
+        }
+
+        #errorOutput{
             width: 45%;
             height: 20%;
-            font-size: 25px;
-            resize: none;
-            border: 1px solid;
-            padding: 10px;
             display: block;
         }
 
@@ -18,57 +21,10 @@
             height: 100%;
         }
 
-        #editor:focus {
-            border: 1px solid #51DFE3;
-        }
-
-        #control {
-            overflow: left;
-        }
-
-        #blocklyDiv {
-            float: left;
-            margin-right: 2%;
-        }
-
-        mark {
-            border-radius: 3px;
-            /*color: transparent;*/
-            background-color: #b1d5e5;
-        }
-
-        .highlights {
-            /*color: transparent;*/
-            /*position: absolute;*/
-
-            /*width: 45%;
-            height: 80%;
-            font-size: 25px; 
-            resize: none; 
-            padding: 10px;*/
-            display: block;
-        }
-
-        .container {
-            /*display: block;
-            margin: 0 auto;
-            transform: translateZ(0);
-            -webkit-text-size-adjust: none;*/
-        }
-
-        #errorOutput{
-            width: 45%;
-            height: 20%;
-            display: block;
-            float: left;
-        }
-
         #generatorControl{
             display: block;
-            float: left;
             width: 45%;
             height: 20%;
-            margin-left: 7%;
         }
 
         #generatorOutput{
@@ -99,8 +55,8 @@
         }
 
         #editorContainer{
-            height: 50%;
-
+            height: 70%;
+            width: 100%;
         }
     </style>
 
@@ -109,16 +65,19 @@
 
         <div id="blocklyDiv"></div>
 
-        <div id="control">
-            <p>
-                <input id="blockid"/>
-                <button id="glowon">glow on</button>
-                <button id="glowoff">glow off</button>
-                <button id="stackglowon">stack glow on</button>
-                <button id="stackglowoff">stack glow off</button>
-                <button id="report">report</button>
-            </p>
 
+        <div id="id_toolbar">
+            block id:
+            <input id="blockid"/>
+            <button id="glowon">glow on</button>
+            <button id="glowoff">glow off</button>
+            <button id="stackglowon">stack glow on</button>
+            <button id="stackglowoff">stack glow off</button>
+            <button id="report">report</button>
+        </div>
+
+        <div id="workspace_toolbar">
+            blocks language:
             <select id="locale">
                 <option value="en">English</option>
                 <option value="nl">Dutch</option>
@@ -154,49 +113,37 @@
                 <option value="zh-cn">Chinese (China)</option>
                 <option value="zh-tw">Chinese (TW)</option>
             </select>
-            <button id="translate">translate</button>
-            <button id="xmlparser">to blocks!</button>
-            <button id="showexample">example</button>
-            <button id="makeimage">save as png</button>
+            <button id="showexample">show example</button>
+            <button id="makeimage">save workspace as png</button>
             <canvas id="myCanvas"></canvas>
+        </div>
 
-            <div id="ace_toolbar">
-                <button id="ace_undo">undo</button>
-                <button id="ace_redo">redo</button>
-                <button id="ace_comment">comment</button>
-                font size:
-                <input type="number" id="ace_font_size"
-                   value="10" step="1" min="2"/>
-                <button id="ace_copy">copy Scratch-LN</button>
-            </div>
+        <div id="ace_toolbar">
+            <button id="ace_undo">undo</button>
+            <button id="ace_redo">redo</button>
+            <button id="ace_comment">comment</button>
+            font size:
+            <input type="number" id="ace_font_size"
+               value="10" step="1" min="2"/>
+            <button id="ace_copy">copy Scratch-LN</button>
+        </div>
 
-
-            <!-- <button id="insertxml">insert xml</button>  -->
-            <div class="container">
-                <div id="editorContainer">
-                    <pre class = "my_ace_editor">
-                        <div id="ace_editor">function foo(items) {
-                            var x = "All this is syntax highlighted";
-                            return x;
-                            }</div>
-                    </pre>
-                </div>
-                <div class="highlights" id="highlighter"></div>
-            </div>
+        <div id="editorContainer">
+            <pre class = "my_ace_editor">
+                <div id="ace_editor"></div>
+            </pre>
         </div>
 
         <div id="errorOutput">
             <textarea id="warnings"></textarea>
         </div>
-        <br>
-        <br>
+
         <div id="generatorControl">
             <button id="generate">generate text</button>
             <textarea id="generatorOutput"></textarea>
         </div>
 
-        <br>
-        <br>
+
 
 
 
