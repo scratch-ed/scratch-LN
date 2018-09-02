@@ -258,7 +258,6 @@ function setLocale(locale) {
  * https://stackoverflow.com/questions/27230293/how-to-convert-svg-to-png-using-html5-canvas-javascript-jquery-and-save-on-serve
  */
 function savePNG(){
-    console.log("todo");
     let svgname = ".blocklySvg";
     var svg = document.querySelector(svgname);
 
@@ -289,6 +288,7 @@ function savePNG(){
     img.onload = function () {
         //todo: this is the workspace size as png.
         //todo: to get a decent view: the workspace need to be resized to the blocks before genarting the image.
+        //todo: add the stylesheet so that the text is white. dunno yet how.
         ctx.canvas.width  = metrics.viewWidth; //
         ctx.canvas.height = metrics.viewHeight; //
         //myCanvas.style.width  = metrics.contentWidth + "px";
