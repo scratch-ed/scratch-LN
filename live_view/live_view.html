@@ -5,7 +5,7 @@
     <style type="text/css">
         #editor {
             width: 45%;
-            height: 73%;
+            height: 20%;
             font-size: 25px;
             resize: none;
             border: 1px solid;
@@ -79,6 +79,29 @@
         #myCanvas {
             display: none;
         }
+
+        #ace_editor {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+        .my_ace_editor {
+            position: relative;
+            overflow: hidden;
+            font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+            direction: ltr;
+            text-align: left;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            height: 100%;
+        }
+
+        #editorContainer{
+            height: 50%;
+
+        }
     </style>
 
 </head>
@@ -137,9 +160,26 @@
             <button id="makeimage">save as png</button>
             <canvas id="myCanvas"></canvas>
 
+            <div id="ace_toolbar">
+                <button id="ace_undo">undo</button>
+                <button id="ace_redo">redo</button>
+                font size:
+                <input type="number" id="ace_font_size"
+                   value="10" step="1" min="2"/>
+                <button id="ace_copy">copy Scratch-LN</button>
+            </div>
+
+
             <!-- <button id="insertxml">insert xml</button>  -->
             <div class="container">
-                <textarea id="editor"></textarea>
+                <div id="editorContainer">
+                    <pre class = "my_ace_editor">
+                        <div id="ace_editor">function foo(items) {
+                            var x = "All this is syntax highlighted";
+                            return x;
+                            }</div>
+                    </pre>
+                </div>
                 <div class="highlights" id="highlighter"></div>
             </div>
         </div>
@@ -153,5 +193,11 @@
             <button id="generate">generate text</button>
             <textarea id="generatorOutput"></textarea>
         </div>
+
+        <br>
+        <br>
+
+
+
 </body>
 </html>

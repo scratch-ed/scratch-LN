@@ -3,14 +3,16 @@ import parseTextToXML from './../parser/parserUtils.js'
 import generateText from './../generator/generator.js'
 import {parseTextToXMLWithWarnings} from "../parser/parserUtils";
 import {MEDIA} from "../config/config";
+import ace from "ace-builds";
 
 let workspace = null;
-let editor;
 let warnings;
 let generatorField;
+let aceEditor;
 
 
 window.onload = function () {
+    createEditor();
     //ScratchBlocks.ScratchMsgs.setLocale("nl");
     //scratch-blocks
     workspace = ScratchBlocks.inject('blocklyDiv', {
@@ -36,10 +38,11 @@ window.onload = function () {
     ScratchBlocks.mainWorkspace.getFlyout().hide();
 
     //text
-    editor = document.getElementById('editor');
-    editor.addEventListener('input', updateWorkspace);
-    editor.value =  'repeat{10} \n stop \nend\nbla\nbla\nbla\nbla\nbla\nbla\nbla\nbla\nbla\nbla'
+    aceEditor.on("input",updateWorkspace);
+    let text = 'repeat{10} \n stop \nend\nbla\nbla\nbla\nbla\nbla\nbla\nbla\nbla\nbla\nbla'
     ;
+    aceEditor.setValue(text);
+    aceEditor.gotoLine(aceEditor.session.getLength());
 
     warnings = document.getElementById('warnings');
 
@@ -82,6 +85,43 @@ window.onload = function () {
     console.log(getWorkspaceXML())
 };
 
+//===================================================================================
+// ace editor
+//===================================================================================
+
+function updateToolbar() {
+    //refs.saveButton.disabled = editor.session.getUndoManager().isClean();
+    aceUndoButton.disabled = !aceEditor.session.getUndoManager().hasUndo();
+    //refs.redoButton.disabled = !editor.session.getUndoManager().hasRedo();
+}
+
+let aceUndoButton;
+
+function aceUndo(){
+    aceEditor.undo();
+}
+
+/**
+ * configure the ace editor and toolbar
+ */
+function createEditor() {
+    aceEditor = ace.edit("ace_editor");
+    aceUndoButton = document.getElementById('ace_undo');
+    aceUndoButton.addEventListener('click', aceUndo);
+    let aceRedo = document.getElementById('ace_redo');
+    let aceFont = document.getElementById('ace_font_size');
+    let aceCopy = document.getElementById('ace_copy');
+
+
+    aceEditor.on("input", updateToolbar);
+
+}
+
+
+
+//===================================================================================
+
+
 function generateTextWorkspace() {
     let text = generateText(workspace);
     generatorField.value = text;
@@ -91,7 +131,8 @@ function generateTextWorkspace() {
 function updateWorkspace() {
     //make xml
     //console.log('----');
-    let text = editor.value;
+    //let text = editor.value;
+    let text = aceEditor.getValue();
     let r = parseTextToXMLWithWarnings(text);
     let xml = r.xml;
 
@@ -107,8 +148,7 @@ function updateWorkspace() {
 
     warnings.value = JSON.stringify(r);
 
-    editor.focus();
-    console.log(getWorkspaceXML())
+    console.log(getWorkspaceXML());
 
     //let topBlocks=workspace.getTopBlocks(true);
     //if(topBlocks[0]) {
@@ -253,6 +293,12 @@ function setLocale(locale) {
     ScratchBlocks.Xml.clearWorkspaceAndLoadFromXml(xml, workspace);
     workspace.getFlyout().setRecyclingEnabled(true);
 }
+
+
+//===================================================================================
+// save PNG button
+//===================================================================================
+
 
 /**
  * https://stackoverflow.com/questions/27230293/how-to-convert-svg-to-png-using-html5-canvas-javascript-jquery-and-save-on-serve

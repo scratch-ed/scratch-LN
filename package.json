@@ -57,6 +57,7 @@
     "worker-loader": "0.8.1"
   },
   "dependencies": {
+    "ace-builds": "^1.4.1",
     "chevrotain": "3.7.0",
     "scratch-audio": "latest",
     "scratch-blocks": "latest",
