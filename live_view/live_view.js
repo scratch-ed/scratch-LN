@@ -256,35 +256,34 @@ function setLocale(locale) {
 
 /**
  * https://stackoverflow.com/questions/27230293/how-to-convert-svg-to-png-using-html5-canvas-javascript-jquery-and-save-on-serve
+ * svg -> canvas -> blob
+ * canvas is hidden element in the html
  */
 function savePNG(){
     let svgname = ".blocklySvg";
-    var svg = document.querySelector(svgname);
+    let svg = document.querySelector(svgname);
 
     console.log(svg);
 
+    //canvas is hidden
     let canvasname = "myCanvas";
-    var myCanvas = document.getElementById(canvasname);
+    let myCanvas = document.getElementById(canvasname);
+    let ctx = myCanvas.getContext("2d");
 
+    //size of the worksapce
     let metrics = workspace.getMetrics();
     console.log(metrics);
 
 
-    var ctx = myCanvas.getContext("2d");
-    let DOMURL = window.URL || window.webkitURL || window; //function
-    //console.log(ctxt,DOMURL)
+    //function to generate url
+    let DOMURL = window.URL || window.webkitURL || window;
 
-    var data = (new XMLSerializer()).serializeToString(svg);
-    //console.log(data);
 
-    var svgBlob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
 
-    var url = DOMURL.createObjectURL(svgBlob);
-
-    console.log(url);
-
-    var img = new Image(); //image object
-
+    let data = (new XMLSerializer()).serializeToString(svg);
+    let svgBlob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
+    let url = DOMURL.createObjectURL(svgBlob);
+    let img = new Image(); //image object
     img.onload = function () {
         //todo: this is the workspace size as png.
         //todo: to get a decent view: the workspace need to be resized to the blocks before genarting the image.
@@ -296,10 +295,9 @@ function savePNG(){
         ctx.clearRect( 0, 0, ctx.canvas.width, ctx.canvas.height);
         ctx.drawImage(img, 0, 0);
 
-
         DOMURL.revokeObjectURL(url);
 
-        var imgURI = myCanvas
+        let imgURI = myCanvas
             .toDataURL('image/png')
             .replace('image/png', 'image/octet-stream');
 
@@ -310,13 +308,13 @@ function savePNG(){
 }
 
 function triggerDownload (imgURI) {
-    var evt = new MouseEvent('click', {
+    let evt = new MouseEvent('click', {
         view: window,
         bubbles: false,
         cancelable: true
     });
 
-    var a = document.createElement('a');
+    let a = document.createElement('a');
     a.setAttribute('download', 'scratch_code.png');
     a.setAttribute('href', imgURI);
     a.setAttribute('target', '_blank');
