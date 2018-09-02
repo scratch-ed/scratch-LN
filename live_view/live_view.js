@@ -72,8 +72,8 @@ window.onload = function () {
     //https://developers.google.com/blockly/guides/configure/web/resizable
     let blocklyDiv = document.getElementById('blocklyDiv');
     let blocklyArea = document.getElementById('blocklyArea');
-    blocklyDiv.style.width = '50%';
-    blocklyDiv.style.height = '80%';
+    blocklyDiv.style.width = '100%';
+    blocklyDiv.style.height = '90vh'; //1vh = 1% of browser screen height
     ScratchBlocks.svgResize(workspace);
 
     //insertSomeCodeFromXML();
