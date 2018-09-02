@@ -130,8 +130,6 @@ function aceCopy(){
 }
 
 function aceFontSize() {
-    console.log(aceFontSizeInput.value);
-    //aceEditor.style.fontSize=aceFontSizeInput.value+'px';
     aceEditor.setFontSize(aceFontSizeInput.value);
 }
 
