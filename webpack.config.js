@@ -38,7 +38,7 @@ module.exports = [
             'run':'./webtools/run.js',
             'example':'./examples/example.js',
             //'createTest':'./examples/createTest.js',
-            //'exe_test':'./exe_test/exe_test.js',
+            'exe_test':'./exe_test/exe_test.js',
 
         },
         output: {
@@ -52,10 +52,10 @@ module.exports = [
                 from: './live_view/live_view_blocks.html',
                 to: 'blocks.html'
             }]),
-            //new CopyWebpackPlugin([{
-             //   from: './exe_test/exe_test.html',
-            //    to: 'exe_test.html'
-            //}]),
+            new CopyWebpackPlugin([{
+               from: './exe_test/exe_test.html',
+               to: 'exe_test.html'
+            }]),
             new CopyWebpackPlugin([{
                 from: './testWebpage/test.html',
                 to: 'test.html'

@@ -13,10 +13,147 @@ import Storage from 'scratch-storage'
 import AudioEngine from 'scratch-audio'
 import ScratchBlocks from 'scratch-blocks';
 import exampleJSON from './example'
-import parseTextToXML from "../parser/parserUtils";
+import {parseTextToXMLDetails} from "../parser/parserUtils";
 import generateText from './../generator/generator.js'
+import format from "xml-formatter"
 
 const Scratch = {};
+
+
+
+window.onload = function () {
+
+
+    createScratchBlocksEditor();
+    createVMandStage();
+
+    /*document.getElementById('toxml').addEventListener('click', () => {
+        let dom = ScratchBlocks.Xml.workspaceToDom(workspace);
+        let text = new XMLSerializer().serializeToString(dom);
+        var xml = format(text);
+        let editor = document.getElementById('editor_xml');
+        editor.value = xml;
+    });
+    document.getElementById('totext').addEventListener('click', () => {
+        let text = generateText(workspace);
+        let editor = document.getElementById('editor_text');
+        editor.value = text;
+    });
+
+    document.getElementById('toJson').addEventListener('click', () => {
+        toJson();
+    });*/
+
+    SLNEditor = document.getElementById('editor');
+    SLNEditor.addEventListener('input', updateWorkspace);
+
+    tokensEditor = document.getElementById('tokensEditor');
+    cstEditor = document.getElementById('cstEditor');
+
+    XMLEditor = document.getElementById('editor_xml');
+
+    updateWorkspace();
+
+};
+
+
+let SLNEditor;
+let tokensEditor;
+let cstEditor;
+let XMLEditor;
+
+function updateWorkspace() {
+    //make xml
+    let text = SLNEditor.value;
+    let details = parseTextToXMLDetails(text);
+    let xml = details.xml;
+
+    console.log(details);
+
+    tokensEditor.value = JSON.stringify(details.lexResult.tokens,null, 4);
+    cstEditor.value = JSON.stringify(details.cst,null, 4);
+
+    if (xml) {
+        XMLEditor.value = xml;
+        //clear workspace
+        workspace.clear();
+        //add to workspace
+        let dom = Blockly.Xml.textToDom(xml);
+        Blockly.Xml.domToWorkspace(dom, workspace);
+        toJson();
+
+    }
+}
+
+const ASSET_SERVER = 'https://cdn.assets.scratch.mit.edu/';
+const PROJECT_SERVER = 'https://cdn.projects.scratch.mit.edu/';
+
+/**
+ * @param {Asset} asset - calculate a URL for this asset.
+ * @returns {string} a URL to download a project file.
+ */
+const getProjectUrl = function (asset) {
+    const assetIdParts = asset.assetId.split('.');
+    const assetUrlParts = [PROJECT_SERVER, 'internalapi/project/', assetIdParts[0], '/get/'];
+    if (assetIdParts[1]) {
+        assetUrlParts.push(assetIdParts[1]);
+    }
+    return assetUrlParts.join('');
+};
+
+/**
+ * @param {Asset} asset - calculate a URL for this asset.
+ * @returns {string} a URL to download a project asset (PNG, WAV, etc.)
+ */
+const getAssetUrl = function (asset) {
+    const assetUrlParts = [
+        ASSET_SERVER,
+        'internalapi/asset/',
+        asset.assetId,
+        '.',
+        asset.dataFormat,
+        '/get/'
+    ];
+    return assetUrlParts.join('');
+};
+
+
+
+
+let workspace = null;
+
+const createScratchBlocksEditor = function () {
+    workspace = ScratchBlocks.inject('blocklyDiv', {
+        toolbox: '<xml></xml>',
+        'scrollbars': true,
+        'trashcan': false,
+        'readOnly': false,
+        media: '/static/blocks-media/', //flag
+        colours: {
+            workspace: '#E0FFFF', //'#e0ffe9',
+        },
+        zoom: {
+            controls: true,
+            wheel: true,
+            startScale: 0.75,
+            maxScale: 4,
+            minScale: 0.25,
+            scaleSpeed: 1.1
+        }
+    });
+
+    Scratch.workspace = workspace;
+
+    ScratchBlocks.mainWorkspace.getFlyout().hide();
+    let blocklyDiv = document.getElementById('blocklyDiv');
+    blocklyDiv.style.width = '100%';
+    blocklyDiv.style.height = '50%';
+    ScratchBlocks.svgResize(workspace);
+
+
+};
+
+
 
 const loadProjectFromID = function () {
     let id = location.hash.substring(1);
@@ -37,13 +174,13 @@ const loadProjectFromJson = function(json){
 function toJson() {
     let json = Scratch.vm.toJSON();
     let editor=document.getElementById('editor_json');
+    json = JSON.stringify(JSON.parse(json),null, 4);
     editor.value=json;
 }
 
-window.onload = function () {
-    const vm = new VM();
 
-    createEditor();
+function createVMandStage() {
+    const vm = new VM();
     Scratch.workspace.addChangeListener(vm.blockListener);
     Scratch.workspace.addChangeListener(vm.variableListener);
     const flyoutWorkspace = Scratch.workspace.getFlyout().getWorkspace();
@@ -67,7 +204,6 @@ window.onload = function () {
     vm.attachAudioEngine(audioEngine);
 
 
-
     //store this objects because thats how they did it in the playground
     Scratch.vm = vm;
     Scratch.renderer = renderer;
@@ -87,9 +223,7 @@ window.onload = function () {
     document.getElementById('stopall').addEventListener('click', () => {
         vm.stopAll();
     });
-    document.getElementById('toJson').addEventListener('click', () => {
-        toJson();
-    });
+
 
     // Feed mouse events as VM I/O events.
     document.addEventListener('mousemove', e => {
@@ -134,17 +268,7 @@ window.onload = function () {
         console.log(data.xml)
         ScratchBlocks.Xml.domToWorkspace(dom, workspace);
     });
-    document.getElementById('toxml').addEventListener('click', () => {
-        let dom = ScratchBlocks.Xml.workspaceToDom(workspace);
-        let text = new XMLSerializer().serializeToString(dom);
-        let editor = document.getElementById('editor_xml');
-        editor.value = text;
-    });
-    document.getElementById('totext').addEventListener('click', () => {
-        let text = generateText(workspace);
-        let editor = document.getElementById('editor_text');
-        editor.value = text;
-    });
+
 
     // Receipt of new list of targets, selected target update.
     const selectedTarget = document.getElementById('selectedTarget');
@@ -172,86 +296,4 @@ window.onload = function () {
     };
     //start the vm: important
     vm.start();
-
-
-};
-
-
-const ASSET_SERVER = 'https://cdn.assets.scratch.mit.edu/';
-const PROJECT_SERVER = 'https://cdn.projects.scratch.mit.edu/';
-
-/**
- * @param {Asset} asset - calculate a URL for this asset.
- * @returns {string} a URL to download a project file.
- */
-const getProjectUrl = function (asset) {
-    const assetIdParts = asset.assetId.split('.');
-    const assetUrlParts = [PROJECT_SERVER, 'internalapi/project/', assetIdParts[0], '/get/'];
-    if (assetIdParts[1]) {
-        assetUrlParts.push(assetIdParts[1]);
-    }
-    return assetUrlParts.join('');
-};
-
-/**
- * @param {Asset} asset - calculate a URL for this asset.
- * @returns {string} a URL to download a project asset (PNG, WAV, etc.)
- */
-const getAssetUrl = function (asset) {
-    const assetUrlParts = [
-        ASSET_SERVER,
-        'internalapi/asset/',
-        asset.assetId,
-        '.',
-        asset.dataFormat,
-        '/get/'
-    ];
-    return assetUrlParts.join('');
-};
-
-
-let workspace = null;
-
-const createEditor = function () {
-    workspace = ScratchBlocks.inject('blocklyDiv', {
-        toolbox: '<xml></xml>',
-        'scrollbars': true,
-        'trashcan': false,
-        'readOnly': false,
-        media: '/static/blocks-media/', //flag
-        colours: {
-            workspace: '#E0FFFF', //'#e0ffe9',
-        },
-        zoom: {
-            controls: true,
-            wheel: true,
-            startScale: 0.75,
-            maxScale: 4,
-            minScale: 0.25,
-            scaleSpeed: 1.1
-        }
-    });
-
-    Scratch.workspace = workspace;
-
-    ScratchBlocks.mainWorkspace.getFlyout().hide();
-    let blocklyDiv = document.getElementById('blocklyDiv');
-    blocklyDiv.style.width = '100%';
-    blocklyDiv.style.height = '50%';
-    ScratchBlocks.svgResize(workspace);
-
-    let editor = document.getElementById('editor');
-    editor.addEventListener('input', updateWorkspace);
-};
-
-function updateWorkspace() {
-    //make xml
-    let text = editor.value;
-    let xml = parseTextToXML(text);
-    if (xml) { //clear workspace
-        workspace.clear();
-        //add to workspace
-        let dom = Blockly.Xml.textToDom(xml);
-        Blockly.Xml.domToWorkspace(dom, workspace)
-    }
 }

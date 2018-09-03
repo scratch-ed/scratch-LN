@@ -1,46 +1,137 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
     <style>
         #scratch-stage {
-            float: right;
+
         }
 
-        #e {
-            float: left;
-            width: 500px
+        #generated{
+            display: none;
         }
+
+
     </style>
 </head>
 <body>
 <script src="./exe_test.js"></script>
 
-<div id="vm-devtools">
+<div>
+    Sprite list:
+    <select id="selectedTarget" multiple></select>
+</div>
+
+
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link active" id="nav-sln-tab" data-toggle="tab" href="#nav-sln" role="tab"
+           aria-controls="nav-home" aria-selected="true">
+            Scratch-LN
+        </a>
+        <a class="nav-item nav-link" id="nav-lexer-tab" data-toggle="tab" href="#nav-lexer" role="tab"
+           aria-controls="nav-profile" aria-selected="false">
+            Lexer
+        </a>
+        <a class="nav-item nav-link" id="nav-parser-tab" data-toggle="tab" href="#nav-parser" role="tab"
+           aria-controls="nav-contact" aria-selected="false">
+            Parser
+        </a>
+        <a class="nav-item nav-link" id="nav-visitor-tab" data-toggle="tab" href="#nav-visitor" role="tab"
+           aria-controls="nav-contact" aria-selected="false">
+            Visitor/code generator
+        </a>
+        <a class="nav-item nav-link" id="nav-sb-tab" data-toggle="tab" href="#nav-sb" role="tab"
+           aria-controls="nav-contact" aria-selected="false">
+            Scratch Blocks
+        </a>
+        <a class="nav-item nav-link" id="nav-vm-tab" data-toggle="tab" href="#nav-vm" role="tab"
+           aria-controls="nav-contact" aria-selected="false">
+            Scratch VM
+        </a>
+        <a class="nav-item nav-link" id="nav-stage-tab" data-toggle="tab" href="#nav-stage" role="tab"
+           aria-controls="nav-contact" aria-selected="false">
+            Scratch Stage
+        </a>
+    </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-sln" role="tabpanel" aria-labelledby="nav-sln-tab">sln</div>
+    <div class="tab-pane fade" id="nav-lexer" role="tabpanel" aria-labelledby="nav-profile-lexer">lexer</div>
+    <div class="tab-pane fade" id="nav-parser" role="tabpanel" aria-labelledby="nav-parser-tab">parser</div>
+    <div class="tab-pane fade" id="nav-visitor" role="tabpanel" aria-labelledby="nav-vistor-tab">visitor</div>
+    <div class="tab-pane fade" id="nav-sb" role="tabpanel" aria-labelledby="nav-sb-tab">sb</div>
+    <div class="tab-pane fade" id="nav-vm" role="tabpanel" aria-labelledby="nav-vm-tab">vm</div>
+    <div class="tab-pane fade" id="nav-stage" role="tabpanel" aria-labelledby="nav-stage-tab">stage</div>
+</div>
+
+
+
+<div>
+    Scratch-LN:
+    <textarea id="editor"></textarea>
+</div>
+
+<div>
+    Tokens:
+    <textarea id="tokensEditor"></textarea>
+</div>
+
+<div>
+    CST:
+    <textarea id="cstEditor"></textarea>
+</div>
+
+<div>
+    XML:
+    <button id="toxml">to xml</button>
+    <textarea id="editor_xml"></textarea>
+</div>
+
+
+
+
+
+<div id="blocklyDiv"></div>
+
+<div>
+    JSON
+    <button id="toJson">toJson</button>
     <textarea id="editor_json"></textarea>
+
+</div>
+
+
+
+<div>
     <div id="projectButtons">
         <button id="greenflag">Green flag</button>
         <button id="stopall">Stop</button>
-        <button id="toJson">toJson</button>
+
     </div>
-    <div id="e">
-        <div id="blocklyDiv"></div>
-        <select id="selectedTarget" multiple></select>
-        <textarea id="editor"></textarea>
-        <div>
-            <button id="toxml">to xml</button>
-            <textarea id="editor_xml"></textarea>
-        </div>
-        <div>
-            <button id="totext">to text</button>
-            <textarea id="editor_text"></textarea>
-        </div>
-    </div>
-    <div>
-        <canvas id="scratch-stage" style="width: 480px; height: 360px;"></canvas>
-    </div>
+    <canvas id="scratch-stage" style="width: 480px; height: 360px;"></canvas>
 </div>
 
-<div id="blocks"></div>
 
+
+<div id="generated">
+    <button id="totext">to text</button>
+    <textarea id="editor_text"></textarea>
+</div>
+
+
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+s
 </body>
 </html>

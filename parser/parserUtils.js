@@ -26,7 +26,7 @@ init_parser_utils();
  */
 export default function parseTextToXML(text) {
     let r = parse(text);
-    let cst = r.value;
+    let cst = r.cst;
     if (cst) {
         let v = new visitor();
         let xml = v.getXML(cst).xml;
@@ -40,7 +40,7 @@ export default function parseTextToXML(text) {
  */
 export function parseTextToXMLWithWarnings(text) {
     let r = parse(text);
-    let cst = r.value;
+    let cst = r.cst;
     if (cst) {
         let v = new visitor();
         let ret = v.getXML(cst);
@@ -58,3 +58,30 @@ export function parseTextToXMLWithWarnings(text) {
     }
 }
 
+/**
+ * @param text
+ * @returns object with xml and error/warning information
+ */
+export function parseTextToXMLDetails(text) {
+    let r = parse(text);
+    let cst = r.cst;
+    if (cst) {
+        let v = new visitor();
+        let ret = v.getXML(cst);
+        return {
+            xml: ret.xml,
+            lexErrors: r.lexErrors,
+            parseErrors: r.parseErrors,
+            visitorWarnings: ret.warnings,
+            cst: r.cst,
+            lexResult: r.lexResult
+        };
+    }else{
+        return {
+            lexErrors: r.lexErrors,
+            parseErrors: r.parseErrors,
+            cst: r.cst,
+            lexResult: r.lexResult
+        };
+    }
+}

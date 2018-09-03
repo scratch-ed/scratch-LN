@@ -64,6 +64,7 @@
     "scratch-render": "latest",
     "scratch-storage": "^0.4.1",
     "scratch-vm": "latest",
+    "xml-formatter": "^1.0.1",
     "xmlbuilder": "^9.0.4",
     "xmldom": "^0.1.22"
   }
