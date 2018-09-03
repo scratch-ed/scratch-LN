@@ -28,7 +28,7 @@ const base = {
     ]
 };
 
-module.exports = [   
+module.exports = [  /*
     defaultsDeep({}, base, {
         target: 'web',
         entry: {
@@ -77,7 +77,7 @@ module.exports = [
                 to: 'static/blocks-media'
             }])
         ]),
-    })/*,
+    }),*/
      defaultsDeep({}, base, {
         target: 'web',
         entry: {
@@ -94,5 +94,5 @@ module.exports = [
                 to: 'dist/static/blocks-media'
             }])
         ]),
-    })*/
+    })
 ];
