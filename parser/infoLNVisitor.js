@@ -28,7 +28,7 @@ import {lnparser} from "./LNParser"
 export const PLACEHOLDER = "placeholder";
 export const OFFSET = "offset";
 
-
+//todo make this an enum or something
 export const TYPE = "type";
 export const EXPRESSION = "expression";
 export const PREDICATE = "predicate";
@@ -37,11 +37,11 @@ export const EMPTY = "empty";
 export const CHOICE = "choice";
 export const TEXT = "text";
 export const TEXT_OR_NUMBER = "text or number";
-export const COLOR = "color"
+export const COLOR = "color";
 
 export const COMMENT = "comment";
 export const ID = "id";
-export const CBLOCK = "cblock"
+export const CBLOCK = "cblock";
 
 
 const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();

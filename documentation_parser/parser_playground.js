@@ -23,7 +23,7 @@
         //no whitespace in the beginning or end -> will be skipped (OR allow whitespace with keywords?)
         //char (whitespace* char)*
 
-            /((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"#@: \t\n]|\\[^])([ \t]*((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\[^]))*/,
+            /((:(?!:))|(\/(?![\/*]))|[^\{\|\(\)\}\<\>\[\];\\"#@: \t\n\/]|\\[^])([ \t]*((:(?!:))|(\/(?![\/*]))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t\/]|\\[^]))*/,
 
         line_breaks: true
     });
@@ -35,7 +35,7 @@
 
     const LineComment = createToken({
         name: "LineComment",
-        pattern: /\/\/[^\n]*[\n]?/,
+        pattern: /(;[ \t]*\n?|\n)?[ \t]*\/\/[^\n;]*/,
         group: Lexer.SKIPPED,
         categories: [ScratchLNComment],
     });
@@ -46,7 +46,7 @@
         //allowed to use * and / within text but not after each other
         //most chars = [^\*]
         //* followed by /  = /\*(?!\/))
-        pattern: /\/\*([^\*]|\*(?!\/))*\*\//,
+        pattern: /(;[ \t]*\n?|\n)?[ \t]*\/\*([^\*]|\*(?!\/))*\*\//,
         group: Lexer.SKIPPED,
         categories: [ScratchLNComment],
         line_breaks: true
@@ -101,8 +101,9 @@
 
     const NumberLiteral = createToken({
         name: "NumberLiteral",
+        //pattern: /-?(\d+)(\.\d+)?/, todo test of dit werkt met een *
         pattern: /-?(\d+)(\.\d+)?/,
-        categories: [Literal],
+        categories: [Literal, Label],
         longer_alt: Label,
     });
 
@@ -194,21 +195,20 @@
     });
 
 
-    const MultipleDelimiters = createToken({
-        name: "MultipleDelimiters",
-        //; \n should always bee seen as a whole 
+    const StackDelimiters = createToken({
+        name: "StackDelimiters",
+        //; \n should always bee seen as a whole
         //so a ; alone must explicitly not been followed by a \n
         pattern: /((;[ \t]*\n|;[ \t]*(?!\n)|\n)[ \t]*){2,}/,
         line_breaks: true
     });
 
-    const Delimiter = createToken({
-        name: "Delimiter",
+    const BlockDelimiter = createToken({
+        name: "BlockDelimiter",
         pattern: /;[ \t]*\n?|\n/,
         line_breaks: true,
-        //longer_alt: MultipleDelimiters
+        //longer_alt: StackDelimiters
     });
-
 
 
     // marking WhiteSpace as 'SKIPPED' makes the lexer skip it.
@@ -226,8 +226,8 @@
         Literal, StringLiteral, NumberLiteral, ColorLiteral, ChoiceLiteral,
         //WARNING: RepeatUntil must be defined before Repeat
         Forever, End, RepeatUntil, Repeat, If, Else, Then,
-        //WARNING: StackDelimiter must be defined before Delimiter
-        MultipleDelimiters, Delimiter,
+        //WARNING: StackDelimiter must be defined before BlockDelimiter
+        StackDelimiters, BlockDelimiter,
         LCurlyBracket, RCurlyBracket,
         LRoundBracket, RRoundBracket,
         RAngleBracket, LAngleBracket,
@@ -255,36 +255,40 @@
                 $.SUBRULE($.comments);
             })
             $.OPTION2(() => {
-                    $.SUBRULE($.stack);
-                    $.MANY({
-                        DEF: () => {
-                            $.SUBRULE($.stackDelimiter);
-                            $.OPTION3(() => {
-                                $.SUBRULE2($.stack);
-                            })
-                        }
-                    });
-                })
-                //$.CONSUME(chevrotain.EOF);
+                $.SUBRULE($.stack);
+                $.MANY({
+                    DEF: () => {
+                        $.SUBRULE($.stackDelimiter);
+                        $.OPTION3(() => {
+                            $.SUBRULE2($.stack);
+                        })
+                    }
+                });
+            })
+            //$.CONSUME(chevrotain.EOF);
         });
 
 
         $.RULE("delimiters", () => {
-            $.OR([{
-                ALT: () => {
-                    $.CONSUME(Delimiter, {
-                        LABEL: "leadingCodeDelimiters"
-                    });
+            $.MANY({
+                DEF: () => {
+                    $.OR([{
+                        ALT: () => {
+                            $.CONSUME(BlockDelimiter, {
+                                LABEL: "leadingCodeDelimiters"
+                            });
+                        }
+                    }, {
+                        ALT: () => {
+                            $.CONSUME(StackDelimiters, {
+                                LABEL: "leadingCodeDelimiters"
+                            });
+                        },
+                    } /*{
+                  ALT: chevrotain.EMPTY_ALT()
+              }*/])
                 }
-            }, {
-                ALT: () => {
-                    $.CONSUME(MultipleDelimiters, {
-                        LABEL: "leadingCodeDelimiters"
-                    });
-                },
-            }, {
-                ALT: chevrotain.EMPTY_ALT()
-            }])
+            })
         })
 
         $.RULE("stackDelimiter", () => {
@@ -292,9 +296,14 @@
                 DEF: () => {
                     $.OR([{
                         ALT: () => {
-                            $.CONSUME(MultipleDelimiters, {
+                            $.CONSUME(StackDelimiters, {
                                 LABEL: "intermediateCodeDelimiters"
                             });
+                            $.OPTION(() => {
+                                $.CONSUME(BlockDelimiter, {
+                                    LABEL: "intermediateCodeDelimiter"
+                                });
+                            })
                         }
                     }, {
                         ALT: () => {
@@ -317,13 +326,13 @@
         $.RULE("stack", () => {
             $.SUBRULE($.block);
             $.MANY(() => {
-                $.CONSUME(Delimiter, {
+                $.CONSUME(BlockDelimiter, {
                     LABEL: "intermediateStackDelimiter"
                 });
                 $.SUBRULE2($.block);
             });
             $.OPTION(() => {
-                $.CONSUME2(Delimiter, {
+                $.CONSUME2(BlockDelimiter, {
                     LABEL: "trailingStackDelimiter"
                 });
             })
@@ -383,26 +392,32 @@
                 $.CONSUME(Then);
             });
             $.SUBRULE($.annotations);
-            $.SUBRULE($.clause, {
-                LABEL: "ifClause"
+            $.SUBRULE($.substack, {
+                LABEL: "ifSubstack"
             });
             $.OPTION3(() => {
                 $.OPTION4(() => {
-                    $.CONSUME(Delimiter, {
-                        LABEL: "trailingIfClauseDelimiter"
+                    $.CONSUME(BlockDelimiter, {
+                        LABEL: "trailingIfSubstackDelimiter"
                     });
                 });
                 $.CONSUME(Else);
-                $.SUBRULE3($.clause, {
-                    LABEL: "elseClause"
+                $.SUBRULE3($.substack, {
+                    LABEL: "elseSubstack"
                 });
             });
+            $.OPTION5(() => {
+                $.CONSUME(End);
+            })
         });
 
         $.RULE("forever", () => {
             $.CONSUME(Forever);
             $.SUBRULE($.annotations);
-            $.SUBRULE($.clause);
+            $.SUBRULE($.substack);
+            $.OPTION(() => {
+                $.CONSUME(End);
+            })
         });
 
 
@@ -410,31 +425,32 @@
             $.CONSUME(Repeat);
             $.SUBRULE($.argument);
             $.SUBRULE($.annotations);
-            $.SUBRULE($.clause);
+            $.SUBRULE($.substack);
+            $.OPTION(() => {
+                $.CONSUME(End);
+            })
         });
 
         $.RULE("repeatuntil", () => {
             $.CONSUME(RepeatUntil);
             $.SUBRULE($.condition);
             $.SUBRULE($.annotations);
-            $.SUBRULE($.clause);
+            $.SUBRULE($.substack);
+            $.OPTION(() => {
+                $.CONSUME(End);
+            })
         });
 
 
-
-
-        $.RULE("clause", () => {
+        $.RULE("substack", () => {
             $.OPTION(() => {
-                $.CONSUME(Delimiter, {
-                    LABEL: "leadingClauseDelimiter"
+                $.CONSUME(BlockDelimiter, {
+                    LABEL: "leadingSubstackDelimiter"
                 });
             });
             $.OPTION2(() => {
                 $.SUBRULE($.stack);
             });
-            $.OPTION3(() => {
-                $.CONSUME(End);
-            })
         });
 
         $.RULE("annotations", () => {
@@ -487,7 +503,7 @@
                     }, {
                         NAME: "$empty",
                         ALT: chevrotain.EMPTY_ALT()
-                    }, ]);
+                    },]);
                     $.SUBRULE($.id);
                     $.CONSUME(RCurlyBracket);
                 }
@@ -536,7 +552,7 @@
                     }, {
                         NAME: "$empty",
                         ALT: chevrotain.EMPTY_ALT()
-                    }, ]);
+                    },]);
                     $.OPTION2(() => {
                         $.CONSUME(ID);
                     });
@@ -582,6 +598,7 @@
 
     // ----------------- Interpreter -----------------
     const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
+
     class LNVisitor extends BaseCstVisitor {
 
         constructor() {
@@ -638,7 +655,7 @@
 
         }
 
-        clause(ctx) {
+        substack(ctx) {
 
         }
 
@@ -688,7 +705,7 @@
     return {
         lexer: LNLexer,
         parser: LNParser,
-        visitor: LNVisitor,
+        //visitor: LNVisitor,
         defaultRule: "code"
     };
 }())

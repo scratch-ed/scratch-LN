@@ -3,7 +3,7 @@ const puppeteer = require('puppeteer');
 var fs = require('fs');
 var path = require('path');
 
-const directory = 'C:\\Users\\Ellen\\Documents\\0 ugent\\Thesis\\github off\\Vorig\\scratch-LN/documentation_parser'
+const directory = 'C:\\Users\\Ellen\\Documents\\0 ugent\\Thesis\\github off\\scratch-LN/documentation_parser'
 
 function makeIMG(name) {
     console.log('generating img for ' + name + '...');

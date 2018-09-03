@@ -3,15 +3,19 @@ import parseTextToXML from './../parser/parserUtils.js'
 import generateText from './../generator/generator.js'
 import {parseTextToXMLWithWarnings} from "../parser/parserUtils";
 import {MEDIA} from "../config/config";
+import ace from "ace-builds";
+import "ace-builds/src-noconflict/ext-language_tools"
+
 
 let workspace = null;
-let editor;
 let warnings;
 let generatorField;
+let aceEditor;
 
 
 window.onload = function () {
-    //ScratchBlocks.ScratchMsgs.setLocale("nl");
+    createEditor();
+
     //scratch-blocks
     workspace = ScratchBlocks.inject('blocklyDiv', {
         toolbox: '<xml></xml>',
@@ -32,54 +36,139 @@ window.onload = function () {
             scaleSpeed: 1.1
         }
     });
-
     ScratchBlocks.mainWorkspace.getFlyout().hide();
 
-    //text
-    editor = document.getElementById('editor');
-    editor.addEventListener('input', updateWorkspace);
-    editor.value =  'when gf clicked\n' +
-        'say "hello"'
-    ;
-
+    //init extra text fields
     warnings = document.getElementById('warnings');
 
     //generatorField = document.getElementById('generatorOutput');
 
-    updateWorkspace();
+    //set default value
+    aceEditor.on("input",updateWorkspace);
+    let text = 'repeat{10} \n stop \nend\nbla\nbla\nbla\nbla\nbla\nbla\nbla\nbla\nbla\nbla'
+    ;
+    aceEditor.setValue(text);
+    aceEditor.gotoLine(aceEditor.session.getLength());
+
 
     //button options
-    document.getElementById('xmlparser').addEventListener('click', updateWorkspace);
     document.getElementById('showexample').addEventListener('click', showExample);
+    document.getElementById('locale').addEventListener('click', translate);
+    document.getElementById('makeimage').addEventListener('click', savePNG);
+
+
     //glowing buttons
     document.getElementById('glowon').addEventListener('click', glowOn);
     document.getElementById('glowoff').addEventListener('click', glowOff);
     document.getElementById('report').addEventListener('click', report);
     document.getElementById('stackglowon').addEventListener('click', stackGlowOn);
     document.getElementById('stackglowoff').addEventListener('click', stackGlowOff);
-    document.getElementById('translate').addEventListener('click', translate);
-    //document.getElementById('generate').addEventListener('click', generateTextWorkspace);
 
+
+
+    document.getElementById('generate').addEventListener('click', generateTextWorkspace);
 
     //resizing workspace
     //https://developers.google.com/blockly/guides/configure/web/resizable
     let blocklyDiv = document.getElementById('blocklyDiv');
     let blocklyArea = document.getElementById('blocklyArea');
-    blocklyDiv.style.width = '50%';
-    blocklyDiv.style.height = '80%';
+    blocklyDiv.style.width = '100%';
+    blocklyDiv.style.height = '90vh'; //1vh = 1% of browser screen height
     ScratchBlocks.svgResize(workspace);
-
-    //addBlock('looks_say','aaa',1,1);
-    //addBlock('data_addtolist','aaa',1,1);    
-    //addBlock('procedures_definition','aaa',500,10);
-    //addBlock('procedures_call','aaa',200,10);
 
     //insertSomeCodeFromXML();
 
     //generateText(workspace)
 
-    //console.log(getWorkspaceXML())
+    //set view right
+    updateWorkspace();
+    translate();
+
+    console.log(getWorkspaceXML())
+
 };
+
+//===================================================================================
+// ace editor
+//===================================================================================
+
+function updateToolbar() {
+    aceCopyButton.disabled = aceEditor.session.getUndoManager().isClean();
+    aceUndoButton.disabled = !aceEditor.session.getUndoManager().hasUndo();
+    aceRedoButton.disabled = !aceEditor.session.getUndoManager().hasRedo();
+}
+
+let aceUndoButton;
+let aceRedoButton;
+let aceCopyButton;
+let aceFontSizeInput;
+let aceCommentButton;
+
+function aceUndo(){
+    aceEditor.undo();
+}
+
+function aceRedo(){
+    aceEditor.redo();
+}
+
+function aceComment() {
+    aceEditor.insertSnippet("/*${1:$SELECTION}*/");
+    aceEditor.renderer.scrollCursorIntoView()
+}
+
+function aceCopy(){
+    //https://hackernoon.com/copying-text-to-clipboard-with-javascript-df4d4988697f
+    let el = document.createElement('textarea');
+    el.value = aceEditor.getValue();
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+}
+
+function aceFontSize() {
+    aceEditor.setFontSize(aceFontSizeInput.value);
+}
+
+/**
+ * configure the ace editor and toolbar
+ */
+function createEditor() {
+    aceEditor = ace.edit("ace_editor",{
+
+
+    });
+    aceEditor.renderer.setScrollMargin(10, 10, 10, 10);
+    aceUndoButton = document.getElementById('ace_undo');
+    aceUndoButton.addEventListener('click', aceUndo);
+
+    aceRedoButton = document.getElementById('ace_redo');
+    aceRedoButton.addEventListener('click', aceRedo);
+
+    aceFontSizeInput = document.getElementById('ace_font_size');
+    aceFontSizeInput.addEventListener('change', aceFontSize);
+
+    aceCopyButton = document.getElementById('ace_copy');
+    aceCopyButton.addEventListener('click', aceCopy);
+
+    aceCommentButton = document.getElementById('ace_comment');
+    aceCommentButton.addEventListener('click', aceComment);
+
+    aceEditor.on("input", updateToolbar);
+    aceFontSize();
+
+
+
+}
+
+
+
+//===================================================================================
+
 
 function generateTextWorkspace() {
     let text = generateText(workspace);
@@ -90,7 +179,8 @@ function generateTextWorkspace() {
 function updateWorkspace() {
     //make xml
     //console.log('----');
-    let text = editor.value;
+    //let text = editor.value;
+    let text = aceEditor.getValue();
     let r = parseTextToXMLWithWarnings(text);
     let xml = r.xml;
 
@@ -106,6 +196,7 @@ function updateWorkspace() {
 
     warnings.value = JSON.stringify(r);
 
+<<<<<<< HEAD
     editor.focus();
     //console.log(getWorkspaceXML())
 
@@ -115,6 +206,10 @@ function updateWorkspace() {
     //    console.log(x)
     //}
     //generateTextWorkspace();
+=======
+    console.log(getWorkspaceXML());
+    generateTextWorkspace();
+>>>>>>> develop
 }
 
 
@@ -229,7 +324,7 @@ function showExample() {
         'end\n' +
         'move {10 @idi} steps\n' +
         'say "hello"'
-    editor.value = code;
+    aceEditor.setValue(code);
     updateWorkspace();
 }
 
@@ -251,4 +346,78 @@ function setLocale(locale) {
     ScratchBlocks.ScratchMsgs.setLocale(locale);
     ScratchBlocks.Xml.clearWorkspaceAndLoadFromXml(xml, workspace);
     workspace.getFlyout().setRecyclingEnabled(true);
+}
+
+
+//===================================================================================
+// save PNG button
+//===================================================================================
+
+
+/**
+ * https://stackoverflow.com/questions/27230293/how-to-convert-svg-to-png-using-html5-canvas-javascript-jquery-and-save-on-serve
+ * svg -> canvas -> blob
+ * canvas is hidden element in the html
+ */
+function savePNG(){
+    let svgname = ".blocklySvg";
+    let svg = document.querySelector(svgname);
+
+    console.log(svg);
+
+    //canvas is hidden
+    let canvasname = "myCanvas";
+    let myCanvas = document.getElementById(canvasname);
+    let ctx = myCanvas.getContext("2d");
+
+    //size of the worksapce
+    let metrics = workspace.getMetrics();
+    console.log(metrics);
+
+
+    //function to generate url
+    let DOMURL = window.URL || window.webkitURL || window;
+
+
+
+    let data = (new XMLSerializer()).serializeToString(svg);
+    let svgBlob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
+    let url = DOMURL.createObjectURL(svgBlob);
+    let img = new Image(); //image object
+    img.onload = function () {
+        //todo: this is the workspace size as png.
+        //todo: to get a decent view: the workspace need to be resized to the blocks before genarting the image.
+        //todo: add the stylesheet so that the text is white. dunno yet how.
+        ctx.canvas.width  = metrics.viewWidth; //
+        ctx.canvas.height = metrics.viewHeight; //
+        //myCanvas.style.width  = metrics.contentWidth + "px";
+        //myCanvas.style.height = metrics.contentHeight+ "px";
+        ctx.clearRect( 0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.drawImage(img, 0, 0);
+
+        DOMURL.revokeObjectURL(url);
+
+        let imgURI = myCanvas
+            .toDataURL('image/png')
+            .replace('image/png', 'image/octet-stream');
+
+        triggerDownload(imgURI);
+    };
+
+    img.src = url;
+}
+
+function triggerDownload (imgURI) {
+    let evt = new MouseEvent('click', {
+        view: window,
+        bubbles: false,
+        cancelable: true
+    });
+
+    let a = document.createElement('a');
+    a.setAttribute('download', 'scratch_code.png');
+    a.setAttribute('href', imgURI);
+    a.setAttribute('target', '_blank');
+
+    a.dispatchEvent(evt);
 }

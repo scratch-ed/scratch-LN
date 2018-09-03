@@ -7,18 +7,12 @@
  * @file   This files defines the State class.
  * @author Ellen Vanhove.
  */
+import {INPUTTYPE, MODUS} from "./typeConfig";
 
-const MODUS = {
-    NONE:0,
-    STACK:1,
-    REPORTER:2,
-    BOOLEAN:3,
-};
 
 export class State {
 
-    constructor(informationVisitor) {
-        this.infoVisitor = informationVisitor;
+    constructor() {
         this.reset();
     }
 
@@ -29,11 +23,12 @@ export class State {
     reset() {
         //list of all blocks
         this.blocks = [];
-        this.blocks.push({ID:-1}); //this should not happen normally but this way nothing breaks during dev
+        //this.blocks.push({ID:-1}); //this should not happen normally but this way nothing breaks during dev
         this.modus = MODUS.NONE;
         this.interrupted = false;
         //when opening a new context the previous is stored here
         this.storage = [];
+        this.expectedInput = INPUTTYPE.NONE;
     }
 
 
@@ -45,11 +40,14 @@ export class State {
                 modus: this.modus
             }
         );
+       this.blocks = [];
     }
 
     popStorage(){
-        let stored = this.storage.pop();
-        this.setBack(stored);
+        if(this.storage.length>0) {
+            let stored = this.storage.pop();
+            this.setBack(stored);
+        }
     }
 
     setBack(stored) {
@@ -67,6 +65,10 @@ export class State {
 
     isBuildingBooleanBlock(){
         return this.modus === MODUS.BOOLEAN;
+    }
+
+    getModus(){
+        return this.modus;
     }
 
     /**
@@ -107,9 +109,11 @@ export class State {
     }
 
     interruptStack(){
-        let stored =  this.storage[0];
-        this.setBack(stored);
-        this.storage = []
+        if(this.storage.length>0) {
+            let stored = this.storage[0];
+            this.setBack(stored);
+            this.storage = [];
+        }
         this.interrupted = true;
     }
 
@@ -135,6 +139,47 @@ export class State {
         this.popStorage();
     }
 
+    amountOfPreviousBlocksOnStack(){
+        return this.blocks.length;
+    }
 
+    hasPreviousBlocksOnStack(){
+        return this.blocks.length > 0;
+    }
+
+    hasPreviousConnectedBlocks(){
+        return this.hasPreviousBlocksOnStack() || this.storage.length > 1;
+    }
+
+    isExpectingBoolean(){
+        return this.expectedInput === INPUTTYPE.BOOLEAN;
+    }
+
+    isExpectingNumber(){
+        return this.expectedInput === INPUTTYPE.NUMBER
+            || this.expectedInput === INPUTTYPE.WHOLE_NUMBER
+            || this.expectedInput === INPUTTYPE.POSITIVE_NUMBER
+            || this.expectedInput === INPUTTYPE.INTEGER
+            || this.expectedInput === INPUTTYPE.ANGLE;
+    }
+
+    setExpectingInput(type){
+        if(! type in INPUTTYPE){
+            throw new Error("type not valid");
+        }
+        this.expectedInput = type;
+    }
+
+    getExpectingInputType(){
+        return this.expectedInput;
+    }
+
+    expectBoolean(){
+        this.expectedInput=INPUTTYPE.BOOLEAN;
+    }
+
+    expectNothing(){
+        this.expectedInput = INPUTTYPE.NONE;
+    }
 
 }

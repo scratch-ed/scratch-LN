@@ -9,23 +9,23 @@
 
 //parser
 import {tokenMatcher} from 'chevrotain'
+import {lnparser} from "./LNParser"
+import {InfoLNVisitor} from './infoLNVisitor';
+//xml
+import builder from 'xmlbuilder';
+import {ARG, BasicIDManager, LIST} from "./IDManager";
+import {State} from "./state";
+import blocks from "./blockConverterUtils";
+import {ModifierAnalyser} from "./modifierAnalyser";
+import {WarningsKeeper} from "./warnings";
+import {CATEGORY, INPUTTYPE} from "./typeConfig";
+import {getXMLTags, verifyInputType} from "./typeConfigUtils";
 //import {NumberLiteral, ColorLiteral} from "./LNLexer";
 const lntokens = require("./LNLexer");
 let NumberLiteral = lntokens.NumberLiteral;
 let ColorLiteral = lntokens.ColorLiteral;
 let StringLiteral = lntokens.StringLiteral;
 let ChoiceLiteral = lntokens.ChoiceLiteral;
-import {lnparser} from "./LNParser"
-import {InfoLNVisitor} from './InfoLNVisitor';
-
-//xml
-import builder from 'xmlbuilder';
-import {BasicIDManager, LIST} from "./IDManager";
-import {State} from "./State";
-import blocks from "./blocks";
-import {Modifier} from "./LNLexer";
-import {ModifierAnalyser} from "./modifierAnalyser";
-import {WarningsKeeper} from "./warnings";
 
 //const BaseCstVisitor = lnparser.getBaseCstVisitorConstructor();
 
@@ -38,16 +38,12 @@ import {WarningsKeeper} from "./warnings";
 const BaseCstVisitorWithDefaults = lnparser.getBaseCstVisitorConstructorWithDefaults();
 
 //variable types
-const ARG = 'arg';
 
-//shapes
-const STACKBLOCK = "statement";
-const BOOLEANBLOCK = "blooleanblock";
-const REPORTERBLOCK = "reporterblock";
-const HATBLOCK = "hatblock";
+
 //regexen
 const DEFINE_REGEX = /^[ \t]*define/i;
 const VARIABLE_REGEX = /^([ \t]*%[0-9][ \t]*)*$/i;
+const UNKNOWN_REGEX = /%[0-9]/;
 
 
 export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
@@ -58,12 +54,12 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         this.validateVisitor();
 
         //-- xml --
-        //the visitor stores an xml, this is reinit every visit call.
-        //the builder keeps where we are adding the next block
+        //the visitor stores an xml for what it is currently building, this is resetted by getXML
+        //keeps where we are adding the next block
         this.xml = null;
         //xml root
         this.xmlRoot = null;
-        //placeholder in the beginning for variables
+        //placeholder for the declaration of the variables
         this.variablesTag = null;
 
         //id generation
@@ -72,34 +68,30 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         //information visitor
         this.infoVisitor = new InfoLNVisitor();
 
-        //state
-        this.state = new State(InfoLNVisitor);
+        //state: keeps track of which block we are building
+        this.state = new State();
 
-        //modifiers
-        this.modifierAnalyser = new ModifierAnalyser();
-
+        //warnings
         this.warningsKeeper = new WarningsKeeper();
+
+        //modifiers: extracts the modifiers from an node
+        this.modifierAnalyser = new ModifierAnalyser(this.warningsKeeper);
+
+        //defenition
+        this.buildinBlocksConverters = blocks;
     }
 
     getXML(cst) {
         //reset
         this.idManager.reset();
+        this.warningsKeeper.reset();
+        this.state.reset();
         //create new xml
         this.xml = builder.begin().ele('xml').att('xmlns', 'http://www.w3.org/1999/xhtml');
         this.variablesTag = this.xml.ele('variables');
         this.xmlRoot = this.xml;
         this.visit(cst);
-        this.xml = this.variablesTag;
-        for (let key in this.idManager.varMap) {
-            if (this.idManager.varMap.hasOwnProperty(key)) {
-                if (this.idManager.varMap[key].variableType !== ARG) {
-                    this.xml.ele('variable', {
-                        'type': this.idManager.varMap[key].variableType,
-                        'id': this.idManager.varMap[key].id,
-                    }, key);
-                }
-            }
-        }
+        this.createVariables();
         return {
             xml: this.xml.end({
                 pretty: true
@@ -108,6 +100,21 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         }
     }
 
+
+    createVariables() {
+        this.xml = this.variablesTag;
+        for (let key in this.idManager.varMap) {
+            if (this.idManager.varMap.hasOwnProperty(key)) {
+                if (this.idManager.varMap[key].variableType !== ARG) {
+                    this.xml.ele('variable', {
+                        'type': this.idManager.varMap[key].variableType,
+                        'id': this.idManager.varMap[key].id,
+                        'isLocal': false,
+                    }, key);
+                }
+            }
+        }
+    }
 
     /*code(ctx) {
        //todo: correct order of comments and stacks
@@ -129,21 +136,30 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     stack(ctx) {
         this.state.startStack();
         let prevxml = this.xml;
+        let interupted = false;
         for (let i = 0; ctx.block && i < ctx.block.length; i++) {
             this.visit(ctx.block[i]); //opens a block
             //the flow was interrupted by a hat block or stand alone variable
             //so a new stack has to start
             if (this.state.isInterruptedStack()) {
-                if(i<ctx.block.length-1) { //no warning if nothing follows
+                if (i < ctx.block.length - 1) { //no warning if nothing follows
                     this.warningsKeeper.add(ctx.block[i], "started a new stack");
                 }
                 this.state.startStack();
+                interupted = true;
             } else { //normal flow
                 this.xml = this.xml.ele('next');
             }
         }
+        //if it was interrupted jump back to the root
         this.xml = prevxml;
-        this.state.endStack();
+        if (interupted) {
+            //this.xml = this.xmlRoot;
+            this.state.endStack();
+        } else { //normalflow
+            //this.xml = prevxml;
+            this.state.endStack();
+        }
     }
 
     /*block(ctx) {
@@ -152,35 +168,39 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
     atomic(ctx) {
         let description = this.infoVisitor.getString(ctx, "atomic");
-
-        //todo obtain modifiers
-        let modifiers = this.modifierAnalyser.getMods(this.infoVisitor.getModifiers(ctx.annotations));
+        let modifiers = this.modifierAnalyser.getMods(ctx, this.infoVisitor.getModifiers(ctx.annotations));
         if (this.isBuildInBlock(description, ctx, modifiers)) {
             //generate block
-            blocks[description](ctx, this, modifiers)
+            this.buildinBlocksConverters[description.toLowerCase()].converter(ctx, this, modifiers)
         } else if (description.match(DEFINE_REGEX)) {
             this.createDefineBlock(ctx, description);
         } else { //the block is not defined in scratch, so considered it as user-defined
-            if (this.isCustomReporterblock(ctx, modifiers)) {
-                this.createCustomReporterBlock(ctx, description);
+            if (this.isMyBlockReporterblock(description, ctx, modifiers)) {
+                this.createMyBlockReporterBlock(ctx, description);
 
-            } else if (this.isListBlock(ctx, modifiers)) {
+            } else if (this.isListBlock(description, ctx, modifiers)) {
                 this.createListBlock(ctx, description);
 
-            } else if (this.isVariableBlock(ctx, modifiers)) {
+            } else if (this.isVariableBlock(description, ctx, modifiers)) {
+                //if description contains %1 do a warning
+                if (description.match(UNKNOWN_REGEX)) {
+                    this.warningsKeeper.add(ctx, "unknown reporter block, generated variable");
+                }
                 this.createVariableBlock(ctx, description);
 
-            } else if (this.isBooleanBlock(ctx, modifiers)) {
-                if(!modifiers.custom){
-                    this.warningsKeeper.add(ctx, "unkown boolean block, add ::custom if you want a custom block")
+            } else if (this.isBooleanBlock(description, ctx, modifiers)) {
+                if (description.match(UNKNOWN_REGEX)) {
+                    this.warningsKeeper.add(ctx, "unknown boolean block, generated variable");
+                } else if (modifiers.category !== CATEGORY.MYBLOCK) {
+                    this.warningsKeeper.add(ctx, "\"My blocks\" boolean block with incorrect modifier");
                 }
-                this.createCustomBooleanBlock(ctx, description);
+
+                this.createMyBlockBooleanBlock(ctx, description);
 
             } else {
-                //todo
                 //if the label is empty this is a stand alone block so just visit the child
                 if (description.match(VARIABLE_REGEX)) {
-                    this.interruptStack();
+                    this.interruptStack(ctx, false);
                     for (let a = 0; a < ctx.argument.length; a++) {
                         this.visit(ctx.argument[a])
                     }
@@ -198,7 +218,11 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
      * intterupt a stack, can be done because of a hatblock, standalone variable, after a cap block
      * this wil set the state correctly and set the xml to the correct position to start building new blocks
      */
-    interruptStack() {
+    interruptStack(ctx, isHat = false) {
+        //check wether this is a really interupt, in case it is generate warning.
+        if (this.state.hasPreviousConnectedBlocks() && isHat) {
+            this.warningsKeeper.add(ctx, "hat block in a stack");
+        }
         //notify the state
         this.state.interruptStack();
         //set xml to the root
@@ -208,28 +232,49 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     /**
      * start the stack again after an interrupt
      */
-    startStack() {
+    startStack(ctx) {
         this.state.startStack();
     }
 
 
     isBuildInBlock(description, ctx, modifiers) {
-        return !modifiers.user && !modifiers.custom && description in blocks;
+        let check = (modifiers.category !== CATEGORY.VARIABLES)
+            && (modifiers.category !== CATEGORY.MYBLOCK)
+            && description.toLowerCase() in this.buildinBlocksConverters;
+
+        //it is defined as build in block.
+        //is it used correctly?
+
+        if (check) {
+            console.log(this.state.getModus());
+            console.log(this.buildinBlocksConverters[description.toLowerCase()].modus);
+
+            if (this.buildinBlocksConverters[description.toLowerCase()].modus.includes(this.state.getModus())) {
+                return true; //no problems
+            } else {
+                //the text matches a builtin block but the modus is not right
+                //so a for example mouse down instead of <mouse down>
+                this.warningsKeeper.add(ctx, "try to use a built-in block in the wrong context/modus");
+                return false;
+            }
+        }
+        return false;
     }
 
-    isVariableBlock(ctx, modifiers) {
+
+    isVariableBlock(description, ctx, modifiers) {
         return this.state.isBuildingReporterBlock();
     }
 
-    isListBlock(ctx, modifiers) {
+    isListBlock(description, ctx, modifiers) {
         return this.isVariableBlock(ctx, modifiers) && modifiers.list;
     }
 
-    isCustomReporterblock(ctx, modifiers) {
-        return this.isVariableBlock(ctx, modifiers) && modifiers.custom;
+    isMyBlockReporterblock(description, ctx, modifiers) {
+        return this.isVariableBlock(ctx, modifiers) && modifiers.category === CATEGORY.MYBLOCK;
     }
 
-    isBooleanBlock(ctx, modifiers) {
+    isBooleanBlock(description, ctx, modifiers) {
         return this.state.isBuildingBooleanBlock();
     }
 
@@ -240,7 +285,7 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
      */
     createProcedureBlock(ctx, description) {
         let blockid = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "atomic"));
-        this.state.addBlock(blockid, STACKBLOCK);
+        this.state.addBlock(blockid);
         this.xml = this.xml.ele('block', {
             'id': blockid,
         });
@@ -255,10 +300,10 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
      */
     createDefineBlock(ctx, description) {
         //stop the previous stack
-        this.interruptStack();
+        this.interruptStack(ctx, true);
         description = description.replace(DEFINE_REGEX, '');
         let blockid = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "atomic"));
-        this.state.addBlock(blockid, HATBLOCK);
+        this.state.addBlock(blockid);
         this.xml = this.xml.ele('block', {
             'type': 'procedures_definition',
             'id': blockid,
@@ -299,7 +344,10 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
         for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
             //make names
-            let name = this.infoVisitor.getString(ctx.argument[i]);
+            let name;
+            if (!visitArgs) {
+                name = this.infoVisitor.getString(ctx.argument[i]);
+            }
             if (!name) {
                 name = 'argumentname_' + blockid + '_' + i
             }
@@ -358,13 +406,17 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         this.xml = this.xml.up().ele('statement ', {
             'name': 'SUBSTACK'
         });
+        this.state.startStack();
         this.visit(ctx.ifClause);
+        this.state.endStack();
         this.xml = this.xml.up();
         if (ctx.Else) {
             this.xml = this.xml.ele('statement ', {
                 'name': 'SUBSTACK2'
             });
+            this.state.startStack();
             this.visit(ctx.elseClause);
+            this.state.endStack();
             this.xml = this.xml.up();
         }
         this.visit(ctx.annotations);
@@ -380,11 +432,11 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             'name': 'SUBSTACK'
         });
         this.state.addBlock(blockid);
+        this.state.startStack();
         this.visit(ctx.clause);
         this.xml = this.xml.up(); //close statement (stack will close block)
         this.visit(ctx.annotations);
-        this.interruptStack();
-
+        this.interruptStack(ctx, false);
     }
 
     repeat(ctx) {
@@ -396,11 +448,15 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             'name': 'TIMES'
         });
         this.state.addBlock(blockid);
+        this.state.setExpectingInput(INPUTTYPE.WHOLE_NUMBER);
         this.visit(ctx.argument);
+        this.state.expectNothing();
         this.xml = this.xml.up().ele('statement ', {
             'name': 'SUBSTACK'
         });
+        this.state.startStack();
         this.visit(ctx.clause);
+        this.state.endStack();
         this.xml = this.xml.up(); //go out of statement
         this.visit(ctx.annotations);
     }
@@ -414,11 +470,15 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
             'name': 'CONDITION'
         });
         this.state.addBlock(blockid);
+        this.state.expectBoolean();
         this.visit(ctx.condition);
+        this.state.expectNothing();
         this.xml = this.xml.up().ele('statement ', {
             'name': 'SUBSTACK'
         });
+        this.state.startStack();
         this.visit(ctx.clause);
+        this.state.endStack();
         this.xml = this.xml.up(); //go out of statement
         this.visit(ctx.annotations);
     }
@@ -426,6 +486,10 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     /*clause(ctx) {
         //it is not possible to add the statement, substack here because the name is different for the else clause
         //it's only one line 5 times deal with it.
+        this.state.startStack();
+        console.log(this.state.storage);
+        this.visit(ctx.stack);
+        this.state.endStack()
     }*/
 
     /*modifiers(ctx) {
@@ -463,49 +527,76 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
     }
 
     argument(ctx) {
-        if (ctx.Literal) {
-            if (tokenMatcher(ctx.Literal[0], ColorLiteral)) {
-                this.createColourPickerInput(ctx);
-            } else {
-                this.createTextInput(ctx);
-                //todo: numberinputs + context -> createnumber
+        let text = this.infoVisitor.getString(ctx, "argument");
+        if (ctx.Literal || ctx.Label) {
+            //checks for literals (label is kind of a literal)
+            if (this.state.isExpectingBoolean()) {
+                this.warningsKeeper.add(ctx, "a boolean block is expected");
+                return;
             }
-        } else if (ctx.Label) {
-            this.createTextInput(ctx);
+            if (!verifyInputType(text, this.state.getExpectingInputType())) {
+                this.warningsKeeper.add(ctx, text + " is not of the right inputType");
+                //todo should i Create the right input or the text input?
+            }
+
+            if (ctx.Literal) {
+                // "1" and {1} are both ok
+                if (this.state.isExpectingNumber() &&
+                        (!tokenMatcher(ctx.Literal[0], NumberLiteral)
+                        &&
+                        !(tokenMatcher(ctx.Literal[0], StringLiteral) && verifyInputType(text, INPUTTYPE.NUMBER))
+                    )) {
+                    this.warningsKeeper.add(ctx, text + " a number is expected");
+                }
+                //build
+                if (tokenMatcher(ctx.Literal[0], ColorLiteral)) {
+                    this.createColourPickerInput(ctx);
+                    return;
+                }
+            }
+            let tags = getXMLTags(this.state.getExpectingInputType());
+            if (tags) {
+                this.createInput(ctx, tags.type, tags.name);
+            } else { //Default or something is wrong
+                this.createTextInput(ctx);
+            }
+
         } else if (ctx.expression) {
+            if (this.state.isExpectingBoolean()) {
+                this.warningsKeeper.add(ctx, "a boolean block is expected");
+                return;
+            }
             this.visit(ctx.expression);
         } else if (ctx.predicate) {
             this.visit(ctx.predicate)
         } else if (ctx.$empty) {
-            this.createTextInput(ctx);
+            if (this.state.isExpectingBoolean()) {
+                //do nothing
+            } else {
+                this.createTextInput(ctx);
+            }
         }
     }
 
-    createTextInput(ctx) {
+    createInput(ctx, type, name) {
         this.xml.ele('shadow', {
-            'type': 'text',
+            'type': type,
             'id': this.idManager.getNextInputID(this.state.getLastBlockID(), this.infoVisitor.getID(ctx, "argument")),
         }).ele('field', {
-            'name': 'TEXT',
+            'name': name,
         }, this.infoVisitor.getString(ctx, "argument"));
+    }
+
+    createTextInput(ctx) {
+        this.createInput(ctx, 'text', 'TEXT');
     }
 
     createColourPickerInput(ctx) {
-        this.xml.ele('shadow', {
-            'type': 'colour_picker',
-            'id': this.idManager.getNextInputID(this.state.getLastBlockID(), this.infoVisitor.getID(ctx, "argument")),
-        }).ele('field', {
-            'name': 'COLOUR',
-        }, this.infoVisitor.getString(ctx, "argument"));
+        this.createInput(ctx, 'colour_picker', 'COLOUR');
     }
 
     createMathNumberInput(ctx) {
-        this.xml.ele('shadow', {
-            'type': 'math_number',
-            'id': this.idManager.getNextInputID(this.state.getLastBlockID(), this.infoVisitor.getID(ctx, "argument")),
-        }).ele('field', {
-            'name': 'NUM',
-        }, this.infoVisitor.getString(ctx, "argument"));
+        this.createInput(ctx, 'math_number', 'NUM');
     }
 
     condition(ctx) {
@@ -554,13 +645,14 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         }).ele('field', {
             'name': 'LIST',
             'id': varID,
+            'variabletype': "list"
         }, description).up();
         this.state.addBlock(blockID);
     }
 
-    createCustomReporterBlock(ctx, description) {
+    createMyBlockReporterBlock(ctx, description) {
         let blockID = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "atomic"));
-        let varID = this.idManager.acquireVariableID(this.infoVisitor.getString(ctx, "atomic"), LIST);
+        let varID = this.idManager.acquireVariableID(this.infoVisitor.getString(ctx, "atomic"));
         this.xml = this.xml.ele('block', {
             'type': 'argument_reporter_string_number',
             'id': blockID,
@@ -571,9 +663,9 @@ export class XMLLNVisitor extends BaseCstVisitorWithDefaults {
         this.state.addBlock(blockID);
     }
 
-    createCustomBooleanBlock(ctx, description) {
+    createMyBlockBooleanBlock(ctx, description) {
         let blockID = this.idManager.getNextBlockID(this.infoVisitor.getID(ctx, "atomic"));
-        let varID = this.idManager.acquireVariableID(this.infoVisitor.getString(ctx, "atomic"), LIST);
+        let varID = this.idManager.acquireVariableID(this.infoVisitor.getString(ctx, "atomic"));
         this.xml = this.xml.ele('block', {
             'type': 'argument_reporter_boolean',
             'id': blockID,

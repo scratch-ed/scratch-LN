@@ -28,6 +28,7 @@ const base = {
     ]
 };
 
+
 module.exports = [
     defaultsDeep({}, base, {
         target: 'web',
@@ -80,5 +81,5 @@ module.exports = [
                 to: 'example/static/blocks-media'
             }])
         ]),
-    })/**/
+    })
 ];
