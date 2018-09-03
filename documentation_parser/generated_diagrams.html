@@ -9,12 +9,12 @@
 </style>
 
 
-<link rel='stylesheet' href='https://unpkg.com/chevrotain@3.0.1/diagrams/diagrams.css'>
+<link rel='stylesheet' href='https://unpkg.com/chevrotain@3.7.0/diagrams/diagrams.css'>
 
-<script src='https://unpkg.com/chevrotain@3.0.1/diagrams/vendor/railroad-diagrams.js'></script>
-<script src='https://unpkg.com/chevrotain@3.0.1/diagrams/src/diagrams_builder.js'></script>
-<script src='https://unpkg.com/chevrotain@3.0.1/diagrams/src/diagrams_behavior.js'></script>
-<script src='https://unpkg.com/chevrotain@3.0.1/diagrams/src/main.js'></script>
+<script src='https://unpkg.com/chevrotain@3.7.0/diagrams/vendor/railroad-diagrams.js'></script>
+<script src='https://unpkg.com/chevrotain@3.7.0/diagrams/src/diagrams_builder.js'></script>
+<script src='https://unpkg.com/chevrotain@3.7.0/diagrams/src/diagrams_behavior.js'></script>
+<script src='https://unpkg.com/chevrotain@3.7.0/diagrams/src/main.js'></script>
 
 <div id="diagrams" align="center"></div>    
 
@@ -23,6 +23,7 @@
   {
     "type": "Rule",
     "name": "code",
+    "orgText": "() => {\r\n                    $.SUBRULE($.delimiters);\r\n                    $.OPTION(() => {\r\n                        $.SUBRULE($.comments);\r\n                    })\r\n                    $.OPTION2(() => {\r\n                        $.SUBRULE($.stack);\r\n                        $.MANY({\r\n                            DEF: () => {\r\n                                $.SUBRULE($.stackDelimiter);\r\n                                $.OPTION3(() => {\r\n                                    $.SUBRULE2($.stack);\r\n                                })\r\n                            }\r\n                        });\r\n                    })\r\n                    //$.CONSUME(chevrotain.EOF);\r\n                }",
     "definition": [
       {
         "type": "NonTerminal",
@@ -31,6 +32,7 @@
       },
       {
         "type": "Option",
+        "idx": 0,
         "definition": [
           {
             "type": "NonTerminal",
@@ -41,6 +43,7 @@
       },
       {
         "type": "Option",
+        "idx": 2,
         "definition": [
           {
             "type": "NonTerminal",
@@ -49,6 +52,7 @@
           },
           {
             "type": "Repetition",
+            "idx": 0,
             "definition": [
               {
                 "type": "NonTerminal",
@@ -57,6 +61,7 @@
               },
               {
                 "type": "Option",
+                "idx": 3,
                 "definition": [
                   {
                     "type": "NonTerminal",
@@ -74,37 +79,41 @@
   {
     "type": "Rule",
     "name": "delimiters",
+    "orgText": "() => {\r\n                    $.MANY({\r\n                        DEF: () => {\r\n                            $.OR([{\r\n                                ALT: () => {\r\n                                    $.CONSUME(BlockDelimiter, {\r\n                                        LABEL: \"leadingCodeDelimiters\"\r\n                                    });\r\n                                }\r\n                            }, {\r\n                                ALT: () => {\r\n                                    $.CONSUME(StackDelimiters, {\r\n                                        LABEL: \"leadingCodeDelimiters\"\r\n                                    });\r\n                                },\r\n                            } /*{\r\n                  ALT: chevrotain.EMPTY_ALT()\r\n              }*/])\r\n                        }\r\n                    })\r\n                }",
     "definition": [
       {
-        "type": "Alternation",
+        "type": "Repetition",
+        "idx": 0,
         "definition": [
           {
-            "type": "Flat",
+            "type": "Alternation",
+            "idx": 0,
             "definition": [
               {
-                "type": "Terminal",
-                "name": "Delimiter",
-                "label": "Delimiter",
-                "idx": 0,
-                "pattern": ";[ \\t]*\\n?|\\n"
-              }
-            ]
-          },
-          {
-            "type": "Flat",
-            "definition": [
+                "type": "Flat",
+                "definition": [
+                  {
+                    "type": "Terminal",
+                    "name": "BlockDelimiter",
+                    "label": "BlockDelimiter",
+                    "idx": 0,
+                    "pattern": ";[ \\t]*\\n?|\\n"
+                  }
+                ]
+              },
               {
-                "type": "Terminal",
-                "name": "MultipleDelimiters",
-                "label": "MultipleDelimiters",
-                "idx": 0,
-                "pattern": "((;[ \\t]*\\n|;[ \\t]*(?!\\n)|\\n)[ \\t]*){2,}"
+                "type": "Flat",
+                "definition": [
+                  {
+                    "type": "Terminal",
+                    "name": "StackDelimiters",
+                    "label": "StackDelimiters",
+                    "idx": 0,
+                    "pattern": "((;[ \\t]*\\n|;[ \\t]*(?!\\n)|\\n)[ \\t]*){2,}"
+                  }
+                ]
               }
             ]
-          },
-          {
-            "type": "Flat",
-            "definition": []
           }
         ]
       }
@@ -113,22 +122,38 @@
   {
     "type": "Rule",
     "name": "stackDelimiter",
+    "orgText": "() => {\r\n                    $.AT_LEAST_ONE({\r\n                        DEF: () => {\r\n                            $.OR([{\r\n                                ALT: () => {\r\n                                    $.CONSUME(StackDelimiters, {\r\n                                        LABEL: \"intermediateCodeDelimiters\"\r\n                                    });\r\n                                    $.OPTION(() => {\r\n                                        $.CONSUME(BlockDelimiter, {\r\n                                            LABEL: \"intermediateCodeDelimiter\"\r\n                                        });\r\n                                    })\r\n                                }\r\n                            }, {\r\n                                ALT: () => {\r\n                                    $.SUBRULE($.comments);\r\n                                }\r\n                            }]);\r\n                        }\r\n                    });\r\n                }",
     "definition": [
       {
         "type": "RepetitionMandatory",
+        "idx": 0,
         "definition": [
           {
             "type": "Alternation",
+            "idx": 0,
             "definition": [
               {
                 "type": "Flat",
                 "definition": [
                   {
                     "type": "Terminal",
-                    "name": "MultipleDelimiters",
-                    "label": "MultipleDelimiters",
+                    "name": "StackDelimiters",
+                    "label": "StackDelimiters",
                     "idx": 0,
                     "pattern": "((;[ \\t]*\\n|;[ \\t]*(?!\\n)|\\n)[ \\t]*){2,}"
+                  },
+                  {
+                    "type": "Option",
+                    "idx": 0,
+                    "definition": [
+                      {
+                        "type": "Terminal",
+                        "name": "BlockDelimiter",
+                        "label": "BlockDelimiter",
+                        "idx": 0,
+                        "pattern": ";[ \\t]*\\n?|\\n"
+                      }
+                    ]
                   }
                 ]
               },
@@ -151,9 +176,11 @@
   {
     "type": "Rule",
     "name": "comments",
+    "orgText": "() => {\r\n                    $.AT_LEAST_ONE(() => {\r\n                        $.SUBRULE($.comment);\r\n                        $.SUBRULE($.delimiters, {\r\n                            LABEL: \"trailingCommentsDelimiters\"\r\n                        });\r\n                    });\r\n                }",
     "definition": [
       {
         "type": "RepetitionMandatory",
+        "idx": 0,
         "definition": [
           {
             "type": "NonTerminal",
@@ -172,6 +199,7 @@
   {
     "type": "Rule",
     "name": "stack",
+    "orgText": "() => {\r\n                    $.SUBRULE($.block);\r\n                    $.MANY(() => {\r\n                        $.CONSUME(BlockDelimiter, {\r\n                            LABEL: \"intermediateStackDelimiter\"\r\n                        });\r\n                        $.SUBRULE2($.block);\r\n                    });\r\n                    $.OPTION(() => {\r\n                        $.CONSUME2(BlockDelimiter, {\r\n                            LABEL: \"trailingStackDelimiter\"\r\n                        });\r\n                    })\r\n                }",
     "definition": [
       {
         "type": "NonTerminal",
@@ -180,11 +208,12 @@
       },
       {
         "type": "Repetition",
+        "idx": 0,
         "definition": [
           {
             "type": "Terminal",
-            "name": "Delimiter",
-            "label": "Delimiter",
+            "name": "BlockDelimiter",
+            "label": "BlockDelimiter",
             "idx": 0,
             "pattern": ";[ \\t]*\\n?|\\n"
           },
@@ -197,11 +226,12 @@
       },
       {
         "type": "Option",
+        "idx": 0,
         "definition": [
           {
             "type": "Terminal",
-            "name": "Delimiter",
-            "label": "Delimiter",
+            "name": "BlockDelimiter",
+            "label": "BlockDelimiter",
             "idx": 2,
             "pattern": ";[ \\t]*\\n?|\\n"
           }
@@ -212,9 +242,11 @@
   {
     "type": "Rule",
     "name": "block",
+    "orgText": "() => {\r\n                    $.OR([{\r\n                        ALT: () => {\r\n                            $.SUBRULE($.atomic);\r\n                        }\r\n                    }, {\r\n                        ALT: () => {\r\n                            $.SUBRULE($.composite);\r\n                        }\r\n                    }]);\r\n                }",
     "definition": [
       {
         "type": "Alternation",
+        "idx": 0,
         "definition": [
           {
             "type": "Flat",
@@ -243,12 +275,15 @@
   {
     "type": "Rule",
     "name": "atomic",
+    "orgText": "() => {\r\n                    $.AT_LEAST_ONE(() => {\r\n                        $.OR([{\r\n                            ALT: () => {\r\n                                $.CONSUME(Label);\r\n                            }\r\n                        }, {\r\n                            ALT: () => {\r\n                                $.SUBRULE($.argument);\r\n                            }\r\n                        }]);\r\n                    });\r\n                    $.SUBRULE($.annotations);\r\n                }",
     "definition": [
       {
         "type": "RepetitionMandatory",
+        "idx": 0,
         "definition": [
           {
             "type": "Alternation",
+            "idx": 0,
             "definition": [
               {
                 "type": "Flat",
@@ -258,7 +293,7 @@
                     "name": "Label",
                     "label": "Label",
                     "idx": 0,
-                    "pattern": "((:(?!:))|[^\\{\\|\\(\\)\\}\\<\\>\\[\\];\\\\\"#@: \\t\\n]|\\\\[^])([ \\t]*((:(?!:))|[^\\{\\|\\(\\)\\}\\<\\>\\[\\];\\\\\"\\n#@: \\t]|\\\\[^]))*"
+                    "pattern": "((:(?!:))|(\\/(?![\\/*]))|[^\\{\\|\\(\\)\\}\\<\\>\\[\\];\\\\\"#@: \\t\\n\\/]|\\\\[^])([ \\t]*((:(?!:))|(\\/(?![\\/*]))|[^\\{\\|\\(\\)\\}\\<\\>\\[\\];\\\\\"\\n#@: \\t\\/]|\\\\[^]))*"
                   }
                 ]
               },
@@ -286,9 +321,11 @@
   {
     "type": "Rule",
     "name": "composite",
+    "orgText": "() => {\r\n                    $.OR([{\r\n                        ALT: () => {\r\n                            $.SUBRULE($.ifelse);\r\n                        }\r\n                    }, {\r\n                        ALT: () => {\r\n                            $.SUBRULE($.forever);\r\n                        }\r\n                    }, {\r\n                        ALT: () => {\r\n                            $.SUBRULE($.repeat);\r\n                        }\r\n                    }, {\r\n                        ALT: () => {\r\n                            $.SUBRULE($.repeatuntil);\r\n                        }\r\n                    }]);\r\n                }",
     "definition": [
       {
         "type": "Alternation",
+        "idx": 0,
         "definition": [
           {
             "type": "Flat",
@@ -337,6 +374,7 @@
   {
     "type": "Rule",
     "name": "ifelse",
+    "orgText": "() => {\r\n                    $.CONSUME(If);\r\n                    $.SUBRULE($.condition);\r\n                    $.OPTION(() => {\r\n                        $.CONSUME(Then);\r\n                    });\r\n                    $.SUBRULE($.annotations);\r\n                    $.SUBRULE($.substack, {\r\n                        LABEL: \"ifSubstack\"\r\n                    });\r\n                    $.OPTION3(() => {\r\n                        $.OPTION4(() => {\r\n                            $.CONSUME(BlockDelimiter, {\r\n                                LABEL: \"trailingIfSubstackDelimiter\"\r\n                            });\r\n                        });\r\n                        $.CONSUME(Else);\r\n                        $.SUBRULE3($.substack, {\r\n                            LABEL: \"elseSubstack\"\r\n                        });\r\n                    });\r\n                    $.OPTION5(() => {\r\n                        $.CONSUME(End);\r\n                    })\r\n                }",
     "definition": [
       {
         "type": "Terminal",
@@ -352,6 +390,7 @@
       },
       {
         "type": "Option",
+        "idx": 0,
         "definition": [
           {
             "type": "Terminal",
@@ -369,19 +408,21 @@
       },
       {
         "type": "NonTerminal",
-        "name": "clause",
+        "name": "substack",
         "idx": 0
       },
       {
         "type": "Option",
+        "idx": 3,
         "definition": [
           {
             "type": "Option",
+            "idx": 4,
             "definition": [
               {
                 "type": "Terminal",
-                "name": "Delimiter",
-                "label": "Delimiter",
+                "name": "BlockDelimiter",
+                "label": "BlockDelimiter",
                 "idx": 0,
                 "pattern": ";[ \\t]*\\n?|\\n"
               }
@@ -396,8 +437,21 @@
           },
           {
             "type": "NonTerminal",
-            "name": "clause",
+            "name": "substack",
             "idx": 3
+          }
+        ]
+      },
+      {
+        "type": "Option",
+        "idx": 5,
+        "definition": [
+          {
+            "type": "Terminal",
+            "name": "End",
+            "label": "End",
+            "idx": 0,
+            "pattern": "end"
           }
         ]
       }
@@ -406,6 +460,7 @@
   {
     "type": "Rule",
     "name": "forever",
+    "orgText": "() => {\r\n                    $.CONSUME(Forever);\r\n                    $.SUBRULE($.annotations);\r\n                    $.SUBRULE($.substack);\r\n                    $.OPTION(() => {\r\n                        $.CONSUME(End);\r\n                    })\r\n                }",
     "definition": [
       {
         "type": "Terminal",
@@ -421,14 +476,28 @@
       },
       {
         "type": "NonTerminal",
-        "name": "clause",
+        "name": "substack",
         "idx": 0
+      },
+      {
+        "type": "Option",
+        "idx": 0,
+        "definition": [
+          {
+            "type": "Terminal",
+            "name": "End",
+            "label": "End",
+            "idx": 0,
+            "pattern": "end"
+          }
+        ]
       }
     ]
   },
   {
     "type": "Rule",
     "name": "repeat",
+    "orgText": "() => {\r\n                    $.CONSUME(Repeat);\r\n                    $.SUBRULE($.argument);\r\n                    $.SUBRULE($.annotations);\r\n                    $.SUBRULE($.substack);\r\n                    $.OPTION(() => {\r\n                        $.CONSUME(End);\r\n                    })\r\n                }",
     "definition": [
       {
         "type": "Terminal",
@@ -449,14 +518,28 @@
       },
       {
         "type": "NonTerminal",
-        "name": "clause",
+        "name": "substack",
         "idx": 0
+      },
+      {
+        "type": "Option",
+        "idx": 0,
+        "definition": [
+          {
+            "type": "Terminal",
+            "name": "End",
+            "label": "End",
+            "idx": 0,
+            "pattern": "end"
+          }
+        ]
       }
     ]
   },
   {
     "type": "Rule",
     "name": "repeatuntil",
+    "orgText": "() => {\r\n                    $.CONSUME(RepeatUntil);\r\n                    $.SUBRULE($.condition);\r\n                    $.SUBRULE($.annotations);\r\n                    $.SUBRULE($.substack);\r\n                    $.OPTION(() => {\r\n                        $.CONSUME(End);\r\n                    })\r\n                }",
     "definition": [
       {
         "type": "Terminal",
@@ -477,39 +560,12 @@
       },
       {
         "type": "NonTerminal",
-        "name": "clause",
+        "name": "substack",
         "idx": 0
-      }
-    ]
-  },
-  {
-    "type": "Rule",
-    "name": "clause",
-    "definition": [
-      {
-        "type": "Option",
-        "definition": [
-          {
-            "type": "Terminal",
-            "name": "Delimiter",
-            "label": "Delimiter",
-            "idx": 0,
-            "pattern": ";[ \\t]*\\n?|\\n"
-          }
-        ]
       },
       {
         "type": "Option",
-        "definition": [
-          {
-            "type": "NonTerminal",
-            "name": "stack",
-            "idx": 0
-          }
-        ]
-      },
-      {
-        "type": "Option",
+        "idx": 0,
         "definition": [
           {
             "type": "Terminal",
@@ -524,7 +580,39 @@
   },
   {
     "type": "Rule",
+    "name": "substack",
+    "orgText": "() => {\r\n                    $.OPTION(() => {\r\n                        $.CONSUME(BlockDelimiter, {\r\n                            LABEL: \"leadingSubstackDelimiter\"\r\n                        });\r\n                    });\r\n                    $.OPTION2(() => {\r\n                        $.SUBRULE($.stack);\r\n                    });\r\n                }",
+    "definition": [
+      {
+        "type": "Option",
+        "idx": 0,
+        "definition": [
+          {
+            "type": "Terminal",
+            "name": "BlockDelimiter",
+            "label": "BlockDelimiter",
+            "idx": 0,
+            "pattern": ";[ \\t]*\\n?|\\n"
+          }
+        ]
+      },
+      {
+        "type": "Option",
+        "idx": 2,
+        "definition": [
+          {
+            "type": "NonTerminal",
+            "name": "stack",
+            "idx": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "Rule",
     "name": "annotations",
+    "orgText": "() => {\r\n                    $.SUBRULE($.modifiers);\r\n                    $.SUBRULE($.id);\r\n                    $.OPTION(() => {\r\n                        $.SUBRULE($.comment);\r\n                    });\r\n\r\n                }",
     "definition": [
       {
         "type": "NonTerminal",
@@ -538,6 +626,7 @@
       },
       {
         "type": "Option",
+        "idx": 0,
         "definition": [
           {
             "type": "NonTerminal",
@@ -551,16 +640,18 @@
   {
     "type": "Rule",
     "name": "modifiers",
+    "orgText": "() => {\r\n                    $.MANY(() => {\r\n                        $.CONSUME(Modifier);\r\n                    })\r\n                }",
     "definition": [
       {
         "type": "Repetition",
+        "idx": 0,
         "definition": [
           {
             "type": "Terminal",
             "name": "Modifier",
             "label": "Modifier",
             "idx": 0,
-            "pattern": "::((:(?!:))|[^\\{\\|\\(\\)<>\\\\#@: \\t\\n]|\\\\[^])([ \\t]*((:(?!:))|[^\\|\\(\\)<>\\\\#@: \\t]|\\\\[^]))*"
+            "pattern": "::((:(?!:))|[^\\{\\|\\(\\)<>\\\\#@: \\t\\n]|\\\\[^])([ \\t]*((:(?!:))|[^\\|\\(\\)<>\\\\#@: \\t\\n]|\\\\[^]))*"
           }
         ]
       }
@@ -569,9 +660,11 @@
   {
     "type": "Rule",
     "name": "id",
+    "orgText": "() => {\r\n                    $.OPTION(() => {\r\n                        $.CONSUME(ID);\r\n                    });\r\n                }",
     "definition": [
       {
         "type": "Option",
+        "idx": 0,
         "definition": [
           {
             "type": "Terminal",
@@ -587,6 +680,7 @@
   {
     "type": "Rule",
     "name": "comment",
+    "orgText": "() => {\r\n                    $.CONSUME(Comment);\r\n                    $.SUBRULE($.modifiers);\r\n                    $.SUBRULE($.id);\r\n                }",
     "definition": [
       {
         "type": "Terminal",
@@ -610,9 +704,11 @@
   {
     "type": "Rule",
     "name": "argument",
+    "orgText": "() => {\r\n                    $.OR([{\r\n                        ALT: () => {\r\n                            $.CONSUME(LCurlyBracket);\r\n                            $.OR2([{\r\n                                ALT: () => {\r\n                                    $.CONSUME(Literal);\r\n                                }\r\n                            }, {\r\n                                ALT: () => {\r\n                                    $.CONSUME(Label);\r\n                                }\r\n                            }, {\r\n                                ALT: () => {\r\n                                    $.SUBRULE($.expression);\r\n                                }\r\n                            }, {\r\n                                ALT: () => {\r\n                                    $.SUBRULE($.predicate);\r\n                                }\r\n                            }, {\r\n                                NAME: \"$empty\",\r\n                                ALT: chevrotain.EMPTY_ALT()\r\n                            },]);\r\n                            $.SUBRULE($.id);\r\n                            $.CONSUME(RCurlyBracket);\r\n                        }\r\n                    }, {\r\n                        ALT: () => {\r\n                            $.OR3([{\r\n                                ALT: () => {\r\n                                    $.CONSUME(StringLiteral, {\r\n                                        LABEL: \"Literal\"\r\n                                    });\r\n                                }\r\n                            }, {\r\n                                ALT: () => {\r\n                                    $.CONSUME(ColorLiteral, {\r\n                                        LABEL: \"Literal\"\r\n                                    });\r\n                                }\r\n                            }, {\r\n                                ALT: () => {\r\n                                    $.CONSUME(ChoiceLiteral, {\r\n                                        LABEL: \"Literal\"\r\n                                    });\r\n                                }\r\n                            }, {\r\n                                ALT: () => {\r\n                                    $.SUBRULE2($.expression);\r\n                                }\r\n                            }, {\r\n                                ALT: () => {\r\n                                    $.SUBRULE2($.predicate);\r\n                                }\r\n                            }]);\r\n                        }\r\n                    }])\r\n\r\n                }",
     "definition": [
       {
         "type": "Alternation",
+        "idx": 0,
         "definition": [
           {
             "type": "Flat",
@@ -626,6 +722,7 @@
               },
               {
                 "type": "Alternation",
+                "idx": 2,
                 "definition": [
                   {
                     "type": "Flat",
@@ -647,7 +744,7 @@
                         "name": "Label",
                         "label": "Label",
                         "idx": 0,
-                        "pattern": "((:(?!:))|[^\\{\\|\\(\\)\\}\\<\\>\\[\\];\\\\\"#@: \\t\\n]|\\\\[^])([ \\t]*((:(?!:))|[^\\{\\|\\(\\)\\}\\<\\>\\[\\];\\\\\"\\n#@: \\t]|\\\\[^]))*"
+                        "pattern": "((:(?!:))|(\\/(?![\\/*]))|[^\\{\\|\\(\\)\\}\\<\\>\\[\\];\\\\\"#@: \\t\\n\\/]|\\\\[^])([ \\t]*((:(?!:))|(\\/(?![\\/*]))|[^\\{\\|\\(\\)\\}\\<\\>\\[\\];\\\\\"\\n#@: \\t\\/]|\\\\[^]))*"
                       }
                     ]
                   },
@@ -696,6 +793,7 @@
             "definition": [
               {
                 "type": "Alternation",
+                "idx": 3,
                 "definition": [
                   {
                     "type": "Flat",
@@ -764,9 +862,11 @@
   {
     "type": "Rule",
     "name": "condition",
+    "orgText": "() => {\r\n                    $.OR([{\r\n                        ALT: () => {\r\n                            $.CONSUME(LCurlyBracket);\r\n                            $.OR2([{\r\n                                ALT: () => {\r\n                                    $.SUBRULE($.predicate);\r\n                                }\r\n                            }, {\r\n                                NAME: \"$empty\",\r\n                                ALT: chevrotain.EMPTY_ALT()\r\n                            },]);\r\n                            $.OPTION2(() => {\r\n                                $.CONSUME(ID);\r\n                            });\r\n                            $.CONSUME(RCurlyBracket);\r\n                        }\r\n                    }, {\r\n                        ALT: () => {\r\n                            $.SUBRULE2($.predicate);\r\n                        }\r\n                    }])\r\n                }",
     "definition": [
       {
         "type": "Alternation",
+        "idx": 0,
         "definition": [
           {
             "type": "Flat",
@@ -780,6 +880,7 @@
               },
               {
                 "type": "Alternation",
+                "idx": 2,
                 "definition": [
                   {
                     "type": "Flat",
@@ -799,6 +900,7 @@
               },
               {
                 "type": "Option",
+                "idx": 2,
                 "definition": [
                   {
                     "type": "Terminal",
@@ -835,6 +937,7 @@
   {
     "type": "Rule",
     "name": "expression",
+    "orgText": "() => {\r\n                    $.CONSUME(LRoundBracket);\r\n                    $.OPTION(() => {\r\n                        $.SUBRULE($.atomic);\r\n                    });\r\n                    $.CONSUME(RRoundBracket);\r\n                }",
     "definition": [
       {
         "type": "Terminal",
@@ -845,6 +948,7 @@
       },
       {
         "type": "Option",
+        "idx": 0,
         "definition": [
           {
             "type": "NonTerminal",
@@ -865,6 +969,7 @@
   {
     "type": "Rule",
     "name": "predicate",
+    "orgText": "() => {\r\n                    $.CONSUME(LAngleBracket);\r\n                    $.OPTION(() => {\r\n                        $.SUBRULE($.atomic);\r\n                    });\r\n                    $.CONSUME(RAngleBracket);\r\n                }",
     "definition": [
       {
         "type": "Terminal",
@@ -875,6 +980,7 @@
       },
       {
         "type": "Option",
+        "idx": 0,
         "definition": [
           {
             "type": "NonTerminal",

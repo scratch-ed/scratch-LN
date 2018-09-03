@@ -24,7 +24,7 @@ export const Label = createToken({
     //no whitespace in the beginning or end -> will be skipped (OR allow whitespace with keywords?)
     //char (whitespace* char)*
 
-        /((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"#@: \t\n]|\\[^])([ \t]*((:(?!:))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t]|\\[^]))*/,
+        /((:(?!:))|(\/(?![\/*]))|[^\{\|\(\)\}\<\>\[\];\\"#@: \t\n\/]|\\[^])([ \t]*((:(?!:))|(\/(?![\/*]))|[^\{\|\(\)\}\<\>\[\];\\"\n#@: \t\/]|\\[^]))*/,
 
     line_breaks: true
 });
@@ -36,7 +36,7 @@ export const ScratchLNComment = createToken({
 
 export const LineComment = createToken({
     name: "LineComment",
-    pattern: /\/\/[^\n]*[\n]?/,
+    pattern: /(;[ \t]*\n?|\n)?[ \t]*\/\/[^\n;]*/,
     group: Lexer.SKIPPED,
     categories: [ScratchLNComment],
 });
@@ -47,7 +47,7 @@ export const BlockComment = createToken({
     //allowed to use * and / within text but not after each other
     //most chars = [^\*]
     //* followed by /  = /\*(?!\/))
-    pattern: /\/\*([^\*]|\*(?!\/))*\*\//,
+    pattern: /(;[ \t]*\n?|\n)?[ \t]*\/\*([^\*]|\*(?!\/))*\*\//,
     group: Lexer.SKIPPED,
     categories: [ScratchLNComment],
     line_breaks: true
@@ -102,6 +102,7 @@ export const StringLiteral = createToken({
 
 export const NumberLiteral = createToken({
     name: "NumberLiteral",
+    //pattern: /-?(\d+)(\.\d+)?/, todo test of dit werkt met een *
     pattern: /-?(\d+)(\.\d+)?/,
     categories: [Literal,Label],
     longer_alt: Label,
@@ -197,7 +198,7 @@ export const ID = createToken({
 
 export const MultipleDelimiters = createToken({
     name: "MultipleDelimiters",
-    //; \n should always bee seen as a whole 
+    //; \n should always bee seen as a whole
     //so a ; alone must explicitly not been followed by a \n
     pattern: /((;[ \t]*\n|;[ \t]*(?!\n)|\n)[ \t]*){2,}/,
     line_breaks: true
@@ -207,7 +208,7 @@ export const Delimiter = createToken({
     name: "Delimiter",
     pattern: /;[ \t]*\n?|\n/,
     line_breaks: true,
-    //longer_alt: MultipleDelimiter
+    //longer_alt: MultipleDelimiters
 });
 
 

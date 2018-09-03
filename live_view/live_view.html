@@ -1,149 +1,231 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
     <script type="text/javascript" src="live_view.js" charset="utf-8"></script>
     <style type="text/css">
-        #editor {
-            width: 45%;
-            height: 73%;
-            font-size: 25px;
-            resize: none;
-            border: 1px solid;
-            padding: 10px;
+        #main{
+            padding: 5px;
+        }
+
+        #blocklyDiv {
+            float: left;
+        }
+
+        #errorOutput{
             display: block;
         }
 
         #warnings {
             width: 100%;
-            height: 100%;
-        }
-
-        #editor:focus {
-            border: 1px solid #51DFE3;
-        }
-
-        #control {
-            overflow: left;
-        }
-
-        #blocklyDiv {
-            float: left;
-            margin-right: 2%;
-        }
-
-        mark {
-            border-radius: 3px;
-            /*color: transparent;*/
-            background-color: #b1d5e5;
-        }
-
-        .highlights {
-            /*color: transparent;*/
-            /*position: absolute;*/
-
-            /*width: 45%;
-            height: 80%;
-            font-size: 25px; 
-            resize: none; 
-            padding: 10px;*/
-            display: block;
-        }
-
-        .container {
-            /*display: block;
-            margin: 0 auto;
-            transform: translateZ(0);
-            -webkit-text-size-adjust: none;*/
-        }
-
-        #errorOutput{
-            width: 45%;
-            height: 20%;
-            display: block;
-            float: left;
         }
 
         #generatorControl{
             display: block;
-            float: left;
-            width: 45%;
-            height: 20%;
-            margin-left: 7%;
+
         }
 
         #generatorOutput{
+            width: 100%;
+        }
+
+        #myCanvas {
+            display: none;
+        }
+
+        #ace_editor {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: #f8f8f8;
+        }
+
+        .my_ace_editor {
+            position: relative;
+            overflow: hidden;
+            font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+            direction: ltr;
+            text-align: left;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
             height: 100%;
+        }
+
+        #editorContainer{
+            /*height: 77vh;*/
+            height: 70vh;
+            width: 100%;
+
+
+        }
+
+        #toolbars{
+            /*height: 13vh;*/
+        }
+
+        #sln {
+            background-color: #696969;
             width: 100%;
         }
     </style>
 
 </head>
 <body>
+<div id="main">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col .row.row-eq-height">
+            <div id="blocklyDiv"></div>
+        </div>
 
-        <div id="blocklyDiv"></div>
+        <div class="col">
+            <div id="sln">
+                <div class="row">
+                <div id="toolbars">
+                    <div id="id_toolbar" class="btn-group" role="group">
+                        <div class="input-group" >
 
-        <div id="control">
-            <p>
-                <input id="blockid"/>
-                <button id="glowon">glow on</button>
-                <button id="glowoff">glow off</button>
-                <button id="stackglowon">stack glow on</button>
-                <button id="stackglowoff">stack glow off</button>
-                <button id="report">report</button>
-            </p>
+                            <div class="input-group-prepend">
+                                <div class="input-group-text" id="btnGroupAddon">block id</div>
+                            </div>
 
-            <select id="locale">
-                <option value="en">English</option>
-                <option value="nl">Dutch</option>
+                            <input id="blockid" type="text" class="form-control" >
+                        </div>
+                        <button id="glowon" type="button" class="btn btn-secondary">glow on</button>
+                        <button id="glowoff" type="button" class="btn btn-secondary">glow off</button>
+                        <button id="stackglowon" type="button" class="btn btn-secondary">stack glow on</button>
+                        <button id="stackglowoff" type="button" class="btn btn-secondary">stack glow off</button>
+                        <button id="report" type="button" class="btn btn-secondary">report</button>
+                    </div>
 
-                <option value="ca">Catalan</option>
-                <option value="cs">Czech</option>
-                <option value="da">Danish</option>
-                <option value="fi">Finnish</option>
-                <option value="fr">French</option>
-                <option value="de">German</option>
-                <option value="el">Greek</option>
-                <option value="he">Hebrew</option>
-                <option value="hu">Hungarian</option>
-                <option value="id">Indonesian</option>
-                <option value="ga">Irish Gaelic</option>
-                <option value="it">Italian</option>
-                <option value="ja">Japanese</option>
-                <option value="ja-Hira">Japanese(Hira)</option>
-                <option value="mi">Maori</option>
-                <option value="nb">Norwegian (Bokmal)</option>
-                <option value="pt">Portuguese</option>
-                <option value="pt-br">Portuguese (Brazil)</option>
-                <option value="gd">Scottish Gaelic</option>
-                <option value="sr">Serbian</option>
-                <option value="sl">Slovenian</option>
-                <option value="es">Spanish</option>
-                <option value="es-419">Spanish (Latin America)</option>
-                <option value="sv">Swedish</option>
-                <option value="tr">Turkish</option>
-                <option value="uk">Ukranian</option>
-                <option value="vi">Vietnamese</option>
-                <option value="cy">Welsh</option>
-                <option value="zh-cn">Chinese (China)</option>
-                <option value="zh-tw">Chinese (TW)</option>
-            </select>
-            <button id="translate">translate</button>
-            <button id="xmlparser">to blocks!</button>
-            <button id="showexample">example</button>
+                    <div id="workspace_toolbar" class="btn-group" role="group" >
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">block language</div>
+                            </div>
+                            <select class="form-control"  id="locale">
+                                <option value="en">English</option>
+                                <option value="nl">Dutch</option>
 
-            <!-- <button id="insertxml">insert xml</button>  -->
-            <div class="container">
-                <textarea id="editor"></textarea>
-                <div class="highlights" id="highlighter"></div>
+                                <option value="ca">Catalan</option>
+                                <option value="cs">Czech</option>
+                                <option value="da">Danish</option>
+                                <option value="fi">Finnish</option>
+                                <option value="fr">French</option>
+                                <option value="de">German</option>
+                                <option value="el">Greek</option>
+                                <option value="he">Hebrew</option>
+                                <option value="hu">Hungarian</option>
+                                <option value="id">Indonesian</option>
+                                <option value="ga">Irish Gaelic</option>
+                                <option value="it">Italian</option>
+                                <option value="ja">Japanese</option>
+                                <option value="ja-Hira">Japanese(Hira)</option>
+                                <option value="mi">Maori</option>
+                                <option value="nb">Norwegian (Bokmal)</option>
+                                <option value="pt">Portuguese</option>
+                                <option value="pt-br">Portuguese (Brazil)</option>
+                                <option value="gd">Scottish Gaelic</option>
+                                <option value="sr">Serbian</option>
+                                <option value="sl">Slovenian</option>
+                                <option value="es">Spanish</option>
+                                <option value="es-419">Spanish (Latin America)</option>
+                                <option value="sv">Swedish</option>
+                                <option value="tr">Turkish</option>
+                                <option value="uk">Ukranian</option>
+                                <option value="vi">Vietnamese</option>
+                                <option value="cy">Welsh</option>
+                                <option value="zh-cn">Chinese (China)</option>
+                                <option value="zh-tw">Chinese (TW)</option>
+                            </select>
+                        </div>
+
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                examples
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                <button id="showexample" class="dropdown-item" type="button">scratch comments</button>
+                            </div>
+                        </div>
+                        <button id="makeimage" type="button" class="btn btn-secondary"><i class="fas fa-save"></i>
+                            save workspace as png</button>
+                        <canvas id="myCanvas"></canvas>
+                    </div>
+
+                    <div id="ace_toolbar" class="btn-group" role="group">
+                        <button id="ace_undo"  type="button" class="btn btn-secondary">
+                            <i class="fas fa-undo"></i>
+                            <!--undo-->
+                        </button>
+                        <button id="ace_redo"  type="button" class="btn btn-secondary">
+                            <i class="fas fa-redo"></i>
+                            </button>
+                        <button id="ace_comment"  type="button" class="btn btn-secondary">comment</button>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text" id="btnGroupAddon3">font size</div>
+                            </div>
+                            <input type="number" id="ace_font_size"
+                                   value="10" step="1" min="2"
+                                   type="text" class="form-control"/>
+                        </div>
+                        <button id="ace_copy"  type="button" class="btn btn-secondary">
+                            <i class="fas fa-copy"></i>
+                            copy Scratch-LN</button>
+                    </div>
+                </div>
+                </div>
+
+                <div class="row">
+                <div id="editorContainer">
+                    <pre class = "my_ace_editor">
+                        <div id="ace_editor"></div>
+                    </pre>
+                </div>
+                </div>
+
+
+
             </div>
         </div>
+    </div>
+</div>
 
-        <div id="errorOutput">
-            <textarea id="warnings"></textarea>
+
+    <div class="row">
+        <div class="col .row.row-eq-height">
+    Warnings:
+
+            <div id="errorOutput">
+                <textarea id="warnings"></textarea>
+            </div>
+
         </div>
-        <div id="generatorControl">
-            <button id="generate">generate text</button>
-            <textarea id="generatorOutput"></textarea>
+
+        <div class="col">
+
+            <div id="generatorControl">
+                <button id="generate" type="button" class="btn btn-secondary btn-sm">generate Scratch-LN</button>
+                <textarea id="generatorOutput"></textarea>
+            </div>
+
         </div>
+
+</div>
+
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
 </body>
 </html>

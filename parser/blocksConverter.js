@@ -1,7 +1,7 @@
-let blocks = {};
-export default blocks;
+import {CHOICE, EXPRESSION, PREDICATE} from "./infoLNVisitor";
 
 import {BROADCAST, LIST} from "./IDManager";
+import {stringToinputType} from "./typeConfigUtils";
 
 /**
  *
@@ -11,44 +11,93 @@ import {BROADCAST, LIST} from "./IDManager";
  * @param i the index of the argument in the ctx
  */
 function makeArgument(ctx, visitor, arg, i) {
-    if (arg.menu) {
+    if (arg.check === "Boolean") {
+        visitor.state.expectBoolean();
+    } else {
+        if (arg.shadowType) {
+            let inputType = stringToinputType(arg.shadowType);
+            visitor.state.setExpectingInput(inputType);
+        } else {
+            visitor.state.expectNothing();
+        }
+    }
+    let type = visitor.infoVisitor.getType(ctx.argument[i]);
+    //check menu first, because round dropdwons are also inputvalues
+    if (arg.menu) { //can be replaced -> round dropdown
         visitor.xml = visitor.xml.ele('value', {
             'name': arg.name
         });
-        visitor.xml.ele('shadow', {
-            'type': arg.menu //this was added to the json and was not default.
-        }).ele('field', {
-            'name': arg.name
-        }, visitor.infoVisitor.getString(ctx.argument[i])); // '_mouse_'
+        if (type === EXPRESSION || type === PREDICATE) {
+            visitor.visit(ctx.argument[i]);
+            //generate an empty dropdown below
+            visitor.xml.ele('shadow', {
+                'type': arg.menu //this was added to the json and was not default.
+            }).ele('field', {
+                'name': arg.name
+            }); // '_mouse_'
+        } else {
+            //wrong input type
+            if (type !== CHOICE) {
+                visitor.warningsKeeper.add(ctx, "expected a choice but found " + type);
+            }
+            visitor.xml.ele('shadow', {
+                'type': arg.menu //this was added to the json and was not default.
+            }).ele('field', {
+                'name': arg.name
+            }, visitor.infoVisitor.getString(ctx.argument[i])); // '_mouse_'
+        }
         visitor.xml = visitor.xml.up();
-    } else if (arg.type === 'input_value') {
+
+    } else if (arg.type === 'input_value') { //normal input
         visitor.xml = visitor.xml.ele('value', {
             'name': arg.name
         });
         visitor.visit(ctx.argument[i]);
         visitor.xml = visitor.xml.up();
-    } else if (arg.type === 'field_dropdown') {
+
+    } else if (arg.type === 'field_dropdown') { //limited options -> rectangle dropdwon
+        let option = visitor.infoVisitor.getString(ctx.argument[i]);
+        let key;
+        for (let i = 0; i < arg.options.length; i++) {
+            let text = arg.options[i][0];
+            if (text === option) {
+                key = arg.options[i][1];
+                break;
+            }
+        }
+        if (!key) {
+            visitor.warningsKeeper.add(ctx, "unknown option: " + option);
+            key = option;
+        }
+        if (type !== CHOICE) {
+            visitor.warningsKeeper.add(ctx, "expected a choice but found " + type);
+        }
+
+
         visitor.xml = visitor.xml.ele('field', {
             'name': arg.name
-        }, visitor.infoVisitor.getString(ctx.argument[i]));
+        }, key);
         visitor.xml = visitor.xml.up();
     }
+
+    visitor.state.expectNothing();
 }
 
 export function universalBlockConverter(ctx, visitor, structure) {
+    console.log(structure)
     if (structure.shape === "hatblock") {
-        visitor.interruptStack();
+        visitor.interruptStack(ctx, true);
     }
-    addType(ctx, visitor, structure.type);
+    addType(ctx, visitor, structure.opcode);
     for (let i = 0; ctx.argument && i < ctx.argument.length; i++) {
         let arg = structure.args[i];
         makeArgument(ctx, visitor, arg, i);
     }
     if (structure.shape === "hatblock") {
-        visitor.startStack();
+        visitor.startStack(ctx);
     }
     if (structure.shape === "capblock") {
-        visitor.interruptStack();
+        visitor.interruptStack(ctx, false);
     }
 }
 
@@ -67,7 +116,7 @@ export function addType(ctx, visitor, type) {
 //=======================================================================================================================================
 
 export function variableBlockConverter(ctx, visitor, structure) {
-    addType(ctx, visitor, structure.type);
+    addType(ctx, visitor, structure.opcode);
     //name of the variable
     let varble = visitor.infoVisitor.getString(ctx.argument[0]);
     //function must be called to register VariableID
@@ -75,7 +124,7 @@ export function variableBlockConverter(ctx, visitor, structure) {
     visitor.xml = visitor.xml.ele('field', {
         'name': 'VARIABLE'
     }, varble);
-    if(structure.args.length>1) {
+    if (structure.args.length > 1) {
         visitor.xml = visitor.xml.up().ele('value', {
             'name': 'VALUE'
         });
@@ -87,7 +136,7 @@ export function variableBlockConverter(ctx, visitor, structure) {
 
 //todo
 export function listBlockConverter(ctx, visitor, structure) {
-    addType(ctx, visitor, structure.type);
+    addType(ctx, visitor, structure.opcode);
     for (let i = 0; i < ctx.argument.length; i++) {
         let arg = structure.args[i];
         if (arg.name === 'LIST') {
@@ -106,7 +155,7 @@ export function listBlockConverter(ctx, visitor, structure) {
 
 //todo
 export function messageShadowBlockconverter(ctx, visitor, structure) {
-    addType(ctx, visitor, structure.type);
+    addType(ctx, visitor, structure.opcode);
     let varble = visitor.infoVisitor.getString(ctx.argument[0]);
     let arg = structure.args[0];
     let id = visitor.idManager.acquireVariableID(varble, BROADCAST);
@@ -129,7 +178,7 @@ export function messageBlockconverter(ctx, visitor, structure) {
     if (structure.shape === "hatblock") {
         visitor.interruptStack();
     }
-    addType(ctx, visitor, structure.type);
+    addType(ctx, visitor, structure.opcode);
 
     let varble = visitor.infoVisitor.getString(ctx.argument[0]);
     let arg = structure.args[0];
@@ -141,16 +190,16 @@ export function messageBlockconverter(ctx, visitor, structure) {
         'id': id
     }, varble);
     if (structure.shape === "hatblock") {
-        visitor.startStack();
+        visitor.startStack(ctx);
     }
 }
 
 //todo
 export function stopConverter(ctx, visitor, structure) {
-    addType(ctx, visitor, structure.type);
+    addType(ctx, visitor, structure.opcode);
     visitor.xml = visitor.xml.ele('field', {
         'name': "STOP_OPTION"
     }, visitor.infoVisitor.getString(ctx.argument[0]));
     visitor.xml = visitor.xml.up();
-    visitor.interruptStack();
+    visitor.interruptStack(ctx, false);
 }
