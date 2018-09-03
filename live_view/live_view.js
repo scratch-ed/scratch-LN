@@ -196,20 +196,9 @@ function updateWorkspace() {
 
     warnings.value = JSON.stringify(r);
 
-<<<<<<< HEAD
-    editor.focus();
-    //console.log(getWorkspaceXML())
-
-    //let topBlocks=workspace.getTopBlocks(true);
-    //if(topBlocks[0]) {
-    //    let x = topBlocks[0].startHat_;
-    //    console.log(x)
-    //}
-    //generateTextWorkspace();
-=======
     console.log(getWorkspaceXML());
     generateTextWorkspace();
->>>>>>> develop
+
 }
 
 
