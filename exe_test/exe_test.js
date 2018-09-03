@@ -16,6 +16,9 @@ import exampleJSON from './example'
 import {parseTextToXMLDetails} from "../parser/parserUtils";
 import generateText from './../generator/generator.js'
 import format from "xml-formatter"
+import ace from "ace-builds";
+import "ace-builds/src-noconflict/ext-language_tools"
+
 
 const Scratch = {};
 
@@ -44,37 +47,77 @@ window.onload = function () {
         toJson();
     });*/
 
-    SLNEditor = document.getElementById('editor');
+    SLNEditor = ace.edit("slnEditor",{});
+    SLNEditor.renderer.setScrollMargin(10, 10, 10, 10);
+    //SLNEdior = document.getElementById('editor');
     SLNEditor.addEventListener('input', updateWorkspace);
+    document.getElementById('sln_font_size').addEventListener('change', ()=>{aceFontSize(SLNEditor,'sln_font_size')});
 
-    tokensEditor = document.getElementById('tokensEditor');
-    cstEditor = document.getElementById('cstEditor');
+    tokensEditor = ace.edit("tokensEditor",{});
+    tokensEditor.renderer.setScrollMargin(10, 10, 10, 10);
+    document.getElementById('tokens_font_size').addEventListener('change', ()=>{aceFontSize(tokensEditor,'tokens_font_size')});
 
-    XMLEditor = document.getElementById('editor_xml');
+    cstEditor = ace.edit("cstEditor",{});
+    cstEditor.renderer.setScrollMargin(10, 10, 10, 10);
+    document.getElementById('cst_font_size').addEventListener('change', ()=>{aceFontSize(cstEditor,'cst_font_size')});
+
+    XMLEditor = ace.edit("editor_xml",{});
+    XMLEditor.renderer.setScrollMargin(10, 10, 10, 10);
+    document.getElementById('visitor_font_size').addEventListener('change', ()=>{aceFontSize(XMLEditor,'visitor_font_size')});
+
+    document.getElementById("refreshSB").addEventListener('click', ()=>{
+        let blocklyDiv = document.getElementById('blocklyDiv');
+        blocklyDiv.style.width = '100%';
+        blocklyDiv.style.height = '100%';
+        ScratchBlocks.svgResize(workspace);
+        workspace.cleanUp();
+    });
+
+    JSONEditor = ace.edit("editor_json",{});
+    JSONEditor.renderer.setScrollMargin(10, 10, 10, 10);
+    document.getElementById('vm_font_size').addEventListener('change', ()=>{aceFontSize(JSONEditor,'vm_font_size')});
+
+
+
+
+    document.getElementById("showexample").addEventListener('click', ()=>{
+        let example = "when gf clicked\nsay \"hello\"";
+        SLNEditor.setValue(example)
+    });
+
 
     updateWorkspace();
-
 };
 
+function aceFontSize(editor, inputfieldid) {
+    let input = document.getElementById(inputfieldid);
+    editor.setFontSize(input.value);
+}
 
 let SLNEditor;
 let tokensEditor;
 let cstEditor;
 let XMLEditor;
+let JSONEditor;
+
 
 function updateWorkspace() {
     //make xml
-    let text = SLNEditor.value;
+    let text = SLNEditor.getValue();
     let details = parseTextToXMLDetails(text);
     let xml = details.xml;
 
     console.log(details);
 
-    tokensEditor.value = JSON.stringify(details.lexResult.tokens,null, 4);
-    cstEditor.value = JSON.stringify(details.cst,null, 4);
+    tokensEditor.setValue(JSON.stringify(details.lexResult.tokens,null, 4));
+    tokensEditor.gotoLine(0);
+
+    cstEditor.setValue(JSON.stringify(details.cst,null, 4));
+    cstEditor.gotoLine(0);
 
     if (xml) {
-        XMLEditor.value = xml;
+        XMLEditor.setValue(xml);
+        XMLEditor.gotoLine(0);
         //clear workspace
         workspace.clear();
         //add to workspace
@@ -147,7 +190,7 @@ const createScratchBlocksEditor = function () {
     ScratchBlocks.mainWorkspace.getFlyout().hide();
     let blocklyDiv = document.getElementById('blocklyDiv');
     blocklyDiv.style.width = '100%';
-    blocklyDiv.style.height = '50%';
+    blocklyDiv.style.height = '100%';
     ScratchBlocks.svgResize(workspace);
 
 
@@ -175,7 +218,8 @@ function toJson() {
     let json = Scratch.vm.toJSON();
     let editor=document.getElementById('editor_json');
     json = JSON.stringify(JSON.parse(json),null, 4);
-    editor.value=json;
+    JSONEditor.setValue(json);
+    JSONEditor.gotoLine(0);
 }
 
 

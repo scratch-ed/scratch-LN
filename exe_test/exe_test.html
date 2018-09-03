@@ -4,119 +4,409 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+          integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 
     <style>
         #scratch-stage {
 
         }
 
-        #generated{
+        #generated {
             display: none;
         }
 
+        .ace_editor {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: #f8f8f8;
+        }
+
+        .my_ace_editor {
+            position: relative;
+            overflow: hidden;
+            font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+            direction: ltr;
+            text-align: left;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            height: 100%;
+            float: none;
+            width: 100%;
+        }
+
+        .wheel {
+
+        }
+
+        .tools {
+
+            width: 100%;
+        }
+
+        .editordiv {
+            float: none;
+            height: 70vh;
+
+
+        }
 
     </style>
 </head>
 <body>
 <script src="./exe_test.js"></script>
 
-<div>
-    Sprite list:
-    <select id="selectedTarget" multiple></select>
-</div>
 
 
+<h1>Compiling Scratch-LN to Scratch blocks and more</h1>
 <nav>
     <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <a class="nav-item nav-link active" id="nav-sln-tab" data-toggle="tab" href="#nav-sln" role="tab"
-           aria-controls="nav-home" aria-selected="true">
+           aria-controls="nav-sln" aria-selected="true">
             Scratch-LN
         </a>
         <a class="nav-item nav-link" id="nav-lexer-tab" data-toggle="tab" href="#nav-lexer" role="tab"
-           aria-controls="nav-profile" aria-selected="false">
+           aria-controls="nav-lexer" aria-selected="false">
             Lexer
         </a>
         <a class="nav-item nav-link" id="nav-parser-tab" data-toggle="tab" href="#nav-parser" role="tab"
-           aria-controls="nav-contact" aria-selected="false">
+           aria-controls="nav-parser" aria-selected="false">
             Parser
         </a>
         <a class="nav-item nav-link" id="nav-visitor-tab" data-toggle="tab" href="#nav-visitor" role="tab"
-           aria-controls="nav-contact" aria-selected="false">
+           aria-controls="nav-visitor" aria-selected="false">
             Visitor/code generator
         </a>
         <a class="nav-item nav-link" id="nav-sb-tab" data-toggle="tab" href="#nav-sb" role="tab"
-           aria-controls="nav-contact" aria-selected="false">
+           aria-controls="nav-sb" aria-selected="false">
             Scratch Blocks
         </a>
         <a class="nav-item nav-link" id="nav-vm-tab" data-toggle="tab" href="#nav-vm" role="tab"
-           aria-controls="nav-contact" aria-selected="false">
+           aria-controls="nav-vm" aria-selected="false">
             Scratch VM
         </a>
         <a class="nav-item nav-link" id="nav-stage-tab" data-toggle="tab" href="#nav-stage" role="tab"
-           aria-controls="nav-contact" aria-selected="false">
+           aria-controls="nav-stage" aria-selected="false">
             Scratch Stage
+        </a>
+        <a class="nav-item nav-link" id="nav-settings-tab" data-toggle="tab" href="#nav-settings" role="tab"
+           aria-controls="nav-settings" aria-selected="false">
+            <i class="fas fa-cog"></i>
         </a>
     </div>
 </nav>
 <div class="tab-content" id="nav-tabContent">
-    <div class="tab-pane fade show active" id="nav-sln" role="tabpanel" aria-labelledby="nav-sln-tab">sln</div>
-    <div class="tab-pane fade" id="nav-lexer" role="tabpanel" aria-labelledby="nav-profile-lexer">lexer</div>
-    <div class="tab-pane fade" id="nav-parser" role="tabpanel" aria-labelledby="nav-parser-tab">parser</div>
-    <div class="tab-pane fade" id="nav-visitor" role="tabpanel" aria-labelledby="nav-vistor-tab">visitor</div>
-    <div class="tab-pane fade" id="nav-sb" role="tabpanel" aria-labelledby="nav-sb-tab">sb</div>
-    <div class="tab-pane fade" id="nav-vm" role="tabpanel" aria-labelledby="nav-vm-tab">vm</div>
-    <div class="tab-pane fade" id="nav-stage" role="tabpanel" aria-labelledby="nav-stage-tab">stage</div>
-</div>
-
-
-
-<div>
-    Scratch-LN:
-    <textarea id="editor"></textarea>
-</div>
-
-<div>
-    Tokens:
-    <textarea id="tokensEditor"></textarea>
-</div>
-
-<div>
-    CST:
-    <textarea id="cstEditor"></textarea>
-</div>
-
-<div>
-    XML:
-    <button id="toxml">to xml</button>
-    <textarea id="editor_xml"></textarea>
-</div>
-
-
-
-
-
-<div id="blocklyDiv"></div>
-
-<div>
-    JSON
-    <button id="toJson">toJson</button>
-    <textarea id="editor_json"></textarea>
-
-</div>
-
-
-
-<div>
-    <div id="projectButtons">
-        <button id="greenflag">Green flag</button>
-        <button id="stopall">Stop</button>
-
+    <div class="tab-pane fade show active" id="nav-sln" role="tabpanel" aria-labelledby="nav-sln-tab">
+        <!--===============================================================================-->
+        <div class="container-fluid">
+            <div  class="row">
+                <div class="col">
+                    <p>
+                        Enter Scratch-LN in the editor below and go to the next step.
+                    </p>
+                </div>
+            </div>
+            <div  class="row">
+                <div class="col"></div>
+                <div class="col-6">
+                    <div class="row tools">
+                        <div class="btn-group dropleft wheel">
+                            <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" id="exampledropdown"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-cog"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text" id="btnGroupAddon3">font size</div>
+                                    </div>
+                                    <input type="number" id="sln_font_size"
+                                           value="10" step="1" min="2"
+                                           type="text" class="form-control"/>
+                                </div>
+                                <button id="showexample" class="dropdown-item" type="button">show example</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row editordiv">
+                        <pre class="my_ace_editor">
+                            <div id="slnEditor" class="ace_editor"></div>
+                        </pre>
+                    </div>
+                </div>
+                <div class="col"></div>
+            </div>
+        </div>
+        <!--===============================================================================-->
     </div>
-    <canvas id="scratch-stage" style="width: 480px; height: 360px;"></canvas>
+    <div class="tab-pane fade" id="nav-lexer" role="tabpanel" aria-labelledby="nav-profile-lexer">
+        <!--===============================================================================-->
+        <div class="container-fluid">
+            <div  class="row">
+                <div class="col">
+                    <p>
+                        The lexer splits the input Scratch-LN into tokens.
+                    </p>
+                </div>
+            </div>
+            <div  class="row">
+                <div class="col"></div>
+                <div class="col-6">
+                    <div class="row tools">
+                        <div class="btn-group dropleft wheel">
+                            <button class="btn btn-secondary dropdown-toggle btn-sm" type="button"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-cog"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">font size</div>
+                                    </div>
+                                    <input type="number" id="tokens_font_size"
+                                           value="10" step="1" min="2"
+                                           type="text" class="form-control"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row editordiv">
+                        <pre class="my_ace_editor">
+                            <div id="tokensEditor" class="ace_editor"></div>
+                        </pre>
+                    </div>
+                </div>
+                <div class="col"></div>
+            </div>
+        </div>
+        <!--===============================================================================-->
+    </div>
+    <div class="tab-pane fade" id="nav-parser" role="tabpanel" aria-labelledby="nav-parser-tab">
+        <!--===============================================================================-->
+        <div class="container-fluid">
+            <div  class="row">
+                <div class="col">
+                    <p>
+                        The parser uses rules to generate a CST.
+                    </p>
+                </div>
+            </div>
+            <div  class="row">
+                <div class="col"></div>
+                <div class="col-6">
+                    <div class="row tools">
+                        <div class="btn-group dropleft wheel">
+                            <button class="btn btn-secondary dropdown-toggle btn-sm" type="button"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-cog"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">font size</div>
+                                    </div>
+                                    <input type="number" id="cst_font_size"
+                                           value="10" step="1" min="2"
+                                           type="text" class="form-control"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row editordiv">
+                        <pre class="my_ace_editor">
+                            <div id="cstEditor" class="ace_editor"></div>
+                        </pre>
+                    </div>
+                </div>
+                <div class="col"></div>
+            </div>
+        </div>
+        <!--===============================================================================-->
+    </div>
+    <div class="tab-pane fade" id="nav-visitor" role="tabpanel" aria-labelledby="nav-vistor-tab">
+        <!--===============================================================================-->
+        <div class="container-fluid">
+            <div  class="row">
+                <div class="col">
+                    <p>
+                        The visitor generates XML compatible with Scratch Blocks.
+                    </p>
+                </div>
+            </div>
+            <div  class="row">
+                <div class="col"></div>
+                <div class="col-6">
+                    <div class="row tools">
+                        <div class="btn-group dropleft wheel">
+                            <button class="btn btn-secondary dropdown-toggle btn-sm" type="button"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-cog"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">font size</div>
+                                    </div>
+                                    <input type="number" id="visitor_font_size"
+                                           value="10" step="1" min="2"
+                                           type="text" class="form-control"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row editordiv">
+                        <pre class="my_ace_editor">
+                            <div id="editor_xml" class="ace_editor"></div>
+                        </pre>
+                    </div>
+                </div>
+                <div class="col"></div>
+            </div>
+        </div>
+        <!--===============================================================================-->
+    </div>
+    <div class="tab-pane fade" id="nav-sb" role="tabpanel" aria-labelledby="nav-sb-tab">
+        <!--===============================================================================-->
+        <div class="container-fluid">
+            <div  class="row">
+                <div class="col">
+                    <p>
+                        The visitor generates XML compatible with Scratch Blocks.
+                    </p>
+                </div>
+            </div>
+            <div  class="row">
+                <div class="col"></div>
+                <div class="col-6">
+                    <div class="row tools">
+                        <div class="btn-group dropleft wheel">
+                            <button class="btn btn-secondary dropdown-toggle btn-sm" type="button"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-cog"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                <button id="refreshSB" class="dropdown-item" type="button">refresh workspace div</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row editordiv">
+                        <div id="blocklyDiv"></div>
+                    </div>
+                </div>
+                <div class="col"></div>
+            </div>
+        </div>
+        <!--===============================================================================-->
+    </div>
+    <div class="tab-pane fade" id="nav-vm" role="tabpanel" aria-labelledby="nav-vm-tab">
+        <!--===============================================================================-->
+        <div class="container-fluid">
+            <div  class="row">
+                <div class="col">
+                    <p>
+                        Connecting the Scratch VM and Scratch Blocks.
+                    </p>
+                </div>
+            </div>
+            <div  class="row">
+                <div class="col"></div>
+                <div class="col-6">
+                    <div class="row tools">
+                        <div class="btn-group dropleft wheel">
+                            <button class="btn btn-secondary dropdown-toggle btn-sm" type="button"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-cog"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">font size</div>
+                                    </div>
+                                    <input type="number" id="vm_font_size"
+                                           value="10" step="1" min="2"
+                                           type="text" class="form-control"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row editordiv">
+                        <pre class="my_ace_editor">
+                            <div id="editor_json" class="ace_editor"></div>
+                        </pre>
+                    </div>
+                </div>
+                <div class="col"></div>
+            </div>
+        </div>
+        <!--===============================================================================-->
+    </div>
+    <div class="tab-pane fade" id="nav-stage" role="tabpanel" aria-labelledby="nav-stage-tab">
+        <!--===============================================================================-->
+        <div class="container-fluid">
+            <div  class="row">
+                <div class="col">
+                    <p>
+                        Connecting the Scratch Renderer to Scratch VM.
+                    </p>
+                </div>
+            </div>
+            <div  class="row">
+                <div class="col"></div>
+                <div class="col-6">
+                    <div class="row tools">
+                        <div id="projectButtons">
+                            <button id="greenflag" class="btn btn-success">Green flag</button>
+                            <button id="stopall" class="btn btn-danger">Stop</button>
+                        </div>
+                        <div>
+                            <div class="btn-group dropleft wheel">
+                                <button class="btn btn-secondary dropdown-toggle btn-sm" type="button"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-cog"></i>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row editordiv">
+                        <div>
+                            <canvas id="scratch-stage" style="width: 480px; height: 360px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col"></div>
+            </div>
+        </div>
+        <!--===============================================================================-->
+    </div>
+    <div class="tab-pane fade" id="nav-settings" role="tabpanel" aria-labelledby="nav-settings-tab">
+        <div>
+            Sprite list:
+            <select id="selectedTarget" multiple></select>
+        </div>
+    </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -126,12 +416,17 @@
 </div>
 
 
-
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-s
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+
 </body>
 </html>
