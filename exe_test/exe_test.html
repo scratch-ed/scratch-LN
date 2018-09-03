@@ -52,8 +52,23 @@
         .editordiv {
             float: none;
             height: 70vh;
+        }
 
+        .nav-item{
+            color: #696969;
+        }
 
+        .nav-item  nav-link  active {
+            /*background-color: #f8f8f8;*/
+        }
+
+        .tab-content{
+            background-color: white;
+            height: 100%;
+        }
+
+        body {
+            background-color: #cef8ff;
         }
 
     </style>
@@ -61,7 +76,7 @@
 <body>
 <script src="./exe_test.js"></script>
 
-
+<div class="container-fluid">
 
 <h1>Compiling Scratch-LN to Scratch blocks and more</h1>
 <nav>
@@ -359,11 +374,11 @@
                 <div class="col"></div>
                 <div class="col-6">
                     <div class="row tools">
-                        <div id="projectButtons">
-                            <button id="greenflag" class="btn btn-success">Green flag</button>
-                            <button id="stopall" class="btn btn-danger">Stop</button>
+                        <div class="btn-group mr-2" role="group" aria-label="Basic example">
+                            <button id="greenflag" class="btn btn-success" type="button">Green flag</button>
+                            <button id="stopall" class="btn btn-danger" type="button">Stop</button>
                         </div>
-                        <div>
+
                             <div class="btn-group dropleft wheel">
                                 <button class="btn btn-secondary dropdown-toggle btn-sm" type="button"
                                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -374,7 +389,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+
                     <div class="row editordiv">
                         <div>
                             <canvas id="scratch-stage" style="width: 480px; height: 360px;"></canvas>
@@ -408,7 +423,7 @@
 
 
 
-
+</div>
 
 <div id="generated">
     <button id="totext">to text</button>
