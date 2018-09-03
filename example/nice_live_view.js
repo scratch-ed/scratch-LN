@@ -52533,7 +52533,25 @@ window.onload = function () {
 
     //set default value
     aceEditor.on("input",updateWorkspace);
-    let text = 'repeat{10} \n stop \nend\nbla\nbla\nbla\nbla\nbla\nbla\nbla\nbla\nbla\nbla'
+    let text = 'when I receive [Scratch-LN changed]\n' +
+        'change blocks\n' +
+        '\n' +
+        'when I receive [blocks changed]\n' +
+        'change Scratch-LN\n' +
+        '\n' +
+        'when I receive [need Scratch 3.0 blocks]\n' +
+        'if <documentation>\n' +
+        '  write Scratch-LN\n' +
+        '  see blocks\n' +
+        '  copy blocks\n' +
+        '  execute blocks\n' +
+        '  move blocks\n' +
+        '  copy blocks\n' +
+        '  translate blocks\n' +
+        'else\n' +
+        '  move blocks\n' +
+        '  see Scratch-LN\n' +
+        '  copy Scratch-LN​'
     ;
     aceEditor.setValue(text);
     aceEditor.gotoLine(aceEditor.session.getLength());
