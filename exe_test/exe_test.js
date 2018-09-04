@@ -81,7 +81,12 @@ window.onload = function () {
 
 
     document.getElementById("showexample").addEventListener('click', ()=>{
-        let example = "when gf clicked\nsay \"hello\"";
+        let example = "when gf clicked\n" +
+            "set [x] to {5}\n" +
+            "repeat (x)\n" +
+            "    turn left ({360}/(x)) degrees\n" +
+            "end\n" +
+            "say \"hello\"";
         SLNEditor.setValue(example)
     });
 
