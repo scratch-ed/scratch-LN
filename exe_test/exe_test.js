@@ -77,6 +77,9 @@ window.onload = function () {
         console.log(e.target);
     });
 
+    document.getElementById("sbcleanup").addEventListener('click', ()=>{
+        workspace.cleanUp();
+    });
 
     JSONEditor = ace.edit("editor_json",{});
     JSONEditor.renderer.setScrollMargin(10, 10, 10, 10);
