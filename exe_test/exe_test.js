@@ -48,10 +48,11 @@ window.onload = function () {
     });*/
 
     SLNEditor = ace.edit("slnEditor",{});
-    SLNEditor.renderer.setScrollMargin(10, 10, 10, 10);
+    SLNEditor.renderer.setScrollMargin(0,0,0,0);
     //SLNEdior = document.getElementById('editor');
     SLNEditor.addEventListener('input', updateWorkspace);
     document.getElementById('sln_font_size').addEventListener('change', ()=>{aceFontSize(SLNEditor,'sln_font_size')});
+    SLNEditor.resize();
 
     tokensEditor = ace.edit("tokensEditor",{});
     tokensEditor.renderer.setScrollMargin(10, 10, 10, 10);
@@ -116,6 +117,7 @@ function updateWorkspace() {
 
     tokensEditor.setValue(JSON.stringify(details.lexResult.tokens,null, 4));
     tokensEditor.gotoLine(0);
+    drawLexer(details.lexResult.tokens)
 
     cstEditor.setValue(JSON.stringify(details.cst,null, 4));
     cstEditor.gotoLine(0);
@@ -131,6 +133,95 @@ function updateWorkspace() {
         toJson();
 
     }
+}
+
+function drawLexer(tokens) {
+    var c = document.getElementById("tokensCanvas");
+    var ctx = c.getContext("2d");
+    var colors = {
+        "Label": "#efa7d7",
+        "Delimiter": "#c9c3c3",
+        "MultipleDelimiters":"#919185",
+
+        "StringLiteral": "#9ae055",
+        "NumberLiteral": "#9cfcd8",
+        "ColorLiteral": "#b2e868",
+        "ChoiceLiteral":"#d2eaa1",
+
+        "End": "#f2e180",
+        "If": "#f2e180",
+        "Forever": "#f2e180",
+        "Repeat": "#f2e180",
+        "RepeatUntil": "#f2e180",
+
+        "LCurlyBracket": "#bdb9e5",
+        "RCurlyBracket": "#bdb9e5",
+        "RAngleBracket": "#9f98e0",
+        "LAngleBracket": "#9f98e0",
+        "RRoundBracket": "#c1baff",
+        "LRoundBracket": "#c1baff",
+
+    };
+    let line = 1;
+    let x_loc = 0;
+    let h = 50;
+    for(let i=0; i < tokens.length; i++){
+        let token = tokens[i];
+
+        if(token.startLine > line){
+            line=token.startLine;
+            x_loc=0;
+        }
+        let x = x_loc;
+        let y = (line-1)*h;
+        let w = 10*token.image.length + 11;
+
+        //draw the fill
+        console.log(token.tokenType.tokenName)
+        ctx.fillStyle=colors[token.tokenType.tokenName];
+        ctx.fillRect(x,y,w,h);
+        //draw the border
+        //ctx.rect(x, y, w,h);
+        //draw the text
+        ctx.fillStyle="black";
+        ctx.font = "20px Arial";
+        ctx.fillText(token.image,x+3,y+h/2+10);
+
+        if(token.tokenType.tokenName === "MultipleDelimiters"){
+            //draw on the nextline
+            x = 0;
+            y = (line)*h;
+            w = 10*3 + 11 +10*2 + 11;
+            ctx.fillStyle=colors[token.tokenType.tokenName];
+            ctx.fillRect(x,y,w,h);
+            //draw the border
+            //ctx.rect(x, y, w,h);
+            //draw the text
+            ctx.fillStyle="black";
+            ctx.font = "20px Arial";
+            ctx.fillText(token.image,x+5,y+h/2+15);
+        }
+
+
+        //for the next iteration
+        x_loc = x + w;
+    }
+
+//draw index
+    let x = 500;
+    let y = 10;
+    for (var prop in colors) {
+        ctx.fillStyle="black";
+        ctx.font = "20px Arial";
+        ctx.fillText(prop,x+25,y+20);
+        ctx.fillStyle=colors[prop];
+        ctx.fillRect(x,y,20,20);
+
+        y = y+30;
+    }
+
+
+    ctx.stroke();
 }
 
 const ASSET_SERVER = 'https://cdn.assets.scratch.mit.edu/';

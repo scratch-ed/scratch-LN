@@ -31,7 +31,7 @@
         }
 
         .my_ace_editor {
-            position: relative;
+            position: absolute;
             overflow: hidden;
             font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
             direction: ltr;
@@ -47,8 +47,7 @@
         }
 
         .tools {
-
-            width: 100%;
+            width: auto;
         }
 
         .editordiv {
@@ -66,13 +65,24 @@
 
         .tab-content{
             background-color: white;
-            height: 100%;
+            height: 400%;
         }
 
         body {
             background-color: #e0f8ff;
         }
 
+        .nested-tab{
+            margin-bottom: 20px;
+        }
+
+        .nested-content-tab {
+            
+        }
+
+        .bla {
+            background-color: red;
+        }
     </style>
 </head>
 <body>
@@ -80,7 +90,7 @@
 
 <div class="container-fluid">
 
-<h1>Compiling Scratch-LN to Scratch blocks and more</h1>
+<h1>Compiling Scratch-LN to Scratch</h1>
 <nav>
     <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <a class="nav-item nav-link active" id="nav-sln-tab" data-toggle="tab" href="#nav-sln" role="tab"
@@ -131,7 +141,7 @@
             <div  class="row">
                 <div class="col"></div>
                 <div class="col-6">
-                    <div class="row tools">
+                    <div class="row tools bg-secondary">
                         <div class="btn-group dropleft wheel">
                             <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" id="exampledropdown"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -174,28 +184,48 @@
             <div  class="row">
                 <div class="col"></div>
                 <div class="col-6">
-                    <div class="row tools">
-                        <div class="btn-group dropleft wheel">
-                            <button class="btn btn-secondary dropdown-toggle btn-sm" type="button"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-cog"></i>
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text">font size</div>
+                    <ul class="nav nav-pills flex-column flex-sm-row nested-tab" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="flex-sm-fill text-sm-center nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">
+                                Text</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="flex-sm-fill text-sm-center nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">
+                                Visual</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content nested-content-tab" id="myTabContent">
+                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                            <div class="row tools bg-secondary">
+                                <div class="btn-group dropleft wheel">
+                                    <button class="btn btn-secondary dropdown-toggle btn-sm" type="button"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">font size</div>
+                                            </div>
+                                            <input type="number" id="tokens_font_size"
+                                                   value="10" step="1" min="2"
+                                                   type="text" class="form-control"/>
+                                        </div>
                                     </div>
-                                    <input type="number" id="tokens_font_size"
-                                           value="10" step="1" min="2"
-                                           type="text" class="form-control"/>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="row editordiv">
+                            <div class="row editordiv">
                         <pre class="my_ace_editor">
                             <div id="tokensEditor" class="ace_editor"></div>
                         </pre>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                            <div class="row">
+                                <canvas id="tokensCanvas" width="700" height="600" style="border:1px solid #d3d3d3;">
+                                    Your browser does not support the HTML5 canvas tag.</canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col"></div>
@@ -216,7 +246,7 @@
             <div  class="row">
                 <div class="col"></div>
                 <div class="col-6">
-                    <div class="row tools">
+                    <div class="row tools bg-secondary">
                         <div class="btn-group dropleft wheel">
                             <button class="btn btn-secondary dropdown-toggle btn-sm" type="button"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -239,6 +269,9 @@
                             <div id="cstEditor" class="ace_editor"></div>
                         </pre>
                     </div>
+                    <div class="row">
+                        <img src="https://raw.githubusercontent.com/scratch4d/scratch-LN/develop/documentation_parser/generated_diagrams.png">
+                    </div>
                 </div>
                 <div class="col"></div>
             </div>
@@ -258,7 +291,7 @@
             <div  class="row">
                 <div class="col"></div>
                 <div class="col-6">
-                    <div class="row tools">
+                    <div class="row tools bg-secondary">
                         <div class="btn-group dropleft wheel">
                             <button class="btn btn-secondary dropdown-toggle btn-sm" type="button"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -300,7 +333,7 @@
             <div  class="row">
                 <div class="col"></div>
                 <div class="col-6">
-                    <div class="row tools">
+                    <div class="row tools bg-secondary">
                         <div class="btn-group dropleft wheel">
                             <button class="btn btn-secondary dropdown-toggle btn-sm" type="button"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -333,7 +366,7 @@
             <div  class="row">
                 <div class="col"></div>
                 <div class="col-6">
-                    <div class="row tools">
+                    <div class="row tools bg-secondary">
                         <div class="btn-group dropleft wheel">
                             <button class="btn btn-secondary dropdown-toggle btn-sm" type="button"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -375,7 +408,7 @@
             <div  class="row">
                 <div class="col"></div>
                 <div class="col-6">
-                    <div class="row tools">
+                    <div class="row tools bg-secondary" style="width: 480px;">
                         <div class="btn-group mr-2" role="group" aria-label="Basic example">
                             <button id="greenflag" class="btn btn-success" type="button">Green flag</button>
                             <button id="stopall" class="btn btn-danger" type="button">Stop</button>
