@@ -19,7 +19,7 @@ import format from "xml-formatter"
 import ace from "ace-builds";
 import "ace-builds/src-noconflict/ext-language_tools"
 
-
+import $ from "jquery";
 const Scratch = {};
 
 
@@ -66,17 +66,22 @@ window.onload = function () {
     XMLEditor.renderer.setScrollMargin(10, 10, 10, 10);
     document.getElementById('visitor_font_size').addEventListener('change', ()=>{aceFontSize(XMLEditor,'visitor_font_size')});
 
-    document.getElementById("refreshSB").addEventListener('click', ()=>{
-        let blocklyDiv = document.getElementById('blocklyDiv');
-        blocklyDiv.style.width = '100%';
-        blocklyDiv.style.height = '100%';
-        ScratchBlocks.svgResize(workspace);
-        workspace.cleanUp();
+    document.getElementById("refreshSB").addEventListener('click', refreshSB);
+    document.getElementById("visitor-visual-tab").addEventListener('click', refreshSB);
+
+    //https://getbootstrap.com/docs/4.0/components/navs/
+    $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+        if(e.target === "visitor-visual-tab"){
+            refreshSB();
+        }
+        console.log(e.target);
     });
+
 
     JSONEditor = ace.edit("editor_json",{});
     JSONEditor.renderer.setScrollMargin(10, 10, 10, 10);
     document.getElementById('vm_font_size').addEventListener('change', ()=>{aceFontSize(JSONEditor,'vm_font_size')});
+
 
 
 
@@ -94,6 +99,18 @@ window.onload = function () {
 
     updateWorkspace();
 };
+
+function refreshSB() {
+    let blocklyDiv = document.getElementById('blocklyDiv');
+    blocklyDiv.style.width = '100%';
+    blocklyDiv.style.height = '100%';
+    ScratchBlocks.svgResize(workspace);
+    workspace.getFlyout().setRecyclingEnabled(false);
+    let xml = ScratchBlocks.Xml.workspaceToDom(workspace);
+    ScratchBlocks.Xml.clearWorkspaceAndLoadFromXml(xml, workspace);
+    workspace.getFlyout().setRecyclingEnabled(true);
+    workspace.cleanUp();
+}
 
 function aceFontSize(editor, inputfieldid) {
     let input = document.getElementById(inputfieldid);
