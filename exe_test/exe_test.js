@@ -93,7 +93,9 @@ window.onload = function () {
             "    turn left ({360}/(x)) degrees\n" +
             "end\n" +
             "say \"hello\"";
-        SLNEditor.setValue(example)
+        SLNEditor.setValue(example);
+        SLNEditor.gotoLine(0);
+        updateWorkspace();
     });
 
 
