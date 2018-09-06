@@ -3634,16 +3634,16 @@ var exceptions_public_1 = __webpack_require__(45);
 var lang_extensions_1 = __webpack_require__(6);
 var checks_1 = __webpack_require__(10);
 var utils_1 = __webpack_require__(0);
-var follow_1 = __webpack_require__(72);
+var follow_1 = __webpack_require__(73);
 var tokens_public_1 = __webpack_require__(4);
 var lookahead_1 = __webpack_require__(49);
-var gast_builder_1 = __webpack_require__(71);
+var gast_builder_1 = __webpack_require__(72);
 var interpreter_1 = __webpack_require__(28);
 var constants_1 = __webpack_require__(43);
 var tokens_1 = __webpack_require__(12);
 var cst_1 = __webpack_require__(44);
 var keys_1 = __webpack_require__(48);
-var cst_visitor_1 = __webpack_require__(70);
+var cst_visitor_1 = __webpack_require__(71);
 var errors_public_1 = __webpack_require__(27);
 var gast_public_1 = __webpack_require__(1);
 var gast_resolver_public_1 = __webpack_require__(47);
@@ -5334,7 +5334,7 @@ InRuleRecoveryException.prototype = Error.prototype;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var lexer_1 = __webpack_require__(74);
+var lexer_1 = __webpack_require__(75);
 var utils_1 = __webpack_require__(0);
 var tokens_1 = __webpack_require__(12);
 var LexerDefinitionErrorType;
@@ -7617,7 +7617,7 @@ function createBlockFunction(specification) {
 /***/ 39:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(78);
+module.exports = __webpack_require__(79);
 
 
 /***/ }),
@@ -7751,7 +7751,7 @@ exports.tokenMatcher = tokenMatcher;
 /* harmony export (immutable) */ __webpack_exports__["b"] = parseTextToXMLWithWarnings;
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseTextToXMLDetails;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__LNParser__ = __webpack_require__(36);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__XMLLNVisitor__ = __webpack_require__(91);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__XMLLNVisitor__ = __webpack_require__(92);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__blockConverterUtils__ = __webpack_require__(38);
 /**
  * Provide high level function to transform text to XML
@@ -8144,7 +8144,7 @@ exports.firstForTerminal = firstForTerminal;
 Object.defineProperty(exports, "__esModule", { value: true });
 var utils_1 = __webpack_require__(0);
 var lang_extensions_1 = __webpack_require__(6);
-var resolver_1 = __webpack_require__(73);
+var resolver_1 = __webpack_require__(74);
 var checks_1 = __webpack_require__(10);
 var errors_public_1 = __webpack_require__(27);
 var gast_1 = __webpack_require__(11);
@@ -9742,7 +9742,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 /***/ 51:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(81);
+module.exports = __webpack_require__(82);
 
 
 /***/ }),
@@ -10057,7 +10057,7 @@ module.exports = __webpack_require__(81);
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(66);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(67);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__webtools_scratchify_js__ = __webpack_require__(96);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parser_parserUtils_js__ = __webpack_require__(40);
@@ -10065,7 +10065,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_scratch_blocks___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_scratch_blocks__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__webtools_scratchify__ = __webpack_require__(96);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parser_parserUtils__ = __webpack_require__(40);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__generator_generator__ = __webpack_require__(62);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__generator_generator__ = __webpack_require__(63);
 
 
 
@@ -11982,7 +11982,26 @@ exports.HashTable = HashTable;
 
 /***/ }),
 
-/***/ 62:
+/***/ 60:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/**
+ * config.
+ *
+ * Configuration parameters for developers
+ *
+ * @file   This files defines the consts.
+ * @author Ellen Vanhove.
+ */
+
+const MEDIA = '/scratch-LN/example/static/blocks-media/';
+/* harmony export (immutable) */ __webpack_exports__["a"] = MEDIA;
+
+
+/***/ }),
+
+/***/ 63:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -12329,7 +12348,7 @@ init_generator();
 
 /***/ }),
 
-/***/ 66:
+/***/ 67:
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -22701,7 +22720,7 @@ return jQuery;
 
 /***/ }),
 
-/***/ 67:
+/***/ 68:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22723,7 +22742,7 @@ exports.createSyntaxDiagramsCode = createSyntaxDiagramsCode;
 
 /***/ }),
 
-/***/ 68:
+/***/ 69:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22874,34 +22893,6 @@ function indent(howMuch, text) {
 
 /***/ }),
 
-/***/ 69:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var generate_1 = __webpack_require__(68);
-function generateParserFactory(options) {
-    var wrapperText = generate_1.genWrapperFunction({
-        name: options.name,
-        rules: options.rules
-    });
-    var constructorWrapper = new Function("tokenVocabulary", "config", "chevrotain", wrapperText);
-    return function (config) {
-        return constructorWrapper(options.tokenVocabulary, config, 
-        // TODO: check how the require is transpiled/webpacked
-        __webpack_require__(8));
-    };
-}
-exports.generateParserFactory = generateParserFactory;
-function generateParserModule(options) {
-    return generate_1.genUmdModule({ name: options.name, rules: options.rules });
-}
-exports.generateParserModule = generateParserModule;
-//# sourceMappingURL=generate_public.js.map
-
-/***/ }),
-
 /***/ 7:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22966,6 +22957,34 @@ exports.GAstVisitor = GAstVisitor;
 /***/ }),
 
 /***/ 70:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var generate_1 = __webpack_require__(69);
+function generateParserFactory(options) {
+    var wrapperText = generate_1.genWrapperFunction({
+        name: options.name,
+        rules: options.rules
+    });
+    var constructorWrapper = new Function("tokenVocabulary", "config", "chevrotain", wrapperText);
+    return function (config) {
+        return constructorWrapper(options.tokenVocabulary, config, 
+        // TODO: check how the require is transpiled/webpacked
+        __webpack_require__(8));
+    };
+}
+exports.generateParserFactory = generateParserFactory;
+function generateParserModule(options) {
+    return generate_1.genUmdModule({ name: options.name, rules: options.rules });
+}
+exports.generateParserModule = generateParserModule;
+//# sourceMappingURL=generate_public.js.map
+
+/***/ }),
+
+/***/ 71:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23101,13 +23120,13 @@ exports.validateRedundantMethods = validateRedundantMethods;
 
 /***/ }),
 
-/***/ 71:
+/***/ 72:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var range_1 = __webpack_require__(76);
+var range_1 = __webpack_require__(77);
 var utils_1 = __webpack_require__(0);
 var gast_public_1 = __webpack_require__(1);
 var ProdType;
@@ -23558,7 +23577,7 @@ exports.deserializeProduction = deserializeProduction;
 
 /***/ }),
 
-/***/ 72:
+/***/ 73:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23631,7 +23650,7 @@ exports.buildInProdFollowPrefix = buildInProdFollowPrefix;
 
 /***/ }),
 
-/***/ 73:
+/***/ 74:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23694,7 +23713,7 @@ exports.GastRefResolverVisitor = GastRefResolverVisitor;
 
 /***/ }),
 
-/***/ 74:
+/***/ 75:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23714,7 +23733,7 @@ var regexp_to_ast_1 = __webpack_require__(50);
 var tokens_public_1 = __webpack_require__(4);
 var lexer_public_1 = __webpack_require__(31);
 var utils_1 = __webpack_require__(0);
-var reg_exp_1 = __webpack_require__(75);
+var reg_exp_1 = __webpack_require__(76);
 var regExpParser = new regexp_to_ast_1.RegExpParser();
 var PATTERN = "PATTERN";
 exports.DEFAULT_MODE = "defaultMode";
@@ -24529,7 +24548,7 @@ function getCharCodes(charsOrCodes) {
 
 /***/ }),
 
-/***/ 75:
+/***/ 76:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24728,7 +24747,7 @@ exports.canMatchCharCode = canMatchCharCode;
 
 /***/ }),
 
-/***/ 76:
+/***/ 77:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24768,11 +24787,11 @@ exports.isValidRange = isValidRange;
 
 /***/ }),
 
-/***/ 77:
+/***/ 78:
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
-var Blockly = __webpack_require__(85);
+var Blockly = __webpack_require__(86);
 var goog = __webpack_require__(33);
 
 /**
@@ -25126,11 +25145,11 @@ module.exports = Blockly;
 
 /***/ }),
 
-/***/ 78:
+/***/ 79:
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
-var Blockly = __webpack_require__(84);
+var Blockly = __webpack_require__(85);
 var goog = __webpack_require__(33);
 
 // This file was automatically generated.  Do not modify.
@@ -35085,55 +35104,6 @@ module.exports = Blockly;
 
 /***/ }),
 
-/***/ 79:
-/***/ (function(module, exports, __webpack_require__) {
-
-/*** IMPORTS FROM imports-loader ***/
-var Blockly = __webpack_require__(83);
-
-// Do not edit this file; automatically generated by build.py.
-'use strict';
-
-/*
-
- Visual Blocks Editor
-
- Copyright 2016 Massachusetts Institute of Technology
- All rights reserved.
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
-*/
-Blockly.Colours={motion:{primary:"#4C97FF",secondary:"#4280D7",tertiary:"#3373CC"},looks:{primary:"#9966FF",secondary:"#855CD6",tertiary:"#774DCB"},sounds:{primary:"#CF63CF",secondary:"#C94FC9",tertiary:"#BD42BD"},control:{primary:"#FFAB19",secondary:"#EC9C13",tertiary:"#CF8B17"},event:{primary:"#FFBF00",secondary:"#E6AC00",tertiary:"#CC9900"},sensing:{primary:"#5CB1D6",secondary:"#47A8D1",tertiary:"#2E8EB8"},pen:{primary:"#0fBD8C",secondary:"#0DA57A",tertiary:"#0B8E69"},operators:{primary:"#59C059",
-secondary:"#46B946",tertiary:"#389438"},data:{primary:"#FF8C1A",secondary:"#FF8000",tertiary:"#DB6E00"},data_lists:{primary:"#FF661A",secondary:"#FF5500",tertiary:"#E64D00"},more:{primary:"#FF6680",secondary:"#FF4D6A",tertiary:"#FF3355"},text:"#575E75",workspace:"#F9F9F9",toolboxHover:"#4C97FF",toolboxSelected:"#e9eef2",toolboxText:"#575E75",toolbox:"#FFFFFF",flyout:"#F9F9F9",scrollbar:"#CECDCE",scrollbarHover:"#CECDCE",textField:"#FFFFFF",insertionMarker:"#000000",insertionMarkerOpacity:.2,dragShadowOpacity:.3,
-stackGlow:"#FFF200",stackGlowSize:4,stackGlowOpacity:1,replacementGlow:"#FFFFFF",replacementGlowSize:2,replacementGlowOpacity:1,colourPickerStroke:"#FFFFFF",fieldShadow:"rgba(0,0,0,0.1)",dropDownShadow:"rgba(0, 0, 0, .3)",numPadBackground:"#547AB2",numPadBorder:"#435F91",numPadActiveBackground:"#435F91",numPadText:"#FFFFFF",valueReportBackground:"#FFFFFF",valueReportBorder:"#AAAAAA"};
-Blockly.constants={};Blockly.DRAG_RADIUS=3;Blockly.FLYOUT_DRAG_RADIUS=10;Blockly.SNAP_RADIUS=48;Blockly.CONNECTING_SNAP_RADIUS=68;Blockly.CURRENT_CONNECTION_PREFERENCE=20;Blockly.BUMP_DELAY=0;Blockly.COLLAPSE_CHARS=30;Blockly.LONGPRESS=750;Blockly.SOUND_LIMIT=100;Blockly.DRAG_STACK=!0;Blockly.HSV_SATURATION=.45;Blockly.HSV_VALUE=.65;Blockly.SPRITE={width:96,height:124,url:"sprites.png"};Blockly.SVG_NS="http://www.w3.org/2000/svg";Blockly.HTML_NS="http://www.w3.org/1999/xhtml";
-Blockly.INPUT_VALUE=1;Blockly.OUTPUT_VALUE=2;Blockly.NEXT_STATEMENT=3;Blockly.PREVIOUS_STATEMENT=4;Blockly.DUMMY_INPUT=5;Blockly.ALIGN_LEFT=-1;Blockly.ALIGN_CENTRE=0;Blockly.ALIGN_RIGHT=1;Blockly.DRAG_NONE=0;Blockly.DRAG_STICKY=1;Blockly.DRAG_BEGIN=1;Blockly.DRAG_FREE=2;Blockly.OPPOSITE_TYPE=[];Blockly.OPPOSITE_TYPE[Blockly.INPUT_VALUE]=Blockly.OUTPUT_VALUE;Blockly.OPPOSITE_TYPE[Blockly.OUTPUT_VALUE]=Blockly.INPUT_VALUE;Blockly.OPPOSITE_TYPE[Blockly.NEXT_STATEMENT]=Blockly.PREVIOUS_STATEMENT;
-Blockly.OPPOSITE_TYPE[Blockly.PREVIOUS_STATEMENT]=Blockly.NEXT_STATEMENT;Blockly.TOOLBOX_AT_TOP=0;Blockly.TOOLBOX_AT_BOTTOM=1;Blockly.TOOLBOX_AT_LEFT=2;Blockly.TOOLBOX_AT_RIGHT=3;Blockly.OUTPUT_SHAPE_HEXAGONAL=1;Blockly.OUTPUT_SHAPE_ROUND=2;Blockly.OUTPUT_SHAPE_SQUARE=3;Blockly.Categories={motion:"motion",looks:"looks",sound:"sounds",pen:"pen",data:"data",dataLists:"data-lists",event:"events",control:"control",sensing:"sensing",operators:"operators",more:"more"};Blockly.DELETE_AREA_NONE=null;
-Blockly.DELETE_AREA_TRASH=1;Blockly.DELETE_AREA_TOOLBOX=2;Blockly.VARIABLE_CATEGORY_NAME="VARIABLE";Blockly.PROCEDURE_CATEGORY_NAME="PROCEDURE";Blockly.RENAME_VARIABLE_ID="RENAME_VARIABLE_ID";Blockly.DELETE_VARIABLE_ID="DELETE_VARIABLE_ID";Blockly.NEW_BROADCAST_MESSAGE_ID="NEW_BROADCAST_MESSAGE_ID";Blockly.BROADCAST_MESSAGE_VARIABLE_TYPE="broadcast_msg";Blockly.LIST_VARIABLE_TYPE="list";Blockly.SCALAR_VARIABLE_TYPE="";Blockly.PROCEDURES_DEFINITION_BLOCK_TYPE="procedures_definition";
-Blockly.PROCEDURES_PROTOTYPE_BLOCK_TYPE="procedures_prototype";Blockly.PROCEDURES_CALL_BLOCK_TYPE="procedures_call";Blockly.StatusButtonState={READY:"ready",NOT_READY:"not ready"};
-Blockly.Blocks.math={};Blockly.Blocks.math_number={init:function(){this.jsonInit({message0:"%1",args0:[{type:"field_number",name:"NUM",value:"0"}],output:"Number",outputShape:Blockly.OUTPUT_SHAPE_ROUND,colour:Blockly.Colours.textField,colourSecondary:Blockly.Colours.textField,colourTertiary:Blockly.Colours.textField})}};
-Blockly.Blocks.math_integer={init:function(){this.jsonInit({message0:"%1",args0:[{type:"field_number",name:"NUM",precision:1}],output:"Number",outputShape:Blockly.OUTPUT_SHAPE_ROUND,colour:Blockly.Colours.textField,colourSecondary:Blockly.Colours.textField,colourTertiary:Blockly.Colours.textField})}};
-Blockly.Blocks.math_whole_number={init:function(){this.jsonInit({message0:"%1",args0:[{type:"field_number",name:"NUM",min:0,precision:1}],output:"Number",outputShape:Blockly.OUTPUT_SHAPE_ROUND,colour:Blockly.Colours.textField,colourSecondary:Blockly.Colours.textField,colourTertiary:Blockly.Colours.textField})}};
-Blockly.Blocks.math_positive_number={init:function(){this.jsonInit({message0:"%1",args0:[{type:"field_number",name:"NUM",min:0}],output:"Number",outputShape:Blockly.OUTPUT_SHAPE_ROUND,colour:Blockly.Colours.textField,colourSecondary:Blockly.Colours.textField,colourTertiary:Blockly.Colours.textField})}};
-Blockly.Blocks.math_angle={init:function(){this.jsonInit({message0:"%1",args0:[{type:"field_angle",name:"NUM",value:90}],output:"Number",outputShape:Blockly.OUTPUT_SHAPE_ROUND,colour:Blockly.Colours.textField,colourSecondary:Blockly.Colours.textField,colourTertiary:Blockly.Colours.textField})}};Blockly.Blocks.colour={};function randomColour(){return"#"+("00000"+Math.floor(Math.random()*Math.pow(2,24)).toString(16)).substr(-6)}Blockly.Blocks.colour_picker={init:function(){this.jsonInit({message0:"%1",args0:[{type:"field_colour_slider",name:"COLOUR",colour:randomColour()}],outputShape:Blockly.OUTPUT_SHAPE_ROUND,output:"Colour"})}};Blockly.Blocks.texts={};Blockly.Blocks.text={init:function(){this.jsonInit({message0:"%1",args0:[{type:"field_input",name:"TEXT"}],output:"String",outputShape:Blockly.OUTPUT_SHAPE_ROUND,colour:Blockly.Colours.textField,colourSecondary:Blockly.Colours.textField,colourTertiary:Blockly.Colours.textField})}};
-
-
-/*** EXPORTS FROM exports-loader ***/
-module.exports = Blockly;
-
-
-/***/ }),
-
 /***/ 8:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -35146,11 +35116,11 @@ var tokens_public_1 = __webpack_require__(4);
 var exceptions_public_1 = __webpack_require__(45);
 var version_1 = __webpack_require__(32);
 var errors_public_1 = __webpack_require__(27);
-var render_public_1 = __webpack_require__(67);
+var render_public_1 = __webpack_require__(68);
 var gast_visitor_public_1 = __webpack_require__(7);
 var gast_public_1 = __webpack_require__(1);
 var gast_resolver_public_1 = __webpack_require__(47);
-var generate_public_1 = __webpack_require__(69);
+var generate_public_1 = __webpack_require__(70);
 /**
  * defines the public API of
  * changes here may require major version change. (semVer)
@@ -35218,8 +35188,57 @@ module.exports = API;
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
+var Blockly = __webpack_require__(84);
+
+// Do not edit this file; automatically generated by build.py.
+'use strict';
+
+/*
+
+ Visual Blocks Editor
+
+ Copyright 2016 Massachusetts Institute of Technology
+ All rights reserved.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+*/
+Blockly.Colours={motion:{primary:"#4C97FF",secondary:"#4280D7",tertiary:"#3373CC"},looks:{primary:"#9966FF",secondary:"#855CD6",tertiary:"#774DCB"},sounds:{primary:"#CF63CF",secondary:"#C94FC9",tertiary:"#BD42BD"},control:{primary:"#FFAB19",secondary:"#EC9C13",tertiary:"#CF8B17"},event:{primary:"#FFBF00",secondary:"#E6AC00",tertiary:"#CC9900"},sensing:{primary:"#5CB1D6",secondary:"#47A8D1",tertiary:"#2E8EB8"},pen:{primary:"#0fBD8C",secondary:"#0DA57A",tertiary:"#0B8E69"},operators:{primary:"#59C059",
+secondary:"#46B946",tertiary:"#389438"},data:{primary:"#FF8C1A",secondary:"#FF8000",tertiary:"#DB6E00"},data_lists:{primary:"#FF661A",secondary:"#FF5500",tertiary:"#E64D00"},more:{primary:"#FF6680",secondary:"#FF4D6A",tertiary:"#FF3355"},text:"#575E75",workspace:"#F9F9F9",toolboxHover:"#4C97FF",toolboxSelected:"#e9eef2",toolboxText:"#575E75",toolbox:"#FFFFFF",flyout:"#F9F9F9",scrollbar:"#CECDCE",scrollbarHover:"#CECDCE",textField:"#FFFFFF",insertionMarker:"#000000",insertionMarkerOpacity:.2,dragShadowOpacity:.3,
+stackGlow:"#FFF200",stackGlowSize:4,stackGlowOpacity:1,replacementGlow:"#FFFFFF",replacementGlowSize:2,replacementGlowOpacity:1,colourPickerStroke:"#FFFFFF",fieldShadow:"rgba(0,0,0,0.1)",dropDownShadow:"rgba(0, 0, 0, .3)",numPadBackground:"#547AB2",numPadBorder:"#435F91",numPadActiveBackground:"#435F91",numPadText:"#FFFFFF",valueReportBackground:"#FFFFFF",valueReportBorder:"#AAAAAA"};
+Blockly.constants={};Blockly.DRAG_RADIUS=3;Blockly.FLYOUT_DRAG_RADIUS=10;Blockly.SNAP_RADIUS=48;Blockly.CONNECTING_SNAP_RADIUS=68;Blockly.CURRENT_CONNECTION_PREFERENCE=20;Blockly.BUMP_DELAY=0;Blockly.COLLAPSE_CHARS=30;Blockly.LONGPRESS=750;Blockly.SOUND_LIMIT=100;Blockly.DRAG_STACK=!0;Blockly.HSV_SATURATION=.45;Blockly.HSV_VALUE=.65;Blockly.SPRITE={width:96,height:124,url:"sprites.png"};Blockly.SVG_NS="http://www.w3.org/2000/svg";Blockly.HTML_NS="http://www.w3.org/1999/xhtml";
+Blockly.INPUT_VALUE=1;Blockly.OUTPUT_VALUE=2;Blockly.NEXT_STATEMENT=3;Blockly.PREVIOUS_STATEMENT=4;Blockly.DUMMY_INPUT=5;Blockly.ALIGN_LEFT=-1;Blockly.ALIGN_CENTRE=0;Blockly.ALIGN_RIGHT=1;Blockly.DRAG_NONE=0;Blockly.DRAG_STICKY=1;Blockly.DRAG_BEGIN=1;Blockly.DRAG_FREE=2;Blockly.OPPOSITE_TYPE=[];Blockly.OPPOSITE_TYPE[Blockly.INPUT_VALUE]=Blockly.OUTPUT_VALUE;Blockly.OPPOSITE_TYPE[Blockly.OUTPUT_VALUE]=Blockly.INPUT_VALUE;Blockly.OPPOSITE_TYPE[Blockly.NEXT_STATEMENT]=Blockly.PREVIOUS_STATEMENT;
+Blockly.OPPOSITE_TYPE[Blockly.PREVIOUS_STATEMENT]=Blockly.NEXT_STATEMENT;Blockly.TOOLBOX_AT_TOP=0;Blockly.TOOLBOX_AT_BOTTOM=1;Blockly.TOOLBOX_AT_LEFT=2;Blockly.TOOLBOX_AT_RIGHT=3;Blockly.OUTPUT_SHAPE_HEXAGONAL=1;Blockly.OUTPUT_SHAPE_ROUND=2;Blockly.OUTPUT_SHAPE_SQUARE=3;Blockly.Categories={motion:"motion",looks:"looks",sound:"sounds",pen:"pen",data:"data",dataLists:"data-lists",event:"events",control:"control",sensing:"sensing",operators:"operators",more:"more"};Blockly.DELETE_AREA_NONE=null;
+Blockly.DELETE_AREA_TRASH=1;Blockly.DELETE_AREA_TOOLBOX=2;Blockly.VARIABLE_CATEGORY_NAME="VARIABLE";Blockly.PROCEDURE_CATEGORY_NAME="PROCEDURE";Blockly.RENAME_VARIABLE_ID="RENAME_VARIABLE_ID";Blockly.DELETE_VARIABLE_ID="DELETE_VARIABLE_ID";Blockly.NEW_BROADCAST_MESSAGE_ID="NEW_BROADCAST_MESSAGE_ID";Blockly.BROADCAST_MESSAGE_VARIABLE_TYPE="broadcast_msg";Blockly.LIST_VARIABLE_TYPE="list";Blockly.SCALAR_VARIABLE_TYPE="";Blockly.PROCEDURES_DEFINITION_BLOCK_TYPE="procedures_definition";
+Blockly.PROCEDURES_PROTOTYPE_BLOCK_TYPE="procedures_prototype";Blockly.PROCEDURES_CALL_BLOCK_TYPE="procedures_call";Blockly.StatusButtonState={READY:"ready",NOT_READY:"not ready"};
+Blockly.Blocks.math={};Blockly.Blocks.math_number={init:function(){this.jsonInit({message0:"%1",args0:[{type:"field_number",name:"NUM",value:"0"}],output:"Number",outputShape:Blockly.OUTPUT_SHAPE_ROUND,colour:Blockly.Colours.textField,colourSecondary:Blockly.Colours.textField,colourTertiary:Blockly.Colours.textField})}};
+Blockly.Blocks.math_integer={init:function(){this.jsonInit({message0:"%1",args0:[{type:"field_number",name:"NUM",precision:1}],output:"Number",outputShape:Blockly.OUTPUT_SHAPE_ROUND,colour:Blockly.Colours.textField,colourSecondary:Blockly.Colours.textField,colourTertiary:Blockly.Colours.textField})}};
+Blockly.Blocks.math_whole_number={init:function(){this.jsonInit({message0:"%1",args0:[{type:"field_number",name:"NUM",min:0,precision:1}],output:"Number",outputShape:Blockly.OUTPUT_SHAPE_ROUND,colour:Blockly.Colours.textField,colourSecondary:Blockly.Colours.textField,colourTertiary:Blockly.Colours.textField})}};
+Blockly.Blocks.math_positive_number={init:function(){this.jsonInit({message0:"%1",args0:[{type:"field_number",name:"NUM",min:0}],output:"Number",outputShape:Blockly.OUTPUT_SHAPE_ROUND,colour:Blockly.Colours.textField,colourSecondary:Blockly.Colours.textField,colourTertiary:Blockly.Colours.textField})}};
+Blockly.Blocks.math_angle={init:function(){this.jsonInit({message0:"%1",args0:[{type:"field_angle",name:"NUM",value:90}],output:"Number",outputShape:Blockly.OUTPUT_SHAPE_ROUND,colour:Blockly.Colours.textField,colourSecondary:Blockly.Colours.textField,colourTertiary:Blockly.Colours.textField})}};Blockly.Blocks.colour={};function randomColour(){return"#"+("00000"+Math.floor(Math.random()*Math.pow(2,24)).toString(16)).substr(-6)}Blockly.Blocks.colour_picker={init:function(){this.jsonInit({message0:"%1",args0:[{type:"field_colour_slider",name:"COLOUR",colour:randomColour()}],outputShape:Blockly.OUTPUT_SHAPE_ROUND,output:"Colour"})}};Blockly.Blocks.texts={};Blockly.Blocks.text={init:function(){this.jsonInit({message0:"%1",args0:[{type:"field_input",name:"TEXT"}],output:"String",outputShape:Blockly.OUTPUT_SHAPE_ROUND,colour:Blockly.Colours.textField,colourSecondary:Blockly.Colours.textField,colourTertiary:Blockly.Colours.textField})}};
+
+
+/*** EXPORTS FROM exports-loader ***/
+module.exports = Blockly;
+
+
+/***/ }),
+
+/***/ 81:
+/***/ (function(module, exports, __webpack_require__) {
+
+/*** IMPORTS FROM imports-loader ***/
 var goog = __webpack_require__(33);
-var Blockly = __webpack_require__(82);
+var Blockly = __webpack_require__(83);
 
 // Do not edit this file; automatically generated by build.py.
 'use strict';
@@ -35427,7 +35446,7 @@ module.exports = Blockly;
 
 /***/ }),
 
-/***/ 81:
+/***/ 82:
 /***/ (function(module, exports) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -37591,31 +37610,7 @@ exports["goog"] = (goog);
 
 /***/ }),
 
-/***/ 82:
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(79);
-
-
-/***/ }),
-
 /***/ 83:
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(51).Blockly;
-
-
-/***/ }),
-
-/***/ 84:
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(77);
-
-
-/***/ }),
-
-/***/ 85:
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(80);
@@ -37623,7 +37618,31 @@ module.exports = __webpack_require__(80);
 
 /***/ }),
 
-/***/ 87:
+/***/ 84:
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(51).Blockly;
+
+
+/***/ }),
+
+/***/ 85:
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(78);
+
+
+/***/ }),
+
+/***/ 86:
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(81);
+
+
+/***/ }),
+
+/***/ 88:
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -37678,7 +37697,7 @@ module.exports = __webpack_require__(80);
 
 /***/ }),
 
-/***/ 88:
+/***/ 89:
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -38087,7 +38106,71 @@ module.exports = __webpack_require__(80);
 
 /***/ }),
 
-/***/ 89:
+/***/ 9:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/**
+ * Summary.
+ *
+ * Description.
+ *
+ * @file   This files defines the MyClass class.
+ * @author Ellen Vanhove.
+ */
+
+//related to the parser
+const MODUS = {
+    NONE: 0,
+    STACK: 1,
+    REPORTER: 2,
+    BOOLEAN: 3,
+};
+/* harmony export (immutable) */ __webpack_exports__["a"] = MODUS;
+
+
+//input types in Scratch 3.0
+const INPUTTYPE = {
+    NONE: 0,
+    BOOLEAN: 1, //boolean check
+    TEXT: 2, //text and numbers
+    NUMBER: 3, //math_number(no specs)
+    ANGLE: 4,// math_angle(nice view)
+    INTEGER: 5,// math_integer(-1,0,1)
+    POSITIVE_NUMBER: 6, //math_positive_number(0,0.1,1)
+    WHOLE_NUMBER: 7,// math_whole_number(0,1,2)
+    COLOR: 8, //colour_picker
+    DROPDOWN: 9, // does not map to one specific type
+};
+/* harmony export (immutable) */ __webpack_exports__["b"] = INPUTTYPE;
+
+
+//block types in scratch
+const BLOCKTYPE = {
+    NONE: 0,
+    STATEMENT: 1,
+    REPORTER: 2,
+    BOOLEAN: 3,
+    HATBLOCK: 4,
+    CAPBLOCK: 5
+};
+/* unused harmony export BLOCKTYPE */
+
+
+//categories of the blocks
+const CATEGORY = {
+    NONE: 0,
+    VARIABLES: 1,
+    MYBLOCK: 2,
+    //todo add others
+
+};
+/* harmony export (immutable) */ __webpack_exports__["c"] = CATEGORY;
+
+
+/***/ }),
+
+/***/ 90:
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -38373,71 +38456,7 @@ module.exports = __webpack_require__(80);
 
 /***/ }),
 
-/***/ 9:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/**
- * Summary.
- *
- * Description.
- *
- * @file   This files defines the MyClass class.
- * @author Ellen Vanhove.
- */
-
-//related to the parser
-const MODUS = {
-    NONE: 0,
-    STACK: 1,
-    REPORTER: 2,
-    BOOLEAN: 3,
-};
-/* harmony export (immutable) */ __webpack_exports__["a"] = MODUS;
-
-
-//input types in Scratch 3.0
-const INPUTTYPE = {
-    NONE: 0,
-    BOOLEAN: 1, //boolean check
-    TEXT: 2, //text and numbers
-    NUMBER: 3, //math_number(no specs)
-    ANGLE: 4,// math_angle(nice view)
-    INTEGER: 5,// math_integer(-1,0,1)
-    POSITIVE_NUMBER: 6, //math_positive_number(0,0.1,1)
-    WHOLE_NUMBER: 7,// math_whole_number(0,1,2)
-    COLOR: 8, //colour_picker
-    DROPDOWN: 9, // does not map to one specific type
-};
-/* harmony export (immutable) */ __webpack_exports__["b"] = INPUTTYPE;
-
-
-//block types in scratch
-const BLOCKTYPE = {
-    NONE: 0,
-    STATEMENT: 1,
-    REPORTER: 2,
-    BOOLEAN: 3,
-    HATBLOCK: 4,
-    CAPBLOCK: 5
-};
-/* unused harmony export BLOCKTYPE */
-
-
-//categories of the blocks
-const CATEGORY = {
-    NONE: 0,
-    VARIABLES: 1,
-    MYBLOCK: 2,
-    //todo add others
-
-};
-/* harmony export (immutable) */ __webpack_exports__["c"] = CATEGORY;
-
-
-/***/ }),
-
-/***/ 90:
+/***/ 91:
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.12.7
@@ -38446,13 +38465,13 @@ const CATEGORY = {
 
   ref = __webpack_require__(5), assign = ref.assign, isFunction = ref.isFunction;
 
-  XMLDocument = __webpack_require__(87);
+  XMLDocument = __webpack_require__(88);
 
-  XMLDocumentCB = __webpack_require__(88);
+  XMLDocumentCB = __webpack_require__(89);
 
   XMLStringWriter = __webpack_require__(34);
 
-  XMLStreamWriter = __webpack_require__(89);
+  XMLStreamWriter = __webpack_require__(90);
 
   module.exports.create = function(name, xmldec, doctype, options) {
     var doc, root;
@@ -38497,7 +38516,7 @@ const CATEGORY = {
 
 /***/ }),
 
-/***/ 91:
+/***/ 92:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -38505,13 +38524,13 @@ const CATEGORY = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_chevrotain___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_chevrotain__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__LNParser__ = __webpack_require__(36);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__infoLNVisitor__ = __webpack_require__(37);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_xmlbuilder__ = __webpack_require__(90);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_xmlbuilder__ = __webpack_require__(91);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_xmlbuilder___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_xmlbuilder__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__IDManager__ = __webpack_require__(55);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__state__ = __webpack_require__(93);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__state__ = __webpack_require__(94);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__blockConverterUtils__ = __webpack_require__(38);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__modifierAnalyser__ = __webpack_require__(92);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__warnings__ = __webpack_require__(94);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__modifierAnalyser__ = __webpack_require__(93);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__warnings__ = __webpack_require__(95);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__typeConfig__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__typeConfigUtils__ = __webpack_require__(57);
 /**
@@ -39200,7 +39219,7 @@ class XMLLNVisitor extends BaseCstVisitorWithDefaults {
 
 /***/ }),
 
-/***/ 92:
+/***/ 93:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -39338,7 +39357,7 @@ class ModifierAnalyser {
 
 /***/ }),
 
-/***/ 93:
+/***/ 94:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -39533,7 +39552,7 @@ class State {
 
 /***/ }),
 
-/***/ 94:
+/***/ 95:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -39573,25 +39592,6 @@ class WarningsKeeper {
 
 /***/ }),
 
-/***/ 95:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/**
- * config.
- *
- * Configuration parameters for developers
- *
- * @file   This files defines the consts.
- * @author Ellen Vanhove.
- */
-
-const MEDIA = '/scratch-LN/example/static/blocks-media/';
-/* harmony export (immutable) */ __webpack_exports__["a"] = MEDIA;
-
-
-/***/ }),
-
 /***/ 96:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -39604,12 +39604,12 @@ const MEDIA = '/scratch-LN/example/static/blocks-media/';
 /* harmony export (immutable) */ __webpack_exports__["d"] = changeValue;
 /* harmony export (immutable) */ __webpack_exports__["f"] = createWorkspace;
 /* harmony export (immutable) */ __webpack_exports__["g"] = fitBlocks;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(66);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(67);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_scratch_blocks__ = __webpack_require__(39);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_scratch_blocks___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_scratch_blocks__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parser_parserUtils_js__ = __webpack_require__(40);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__config_config__ = __webpack_require__(95);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__config_config__ = __webpack_require__(60);
 
 
 

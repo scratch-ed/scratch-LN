@@ -20,6 +20,7 @@ import ace from "ace-builds";
 import "ace-builds/src-noconflict/ext-language_tools"
 
 import $ from "jquery";
+import {MEDIA} from "../config/config";
 const Scratch = {};
 
 
@@ -289,7 +290,7 @@ const createScratchBlocksEditor = function () {
         'scrollbars': true,
         'trashcan': false,
         'readOnly': false,
-        media: '/static/blocks-media/', //flag
+        media: MEDIA, //flag
         colours: {
             workspace: '#E0FFFF', //'#e0ffe9',
         },
