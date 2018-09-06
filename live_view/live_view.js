@@ -71,6 +71,8 @@ window.onload = function () {
 
     //button options
     document.getElementById('showexample').addEventListener('click', showExample);
+    document.getElementById('showgimmic').addEventListener('click', showGimmic);
+    console.log("gimic")
     document.getElementById('locale').addEventListener('click', translate);
     document.getElementById('makeimage').addEventListener('click', savePNG);
 
@@ -156,10 +158,7 @@ function aceFontSize() {
  * configure the ace editor and toolbar
  */
 function createEditor() {
-    aceEditor = ace.edit("ace_editor",{
-
-
-    });
+    aceEditor = ace.edit("ace_editor",{    });
     aceEditor.renderer.setScrollMargin(10, 10, 10, 10);
     aceUndoButton = document.getElementById('ace_undo');
     aceUndoButton.addEventListener('click', aceUndo);
@@ -331,6 +330,30 @@ function showExample() {
         'end\n' +
         'move {10 @idi} steps\n' +
         'say "hello"'
+    aceEditor.setValue(code);
+    updateWorkspace();
+}
+
+function showGimmic(){
+    let code = "when I receive [Scratch-LN changed]\n" +
+        "change blocks\n" +
+        "\n" +
+        "when I receive [blocks changed]\n" +
+        "change Scratch-LN\n" +
+        "\n" +
+        "when I need [Scratch 3.0 blocks]\n" +
+        "if <documentation>\n" +
+        "  write Scratch-LN\n" +
+        "  see blocks\n" +
+        "  copy blocks\n" +
+        "  execute blocks\n" +
+        "  move blocks\n" +
+        "  copy blocks\n" +
+        "  translate blocks\n" +
+        "else\n" +
+        "  move blocks\n" +
+        "  see Scratch-LN\n" +
+        "  copy Scratch-LN​";
     aceEditor.setValue(code);
     updateWorkspace();
 }

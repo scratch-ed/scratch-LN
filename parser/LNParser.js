@@ -416,7 +416,9 @@ export function parse(text) {
     return {
         value: value,
         lexErrors: lexResult.errors,
-        parseErrors: lnparser.errors
+        parseErrors: lnparser.errors,
+        lexResult: lexResult,
+        cst: value
     }
 }
 

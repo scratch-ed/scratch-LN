@@ -37,6 +37,7 @@ module.exports = [
             'example':'./examples/example.js',
             'nice_live_view':'./live_view/live_view.js',
             'nice_live_view_blocks':'./live_view/live_view_blocks.js',
+            'exe_test':'./exe_test/exe_test.js'
         },
         output: {
             filename: 'example/[name].js'
@@ -59,6 +60,10 @@ module.exports = [
             new CopyWebpackPlugin([{
                 from: 'examples/example.html',
                 to: 'example/example.html'
+            }]),
+            new CopyWebpackPlugin([{
+                from: 'exe_test/exe_test.html',
+                to: 'example/compilationsteps.html'
             }]),
             new CopyWebpackPlugin([{
                 from: 'examples/cdjlogo.jpeg',
