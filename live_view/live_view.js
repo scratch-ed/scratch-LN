@@ -40,6 +40,7 @@ window.onload = function () {
 
     //init extra text fields
     warnings = document.getElementById('warnings');
+    generatorField = document.getElementById('generatorOutput');
 
     //generatorField = document.getElementById('generatorOutput');
 
@@ -72,7 +73,6 @@ window.onload = function () {
     //button options
     document.getElementById('showexample').addEventListener('click', showExample);
     document.getElementById('showgimmic').addEventListener('click', showGimmic);
-    console.log("gimic")
     document.getElementById('locale').addEventListener('click', translate);
     document.getElementById('makeimage').addEventListener('click', savePNG);
 
@@ -451,3 +451,7 @@ function triggerDownload (imgURI) {
 
     a.dispatchEvent(evt);
 }
+
+//===================================================================================
+// copy as HTML
+//===================================================================================

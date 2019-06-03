@@ -86,6 +86,8 @@ export class BasicIDManager{
                     'variableType': variableType
                 }
 
+        }else if(this.varMap[varName].variableType !== variableType){
+            
         }
         return this.varMap[varName].id;
     }
