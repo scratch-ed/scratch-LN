@@ -29,6 +29,10 @@ Advantages of textual embedding in ebooks and websites:
 - [more complicated example in Dutch](https://scratch4d.github.io/scratch-LN/example/example.html): use the buttons to indicate/change the blocks.
 
 
+## Documentation
+- [Compilation steps Scratch-LN &rarr; Scratch 3.0 ](https://scratch4d.github.io/scratch-LN/example/compilationsteps.html)
+
+
 
 
  
