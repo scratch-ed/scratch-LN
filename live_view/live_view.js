@@ -121,6 +121,7 @@ function updateToolbar() {
 let aceUndoButton;
 let aceRedoButton;
 let aceCopyButton;
+let htmlCopyButton;
 let aceFontSizeInput;
 let aceCommentButton;
 
@@ -155,6 +156,33 @@ function aceFontSize() {
 }
 
 /**
+ * copy scratch-LN as html
+ */
+function copyHTML() {
+    let el = document.createElement('textarea');
+    el.value = htmlEncode(aceEditor.getValue());
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+}
+
+function htmlEncode(value){
+    let x =  $('<div> </div>');
+   x.append(
+        $('<pre class="scratch"></pre>')
+        .append(
+            $("<code> </code>").text("\n"+value+"\n"))
+   );
+
+
+    return x.html();
+}
+
+/**
  * configure the ace editor and toolbar
  */
 function createEditor() {
@@ -171,6 +199,9 @@ function createEditor() {
 
     aceCopyButton = document.getElementById('ace_copy');
     aceCopyButton.addEventListener('click', aceCopy);
+
+    htmlCopyButton = document.getElementById('copyhtml');
+    htmlCopyButton.addEventListener('click', copyHTML);
 
     aceCommentButton = document.getElementById('ace_comment');
     aceCommentButton.addEventListener('click', aceComment);
@@ -452,6 +483,3 @@ function triggerDownload (imgURI) {
     a.dispatchEvent(evt);
 }
 
-//===================================================================================
-// copy as HTML
-//===================================================================================
