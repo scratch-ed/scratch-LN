@@ -92,28 +92,34 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col .row.row-eq-height">
-                            <div id="blocklyDiv"></div>
+                           <div class="row">
+                               <div id="id_toolbar" class="btn-group" role="group">
+                                   <div class="input-group" >
+
+                                       <div class="input-group-prepend">
+                                           <div class="input-group-text" id="btnGroupAddon">block id</div>
+                                       </div>
+
+                                       <input id="blockid" type="text" class="form-control" >
+                                   </div>
+                                   <button id="glowon" type="button" class="btn btn-secondary">glow on</button>
+                                   <button id="glowoff" type="button" class="btn btn-secondary">glow off</button>
+                                   <button id="stackglowon" type="button" class="btn btn-secondary">stack glow on</button>
+                                   <button id="stackglowoff" type="button" class="btn btn-secondary">stack glow off</button>
+                                   <button id="report" type="button" class="btn btn-secondary">report</button>
+                               </div>
+                           </div>
+                            <div class="row">
+                                <div id="blocklyDiv"></div>
+                            </div>
+
                         </div>
 
                         <div class="col">
                             <div id="sln">
                                 <div class="row">
                                     <div id="toolbars">
-                                        <div id="id_toolbar" class="btn-group" role="group">
-                                            <div class="input-group" >
 
-                                                <div class="input-group-prepend">
-                                                    <div class="input-group-text" id="btnGroupAddon">block id</div>
-                                                </div>
-
-                                                <input id="blockid" type="text" class="form-control" >
-                                            </div>
-                                            <button id="glowon" type="button" class="btn btn-secondary">glow on</button>
-                                            <button id="glowoff" type="button" class="btn btn-secondary">glow off</button>
-                                            <button id="stackglowon" type="button" class="btn btn-secondary">stack glow on</button>
-                                            <button id="stackglowoff" type="button" class="btn btn-secondary">stack glow off</button>
-                                            <button id="report" type="button" class="btn btn-secondary">report</button>
-                                        </div>
 
                                         <div id="workspace_toolbar" class="btn-group" role="group" >
                                             <div class="input-group">
@@ -172,6 +178,18 @@
                                             <canvas id="myCanvas"></canvas>
                                         </div>
 
+                                        <div id="copy_taalbar" class="btn-group" role="group">
+                                            <button id="pastehtml" type="button" class="btn btn-secondary">
+                                                <i class="fas fa-copy"></i>
+                                                convert from HTML</button>
+                                            <button id="ace_copy"  type="button" class="btn btn-secondary">
+                                                <i class="fas fa-copy"></i>
+                                                copy Scratch-LN</button>
+                                            <button id="copyhtml" type="button" class="btn btn-secondary">
+                                                <i class="fas fa-copy"></i>
+                                                copy as HTML</button>
+                                        </div>
+
                                         <div id="ace_toolbar" class="btn-group" role="group">
                                             <button id="ace_undo"  type="button" class="btn btn-secondary">
                                                 <i class="fas fa-undo"></i>
@@ -189,13 +207,8 @@
                                                        value="10" step="1" min="2"
                                                        type="text" class="form-control"/>
                                             </div>
-                                            <button id="ace_copy"  type="button" class="btn btn-secondary">
-                                                <i class="fas fa-copy"></i>
-                                                copy Scratch-LN</button>
-                                            <button id="copyhtml" type="button" class="btn btn-secondary">
-                                                <i class="fas fa-copy"></i>
-                                                copy as HTML</button>
                                         </div>
+
                                     </div>
                                 </div>
 

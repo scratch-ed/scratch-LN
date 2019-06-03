@@ -122,6 +122,7 @@ let aceUndoButton;
 let aceRedoButton;
 let aceCopyButton;
 let htmlCopyButton;
+let htmlPasteButton;
 let aceFontSizeInput;
 let aceCommentButton;
 
@@ -183,6 +184,15 @@ function htmlEncode(value){
 }
 
 /**
+ * convert the text in the ace editor to HTML (paste from clipboard does not work :()
+ */
+function pasteHTML() {
+   let converted = $('<div> </div>').html(aceEditor.getValue()).text();
+    aceEditor.setValue(converted);
+    aceEditor.gotoLine(aceEditor.session.getLength());
+}
+
+/**
  * configure the ace editor and toolbar
  */
 function createEditor() {
@@ -202,6 +212,9 @@ function createEditor() {
 
     htmlCopyButton = document.getElementById('copyhtml');
     htmlCopyButton.addEventListener('click', copyHTML);
+
+    htmlPasteButton = document.getElementById('pastehtml');
+    htmlPasteButton.addEventListener('click', pasteHTML);
 
     aceCommentButton = document.getElementById('ace_comment');
     aceCommentButton.addEventListener('click', aceComment);
