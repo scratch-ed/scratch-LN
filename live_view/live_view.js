@@ -72,6 +72,7 @@ window.onload = function () {
 
     //button options
     document.getElementById('showexample').addEventListener('click', showExample);
+    document.getElementById('showBalloonexample').addEventListener('click', showBalloonExample);
     document.getElementById('showgimmic').addEventListener('click', showGimmic);
     document.getElementById('locale').addEventListener('click', translate);
     document.getElementById('makeimage').addEventListener('click', savePNG);
@@ -172,12 +173,18 @@ function copyHTML() {
 }
 
 function htmlEncode(value){
-    let x =  $('<div> </div>');
-   x.append(
+    let x =  $('<div></div>');
+ /*  x.append($('<div></div>').append(
         $('<pre class="scratch"></pre>')
         .append(
-            $("<code> </code>").text("\n"+value+"\n"))
-   );
+            $("<code></code>").text("\n"+value+"\n"))
+   ));
+*/
+    x.append(
+        $('<div ></div>')
+            .append(
+                $("<code class=\"scratch\" ></code>").text("\n"+value+"\n"))
+    );
 
 
     return x.html();
@@ -377,6 +384,37 @@ function showExample() {
     aceEditor.setValue(code);
     updateWorkspace();
 }
+
+function showBalloonExample() {
+    let code = "                when gf clicked\n" +
+        "                hide\n" +
+        "                repeat {2}\n" +
+        "                create clone of [mezelf]\n" +
+        "                end\n" +
+        "\n" +
+        "                when i start as a clone\n" +
+        "                set [ghost] effect to {10}\n" +
+        "                switch costume to (pick random {1} to {3})\n" +
+        "                show\n" +
+        "                go to x: (pick random {-200} to {200}) y:{-300}\n" +
+        "                repeat until <touching color #c170db>\n" +
+        "                change y by {20}\n" +
+        "                end\n" +
+        "\n" +
+        "                when i start as a clone\n" +
+        "                set [teller] to {}\n" +
+        "                repeat (teller)\n" +
+        "                turn cw ({360}/(teller)) degrees\n" +
+        "                end\n" +
+        "\n" +
+        "                when this sprite clicked\n" +
+        "                start sound [Pop]\n" +
+        "                delete this clone";
+    aceEditor.setValue(code);
+    updateWorkspace();
+}
+
+
 
 function showGimmic(){
     let code = "when I receive [Scratch-LN changed]\n" +
