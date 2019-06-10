@@ -123,6 +123,7 @@ let aceUndoButton;
 let aceRedoButton;
 let aceCopyButton;
 let htmlCopyButton;
+let htmlCopy2Button;
 let htmlPasteButton;
 let aceFontSizeInput;
 let aceCommentButton;
@@ -157,12 +158,25 @@ function aceFontSize() {
     aceEditor.setFontSize(aceFontSizeInput.value);
 }
 
+
 /**
  * copy scratch-LN as html
  */
 function copyHTML() {
     let el = document.createElement('textarea');
     el.value = htmlEncode(aceEditor.getValue());
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+}
+//todo remove duplicate code
+function copyHTMLWithoutTag() {
+    let el = document.createElement('textarea');
+    el.value = htmlEncodeWithoutTag(aceEditor.getValue());
     el.setAttribute('readonly', '');
     el.style.position = 'absolute';
     el.style.left = '-9999px';
@@ -187,6 +201,12 @@ function htmlEncode(value){
     );
 
 
+    return x.html();
+}
+
+function htmlEncodeWithoutTag(value){
+    let x =  $('<div></div>');
+    x.text("\n"+value+"\n");
     return x.html();
 }
 
@@ -219,6 +239,9 @@ function createEditor() {
 
     htmlCopyButton = document.getElementById('copyhtml');
     htmlCopyButton.addEventListener('click', copyHTML);
+
+    htmlCopy2Button = document.getElementById('copyhtmlwithouttags');
+    htmlCopy2Button.addEventListener('click', copyHTMLWithoutTag);
 
     htmlPasteButton = document.getElementById('pastehtml');
     htmlPasteButton.addEventListener('click', pasteHTML);

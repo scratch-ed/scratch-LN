@@ -27,6 +27,8 @@ Advantages of textual embedding in ebooks and websites:
     - [simple example in English](https://scratch4d.github.io/scratch-LN/example/simple_en.html)
     - [simple example in Dutch](https://scratch4d.github.io/scratch-LN/example/simple.html)
 - [more complicated example in Dutch](https://scratch4d.github.io/scratch-LN/example/example.html): use the buttons to indicate/change the blocks.
+- [Happy birthday in Dutch](https://scratch4d.github.io/scratch-LN/example/verjaardagskaart.html)
+    - [demo](https://github.com/Ellen102/verjaardagskaart)
 
 
 ## Documentation
