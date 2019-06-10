@@ -10469,6 +10469,8 @@ class BasicIDManager{
                     'variableType': variableType
                 }
 
+        }else if(this.varMap[varName].variableType !== variableType){
+            
         }
         return this.varMap[varName].id;
     }
@@ -10892,7 +10894,7 @@ let listOperatorPredicate = function (ctx, visitor) {
 
 const blockspecifications = [
         {
-            "template": ["go to %1"],
+            "template": ["go to %1","go to %1 layer"],
             "description": {
                 "opcode": "looks_gotofrontback",
                 "args": [{

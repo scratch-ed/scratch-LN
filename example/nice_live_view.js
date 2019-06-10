@@ -10396,6 +10396,8 @@ class BasicIDManager{
                     'variableType': variableType
                 }
 
+        }else if(this.varMap[varName].variableType !== variableType){
+            
         }
         return this.varMap[varName].id;
     }
@@ -10816,7 +10818,7 @@ let listOperatorPredicate = function (ctx, visitor) {
 
 const blockspecifications = [
         {
-            "template": ["go to %1"],
+            "template": ["go to %1","go to %1 layer"],
             "description": {
                 "opcode": "looks_gotofrontback",
                 "args": [{
@@ -52694,6 +52696,7 @@ window.onload = function () {
 
     //init extra text fields
     warnings = document.getElementById('warnings');
+    generatorField = document.getElementById('generatorOutput');
 
     //generatorField = document.getElementById('generatorOutput');
 
@@ -52725,8 +52728,8 @@ window.onload = function () {
 
     //button options
     document.getElementById('showexample').addEventListener('click', showExample);
+    document.getElementById('showBalloonexample').addEventListener('click', showBalloonExample);
     document.getElementById('showgimmic').addEventListener('click', showGimmic);
-    console.log("gimic")
     document.getElementById('locale').addEventListener('click', translate);
     document.getElementById('makeimage').addEventListener('click', savePNG);
 
@@ -52775,6 +52778,9 @@ function updateToolbar() {
 let aceUndoButton;
 let aceRedoButton;
 let aceCopyButton;
+let htmlCopyButton;
+let htmlCopy2Button;
+let htmlPasteButton;
 let aceFontSizeInput;
 let aceCommentButton;
 
@@ -52808,6 +52814,67 @@ function aceFontSize() {
     aceEditor.setFontSize(aceFontSizeInput.value);
 }
 
+
+/**
+ * copy scratch-LN as html
+ */
+function copyHTML() {
+    let el = document.createElement('textarea');
+    el.value = htmlEncode(aceEditor.getValue());
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+}
+//todo remove duplicate code
+function copyHTMLWithoutTag() {
+    let el = document.createElement('textarea');
+    el.value = htmlEncodeWithoutTag(aceEditor.getValue());
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+}
+
+function htmlEncode(value){
+    let x =  $('<div></div>');
+ /*  x.append($('<div></div>').append(
+        $('<pre class="scratch"></pre>')
+        .append(
+            $("<code></code>").text("\n"+value+"\n"))
+   ));
+*/
+    x.append(
+        $('<div ></div>')
+            .append(
+                $("<code class=\"scratch\" ></code>").text("\n"+value+"\n"))
+    );
+
+
+    return x.html();
+}
+
+function htmlEncodeWithoutTag(value){
+    let x =  $('<div></div>');
+    x.text("\n"+value+"\n");
+    return x.html();
+}
+
+/**
+ * convert the text in the ace editor to HTML (paste from clipboard does not work :()
+ */
+function pasteHTML() {
+   let converted = $('<div> </div>').html(aceEditor.getValue()).text();
+    aceEditor.setValue(converted);
+    aceEditor.gotoLine(aceEditor.session.getLength());
+}
+
 /**
  * configure the ace editor and toolbar
  */
@@ -52825,6 +52892,15 @@ function createEditor() {
 
     aceCopyButton = document.getElementById('ace_copy');
     aceCopyButton.addEventListener('click', aceCopy);
+
+    htmlCopyButton = document.getElementById('copyhtml');
+    htmlCopyButton.addEventListener('click', copyHTML);
+
+    htmlCopy2Button = document.getElementById('copyhtmlwithouttags');
+    htmlCopy2Button.addEventListener('click', copyHTMLWithoutTag);
+
+    htmlPasteButton = document.getElementById('pastehtml');
+    htmlPasteButton.addEventListener('click', pasteHTML);
 
     aceCommentButton = document.getElementById('ace_comment');
     aceCommentButton.addEventListener('click', aceComment);
@@ -52988,6 +53064,37 @@ function showExample() {
     updateWorkspace();
 }
 
+function showBalloonExample() {
+    let code = "                when gf clicked\n" +
+        "                hide\n" +
+        "                repeat {2}\n" +
+        "                create clone of [mezelf]\n" +
+        "                end\n" +
+        "\n" +
+        "                when i start as a clone\n" +
+        "                set [ghost] effect to {10}\n" +
+        "                switch costume to (pick random {1} to {3})\n" +
+        "                show\n" +
+        "                go to x: (pick random {-200} to {200}) y:{-300}\n" +
+        "                repeat until <touching color #c170db>\n" +
+        "                change y by {20}\n" +
+        "                end\n" +
+        "\n" +
+        "                when i start as a clone\n" +
+        "                set [teller] to {}\n" +
+        "                repeat (teller)\n" +
+        "                turn cw ({360}/(teller)) degrees\n" +
+        "                end\n" +
+        "\n" +
+        "                when this sprite clicked\n" +
+        "                start sound [Pop]\n" +
+        "                delete this clone";
+    aceEditor.setValue(code);
+    updateWorkspace();
+}
+
+
+
 function showGimmic(){
     let code = "when I receive [Scratch-LN changed]\n" +
         "change blocks\n" +
@@ -53105,6 +53212,8 @@ function triggerDownload (imgURI) {
 
     a.dispatchEvent(evt);
 }
+
+
 
 /***/ })
 /******/ ]);
