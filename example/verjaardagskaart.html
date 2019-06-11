@@ -90,217 +90,217 @@
 
 <body>
 
-    <h1 id="example-1">Verjaardagskaart</h1>
-    <div class="uitleg">In dit project maken we een verjaardagskaart. Als je op de groene vlag klikt komen er ballonnen tevoorschijn die je kapot kan prikken door er op te klikken. Je kan het project <a href="https://scratch.mit.edu/projects/316174513"> hier </a> vinden. </div>
-    <!--
+<h1 id="example-1">Verjaardagskaart</h1>
+<div class="uitleg">In dit project maken we een verjaardagskaart. Als je op de groene vlag klikt komen er ballonnen tevoorschijn die je kapot kan prikken door er op te klikken. Je kan het project <a href="https://scratch.mit.edu/projects/316174513">hier</a> vinden. </div>
+<!--
 <div class="voorbeeld">
 <iframe src="https://scratch.mit.edu/projects/315587154/embed" allowtransparency="true" width="485" height="402" frameborder="0" scrolling="no" allowfullscreen></iframe>
 </div>
 -->
-    <div class="stap">Probeer het project eens uit!</div>
+<div class="stap">Probeer het project eens uit!</div>
 
-    <section>
-        <h2>Het project klaarzetten</h2>
-        <div class="uitleg">Je kan het lege project <a href="https://scratch.mit.edu/projects/316174513"> hier </a> vinden. Het bevat al alle sprites die je nodig zal hebben in dit project. </div>
-        <div class="stap">Zorg ervoor dat je ingelogged bent en ga naar de project pagina hierboven. Klik op <i>Remix</i> zodat Scratch een kopie maakt van het project op jouw naam en alle verandering worden opgelsagen. Kijk eens welke sprites er allemaal aanwezig zijn. Je mag de tekst aanpassen.</div>
-    </section>
-    <section>
-        <h2>De ballon laten stijgen</h2>
-        <div class="uitleg">
-            Om de ballon te laten stijgen moeten we de y-waarde van de ballon aanpassen. Herinner je je de x- en y-as uit de wiskunde les? Het is mooier als we de ballon in een aantal kleinere stappen naar boven laten gaan in plaats van in één grote stap. Iedere keer als we op de groene vlag klikken, moet de ballon terug onderaan starten.
-        </div>
-        <div class="stap">Programmeer de ballon zodat deze van onderaan tot aan het plafon beweegt elke keer we op de groene vlag klikken.</div>
+<section>
+    <h2>Het project klaarzetten</h2>
+    <div class="uitleg">Je kan het lege project <a href="https://scratch.mit.edu/projects/316174513">hier</a> vinden. Het bevat al alle sprites die je nodig zal hebben in dit project. </div>
+    <div class="stap">Zorg ervoor dat je ingelogged bent en ga naar de project pagina hierboven. Klik op <i>Remix</i> zodat Scratch een kopie van het project op jouw naam maakt en alle verandering worden dan opgeslagen. Kijk eens welke sprites er allemaal aanwezig zijn in het project. Je mag de tekst aanpassen.</div>
+</section>
+<section>
+    <h2>De ballon laten stijgen</h2>
+    <div class="uitleg">
+        Om de ballon te laten stijgen moeten we de y-waarde van de ballon aanpassen. Herinner je je de x- en y-as uit de wiskunde les? Het is mooier als we de ballon in een aantal kleinere stappen naar boven laten gaan in plaats van in één grote stap. Iedere keer als we op de groene vlag klikken, moet de ballon terug onderaan starten.
+    </div>
+    <div class="stap">Programmeer de ballon zodat deze van onder tot aan het plafon (paarse lijn) beweegt elke keer we op de groene vlag klikken.</div>
 
-        <div class="uitleg">
-            Jouw code zou op de code hieronder moeten lijken. Kies zelf de getallen!
-            <div><code class="scratch">
-                    when gf clicked
-                    go to x:{} y:{}
-                    repeat until &lt;touching color #c170db&gt;
-                    change y by {}
-                    end
-                </code></div>
-        </div>
-    </section>
-
-    <section>
-        <h2>Laat de ballon ronddraaien</h2>
-        <div class="uitleg">
-            Het is natuurlijk leuker als de ballon ook ronddraait.
-        </div>
-        <div class="stap">
-            Voeg de volgende code toevoegen aan het project, vul zelf getallen in en kijk wat er gebeurt. De andere code blijft staan.
-
-            <div><code class="scratch">
-                    when gf clicked
-                    repeat {}
-                    turn cw {} degrees
-                    end
-                </code></div>
-
-        </div>
-        <div class="uitleg">
-            Welke waarden moeten we invullen zodat de ballon volledig zou ronddraaien?
-            Scratch kan dit voor ons berekenen! We weten dat een cirkel 360 graden is en we kiezen in hoeveel stappen we dit willen doen. Dus voeren we een berekening uit <div class="inlineScratch"><code class="scratch">({360}/{})</code></div>.
-        </div>
-        <div class="uitleg">
-            Als we de balloon nu sneller willen laten draaien moeten we dit op twee plaatsen aanpassen. Een keer in het herhaal-block en één keer in de deling. Je kan gemakkelijk één van de twee vergeten aanpassen... Gelukkig is hier een oplossing voor! We gebruiken hiervoor een variabele, bijvoorbeeld
-            <div class="inlineScratch"><code class="scratch">(draai snelheid)</code></div>. Je kan een variable maken in de toolbox bij de categorie <i>Variable</i>.
-        </div>
-        <div class="stap">
-            Pas je code aan zodat je een variable gebruikt om de snelheid waarmee de ballon draait aan te geven.
-        </div>
-        <div class="uitleg">
-            Je code ziet er nu als volgt uit:
-            <div><code class="scratch">
-                    when gf clicked
-                    set [draai snelheid] to {}
-                    repeat (draai snelheid)
-                    turn cw ({360}/(draai snelheid)) degrees
-                    end
-                </code></div>
-        </div>
-    </section>
-
-    <section>
-        <h2>Een echte ballon is een beetje doorzichtig</h2>
-        <div class="uitleg">
-            Je kan de ballon een beetje doorzichtig maken door gebruik te maken van het <i>geest</i> effect zo zorg je ervoor dat je het plafon (de paarse lijn) en de letters er door kan zien.
-            <div><code class="scratch">
-                    set [ghost] effect to {}
-                </code></div>
-        </div>
-        <div class="stap">
-            Maak de ballon een beetje doorzichtig zodat je de tekst en het plafon erdoor ziet.
-        </div>
-    </section>
-
-    <section>
-        <h2>Een paar verassingen...</h2>
-        <div class="uitleg">
-            Als je bij uiterlijken gaat kijken zie je dat de ballon drie verschillende kleuren kan hebben. We kunnen hier zelf eentje van kiezen.
-            <div>
-                <code class="scratch">
-                    switch costume to [balloon1-b]
-                </code>
-            </div>
-            Of we kunnen er willekeurig eentje door de computer laten kiezen.
-            <div>
-                <code class="scratch">
-                    switch costume to (pick random {1} to {3})
-                </code>
-            </div>
-        </div>
-        <div class="stap">
-            Pas je programma aan zodat iedere keer je op de groene vlag drukt een willekeurige uiterlijk voor de ballon wordt gekozen.
-        </div>
-        <div class="uitleg">
-            Je kan nog meer willekeurig maken. Bijvoorbeeld de start positie van de ballon (x-waarde) of hoe snel de ballon ronddraait. Misschien denk jij nog aan andere dingen?
-        </div>
-        <div class="stap">Pas je programma aan zodat de ballon steeds op een andere locatie begint wanneer je op de groene vlag drukt.</div>
-        <div class="stap">Zorg ervoor dat de ballon steeds met een andere snelheid rond draait.</div>
-    </section>
-
-    <section>
-        <h2>Meer ballonnen</h2>
-        <div class="uitleg">
-            Weet je wat een <i>Kloon</i> is? Dit een kopie dat er hetzelfde uitziet en zich hetzelfde gedraagd als het orgineel. In Scratch kan je ook klonen!
-        </div>
-        <div class="stap">
-            Voeg het volgende stukje code toe aan je project. Wat gebeurt er?
-
-            <div><code class="scratch">
-                    when gf clicked
-                    create clone of [mezelf]
-                </code></div>
-        </div>
-        <div class="uitleg">
-            Er zijn nu twee balonnen maar de andere ballon doet nog niets. Er zijn verschillende manieren om dit probleem op te lossen, we bespreken hier één mogelijke oplossing.
-        </div>
-        <div class="stap">
-            Vervang op de andere plaatsen (dus niet in de code hierboven) <div class="inlineScratch">
-                <code class="scratch">when gf clicked</code></div>
-            door <div class="inlineScratch">
-                <code class="scratch">when I start as a clone</code>
-            </div>. Wat is er verandert?
-        </div>
-        <div class="uitleg">
-            Als je nu op de groene vlag klikt, lijkt het alsof hetzelfde gebeurt, maar het is nu de kloon die beweegt. Als we nu twee ballonnen willen die bewegen kunnen we nog een kloon maken. Maar wat dan met het origineel? We verbergen het gewoon!
-        </div>
-        <div class="stap">
-            Zorg ervoor dat er twee ballonen zijn die stijgen en ronddraaien. Doe dit door twee klonen te maken en het origineel te verbergen.
-        </div>
-        <div class="uitleg">
-            Je code zou er ongeveer zo moeten uitzien:
-            <div><code class="scratch">
-                    when gf clicked
-                    hide
-                    repeat {2}
-                    create clone of [mezelf]
-
-                    when i start as a clone
-                    show
-                </code></div>
-        </div>
-
-        <div class="stap">
-            Maak zoveel ballonnen als je zelf wil!
-        </div>
-
-        <h2>Ballonnen kapot prikken</h2>
-        <div class="uitleg">
-            Zoveel ballonnen wil je natuurlijk kapot prikken. Je kan een kloon verwijderen met <div class="inlineScratch">
-                <div><code class="scratch">delete this clone</code></div>
-            </div>
-        </div>
-        <div class="stap">
-            Pas je programma aan zodat de ballonnen verdwijnen als je erop klikt. Zorg voor een bijpassend geluidje!
-        </div>
-        <div class="uitleg">
-            Dit ziet er dan als volgt uit:
-            <div><code class="scratch">
-                    when this sprite clicked
-                    start sound [Pop]
-                    delete this clone
-                </code></div>
-        </div>
-    </section>
-    <section>
-        <h2>Uiteindelijke oplossing</h2>
+    <div class="uitleg">
+        Jouw code zou op de code hieronder moeten lijken. Kies zelf de getallen!
         <div><code class="scratch">
-                when gf clicked
-                hide
-                repeat {2}
-                create clone of [mezelf]
-                end
+            when gf clicked
+            go to x:{} y:{}
+            repeat until &lt;touching color #c170db&gt;
+            change y by {}
+            end
+        </code></div>
+    </div>
+</section>
 
-                when i start as a clone
-                set [ghost] effect to {10}
-                switch costume to (pick random {1} to {3})
-                show
-                go to x: (pick random {-200} to {200}) y:{-300}
-                repeat until &lt;touching color #c170db&gt;
-                change y by {20}
-                end
+<section>
+    <h2>Laat de ballon ronddraaien</h2>
+    <div class="uitleg">
+        Het is natuurlijk leuker als de ballon ook ronddraait.
+    </div>
+    <div class="stap">
+        Voeg de onderstaande code toe aan het project. Vul zelf getallen in en kijk wat er gebeurt. De andere code laat je staan.
 
-                when i start as a clone
-                set [teller] to {}
-                repeat (teller)
-                turn cw ({360}/(teller)) degrees
-                end
+        <div><code class="scratch">
+            when gf clicked
+            repeat {}
+            turn cw {} degrees
+            end
+        </code></div>
 
-                when this sprite clicked
-                start sound [Pop]
-                delete this clone
-            </code></div>
-    </section>
-    <section>
-        <h2>Verdere stappen...</h2>
-        <div class="uitleg">
-            Je bent nu klaar met de instructies, maar je kan de verjaardagskaart nog verder uitbreiden.
-            Een ideëetje: Voeg een cadeautje toe en iedere keer de jarige op het cadeautjes klikt komen er nieuwe ballonnen.
+    </div>
+    <div class="uitleg">
+        Welke waarden moeten we invullen zodat de ballon volledig zou ronddraaien?
+        Scratch kan dit voor ons berekenen! We weten dat een cirkel 360 graden is en jij kiest in hoeveel stappen je dit willen doen. Hoe meer stappen hoe trager de ballon draait. Dus voeren we een berekening uit <div class="inlineScratch"><code class="scratch">({360}/{})</code></div>.
+    </div>
+    <div class="uitleg">
+        Als we de ballon nu sneller willen laten draaien, moeten we dit op twee plaatsen aanpassen. Een keer in het herhaal-block en één keer in de deling. Je kan gemakkelijk één van de twee vergeten aanpassen... Gelukkig is hier een oplossing voor! We gebruiken hiervoor een variabele, bijvoorbeeld
+        <div class="inlineScratch"><code class="scratch">(draai snelheid)</code></div>. Je kan een variable maken in de toolbox bij de categorie <i>Variable</i>.
+    </div>
+    <div class="stap">
+        Pas je code aan zodat je een variable gebruikt om de snelheid waarmee de ballon draait aan te geven.
+    </div>
+    <div class="uitleg">
+        Je code ziet er nu als volgt uit:
+        <div><code class="scratch">
+            when gf clicked
+            set [draai snelheid] to {}
+            repeat (draai snelheid)
+            turn cw ({360}/(draai snelheid)) degrees
+            end
+        </code></div>
+    </div>
+</section>
+
+<section>
+    <h2>Een echte ballon is een beetje doorzichtig</h2>
+    <div class="uitleg">
+        Je kan de ballon een beetje doorzichtig maken door gebruik te maken van het <i>geest</i> effect, zo zorg je ervoor dat je het plafon (de paarse lijn) en de letters er door kan zien.
+        <div><code class="scratch">
+            set [ghost] effect to {}
+        </code></div>
+    </div>
+    <div class="stap">
+        Maak de ballon een beetje doorzichtig zodat je de tekst en het plafon erdoor ziet.
+    </div>
+</section>
+
+<section>
+    <h2>Een paar verassingen...</h2>
+    <div class="uitleg">
+        Als je bij uiterlijken gaat kijken zie je dat de ballon drie verschillende kleuren kan hebben. We kunnen hier zelf eentje van kiezen.
+        <div>
+            <code class="scratch">
+                switch costume to [balloon1-b]
+            </code>
         </div>
-    </section>
+        Of we kunnen er willekeurig eentje door de computer laten kiezen.
+        <div>
+            <code class="scratch">
+                switch costume to (pick random {1} to {3})
+            </code>
+        </div>
+    </div>
+    <div class="stap">
+        Pas je programma aan zodat iedere keer je op de groene vlag drukt een willekeurige uiterlijk voor de ballon wordt gekozen.
+    </div>
+    <div class="uitleg">
+        Je kan nog meer willekeurig maken. Bijvoorbeeld de start positie van de ballon (x-waarde) of hoe snel de ballon ronddraait. Misschien denk jij nog aan andere dingen?
+    </div>
+    <div class="stap">Pas je programma aan zodat de ballon steeds op een andere locatie start wanneer je op de groene vlag klikt.</div>
+    <div class="stap">Zorg ervoor dat de ballon steeds met een andere snelheid ronddraait.</div>
+</section>
+
+<section>
+    <h2>Meer ballonnen</h2>
+    <div class="uitleg">
+        Weet je wat een <i>Kloon</i> is? Dit een kopie dat er hetzelfde uitziet en zich hetzelfde gedraagd als het orgineel. In Scratch kan je ook klonen!
+    </div>
+    <div class="stap">
+        Voeg het volgende stukje code toe aan je project. Wat gebeurt er?
+
+        <div><code class="scratch">
+            when gf clicked
+            create clone of [mezelf]
+        </code></div>
+    </div>
+    <div class="uitleg">
+        Er zijn nu twee ballonnen maar de andere ballon doet nog niets. Er zijn verschillende manieren om dit probleem op te lossen, we bespreken hier één mogelijke oplossing.
+    </div>
+    <div class="stap">
+        Vervang op de andere plaatsen (dus niet in de code hierboven) <div class="inlineScratch">
+        <code class="scratch">when gf clicked</code></div>
+        door <div class="inlineScratch">
+        <code class="scratch">when I start as a clone</code>
+    </div>. Wat is er verandert?
+    </div>
+    <div class="uitleg">
+        Als je nu op de groene vlag klikt, lijkt het alsof hetzelfde gebeurt, maar het is nu de kloon die beweegt. Als we nu twee ballonnen willen die bewegen, kunnen we nog een kloon maken. Maar wat dan met het origineel? We verbergen het gewoon!
+    </div>
+    <div class="stap">
+        Zorg ervoor dat er twee ballonen zijn die stijgen en ronddraaien. Doe dit door twee klonen te maken en het origineel te verbergen.
+    </div>
+    <div class="uitleg">
+        Je code zou er ongeveer zo moeten uitzien:
+        <div><code class="scratch">
+            when gf clicked
+            hide
+            repeat {2}
+            create clone of [mezelf]
+
+            when i start as a clone
+            show
+        </code></div>
+    </div>
+
+    <div class="stap">
+        Maak zoveel ballonnen als je zelf wil!
+    </div>
+
+    <h2>Ballonnen kapot prikken</h2>
+    <div class="uitleg">
+        Zoveel ballonnen wil je natuurlijk kapot prikken. Je kan een kloon verwijderen met <div class="inlineScratch">
+        <div><code class="scratch">delete this clone</code></div>
+    </div>
+    </div>
+    <div class="stap">
+        Pas je programma aan zodat de ballonnen verdwijnen als je erop klikt. Zorg voor een bijpassend geluid.
+    </div>
+    <div class="uitleg">
+        Dit ziet er dan als volgt uit:
+        <div><code class="scratch">
+            when this sprite clicked
+            start sound [Pop]
+            delete this clone
+        </code></div>
+    </div>
+</section>
+<section>
+    <h2>Uiteindelijke oplossing</h2>
+    <div><code class="scratch">
+        when gf clicked
+        hide
+        repeat {2}
+        create clone of [mezelf]
+        end
+
+        when i start as a clone
+        set [ghost] effect to {10}
+        switch costume to (pick random {1} to {3})
+        show
+        go to x: (pick random {-200} to {200}) y:{-300}
+        repeat until &lt;touching color #c170db&gt;
+        change y by {20}
+        end
+
+        when i start as a clone
+        set [teller] to {}
+        repeat (teller)
+        turn cw ({360}/(teller)) degrees
+        end
+
+        when this sprite clicked
+        start sound [Pop]
+        delete this clone
+    </code></div>
+</section>
+<section>
+    <h2>Verdere stappen...</h2>
+    <div class="uitleg">
+        Je bent nu klaar met de instructies, maar je kan de verjaardagskaart nog verder uitbreiden.
+        Een ideëetje: Voeg een cadeautje toe en iedere keer de jarige op het cadeautjes klikt komen er ballonnen bij.
+    </div>
+</section>
 </body>
 
 </html>
