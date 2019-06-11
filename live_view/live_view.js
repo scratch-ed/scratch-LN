@@ -94,7 +94,7 @@ window.onload = function () {
     let blocklyDiv = document.getElementById('blocklyDiv');
     let blocklyArea = document.getElementById('blocklyArea');
     blocklyDiv.style.width = '100%';
-    blocklyDiv.style.height = '90vh'; //1vh = 1% of browser screen height
+    blocklyDiv.style.height = '67vh'; //1vh = 1% of browser screen height
     ScratchBlocks.svgResize(workspace);
 
     //insertSomeCodeFromXML();
