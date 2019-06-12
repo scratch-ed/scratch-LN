@@ -53065,30 +53065,30 @@ function showExample() {
 }
 
 function showBalloonExample() {
-    let code = "                when gf clicked\n" +
-        "                hide\n" +
-        "                repeat {2}\n" +
-        "                create clone of [mezelf]\n" +
-        "                end\n" +
+    let code = "when gf clicked\n" +
+        "hide\n" +
+        "repeat {2}\n" +
+        "    create clone of [mezelf]\n" +
+        "end\n" +
         "\n" +
-        "                when i start as a clone\n" +
-        "                set [ghost] effect to {10}\n" +
-        "                switch costume to (pick random {1} to {3})\n" +
-        "                show\n" +
-        "                go to x: (pick random {-200} to {200}) y:{-300}\n" +
-        "                repeat until <touching color #c170db>\n" +
-        "                change y by {20}\n" +
-        "                end\n" +
+        "when i start as a clone\n" +
+        "set [ghost] effect to {10}\n" +
+        "switch costume to (pick random {1} to {3})\n" +
+        "show\n" +
+        "go to x: (pick random {-200} to {200}) y:{-300}\n" +
+        "repeat until <touching color #c170db>\n" +
+        "    change y by {20}\n" +
+        "end\n" +
         "\n" +
-        "                when i start as a clone\n" +
-        "                set [teller] to {}\n" +
-        "                repeat (teller)\n" +
-        "                turn cw ({360}/(teller)) degrees\n" +
-        "                end\n" +
+        "when i start as a clone\n" +
+        "set [teller] to {}\n" +
+        "repeat (teller)\n" +
+        "    turn cw ({360}/(teller)) degrees\n" +
+        "end\n" +
         "\n" +
-        "                when this sprite clicked\n" +
-        "                start sound [Pop]\n" +
-        "                delete this clone";
+        "when this sprite clicked\n" +
+        "start sound [Pop]\n" +
+        "delete this clone";
     aceEditor.setValue(code);
     updateWorkspace();
 }
